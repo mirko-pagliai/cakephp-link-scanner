@@ -66,4 +66,14 @@ class GlobalFunctionsTest extends TestCase
             $this->assertFalse(isUrl($badUrl));
         }
     }
+
+    /**
+     * Test for `statusCodeIsOk()` global function
+     * @test
+     */
+    public function testStatusCodeIsOk()
+    {
+        $this->assertTrue(statusCodeIsOk(200));
+        $this->assertFalse(statusCodeIsOk(500));
+    }
 }
