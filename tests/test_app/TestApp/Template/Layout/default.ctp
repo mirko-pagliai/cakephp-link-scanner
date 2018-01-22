@@ -4,7 +4,8 @@
     <title><?= $this->fetch('title'); ?></title>
     <?= $this->Html->meta('icon') ?>
 
-    <?= $this->Html->css('cake.generic') ?>
+    <?= $this->Html->css('default') ?>
+    <?= $this->Html->script('default') ?>
 
     <?= $this->fetch('script') ?>
 
