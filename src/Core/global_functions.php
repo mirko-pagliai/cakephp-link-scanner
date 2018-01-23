@@ -53,9 +53,15 @@ if (!function_exists('statusCodeIsOk')) {
             Message::STATUS_OK,
             Message::STATUS_CREATED,
             Message::STATUS_ACCEPTED,
-            Message::STATUS_NON_AUTHORITATIVE_INFORMATION,
-            Message::STATUS_NO_CONTENT,
         ];
+
+        //Adds some constants that do not exist up to the 3.4 version
+        foreach ([
+            'Message::STATUS_NON_AUTHORITATIVE_INFORMATION' => 203,
+            'Message::STATUS_NO_CONTENT' => 204,
+        ] as $statusName => $statusCode) {
+            $codes[] = defined($statusName) ? constant($statusName) : $statusCode;
+        }
 
         return in_array($code, $codes);
     }
