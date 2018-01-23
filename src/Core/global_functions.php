@@ -45,17 +45,18 @@ if (!function_exists('statusCodeIsOk')) {
     /**
      * Checks if a status code is ok
      * @param int $code Status code
-     * @return boolean
+     * @return bool
      */
-    function statusCodeIsOk($code) {
-         $codes = [
-             Message::STATUS_OK,
-             Message::STATUS_CREATED,
-             Message::STATUS_ACCEPTED,
-             Message::STATUS_NON_AUTHORITATIVE_INFORMATION,
-             Message::STATUS_NO_CONTENT,
+    function statusCodeIsOk($code)
+    {
+        $codes = [
+            Message::STATUS_OK,
+            Message::STATUS_CREATED,
+            Message::STATUS_ACCEPTED,
+            Message::STATUS_NON_AUTHORITATIVE_INFORMATION,
+            Message::STATUS_NO_CONTENT,
         ];
 
-         return in_array($code, $codes);
+        return in_array($code, $codes);
     }
 }
