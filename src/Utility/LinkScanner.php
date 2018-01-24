@@ -70,6 +70,7 @@ class LinkScanner
         $this->fullBaseUrl = clearUrl($fullBaseUrl);
     }
 
+
     /**
      * Internal method to extract all links from an HTML string
      * @param string $html HTML string
@@ -107,32 +108,5 @@ class LinkScanner
         }
 
         return array_values(array_unique($links));
-    }
-
-    /**
-     * Performs a single GET request.
-     *
-     * Returns an array that contains:
-     *  - status code;
-     *  - other links possibly contained;
-     *  - type.
-     * @param string $url The url or path you want to request
-     * @return array
-     * @uses $Client
-     * @uses getLinksFromHtml()
-     */
-    public function get($url)
-    {
-        $response = $this->Client->get($url);
-
-        $code = $response->getStatusCode();
-        $links = [];
-        $type = $response->type();
-
-        if (statusCodeIsOk($code) && $type === 'text/html') {
-            $links = $this->getLinksFromHtml($response->body());
-        }
-
-        return compact('code', 'links', 'type');
     }
 }

@@ -40,16 +40,16 @@ class LinkScannerTest extends IntegrationTestCase
         parent::setUp();
 
         $this->LinkScanner = new LinkScanner;
-        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
-            ->setMethods(['get'])
-            ->getMock();
-
-        $this->LinkScanner->Client->method('get')
-            ->will($this->returnCallback(function ($url) {
-                $this->get($url);
-
-                return $this->_response;
-            }));
+//        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
+//            ->setMethods(['get'])
+//            ->getMock();
+//
+//        $this->LinkScanner->Client->method('get')
+//            ->will($this->returnCallback(function ($url) {
+//                $this->get($url);
+//
+//                return $this->_response;
+//            }));
     }
 
     /**
@@ -121,5 +121,14 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertEquals(500, $result['code']);
         $this->assertEmpty($result['links']);
         $this->assertEquals('text/html', $result['type']);
+    }
+
+    public function testScanner()
+    {
+
+        $this->LinkScanner = new LinkScanner('http://www.google.it');
+//        $startFrom = ['controller' => 'Pages', 'action' => 'display', 'home'];
+        $result = $this->LinkScanner->scan('http://www.google.it');
+        dd($result);
     }
 }

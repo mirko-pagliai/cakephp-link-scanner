@@ -33,6 +33,19 @@ class GlobalFunctionsTest extends TestCase
         ] as $url) {
             $this->assertEquals('http://mysite', clearUrl($url));
         }
+
+        foreach ([
+            'relative',
+            '/relative',
+            'relative/',
+            '/relative/',
+            'relative#fragment',
+            'relative/#fragment',
+            '/relative#fragment',
+            '/relative/#fragment',
+        ] as $url) {
+            $this->assertEquals('relative', clearUrl($url));
+        }
     }
 
     /**

@@ -23,7 +23,7 @@ if (!function_exists('clearUrl')) {
         //Removes fragment (#)
         $url = preg_replace('/(\#.*)$/', '', $url);
         //Removes trailing slash
-        $url = preg_replace('{/$}', '', $url);
+        $url = trim($url, '/');
 
         return $url;
     }
