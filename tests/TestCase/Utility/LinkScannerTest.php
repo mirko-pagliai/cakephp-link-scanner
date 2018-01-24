@@ -13,6 +13,7 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Core\Configure;
+use Cake\Http\Client\Response;
 use Cake\TestSuite\IntegrationTestCase;
 use LinkScanner\Utility\LinkScanner;
 use Reflection\ReflectionTrait;
@@ -155,6 +156,20 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testGet()
     {
+        $result = $this->LinkScanner->get('http://www.google.it');
+        $this->assertEquals(200, $result['code']);
+        $this->assertNotEmpty($result['links']);
+        $this->assertStringStartsWith('text/html', $result['type']);
+
+        $this->LinkScanner = $this->getMockBuilder(get_class($this->LinkScanner))
+            ->setMethods(['responseIsOk'])
+            ->getMock();
+
+        $this->LinkScanner->method('responseIsOk')
+            ->will($this->returnCallback(function ($response) {
+                return (new Response)->withStatus($response->getStatusCode())->isOk();
+            }));
+
         $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
             ->setMethods(['get'])
             ->getMock();

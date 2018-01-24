@@ -40,29 +40,3 @@ if (!function_exists('isUrl')) {
         return (bool)preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $url);
     }
 }
-
-if (!function_exists('statusCodeIsOk')) {
-    /**
-     * Checks if a status code is ok
-     * @param int $code Status code
-     * @return bool
-     */
-    function statusCodeIsOk($code)
-    {
-        $codes = [
-            Message::STATUS_OK,
-            Message::STATUS_CREATED,
-            Message::STATUS_ACCEPTED,
-        ];
-
-        //Adds some constants that do not exist up to the 3.4 version
-        foreach ([
-            'Message::STATUS_NON_AUTHORITATIVE_INFORMATION' => 203,
-            'Message::STATUS_NO_CONTENT' => 204,
-        ] as $statusName => $statusCode) {
-            $codes[] = defined($statusName) ? constant($statusName) : $statusCode;
-        }
-
-        return in_array($code, $codes);
-    }
-}

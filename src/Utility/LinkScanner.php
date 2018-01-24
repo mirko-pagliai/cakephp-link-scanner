@@ -144,6 +144,16 @@ class LinkScanner
     }
 
     /**
+     * Checks if a `Response` is ok
+     * @param Response $response A `Response` object
+     * @return bool
+     */
+    protected function responseIsOk($response)
+    {
+        return $response->isOk();
+    }
+
+    /**
      * Performs a single GET request.
      *
      * Returns an array that contains:
@@ -155,19 +165,21 @@ class LinkScanner
      * @uses $Client
      * @uses getLinksFromHtml()
      * @uses isHtmlString()
+     * @uses responseIsOk()
      */
     public function get($url)
     {
         $response = $this->Client->get($url);
 
-        $code = $response->getStatusCode();
         $links = [];
-        $type = $response->getHeaderLine('content-type');
 
-        if (statusCodeIsOk($code) && $this->isHtmlString($response->body())) {
+        if ($this->responseIsOk($response) && $this->isHtmlString($response->body())) {
             $links = $this->getLinksFromHtml($response->body());
         }
 
-        return compact('code', 'links', 'type');
+        return array_merge([
+            'code' => $response->getStatusCode(),
+            'type' => $response->getHeaderLine('content-type'),
+        ], compact('links'));
     }
 }
