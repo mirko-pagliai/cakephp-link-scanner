@@ -40,16 +40,6 @@ class LinkScannerTest extends IntegrationTestCase
         parent::setUp();
 
         $this->LinkScanner = new LinkScanner;
-//        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
-//            ->setMethods(['get'])
-//            ->getMock();
-//
-//        $this->LinkScanner->Client->method('get')
-//            ->will($this->returnCallback(function ($url) {
-//                $this->get($url);
-//
-//                return $this->_response;
-//            }));
     }
 
     /**
@@ -62,9 +52,9 @@ class LinkScannerTest extends IntegrationTestCase
             return $this->invokeMethod($this->LinkScanner, 'getLinksFromHtml', func_get_args());
         };
 
-        $html = '<a href="page.html">Link</a>' . PHP_EOL .
+        $html = '<a href="/page.html#fragment">Link</a>' . PHP_EOL .
             '<map name="example"><area href="area.htm"></map>' . PHP_EOL .
-            '<audio src="file.mp3"></audio>' . PHP_EOL .
+            '<audio src="/file.mp3"></audio>' . PHP_EOL .
             '<embed src="helloworld.swf">' . PHP_EOL .
             '<frame src="frame1.html"></frame>' . PHP_EOL .
             '<iframe src="frame2.html"></iframe>' . PHP_EOL .
@@ -73,7 +63,7 @@ class LinkScannerTest extends IntegrationTestCase
             '<script type="text/javascript" href="script.js" />' . PHP_EOL .
             '<audio><source src="file2.mp3" type="audio/mpeg"></audio>' . PHP_EOL .
             '<video><track src="subtitles_en.vtt"></video>' . PHP_EOL .
-            '<video src="movie.mp4"></video>';
+            '<video src="http://localhost/movie.mp4"></video>';
         $expected = [
             'http://localhost/page.html',
             'http://localhost/area.htm',
@@ -102,33 +92,93 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
+     * Test for `isExternalUrl()` method
+     * @test
+     */
+    public function testIsExternalUrl()
+    {
+        $isExternalUrlMethod = function () {
+            return $this->invokeMethod($this->LinkScanner, 'isExternalUrl', func_get_args());
+        };
+
+        foreach ([
+            'http://localhost',
+            'https://localhost',
+            'http://localhost/page',
+            'https://localhost/page',
+            'relative.html',
+            '/relative.html',
+        ] as $url) {
+            $this->assertFalse($isExternalUrlMethod($url));
+        }
+
+        foreach ([
+            'http://localhost.com',
+            'http://subdomain.localhost',
+            'http://www.google.com',
+            'http://google.com',
+        ] as $url) {
+            $this->assertTrue($isExternalUrlMethod($url));
+        }
+    }
+
+    /**
+     * Test for `isHtmlString()` method
+     * @test
+     */
+    public function testIsHtmlString()
+    {
+        $isHtmlStringMethod = function () {
+            return $this->invokeMethod($this->LinkScanner, 'isHtmlString', func_get_args());
+        };
+
+        foreach ([
+            '<b>String</b>',
+            '</b>',
+            '<b>String',
+            '<tag>String</tag>',
+        ] as $string) {
+            $this->assertTrue($isHtmlStringMethod($string));
+        }
+
+        foreach ([
+            'String',
+            '',
+        ] as $string) {
+            $this->assertFalse($isHtmlStringMethod($string));
+        }
+    }
+
+    /**
      * Test for `get()` method
      * @test
      */
     public function testGet()
     {
+        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
+            ->setMethods(['get'])
+            ->getMock();
+
+        $this->LinkScanner->Client->method('get')
+            ->will($this->returnCallback(function ($url) {
+                $this->get($url);
+
+                return $this->_response;
+            }));
+
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
         $this->assertEquals(200, $result['code']);
         $this->assertNotEmpty($result['links']);
-        $this->assertEquals('text/html', $result['type']);
+        $this->assertStringStartsWith('text/html', $result['type']);
 
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'home']);
         $this->assertEquals(200, $result['code']);
         $this->assertNotEmpty($result['links']);
-        $this->assertEquals('text/html', $result['type']);
+        $this->assertStringStartsWith('text/html', $result['type']);
 
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'noexisting']);
         $this->assertEquals(500, $result['code']);
         $this->assertEmpty($result['links']);
-        $this->assertEquals('text/html', $result['type']);
-    }
-
-    public function testScanner()
-    {
-
-        $this->LinkScanner = new LinkScanner('http://www.google.it');
-//        $startFrom = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        $result = $this->LinkScanner->scan('http://www.google.it');
-        dd($result);
+        $this->assertStringStartsWith('text/html', $result['type']);
     }
 }
