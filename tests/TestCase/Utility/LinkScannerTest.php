@@ -196,4 +196,25 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertEmpty($result['links']);
         $this->assertStringStartsWith('text/html', $result['type']);
     }
+
+    /**
+     * Test for `setMaxDepth()` method
+     * @test
+     */
+    public function testSetMaxDepth()
+    {
+        $maxDepthProperty = function () {
+            return $this->getProperty($this->LinkScanner, 'maxDepth');
+        };
+
+        $this->assertEquals(0, $maxDepthProperty());
+
+        $result = $this->LinkScanner->setMaxDepth(1);
+        $this->assertInstanceof(get_class($this->LinkScanner), $result);
+        $this->assertEquals(1, $maxDepthProperty());
+
+        $result = $this->LinkScanner->setMaxDepth(0);
+        $this->assertInstanceof(get_class($this->LinkScanner), $result);
+        $this->assertEquals(0, $maxDepthProperty());
+    }
 }

@@ -14,6 +14,8 @@ namespace LinkScanner\Utility;
 
 use Cake\Core\Configure;
 use Cake\Http\Client;
+use Cake\I18n\Time;
+use Cake\Utility\Xml;
 use DOMDocument;
 
 /**
@@ -28,7 +30,26 @@ class LinkScanner
     public $Client;
 
     /**
+     * Links that have already been scanned
+     * @var array
+     */
+    protected $alreadyScanned = [];
+
+    /**
+     * Current scan depth level
+     * @var int
+     */
+    protected $currentDepth = 0;
+
+    /**
+     * Elapsed time
+     * @var int
+     */
+    protected $elapsedTime = 0;
+
+    /**
      * Full base url
+     * @see __construct()
      * @var string
      */
     protected $fullBaseUrl;
@@ -38,6 +59,25 @@ class LinkScanner
      * @var string
      */
     protected $host;
+
+    /**
+     * Maximum depth of the scan
+     * @see setMaxDepth()
+     * @var int
+     */
+    protected $maxDepth = 0;
+
+    /**
+     * Map of results
+     * @var array
+     */
+    protected $map = [];
+
+    /**
+     * Start time
+     * @var int
+     */
+    protected $startTime = 0;
 
     /**
      * HTML tags to be scanned, because they can contain links to other
@@ -74,7 +114,7 @@ class LinkScanner
         }
 
         $this->Client = new Client;
-        $this->fullBaseUrl = clearUrl($fullBaseUrl);
+        $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
         $this->host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
     }
 
@@ -83,6 +123,7 @@ class LinkScanner
      * @param string $html HTML string
      * @return array
      * @uses $fullBaseUrl
+     * @uses $host
      * @uses $tags
      */
     protected function getLinksFromHtml($html)
@@ -105,18 +146,23 @@ class LinkScanner
                     continue;
                 }
 
+                if (substr($link, 0, 2) === '//') {
+                    $link = 'http:' . $link;
+                }
+
                 $link = clearUrl($link);
 
                 //Turns links as absolute
                 if (!isUrl($link)) {
-                    $link = $this->fullBaseUrl . '/' . $link;
+                    $link = parse_url($this->fullBaseUrl, PHP_URL_SCHEME) .
+                        '://' . $this->host . '/' . $link;
                 }
 
                 $links[] = $link;
             }
         }
 
-        return array_values(array_unique($links));
+        return array_unique($links);
     }
 
     /**
@@ -169,7 +215,7 @@ class LinkScanner
      */
     public function get($url)
     {
-        $response = $this->Client->get($url);
+        $response = $this->Client->get($url, [], ['redirect' => true]);
 
         $links = [];
 
@@ -181,5 +227,18 @@ class LinkScanner
             'code' => $response->getStatusCode(),
             'type' => $response->getHeaderLine('content-type'),
         ], compact('links'));
+    }
+
+    /**
+     * Sets the maximum depth of the scan
+     * @param int $maxDepth Maximum depth of the scan
+     * @return $this
+     * @uses $maxDepth
+     */
+    public function setMaxDepth($maxDepth)
+    {
+        $this->maxDepth = $maxDepth;
+
+        return $this;
     }
 }
