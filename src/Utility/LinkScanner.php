@@ -17,6 +17,7 @@ use Cake\Http\Client;
 use Cake\I18n\Time;
 use Cake\Utility\Xml;
 use DOMDocument;
+use stdClass;
 
 /**
  * A link scanner
@@ -202,12 +203,11 @@ class LinkScanner
     /**
      * Performs a single GET request.
      *
-     * Returns an array that contains:
-     *  - status code;
-     *  - other links possibly contained;
-     *  - content type.
+     * Returns a object with `_response` (the original `Response` instance),
+     *  `code`, `type` and `links` properties.
      * @param string $url The url or path you want to request
-     * @return array
+     * @return stdClass Object with `_response`, `code`, `type` and `links`
+     *  properties.
      * @uses $Client
      * @uses getLinksFromHtml()
      * @uses isHtmlString()
@@ -223,10 +223,13 @@ class LinkScanner
             $links = $this->getLinksFromHtml($response->body());
         }
 
-        return array_merge([
-            'code' => $response->getStatusCode(),
-            'type' => $response->getHeaderLine('content-type'),
-        ], compact('links'));
+        $result = new stdClass;
+        $result->_response = $response;
+        $result->code = $response->getStatusCode();
+        $result->type = $response->getHeaderLine('content-type');
+        $result->links = $links;
+
+        return $result;
     }
 
     /**

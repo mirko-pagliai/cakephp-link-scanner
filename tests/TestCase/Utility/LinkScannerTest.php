@@ -157,9 +157,11 @@ class LinkScannerTest extends IntegrationTestCase
     public function testGet()
     {
         $result = $this->LinkScanner->get('http://www.google.it');
-        $this->assertEquals(200, $result['code']);
-        $this->assertNotEmpty($result['links']);
-        $this->assertStringStartsWith('text/html', $result['type']);
+        $this->assertInstanceof('stdClass', $result);
+        $this->assertInstanceof('Cake\Http\Client\Response', $result->_response);
+        $this->assertEquals(200, $result->code);
+        $this->assertNotEmpty($result->links);
+        $this->assertStringStartsWith('text/html', $result->type);
 
         $this->LinkScanner = $this->getMockBuilder(get_class($this->LinkScanner))
             ->setMethods(['responseIsOk'])
@@ -182,19 +184,21 @@ class LinkScannerTest extends IntegrationTestCase
             }));
 
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
-        $this->assertEquals(200, $result['code']);
-        $this->assertNotEmpty($result['links']);
-        $this->assertStringStartsWith('text/html', $result['type']);
+        $this->assertInstanceof('stdClass', $result);
+        $this->assertInstanceof('Cake\TestSuite\Stub\Response', $result->_response);
+        $this->assertEquals(200, $result->code);
+        $this->assertNotEmpty($result->links);
+        $this->assertStringStartsWith('text/html', $result->type);
 
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'home']);
-        $this->assertEquals(200, $result['code']);
-        $this->assertNotEmpty($result['links']);
-        $this->assertStringStartsWith('text/html', $result['type']);
+        $this->assertEquals(200, $result->code);
+        $this->assertNotEmpty($result->links);
+        $this->assertStringStartsWith('text/html', $result->type);
 
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'noexisting']);
-        $this->assertEquals(500, $result['code']);
-        $this->assertEmpty($result['links']);
-        $this->assertStringStartsWith('text/html', $result['type']);
+        $this->assertEquals(500, $result->code);
+        $this->assertEmpty($result->links);
+        $this->assertStringStartsWith('text/html', $result->type);
     }
 
     /**
