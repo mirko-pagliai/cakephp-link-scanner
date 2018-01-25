@@ -77,6 +77,19 @@ class ResultExporterTest extends TestCase
     }
 
     /**
+     * Teardown any static object changes and restore them
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        foreach (glob(TMP . "scan_as_*") as $file) {
+            unlink($file);
+        }
+    }
+
+    /**
      * Test for `asArray()` method
      * @test
      */
