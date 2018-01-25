@@ -202,6 +202,32 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
+     * Test for `reset()` method
+     * @test
+     */
+    public function testReset()
+    {
+        foreach (['alreadyScanned', 'externalLinks', 'resultMap'] as $property) {
+            $this->setProperty($this->LinkScanner, $property, ['value']);
+        }
+
+        foreach (['currentDepth', 'elapsedTime', 'startTime'] as $property) {
+            $this->setProperty($this->LinkScanner, $property, 1);
+        }
+
+        $result = $this->LinkScanner->reset();
+        $this->assertInstanceof(get_class($this->LinkScanner), $result);
+
+        foreach (['alreadyScanned', 'externalLinks', 'resultMap'] as $property) {
+            $this->assertEquals([], $this->getProperty($this->LinkScanner, $property));
+        }
+
+        foreach (['currentDepth', 'elapsedTime', 'startTime'] as $property) {
+            $this->assertEquals(0, $this->getProperty($this->LinkScanner, $property));
+        }
+    }
+
+    /**
      * Test for `setMaxDepth()` method
      * @test
      */

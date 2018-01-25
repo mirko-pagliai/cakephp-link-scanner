@@ -49,6 +49,12 @@ class LinkScanner
     protected $elapsedTime = 0;
 
     /**
+     * External links found during the scan
+     * @var array
+     */
+    protected $externalLinks = [];
+
+    /**
      * Full base url
      * @see __construct()
      * @var string
@@ -69,10 +75,10 @@ class LinkScanner
     protected $maxDepth = 0;
 
     /**
-     * Map of results
+     * Result map
      * @var array
      */
-    protected $map = [];
+    protected $resultMap = [];
 
     /**
      * Start time
@@ -230,6 +236,25 @@ class LinkScanner
         $result->links = $links;
 
         return $result;
+    }
+
+    /**
+     * Resets some properties whose initial value may have changed during the
+     *  last scan
+     * @return $this
+     * @uses $alreadyScanned
+     * @uses $currentDepth
+     * @uses $elapsedTime
+     * @uses $externalLinks
+     * @uses $resultMap
+     * @uses $startTime
+     */
+    public function reset()
+    {
+        $this->alreadyScanned = $this->externalLinks = $this->resultMap = [];
+        $this->currentDepth = $this->elapsedTime = $this->startTime = 0;
+
+        return $this;
     }
 
     /**
