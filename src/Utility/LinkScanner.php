@@ -15,7 +15,6 @@ namespace LinkScanner\Utility;
 use Cake\Core\Configure;
 use Cake\Http\Client;
 use Cake\I18n\Time;
-use Cake\Utility\Xml;
 use DOMDocument;
 use stdClass;
 
@@ -174,12 +173,16 @@ class LinkScanner
 
     /**
      * Checks if an url is external
-     * @param string $url Url
+     * @param string|array $url Url
      * @return bool
      * @uses $host
      */
     protected function isExternalUrl($url)
     {
+        if (is_array($url)) {
+            return false;
+        }
+
         $host = parse_url($url, PHP_URL_HOST);
 
         //Url with the same host and relative url are not external
@@ -210,12 +213,13 @@ class LinkScanner
      * Performs a single GET request.
      *
      * Returns a object with `_response` (the original `Response` instance),
-     *  `code`, `type` and `links` properties.
+     *  `code`, `external`, `type` and `links` properties.
      * @param string $url The url or path you want to request
-     * @return stdClass Object with `_response`, `code`, `type` and `links`
-     *  properties.
+     * @return stdClass Object with `_response`, `code`, `external`, `type` and
+     *  `links`properties.
      * @uses $Client
      * @uses getLinksFromHtml()
+     * @uses isExternalUrl()
      * @uses isHtmlString()
      * @uses responseIsOk()
      */
@@ -232,6 +236,7 @@ class LinkScanner
         $result = new stdClass;
         $result->_response = $response;
         $result->code = $response->getStatusCode();
+        $result->external = $this->isExternalUrl($url);
         $result->type = $response->getHeaderLine('content-type');
         $result->links = $links;
 

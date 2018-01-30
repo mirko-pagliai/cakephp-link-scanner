@@ -103,9 +103,12 @@ class LinkScannerTest extends IntegrationTestCase
         };
 
         foreach ([
+            ['controller' => 'Pages', 'action' => 'display', 'nolinks'],
+            '//localhost',
             'http://localhost',
             'https://localhost',
             'http://localhost/page',
+            '//localhost/page',
             'https://localhost/page',
             'relative.html',
             '/relative.html',
@@ -115,9 +118,11 @@ class LinkScannerTest extends IntegrationTestCase
 
         foreach ([
             'http://localhost.com',
+            '//localhost.com',
             'http://subdomain.localhost',
             'http://www.google.com',
             'http://google.com',
+            '//google.com',
         ] as $url) {
             $this->assertTrue($isExternalUrlMethod($url));
         }
@@ -160,6 +165,7 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertInstanceof('stdClass', $result);
         $this->assertInstanceof('Cake\Http\Client\Response', $result->_response);
         $this->assertEquals(200, $result->code);
+        $this->assertTrue($result->external);
         $this->assertNotEmpty($result->links);
         $this->assertStringStartsWith('text/html', $result->type);
 
@@ -187,16 +193,19 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertInstanceof('stdClass', $result);
         $this->assertInstanceof('Cake\TestSuite\Stub\Response', $result->_response);
         $this->assertEquals(200, $result->code);
+        $this->assertFalse($result->external);
         $this->assertNotEmpty($result->links);
         $this->assertStringStartsWith('text/html', $result->type);
 
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'home']);
         $this->assertEquals(200, $result->code);
+        $this->assertFalse($result->external);
         $this->assertNotEmpty($result->links);
         $this->assertStringStartsWith('text/html', $result->type);
 
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'noexisting']);
         $this->assertEquals(500, $result->code);
+        $this->assertFalse($result->external);
         $this->assertEmpty($result->links);
         $this->assertStringStartsWith('text/html', $result->type);
     }
