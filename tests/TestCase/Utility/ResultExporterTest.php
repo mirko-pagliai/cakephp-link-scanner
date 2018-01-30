@@ -13,6 +13,7 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Inflector;
 use Cake\Utility\Xml;
 use DOMDocument;
 use LinkScanner\Utility\ResultExporter;
@@ -53,22 +54,32 @@ class ResultExporterTest extends TestCase
                 [
                     'url' => 'http://example.com/',
                     'code' => 200,
+                    'external' => false,
                     'type' => 'text/html;charset=UTF-8'
                 ],
                 [
                     'url' => 'http://example.com/pageA.html',
                     'code' => 200,
+                    'external' => false,
                     'type' => 'text/html; charset=UTF-8',
                 ],
                 [
                     'url' => 'http://example.com/pageB.html',
                     'code' => 500,
+                    'external' => false,
                     'type' => 'text/html; charset=UTF-8',
                 ],
                 [
                     'url' => 'http://example.com/image.gif',
                     'code' => 200,
+                    'external' => false,
                     'type' => 'image/gif',
+                ],
+                [
+                    'url' => 'http://google.com',
+                    'code' => 200,
+                    'external' => true,
+                    'type' => 'text/html; charset=UTF-8',
                 ],
             ],
         ];
@@ -122,13 +133,20 @@ class ResultExporterTest extends TestCase
 
         foreach ($dom->getElementsByTagName('p') as $element) {
             list($name, $value) = (explode(': ', $element->nodeValue));
+            $name = Inflector::variable($name);
+
             $content[$name] = $value;
         }
 
         foreach ($dom->getElementsByTagName('tbody') as $element) {
             foreach ($element->getElementsByTagName('tr') as $element) {
-                list($url, $code, $type) = array_filter(explode(PHP_EOL, $element->nodeValue));
-                $content['links'][] = compact('url', 'code', 'type');
+                list($url, $code, $external, $type) = array_map(function ($element) {
+                    return $element->nodeValue;
+                }, iterator_to_array($element->getElementsByTagName('td')));
+
+                $external = $external === 'Yes';
+
+                $content['links'][] = compact('url', 'code', 'external', 'type');
             }
         }
 
@@ -148,6 +166,10 @@ class ResultExporterTest extends TestCase
 
         $content = Xml::toArray(Xml::build(file_get_contents($filename)))['root'];
         $content['links'] = $content['links']['link'];
+
+        foreach ($content['links'] as $k => $link) {
+            $content['links'][$k]['external'] = (bool)$link['external'];
+        }
 
         $this->assertEquals($this->example, $content);
     }

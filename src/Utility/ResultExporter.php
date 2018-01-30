@@ -75,13 +75,13 @@ class ResultExporter
      */
     public function asHtml($filename)
     {
-        $data = '<p><strong>fullBaseUrl:</strong> {{fullBaseUrl}}</p>' . PHP_EOL .
-            '<p><strong>maxDepth:</strong> {{maxDepth}}</p>' . PHP_EOL .
-            '<p><strong>startTime:</strong> {{startTime}}</p>' . PHP_EOL .
-            '<p><strong>elapsedTime:</strong> {{elapsedTime}}</p>' . PHP_EOL .
-            '<p><strong>checkedLinks:</strong> {{checkedLinks}}</p>' . PHP_EOL .
+        $data = '<p><strong>Full base url:</strong> {{fullBaseUrl}}</p>' . PHP_EOL .
+            '<p><strong>Max depth:</strong> {{maxDepth}}</p>' . PHP_EOL .
+            '<p><strong>Start time:</strong> {{startTime}}</p>' . PHP_EOL .
+            '<p><strong>Elapsed time:</strong> {{elapsedTime}}</p>' . PHP_EOL .
+            '<p><strong>Checked links:</strong> {{checkedLinks}}</p>' . PHP_EOL .
             '<table>' . PHP_EOL .
-            '<thead><tr><th>Url</th><th>Code</th><th>Type</th></tr><thead>' . PHP_EOL .
+            '<thead><tr><th>Url</th><th>Code</th><th>External</th><th>Type</th></tr><thead>' . PHP_EOL .
             '<tbody>' . PHP_EOL .
             '{{resultTable}}' .
             '</tbody>' . PHP_EOL .
@@ -97,6 +97,7 @@ class ResultExporter
             $table .= '<tr>' . PHP_EOL .
                 '<td>' . $link['url'] . '</td>' . PHP_EOL .
                 '<td>' . $link['code'] . '</td>' . PHP_EOL .
+                '<td>' . ($link['external'] ? 'Yes' : 'No') . '</td>' . PHP_EOL .
                 '<td>' . $link['type'] . '</td>' . PHP_EOL .
                 '</tr>' . PHP_EOL;
         }
