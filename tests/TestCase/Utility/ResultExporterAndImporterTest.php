@@ -13,15 +13,13 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Inflector;
-use Cake\Utility\Xml;
-use DOMDocument;
 use LinkScanner\Utility\ResultExporter;
+use LinkScanner\Utility\ResultImporter;
 
 /**
- * ResultExporterTest class
+ * ResultExporterAndImporterTest class
  */
-class ResultExporterTest extends TestCase
+class ResultExporterAndImporterTest extends TestCase
 {
     /**
      * @var \LinkScanner\Utility\ResultExporter
@@ -29,10 +27,9 @@ class ResultExporterTest extends TestCase
     protected $ResultExporter;
 
     /**
-     * Example data
-     * @var array
+     * @var \LinkScanner\Utility\ResultImporter
      */
-    protected $example;
+    protected $ResultImporter;
 
     /**
      * Setup the test case, backup the static object values so they can be
@@ -85,6 +82,8 @@ class ResultExporterTest extends TestCase
         ];
 
         $this->ResultExporter = new ResultExporter($this->example);
+
+        $this->ResultImporter = new ResultImporter;
     }
 
     /**
@@ -111,8 +110,8 @@ class ResultExporterTest extends TestCase
         $this->assertTrue($result);
         $this->assertFileExists($filename);
 
-        $content = unserialize(file_get_contents($filename));
-        $this->assertEquals($this->example, $content);
+        $result = $this->ResultImporter->asArray($filename);
+        $this->assertEquals($this->example, $result);
     }
 
     /**
@@ -126,31 +125,8 @@ class ResultExporterTest extends TestCase
         $this->assertTrue($result);
         $this->assertFileExists($filename);
 
-        $dom = new DOMDocument;
-        $dom->loadHTML(file_get_contents($filename));
-
-        $content = [];
-
-        foreach ($dom->getElementsByTagName('p') as $element) {
-            list($name, $value) = (explode(': ', $element->nodeValue));
-            $name = Inflector::variable($name);
-
-            $content[$name] = $value;
-        }
-
-        foreach ($dom->getElementsByTagName('tbody') as $element) {
-            foreach ($element->getElementsByTagName('tr') as $element) {
-                list($url, $code, $external, $type) = array_map(function ($element) {
-                    return $element->nodeValue;
-                }, iterator_to_array($element->getElementsByTagName('td')));
-
-                $external = $external === 'Yes';
-
-                $content['links'][] = compact('url', 'code', 'external', 'type');
-            }
-        }
-
-        $this->assertEquals($this->example, $content);
+        $result = $this->ResultImporter->asHtml($filename);
+        $this->assertEquals($this->example, $result);
     }
 
     /**
@@ -164,13 +140,7 @@ class ResultExporterTest extends TestCase
         $this->assertTrue($result);
         $this->assertFileExists($filename);
 
-        $content = Xml::toArray(Xml::build(file_get_contents($filename)))['root'];
-        $content['links'] = $content['links']['link'];
-
-        foreach ($content['links'] as $k => $link) {
-            $content['links'][$k]['external'] = (bool)$link['external'];
-        }
-
-        $this->assertEquals($this->example, $content);
+        $result = $this->ResultImporter->asXml($filename);
+        $this->assertEquals($this->example, $result);
     }
 }
