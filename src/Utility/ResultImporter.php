@@ -16,6 +16,12 @@ use Cake\Utility\Inflector;
 use Cake\Utility\Xml;
 use DOMDocument;
 
+/**
+ * A class to import the scan results.
+ *
+ * This class can be initialized. But it is advisable to use the
+ *  `LinkScanner::import()` method.
+ */
 class ResultImporter
 {
     /**
