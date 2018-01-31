@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\Utility;
 
+use Cake\Network\Exception\InternalErrorException;
 use Cake\Utility\Inflector;
 use Cake\Utility\Xml;
 use DOMDocument;
@@ -28,9 +29,14 @@ class ResultImporter
      * Internal method to read data
      * @param string $filename Filename to import
      * @return string
+     * @throws InternalErrorException
      */
     protected function read($filename)
     {
+        if (!is_readable($filename)) {
+            throw new InternalErrorException(__('File or directory `{0}` not readable', $filename));
+        }
+
         return trim(file_get_contents($filename));
     }
 
@@ -38,6 +44,7 @@ class ResultImporter
      * Imports results as array
      * @param string $filename Filename to import
      * @return string
+     * @uses read()
      */
     public function asArray($filename)
     {
@@ -48,6 +55,7 @@ class ResultImporter
      * Imports results as html
      * @param string $filename Filename to import
      * @return string
+     * @uses read()
      */
     public function asHtml($filename)
     {
@@ -79,6 +87,7 @@ class ResultImporter
      * Imports results as xml
      * @param string $filename Filename to import
      * @return string
+     * @uses read()
      */
     public function asXml($filename)
     {

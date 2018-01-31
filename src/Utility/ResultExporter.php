@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\Utility;
 
+use Cake\Network\Exception\InternalErrorException;
 use Cake\Utility\Xml;
 
 /**
@@ -46,9 +47,14 @@ class ResultExporter
      * @param string $filename Filename where to export
      * @param mixed $data Data to write
      * @return bool
+     * @throws InternalErrorException
      */
     protected function write($filename, $data)
     {
+        if (!is_writable(dirname($filename))) {
+            throw new InternalErrorException(__('File or directory `{0}` not writable', dirname($filename)));
+        }
+
         return (bool)file_put_contents($filename, $data);
     }
 
@@ -61,9 +67,7 @@ class ResultExporter
      */
     public function asArray($filename)
     {
-        $data = serialize($this->results);
-
-        return $this->write($filename, $data);
+        return $this->write($filename, serialize($this->results));
     }
 
     /**
@@ -122,8 +126,7 @@ class ResultExporter
         $data = $this->results;
         $data['links'] = ['link' => $data['links']];
 
-        $data = Xml::fromArray(['root' => $data], $options)
-            ->asXML();
+        $data = Xml::fromArray(['root' => $data], $options)->asXML();
 
         return $this->write($filename, $data);
     }

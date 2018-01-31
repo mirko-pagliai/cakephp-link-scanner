@@ -135,12 +135,34 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsXml()
     {
-        $filename = TMP . 'scan_as_array.xml';
+        $filename = TMP . 'scan_as_xml.xml';
         $result = $this->ResultExporter->asXml($filename);
         $this->assertTrue($result);
         $this->assertFileExists($filename);
 
         $result = $this->ResultImporter->asXml($filename);
         $this->assertEquals($this->example, $result);
+    }
+
+    /**
+     * Test for export with a no writable directory
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage File or directory `/noExistingDir` not writable
+     * @test
+     */
+    public function testExportNoWritableDir()
+    {
+        $this->ResultExporter->asXml('/noExistingDir/scan_as_array');
+    }
+
+    /**
+     * Test for import with a no writable file
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage File or directory `/noExistingDir/scan_as_array` not readable
+     * @test
+     */
+    public function testImportNoReadableFile()
+    {
+        $this->ResultImporter->asXml('/noExistingDir/scan_as_array');
     }
 }
