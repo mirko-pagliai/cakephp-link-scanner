@@ -111,9 +111,7 @@ class ResultExporter
                 '</tr>' . PHP_EOL;
         }
 
-        $data = str_replace('{{resultTable}}', $table, $data);
-
-        return $this->write($filename, $data);
+        return $this->write($filename, str_replace('{{resultTable}}', $table, $data));
     }
 
     /**
@@ -131,8 +129,6 @@ class ResultExporter
         $data = $this->results;
         $data['links'] = ['link' => $data['links']];
 
-        $data = Xml::fromArray(['root' => $data], $options)->asXML();
-
-        return $this->write($filename, $data);
+        return $this->write($filename, Xml::fromArray(['root' => $data], $options)->asXML());
     }
 }
