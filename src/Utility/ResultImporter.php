@@ -44,33 +44,57 @@ class ResultImporter
      * Imports results as array
      * @param string $filename Filename to import
      * @return string
+     * @throws InternalErrorException
      * @uses read()
      */
     public function asArray($filename)
     {
-        return unserialize($this->read($filename));
+        //@codingStandardsIgnoreLine
+        $data = @unserialize($this->read($filename));
+
+        if ($data === false || empty($data) || !is_array($data)) {
+            throw new InternalErrorException(__('Invalid data'));
+        }
+
+        return $data;
     }
 
     /**
      * Imports results as html
      * @param string $filename Filename to import
      * @return string
+     * @throws InternalErrorException
      * @uses read()
      */
     public function asHtml($filename)
     {
+        $data = $this->read($filename);
+
+        if (empty($data) || !is_string($data)) {
+            throw new InternalErrorException(__('Invalid data'));
+        }
+
         $dom = new DOMDocument;
-        $dom->loadHTML($this->read($filename));
+        $dom->loadHTML($data);
 
         foreach ($dom->getElementsByTagName('p') as $element) {
-            list($name, $value) = (explode(': ', $element->nodeValue));
+            //@codingStandardsIgnoreLine
+            @list($name, $value) = explode(': ', $element->nodeValue);
 
             $content[Inflector::variable($name)] = $value;
         }
 
-        $table = $dom->getElementsByTagName('table')->item(0)->getElementsByTagName('tbody')->item(0);
+        if (array_keys($content) !== ['fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'checkedLinks']) {
+            throw new InternalErrorException(__('Invalid data'));
+        }
 
-        foreach ($table->getElementsByTagName('tr') as $element) {
+        $tbodyElement = $dom->getElementsByTagName('tbody');
+
+        if (!$tbodyElement->length) {
+            throw new InternalErrorException(__('Invalid data'));
+        }
+
+        foreach ($tbodyElement->item(0)->getElementsByTagName('tr') as $element) {
             list($url, $code, $external, $type) = array_map(function ($element) {
                 return $element->nodeValue;
             }, iterator_to_array($element->getElementsByTagName('td')));
@@ -78,6 +102,10 @@ class ResultImporter
             $external = $external === 'Yes';
 
             $content['links'][] = compact('url', 'code', 'external', 'type');
+        }
+
+        if (empty($content['links'])) {
+            throw new InternalErrorException(__('Invalid data'));
         }
 
         return $content;

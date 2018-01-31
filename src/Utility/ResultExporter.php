@@ -74,6 +74,7 @@ class ResultExporter
      * Exports results as html
      * @param string $filename Filename where to export
      * @return bool
+     * @throws InternalErrorException
      * @uses $results
      * @uses write()
      */
@@ -98,6 +99,10 @@ class ResultExporter
         $table = null;
 
         foreach ($this->results['links'] as $link) {
+            if (array_keys($link) !== ['url', 'code', 'external', 'type']) {
+                throw new InternalErrorException(__('Invalid data'));
+            }
+
             $table .= '<tr>' . PHP_EOL .
                 '<td>' . $link['url'] . '</td>' . PHP_EOL .
                 '<td>' . $link['code'] . '</td>' . PHP_EOL .

@@ -115,6 +115,48 @@ class ResultExporterAndImporterTest extends TestCase
     }
 
     /**
+     * Test for import as array with data not array
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsArrayDataNotArray()
+    {
+        $filename = TMP . 'scan_as_array';
+        file_put_contents($filename, serialize('string'));
+
+        $this->ResultImporter->asArray($filename);
+    }
+
+    /**
+     * Test for import as array with data as empty array
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsArrayEmptyArray()
+    {
+        $filename = TMP . 'scan_as_array';
+        (new ResultExporter([]))->asArray($filename);
+
+        $this->ResultImporter->asArray($filename);
+    }
+
+    /**
+     * Test for import as array with data not serialized correctly
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsArrayDataNotSerializedCorrectly()
+    {
+        $filename = TMP . 'scan_as_array';
+        file_put_contents($filename, 'string');
+
+        $this->ResultImporter->asArray($filename);
+    }
+
+    /**
      * Test for `asHtml()` method
      * @test
      */
@@ -127,6 +169,95 @@ class ResultExporterAndImporterTest extends TestCase
 
         $result = $this->ResultImporter->asHtml($filename);
         $this->assertEquals($this->example, $result);
+    }
+
+    /**
+     * Test for import as html with data empty table
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsHtmlDataEmptyTable()
+    {
+        $html = '<p><strong>Full base url:</strong> http://localhost/</p>
+            <p><strong>Max depth:</strong> 1</p>
+            <p><strong>Start time:</strong> 2018-01-31 13:18:04</p>
+            <p><strong>Elapsed time:</strong> 4</p>
+            <p><strong>Checked links:</strong> 15</p>
+            <table>
+            <tbody>
+            </tbody>
+            </table>';
+
+        $filename = TMP . 'scan_as_html.html';
+        file_put_contents($filename, $html);
+
+        $this->ResultImporter->asHtml($filename);
+    }
+
+    /**
+     * Test for import as html with data missing table
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsHtmlDataMissingTable()
+    {
+        $html = '<p><strong>Full base url:</strong> http://localhost/</p>
+            <p><strong>Max depth:</strong> 1</p>
+            <p><strong>Start time:</strong> 2018-01-31 13:18:04</p>
+            <p><strong>Elapsed time:</strong> 4</p>
+            <p><strong>Checked links:</strong> 15</p>';
+
+        $filename = TMP . 'scan_as_html.html';
+        file_put_contents($filename, $html);
+
+        $this->ResultImporter->asHtml($filename);
+    }
+
+    /**
+     * Test for import as html with data not html
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsHtmlDataNotHtml()
+    {
+        $filename = TMP . 'scan_as_array';
+        file_put_contents($filename, 'string');
+
+        $this->ResultImporter->asHtml($filename);
+    }
+
+    /**
+     * Test for import as html with data not string
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsHtmlDataNotString()
+    {
+        $filename = TMP . 'scan_as_array';
+        file_put_contents($filename, []);
+
+        $this->ResultImporter->asHtml($filename);
+    }
+
+    /**
+     * Test for export as html with invalid data
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsHtmlInvalidTable()
+    {
+        $this->example['links'] = array_map(function ($result) {
+            unset($result['code']);
+
+            return $result;
+        }, $this->example['links']);
+
+        (new ResultExporter($this->example))->asHtml(TMP . 'scan_as_html.html');
     }
 
     /**
