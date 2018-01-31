@@ -291,22 +291,6 @@ class ResultExporterAndImporterTest extends TestCase
     }
 
     /**
-     * Test for import as xml with invalid data
-     * @expectedException \Cake\Network\Exception\InternalErrorException
-     * @expectedExceptionMessage Invalid data
-     * @test
-     */
-    public function testAsXmlDataInvalid()
-    {
-        unset($this->example['maxDepth']);
-
-        $filename = TMP . 'scan_as_xml.xml';
-        (new ResultExporter($this->example))->asXml($filename);
-
-        $this->ResultImporter->asXml($filename);
-    }
-
-    /**
      * Test for import as xml with invalid data for links
      * @expectedException \Cake\Network\Exception\InternalErrorException
      * @expectedExceptionMessage Invalid data

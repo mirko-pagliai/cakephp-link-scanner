@@ -13,10 +13,10 @@
 namespace LinkScanner\Utility;
 
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Utility\Exception\XmlException;
 use Cake\Utility\Inflector;
 use Cake\Utility\Xml;
 use DOMDocument;
+use Exception;
 
 /**
  * A class to import the scan results.
@@ -69,20 +69,17 @@ class ResultImporter
      */
     public function asHtml($filename)
     {
-        $data = $this->read($filename);
+        try {
+            $dom = new DOMDocument;
+            $dom->loadHTML($this->read($filename));
 
-        if (empty($data) || !is_string($data)) {
+            foreach ($dom->getElementsByTagName('p') as $element) {
+                list($name, $value) = explode(': ', $element->nodeValue);
+
+                $content[Inflector::variable($name)] = $value;
+            }
+        } catch (Exception $e) {
             throw new InternalErrorException(__('Invalid data'));
-        }
-
-        $dom = new DOMDocument;
-        $dom->loadHTML($data);
-
-        foreach ($dom->getElementsByTagName('p') as $element) {
-            //@codingStandardsIgnoreLine
-            @list($name, $value) = explode(': ', $element->nodeValue);
-
-            $content[Inflector::variable($name)] = $value;
         }
 
         if (array_keys($content) !== ['fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'checkedLinks']) {
@@ -121,18 +118,7 @@ class ResultImporter
      */
     public function asXml($filename)
     {
-        try {
-            $content = Xml::toArray(Xml::build($this->read($filename)))['root'];
-        } catch (XmlException $e) {
-            throw new InternalErrorException(__('Invalid data'));
-        }
-
-        if (array_keys($content) !== ['fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'checkedLinks', 'links'] ||
-            array_keys($content['links']) !== ['link']) {
-            throw new InternalErrorException(__('Invalid data'));
-        }
-
-        $content['links'] = (array_map(function ($link) {
+        $parseLink = function ($link) {
             if (array_keys($link) !== ['url', 'code', 'external', 'type']) {
                 throw new InternalErrorException(__('Invalid data'));
             }
@@ -140,8 +126,17 @@ class ResultImporter
             $link['external'] = (bool)$link['external'];
 
             return $link;
-        }, $content['links']['link']));
+        };
 
-        return $content;
+        $data = $this->read($filename);
+
+        try {
+            $content = Xml::toArray(Xml::build($data))['root'];
+            $content['links'] = array_map($parseLink, $content['links']['link']);
+
+            return $content;
+        } catch (Exception $e) {
+            throw new InternalErrorException(__('Invalid data'));
+        }
     }
 }
