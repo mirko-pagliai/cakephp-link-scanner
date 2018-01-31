@@ -13,6 +13,7 @@
 namespace LinkScanner\Utility;
 
 use Cake\Network\Exception\InternalErrorException;
+use Cake\Utility\Exception\XmlException;
 use Cake\Utility\Inflector;
 use Cake\Utility\Xml;
 use DOMDocument;
@@ -115,13 +116,27 @@ class ResultImporter
      * Imports results as xml
      * @param string $filename Filename to import
      * @return string
+     * @throws InternalErrorException
      * @uses read()
      */
     public function asXml($filename)
     {
-        $content = Xml::toArray(Xml::build($this->read($filename)))['root'];
+        try {
+            $content = Xml::toArray(Xml::build($this->read($filename)))['root'];
+        } catch (XmlException $e) {
+            throw new InternalErrorException(__('Invalid data'));
+        }
+
+        if (array_keys($content) !== ['fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'checkedLinks', 'links'] ||
+            array_keys($content['links']) !== ['link']) {
+            throw new InternalErrorException(__('Invalid data'));
+        }
 
         $content['links'] = (array_map(function ($link) {
+            if (array_keys($link) !== ['url', 'code', 'external', 'type']) {
+                throw new InternalErrorException(__('Invalid data'));
+            }
+
             $link['external'] = (bool)$link['external'];
 
             return $link;

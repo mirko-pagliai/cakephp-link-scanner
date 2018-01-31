@@ -13,6 +13,7 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Xml;
 use LinkScanner\Utility\ResultExporter;
 use LinkScanner\Utility\ResultImporter;
 
@@ -273,6 +274,72 @@ class ResultExporterAndImporterTest extends TestCase
 
         $result = $this->ResultImporter->asXml($filename);
         $this->assertEquals($this->example, $result);
+    }
+
+    /**
+     * Test for import as xml with data not xml
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsXmlDataNotXml()
+    {
+        $filename = TMP . 'scan_as_xml.xml';
+        file_put_contents($filename, 'string');
+
+        $this->ResultImporter->asXml($filename);
+    }
+
+    /**
+     * Test for import as xml with invalid data
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsXmlDataInvalid()
+    {
+        unset($this->example['maxDepth']);
+
+        $filename = TMP . 'scan_as_xml.xml';
+        (new ResultExporter($this->example))->asXml($filename);
+
+        $this->ResultImporter->asXml($filename);
+    }
+
+    /**
+     * Test for import as xml with invalid data for links
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsXmlDataInvalidForLinks()
+    {
+        unset($this->example['links']['link']);
+
+        $filename = TMP . 'scan_as_xml.xml';
+        file_put_contents($filename, Xml::fromArray(['root' => $this->example])->asXML());
+
+        $this->ResultImporter->asXml($filename);
+    }
+
+    /**
+     * Test for import as xml with invalid data for some link
+     * @expectedException \Cake\Network\Exception\InternalErrorException
+     * @expectedExceptionMessage Invalid data
+     * @test
+     */
+    public function testAsXmlDataInvalidForSomeLink()
+    {
+        $this->example['links'] = array_map(function ($result) {
+            unset($result['code']);
+
+            return $result;
+        }, $this->example['links']);
+
+        $filename = TMP . 'scan_as_xml.xml';
+        (new ResultExporter($this->example))->asXml($filename);
+
+        $this->ResultImporter->asXml($filename);
     }
 
     /**

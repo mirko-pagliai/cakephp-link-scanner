@@ -90,7 +90,7 @@ class ResultExporter
             '<tbody>' . PHP_EOL .
             '{{resultTable}}' .
             '</tbody>' . PHP_EOL .
-            '</table>' . PHP_EOL;
+            '</table>';
 
         foreach (['fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'checkedLinks'] as $var) {
             $data = str_replace('{{' . $var . '}}', $this->results[$var], $data);
