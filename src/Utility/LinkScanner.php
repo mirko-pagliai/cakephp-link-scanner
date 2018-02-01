@@ -16,6 +16,7 @@ use Cake\Core\Configure;
 use Cake\Http\Client;
 use Cake\I18n\Time;
 use DOMDocument;
+use LinkScanner\Utility\ResultExporter;
 use stdClass;
 
 /**
@@ -258,6 +259,76 @@ class LinkScanner
     {
         $this->alreadyScanned = $this->externalLinks = $this->resultMap = [];
         $this->currentDepth = $this->elapsedTime = $this->startTime = 0;
+
+        return $this;
+    }
+
+    /**
+     * Internal method to scan.
+     *
+     * This method takes an url as a parameter. It scans that URL and
+     *  recursively it repeats the scan for all the url found that have not
+     *  already been scanned.
+     * @param string $url Url to scan
+     * @return void
+     * @uses $alreadyScanned
+     * @uses $currentDepth
+     * @uses $externalLinks
+     * @uses $maxDepth
+     * @uses $resultMap
+     * @uses get()
+     * @uses isExternalUrl()
+     */
+    protected function _scan($url)
+    {
+        $response = $this->get($url);
+
+        $this->alreadyScanned[] = $url;
+        $this->resultMap[] = array_merge(compact('url'), [
+            'external' => $response->external,
+            'code' => $response->code,
+            'type' => $response->type,
+        ]);
+
+        //Returns, if the maximum scanning depth has been reached
+        if ($this->maxDepth && $this->currentDepth >= $this->maxDepth) {
+            return;
+        }
+        $this->currentDepth++;
+
+        //Scans links that have not already been scanned
+        $linksToScan = array_diff($response->links, $this->alreadyScanned);
+
+        foreach ($linksToScan as $link) {
+            //Skips external links
+            if ($this->isExternalUrl($link)) {
+                $this->externalLinks[] = $link;
+
+                continue;
+            }
+
+            $this->_scan($link);
+        }
+    }
+
+    /**
+     * Performs a complete scan
+     * @return $this
+     * @uses $elapsedTime
+     * @uses $fullBaseUrl
+     * @uses $startTime
+     * @uses _scan()
+     * @uses reset()
+     */
+    public function scan()
+    {
+        $this->reset();
+
+        $this->startTime = time();
+
+        $this->_scan($this->fullBaseUrl);
+
+        $this->elapsedTime = time() - $this->startTime;
 
         return $this;
     }

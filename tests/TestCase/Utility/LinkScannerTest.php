@@ -15,6 +15,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 use Cake\Core\Configure;
 use Cake\Http\Client\Response;
 use Cake\TestSuite\IntegrationTestCase;
+use Cake\Utility\Hash;
 use LinkScanner\Utility\LinkScanner;
 use Reflection\ReflectionTrait;
 
@@ -234,6 +235,52 @@ class LinkScannerTest extends IntegrationTestCase
         foreach (['currentDepth', 'elapsedTime', 'startTime'] as $property) {
             $this->assertEquals(0, $this->getProperty($this->LinkScanner, $property));
         }
+    }
+
+    /**
+     * Test for `scan()` method
+     * @test
+     */
+    public function testScan()
+    {
+        $this->LinkScanner = new LinkScanner('http://localhost');
+        $result = $this->LinkScanner->setMaxDepth(1)->scan();
+
+        $this->assertInstanceof('LinkScanner\Utility\LinkScanner', $result);
+
+        $this->assertNotEmpty($this->getProperty($this->LinkScanner, 'startTime'));
+        $this->assertNotEmpty($this->getProperty($this->LinkScanner, 'elapsedTime'));
+
+        $resultMap = $this->getProperty($this->LinkScanner, 'resultMap');
+        $this->assertNotEmpty($resultMap);
+
+        foreach ($resultMap as $item) {
+            $this->assertEquals(['url', 'external', 'code', 'type'], array_keys($item));
+            $this->assertFalse($item['external']);
+            $this->assertContains($item['code'], [200, 500]);
+            $this->assertContains($item['type'], [
+                'image/gif',
+                'text/html; charset=UTF-8',
+                'text/html;charset=UTF-8',
+            ]);
+        }
+
+        $alreadyScanned = $this->getProperty($this->LinkScanner, 'alreadyScanned');
+        $this->assertEquals($alreadyScanned, Hash::extract($resultMap, '{n}.url'));
+
+        $this->assertEmpty($this->getProperty($this->LinkScanner, 'externalLinks'));
+
+        $this->LinkScanner = $this->getMockBuilder(get_class($this->LinkScanner))
+            ->setMethods(['_scan', 'reset'])
+            ->getMock();
+
+        $this->LinkScanner->expects($this->once())
+             ->method('reset');
+
+        $this->LinkScanner->expects($this->once())
+             ->method('_scan');
+
+        $this->LinkScanner->scan();
     }
 
     /**
