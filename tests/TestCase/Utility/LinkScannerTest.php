@@ -18,6 +18,7 @@ use Cake\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
 use LinkScanner\Utility\LinkScanner;
 use Reflection\ReflectionTrait;
+use Zend\Diactoros\Stream;
 
 /**
  * LinkScannerTest class
@@ -243,13 +244,29 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScan()
     {
-        $this->LinkScanner = new LinkScanner('http://localhost');
+        $this->LinkScanner = new LinkScanner('http://google.com');
+
+        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
+            ->setMethods(['get'])
+            ->getMock();
+
+        $this->LinkScanner->Client->method('get')
+            ->will($this->returnCallback(function () {
+                $request = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
+                $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
+                $stream = new Stream('php://memory', 'rw');
+                $stream->write($body);
+                $this->setProperty($request, 'stream', $stream);
+
+                return $request;
+            }));
+
         $result = $this->LinkScanner->setMaxDepth(1)->scan();
 
         $this->assertInstanceof('LinkScanner\Utility\LinkScanner', $result);
 
         $this->assertNotEmpty($this->getProperty($this->LinkScanner, 'startTime'));
-        $this->assertNotEmpty($this->getProperty($this->LinkScanner, 'elapsedTime'));
+        $this->assertTrue(is_int($this->getProperty($this->LinkScanner, 'elapsedTime')));
 
         $resultMap = $this->getProperty($this->LinkScanner, 'resultMap');
         $this->assertNotEmpty($resultMap);
@@ -258,17 +275,13 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertEquals(['url', 'external', 'code', 'type'], array_keys($item));
             $this->assertFalse($item['external']);
             $this->assertContains($item['code'], [200, 500]);
-            $this->assertContains($item['type'], [
-                'image/gif',
-                'text/html; charset=UTF-8',
-                'text/html;charset=UTF-8',
-            ]);
+            $this->assertContains($item['type'], ['text/html; charset=ISO-8859-1']);
         }
 
         $alreadyScanned = $this->getProperty($this->LinkScanner, 'alreadyScanned');
         $this->assertEquals($alreadyScanned, Hash::extract($resultMap, '{n}.url'));
 
-        $this->assertEmpty($this->getProperty($this->LinkScanner, 'externalLinks'));
+        $this->assertCount(13, $this->getProperty($this->LinkScanner, 'externalLinks'));
 
         $this->LinkScanner = $this->getMockBuilder(get_class($this->LinkScanner))
             ->setMethods(['_scan', 'reset'])
