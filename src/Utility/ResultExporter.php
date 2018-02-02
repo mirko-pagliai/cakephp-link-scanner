@@ -117,18 +117,16 @@ class ResultExporter
     /**
      * Exports results as html
      * @param string $filename Filename where to export
-     * @param array $options Options to pass to the `Xml::fromArray()` method
      * @return bool
      * @see https://api.cakephp.org/3.5/class-Cake.Utility.Xml.html#_fromArray
      * @uses $results
      * @uses write()
      */
-    public function asXml($filename, array $options = [])
+    public function asXml($filename)
     {
-        $options += ['format' => 'tags', 'pretty' => true];
-        $data = $this->results;
-        $data['links'] = ['link' => $data['links']];
+        $data = ['root' => $this->results];
+        $data['root']['links'] = ['link' => $data['root']['links']];
 
-        return $this->write($filename, Xml::fromArray(['root' => $data], $options)->asXML());
+        return $this->write($filename, Xml::fromArray($data, ['format' => 'tags', 'pretty' => true])->asXML());
     }
 }
