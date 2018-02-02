@@ -95,7 +95,7 @@ class ResultExporterAndImporterTest extends TestCase
     {
         parent::tearDown();
 
-        foreach (glob(TMP . "scan_as_*") as $file) {
+        foreach (glob(TMP . "results*") as $file) {
             unlink($file);
         }
     }
@@ -106,7 +106,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsArray()
     {
-        $filename = TMP . 'scan_as_array';
+        $filename = TMP . 'results_as_array';
         $result = $this->ResultExporter->asArray($filename);
         $this->assertEquals($filename, $result);
         $this->assertFileExists($filename);
@@ -123,7 +123,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsArrayDataNotArray()
     {
-        $filename = TMP . 'scan_as_array';
+        $filename = TMP . 'results_as_array';
         file_put_contents($filename, serialize('string'));
 
         $this->ResultImporter->asArray($filename);
@@ -137,7 +137,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsArrayEmptyArray()
     {
-        $filename = TMP . 'scan_as_array';
+        $filename = TMP . 'results_as_array';
         (new ResultExporter([]))->asArray($filename);
 
         $this->ResultImporter->asArray($filename);
@@ -151,7 +151,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsArrayDataNotSerializedCorrectly()
     {
-        $filename = TMP . 'scan_as_array';
+        $filename = TMP . 'results_as_array';
         file_put_contents($filename, 'string');
 
         $this->ResultImporter->asArray($filename);
@@ -163,7 +163,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsHtml()
     {
-        $filename = TMP . 'scan_as_html.html';
+        $filename = TMP . 'results_as_html.html';
         $result = $this->ResultExporter->asHtml($filename);
         $this->assertEquals($filename, $result);
         $this->assertFileExists($filename);
@@ -190,7 +190,7 @@ class ResultExporterAndImporterTest extends TestCase
             </tbody>
             </table>';
 
-        $filename = TMP . 'scan_as_html.html';
+        $filename = TMP . 'results_as_html.html';
         file_put_contents($filename, $html);
 
         $this->ResultImporter->asHtml($filename);
@@ -210,7 +210,7 @@ class ResultExporterAndImporterTest extends TestCase
             <p><strong>Elapsed time:</strong> 4</p>
             <p><strong>Checked links:</strong> 15</p>';
 
-        $filename = TMP . 'scan_as_html.html';
+        $filename = TMP . 'results_as_html.html';
         file_put_contents($filename, $html);
 
         $this->ResultImporter->asHtml($filename);
@@ -224,7 +224,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsHtmlDataNotHtml()
     {
-        $filename = TMP . 'scan_as_array';
+        $filename = TMP . 'results_as_array';
         file_put_contents($filename, 'string');
 
         $this->ResultImporter->asHtml($filename);
@@ -238,7 +238,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsHtmlDataNotString()
     {
-        $filename = TMP . 'scan_as_array';
+        $filename = TMP . 'results_as_array';
         file_put_contents($filename, []);
 
         $this->ResultImporter->asHtml($filename);
@@ -258,7 +258,7 @@ class ResultExporterAndImporterTest extends TestCase
             return $result;
         }, $this->example['links']);
 
-        (new ResultExporter($this->example))->asHtml(TMP . 'scan_as_html.html');
+        (new ResultExporter($this->example))->asHtml(TMP . 'results_as_html.html');
     }
 
     /**
@@ -267,7 +267,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsXml()
     {
-        $filename = TMP . 'scan_as_xml.xml';
+        $filename = TMP . 'results_as_xml.xml';
         $result = $this->ResultExporter->asXml($filename);
         $this->assertEquals($filename, $result);
         $this->assertFileExists($filename);
@@ -284,7 +284,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsXmlDataNotXml()
     {
-        $filename = TMP . 'scan_as_xml.xml';
+        $filename = TMP . 'results_as_xml.xml';
         file_put_contents($filename, 'string');
 
         $this->ResultImporter->asXml($filename);
@@ -300,7 +300,7 @@ class ResultExporterAndImporterTest extends TestCase
     {
         unset($this->example['links']['link']);
 
-        $filename = TMP . 'scan_as_xml.xml';
+        $filename = TMP . 'results_as_xml.xml';
         file_put_contents($filename, Xml::fromArray(['root' => $this->example])->asXML());
 
         $this->ResultImporter->asXml($filename);
@@ -320,7 +320,7 @@ class ResultExporterAndImporterTest extends TestCase
             return $result;
         }, $this->example['links']);
 
-        $filename = TMP . 'scan_as_xml.xml';
+        $filename = TMP . 'results_as_xml.xml';
         (new ResultExporter($this->example))->asXml($filename);
 
         $this->ResultImporter->asXml($filename);
@@ -334,17 +334,17 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testExportNoWritableDir()
     {
-        $this->ResultExporter->asXml('/noExistingDir/scan_as_array');
+        $this->ResultExporter->asXml('/noExistingDir/results_as_array');
     }
 
     /**
      * Test for import with a no writable file
      * @expectedException \Cake\Network\Exception\InternalErrorException
-     * @expectedExceptionMessage File or directory `/noExistingDir/scan_as_array` not readable
+     * @expectedExceptionMessage File or directory `/noExistingDir/results_as_array` not readable
      * @test
      */
     public function testImportNoReadableFile()
     {
-        $this->ResultImporter->asXml('/noExistingDir/scan_as_array');
+        $this->ResultImporter->asXml('/noExistingDir/results_as_array');
     }
 }
