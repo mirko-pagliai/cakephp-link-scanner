@@ -16,6 +16,7 @@ use Cake\Core\Configure;
 use Cake\Http\Client;
 use Cake\I18n\Time;
 use DOMDocument;
+use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\Utility\ResultExporter;
 use stdClass;
 
@@ -191,26 +192,6 @@ class LinkScanner
     }
 
     /**
-     * Checks if a string cointais html code
-     * @param string $string String
-     * @return bool
-     */
-    protected function isHtmlString($string)
-    {
-        return strcasecmp($string, strip_tags($string)) !== 0;
-    }
-
-    /**
-     * Checks if a `Response` is ok
-     * @param Response $response A `Response` object
-     * @return bool
-     */
-    protected function responseIsOk($response)
-    {
-        return $response->isOk();
-    }
-
-    /**
      * Performs a single GET request.
      *
      * Returns a object with `_response` (the original `Response` instance),
@@ -221,24 +202,21 @@ class LinkScanner
      * @uses $Client
      * @uses getLinksFromHtml()
      * @uses isExternalUrl()
-     * @uses isHtmlString()
-     * @uses responseIsOk()
      */
     public function get($url)
     {
-        $response = $this->Client->get($url, [], ['redirect' => true]);
+        $response = new ScanResponse($this->Client->get($url, [], ['redirect' => true]));
 
         $links = [];
 
-        if ($this->responseIsOk($response) && $this->isHtmlString($response->body())) {
+        if ($response->isOk($response) && $response->bodyIsHtml()) {
             $links = $this->getLinksFromHtml($response->body());
         }
 
         $result = new stdClass;
-        $result->_response = $response;
         $result->code = $response->getStatusCode();
         $result->external = $this->isExternalUrl($url);
-        $result->type = $response->getHeaderLine('content-type');
+        $result->type = $response->getContentType();
         $result->links = $links;
 
         return $result;

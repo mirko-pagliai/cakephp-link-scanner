@@ -13,7 +13,6 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Core\Configure;
-use Cake\Http\Client\Response;
 use Cake\TestSuite\IntegrationTestCase;
 use Cake\Utility\Hash;
 use LinkScanner\Utility\LinkScanner;
@@ -171,52 +170,11 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `isHtmlString()` method
-     * @test
-     */
-    public function testIsHtmlString()
-    {
-        $isHtmlStringMethod = function () {
-            return $this->invokeMethod($this->LinkScanner, 'isHtmlString', func_get_args());
-        };
-
-        foreach ([
-            '<b>String</b>',
-            '</b>',
-            '<b>String',
-            '<tag>String</tag>',
-        ] as $string) {
-            $this->assertTrue($isHtmlStringMethod($string));
-        }
-
-        foreach (['String', ''] as $string) {
-            $this->assertFalse($isHtmlStringMethod($string));
-        }
-    }
-
-    /**
      * Test for `get()` method
      * @test
      */
     public function testGet()
     {
-        $result = $this->LinkScanner->get('http://www.google.it');
-        $this->assertInstanceof('stdClass', $result);
-        $this->assertInstanceof('Cake\Http\Client\Response', $result->_response);
-        $this->assertEquals(200, $result->code);
-        $this->assertTrue($result->external);
-        $this->assertNotEmpty($result->links);
-        $this->assertStringStartsWith('text/html', $result->type);
-
-        $this->LinkScanner = $this->getMockBuilder(get_class($this->LinkScanner))
-            ->setMethods(['responseIsOk'])
-            ->getMock();
-
-        $this->LinkScanner->method('responseIsOk')
-            ->will($this->returnCallback(function ($response) {
-                return (new Response)->withStatus($response->getStatusCode())->isOk();
-            }));
-
         $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
             ->setMethods(['get'])
             ->getMock();
@@ -230,7 +188,6 @@ class LinkScannerTest extends IntegrationTestCase
 
         $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
         $this->assertInstanceof('stdClass', $result);
-        $this->assertInstanceof('Cake\TestSuite\Stub\Response', $result->_response);
         $this->assertEquals(200, $result->code);
         $this->assertFalse($result->external);
         $this->assertNotEmpty($result->links);
@@ -246,6 +203,15 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertEquals(500, $result->code);
         $this->assertFalse($result->external);
         $this->assertEmpty($result->links);
+        $this->assertStringStartsWith('text/html', $result->type);
+
+        $this->LinkScanner = $this->getLinkScannerWithStubClient();
+
+        $result = $this->LinkScanner->get('http://www.google.it');
+        $this->assertInstanceof('stdClass', $result);
+        $this->assertEquals(200, $result->code);
+        $this->assertTrue($result->external);
+        $this->assertTrue(is_array($result->links));
         $this->assertStringStartsWith('text/html', $result->type);
     }
 
