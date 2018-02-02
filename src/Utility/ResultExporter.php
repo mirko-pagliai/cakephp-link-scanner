@@ -46,7 +46,7 @@ class ResultExporter
      * Internal method to write data
      * @param string $filename Filename where to export
      * @param mixed $data Data to write
-     * @return bool
+     * @return string|bool Filename where to export or `false` on failure
      * @throws InternalErrorException
      */
     protected function write($filename, $data)
@@ -55,13 +55,17 @@ class ResultExporter
             throw new InternalErrorException(__('File or directory `{0}` not writable', dirname($filename)));
         }
 
-        return (bool)file_put_contents($filename, $data);
+        if (!file_put_contents($filename, $data)) {
+            return false;
+        }
+
+        return $filename;
     }
 
     /**
      * Exports results as array
      * @param string $filename Filename where to export
-     * @return bool
+     * @return string|bool Filename where to export or `false` on failure
      * @uses $results
      * @uses write()
      */
@@ -73,7 +77,7 @@ class ResultExporter
     /**
      * Exports results as html
      * @param string $filename Filename where to export
-     * @return bool
+     * @return string|bool Filename where to export or `false` on failure
      * @throws InternalErrorException
      * @uses $results
      * @uses write()
@@ -117,7 +121,7 @@ class ResultExporter
     /**
      * Exports results as html
      * @param string $filename Filename where to export
-     * @return bool
+     * @return string|bool Filename where to export or `false` on failure
      * @see https://api.cakephp.org/3.5/class-Cake.Utility.Xml.html#_fromArray
      * @uses $results
      * @uses write()

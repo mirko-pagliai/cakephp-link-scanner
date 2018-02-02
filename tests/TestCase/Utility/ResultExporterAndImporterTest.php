@@ -108,7 +108,7 @@ class ResultExporterAndImporterTest extends TestCase
     {
         $filename = TMP . 'scan_as_array';
         $result = $this->ResultExporter->asArray($filename);
-        $this->assertTrue($result);
+        $this->assertEquals($filename, $result);
         $this->assertFileExists($filename);
 
         $result = $this->ResultImporter->asArray($filename);
@@ -165,7 +165,7 @@ class ResultExporterAndImporterTest extends TestCase
     {
         $filename = TMP . 'scan_as_html.html';
         $result = $this->ResultExporter->asHtml($filename);
-        $this->assertTrue($result);
+        $this->assertEquals($filename, $result);
         $this->assertFileExists($filename);
 
         $result = $this->ResultImporter->asHtml($filename);
@@ -269,7 +269,7 @@ class ResultExporterAndImporterTest extends TestCase
     {
         $filename = TMP . 'scan_as_xml.xml';
         $result = $this->ResultExporter->asXml($filename);
-        $this->assertTrue($result);
+        $this->assertEquals($filename, $result);
         $this->assertFileExists($filename);
 
         $result = $this->ResultImporter->asXml($filename);
