@@ -264,6 +264,47 @@ class LinkScanner
     }
 
     /**
+     * Exports the scan results.
+     *
+     * Valid formats: `array` (serialized), `html` and `xml`
+     * @param string|null $exportAs Format
+     * @param string $filename Filename where to export
+     * @return string|bool Filename where to export or `false` on failure
+     * @see ResultExporter
+     * @uses $elapsedTime
+     * @uses $fullBaseUrl
+     * @uses $host
+     * @uses $maxDepth
+     * @uses $resultMap
+     * @uses $startTime
+     */
+    public function export($exportAs = 'array', $filename = null)
+    {
+        $startTime = (new Time($this->startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
+
+        if (!$filename) {
+            $filename = TMP . sprintf('results_%s_%s', $this->host, $startTime);
+
+            if ($exportAs === 'html') {
+                $filename .= '.html';
+            } elseif ($exportAs === 'xml') {
+                $filename .= '.xml';
+            }
+        }
+
+        $data = [
+            'fullBaseUrl' => $this->fullBaseUrl,
+            'maxDepth' => $this->maxDepth,
+            'startTime' => $startTime,
+            'elapsedTime' => $this->elapsedTime,
+            'checkedLinks' => count($this->resultMap),
+            'links' => $this->resultMap,
+        ];
+
+        return call_user_func([new ResultExporter($data), 'as' . ucfirst($exportAs)], $filename);
+    }
+
+    /**
      * Internal method to scan.
      *
      * This method takes an url as a parameter. It scans that URL and
@@ -285,8 +326,8 @@ class LinkScanner
 
         $this->alreadyScanned[] = $url;
         $this->resultMap[] = array_merge(compact('url'), [
-            'external' => $response->external,
             'code' => $response->code,
+            'external' => $response->external,
             'type' => $response->type,
         ]);
 

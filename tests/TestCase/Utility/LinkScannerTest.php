@@ -46,6 +46,46 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
+     * Teardown any static object changes and restore them
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        foreach (glob(TMP . "results*") as $file) {
+            unlink($file);
+        }
+    }
+
+    /**
+     * Internal method to get a `LinkScanner` instance with a stub for the
+     *  `Client` instance.
+     * @return LinkScanner
+     */
+    protected function getLinkScannerWithStubClient()
+    {
+        $this->LinkScanner = new LinkScanner('http://google.com');
+
+        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
+            ->setMethods(['get'])
+            ->getMock();
+
+        $this->LinkScanner->Client->method('get')
+            ->will($this->returnCallback(function () {
+                $request = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
+                $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
+                $stream = new Stream('php://memory', 'rw');
+                $stream->write($body);
+                $this->setProperty($request, 'stream', $stream);
+
+                return $request;
+            }));
+
+        return $this->LinkScanner;
+    }
+
+    /**
      * Test for `getLinksFromHtml()` method
      * @test
      */
@@ -149,10 +189,7 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertTrue($isHtmlStringMethod($string));
         }
 
-        foreach ([
-            'String',
-            '',
-        ] as $string) {
+        foreach (['String', ''] as $string) {
             $this->assertFalse($isHtmlStringMethod($string));
         }
     }
@@ -239,27 +276,40 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
+     * Test for `export()` method
+     * @test
+     */
+    public function testExport()
+    {
+        $this->LinkScanner = $this->getLinkScannerWithStubClient();
+
+        $this->LinkScanner->setMaxDepth(1)->scan();
+
+        foreach (['array', 'html', 'xml'] as $format) {
+            $result = $this->LinkScanner->export($format);
+
+            $this->assertFileExists($result);
+            $this->assertEquals(TMP, dirname($result) . DS);
+            $this->assertRegexp(
+                '/^results_google\.com_[\d\-]{10}\s[\d:]{8}(\.(html|xml))?$/',
+                basename($result)
+            );
+        }
+
+        //Tries with a custom filename
+        $filename = TMP . 'results_custom_filename';
+        $result = $this->LinkScanner->export('array', $filename);
+        $this->assertFileExists($result);
+        $this->assertEquals($result, $filename);
+    }
+
+    /**
      * Test for `scan()` method
      * @test
      */
     public function testScan()
     {
-        $this->LinkScanner = new LinkScanner('http://google.com');
-
-        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
-            ->setMethods(['get'])
-            ->getMock();
-
-        $this->LinkScanner->Client->method('get')
-            ->will($this->returnCallback(function () {
-                $request = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
-                $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
-                $stream = new Stream('php://memory', 'rw');
-                $stream->write($body);
-                $this->setProperty($request, 'stream', $stream);
-
-                return $request;
-            }));
+        $this->LinkScanner = $this->getLinkScannerWithStubClient();
 
         $result = $this->LinkScanner->setMaxDepth(1)->scan();
 
@@ -272,7 +322,7 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertNotEmpty($resultMap);
 
         foreach ($resultMap as $item) {
-            $this->assertEquals(['url', 'external', 'code', 'type'], array_keys($item));
+            $this->assertEquals(['url', 'code', 'external', 'type'], array_keys($item));
             $this->assertFalse($item['external']);
             $this->assertContains($item['code'], [200, 500]);
             $this->assertContains($item['type'], ['text/html; charset=ISO-8859-1']);
@@ -308,12 +358,10 @@ class LinkScannerTest extends IntegrationTestCase
 
         $this->assertEquals(0, $maxDepthProperty());
 
-        $result = $this->LinkScanner->setMaxDepth(1);
-        $this->assertInstanceof(get_class($this->LinkScanner), $result);
-        $this->assertEquals(1, $maxDepthProperty());
-
-        $result = $this->LinkScanner->setMaxDepth(0);
-        $this->assertInstanceof(get_class($this->LinkScanner), $result);
-        $this->assertEquals(0, $maxDepthProperty());
+        foreach ([0, 1] as $depth) {
+            $result = $this->LinkScanner->setMaxDepth($depth);
+            $this->assertInstanceof(get_class($this->LinkScanner), $result);
+            $this->assertEquals($depth, $maxDepthProperty());
+        }
     }
 }
