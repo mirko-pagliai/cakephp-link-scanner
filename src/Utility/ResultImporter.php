@@ -99,10 +99,10 @@ class ResultImporter
 
             $external = $external === 'Yes';
 
-            $content['links'][] = compact('url', 'code', 'external', 'type');
+            $content['resultMap'][] = compact('url', 'code', 'external', 'type');
         }
 
-        if (empty($content['links'])) {
+        if (empty($content['resultMap'])) {
             throw new InternalErrorException(__('Invalid data'));
         }
 
@@ -132,7 +132,7 @@ class ResultImporter
 
         try {
             $content = Xml::toArray(Xml::build($data))['root'];
-            $content['links'] = array_map($parseLink, $content['links']['link']);
+            $content['resultMap'] = array_map($parseLink, $content['resultMap']['link']);
 
             return $content;
         } catch (Exception $e) {

@@ -270,16 +270,9 @@ class LinkScanner
             }
         }
 
-        $data = [
-            'fullBaseUrl' => $this->fullBaseUrl,
-            'maxDepth' => $this->maxDepth,
-            'startTime' => $startTime,
-            'elapsedTime' => $this->elapsedTime,
-            'checkedLinks' => count($this->resultMap),
-            'links' => $this->resultMap,
-        ];
+        $ResultExporter = new ResultExporter($this->fullBaseUrl, $this->maxDepth, $startTime, $this->elapsedTime, $this->resultMap);
 
-        return call_user_func([new ResultExporter($data), 'as' . ucfirst($exportAs)], $filename);
+        return call_user_func([$ResultExporter, 'as' . ucfirst($exportAs)], $filename);
     }
 
     /**

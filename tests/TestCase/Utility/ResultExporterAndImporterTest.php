@@ -33,6 +33,21 @@ class ResultExporterAndImporterTest extends TestCase
     protected $ResultImporter;
 
     /**
+     * Internal method to get a instance of `ResultExporter`, with example data
+     * @return ResultExporter
+     */
+    protected function getResultExporterInstance()
+    {
+        return new ResultExporter(
+            $this->example['fullBaseUrl'],
+            $this->example['maxDepth'],
+            $this->example['startTime'],
+            $this->example['elapsedTime'],
+            $this->example['resultMap']
+        );
+    }
+
+    /**
      * Setup the test case, backup the static object values so they can be
      * restored. Specifically backs up the contents of Configure and paths in
      *  App if they have not already been backed up
@@ -47,8 +62,8 @@ class ResultExporterAndImporterTest extends TestCase
             'maxDepth' => 1,
             'startTime' => '2018-01-25 13:14:49',
             'elapsedTime' => 1,
-            'checkedLinks' => 15,
-            'links' => [
+            'checkedLinks' => 5,
+            'resultMap' => [
                 [
                     'url' => 'http://example.com/',
                     'code' => 200,
@@ -82,8 +97,7 @@ class ResultExporterAndImporterTest extends TestCase
             ],
         ];
 
-        $this->ResultExporter = new ResultExporter($this->example);
-
+        $this->ResultExporter = $this->getResultExporterInstance();
         $this->ResultImporter = new ResultImporter;
     }
 
@@ -125,20 +139,6 @@ class ResultExporterAndImporterTest extends TestCase
     {
         $filename = TMP . 'results_as_array';
         file_put_contents($filename, serialize('string'));
-
-        $this->ResultImporter->asArray($filename);
-    }
-
-    /**
-     * Test for import as array with data as empty array
-     * @expectedException \Cake\Network\Exception\InternalErrorException
-     * @expectedExceptionMessage Invalid data
-     * @test
-     */
-    public function testAsArrayEmptyArray()
-    {
-        $filename = TMP . 'results_as_array';
-        (new ResultExporter([]))->asArray($filename);
 
         $this->ResultImporter->asArray($filename);
     }
@@ -252,13 +252,13 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsHtmlInvalidTable()
     {
-        $this->example['links'] = array_map(function ($result) {
+        $this->example['resultMap'] = array_map(function ($result) {
             unset($result['code']);
 
             return $result;
-        }, $this->example['links']);
+        }, $this->example['resultMap']);
 
-        (new ResultExporter($this->example))->asHtml(TMP . 'results_as_html.html');
+        $this->getResultExporterInstance()->asHtml(TMP . 'results_as_html.html');
     }
 
     /**
@@ -298,7 +298,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsXmlDataInvalidForLinks()
     {
-        unset($this->example['links']['link']);
+        unset($this->example['resultMap']['link']);
 
         $filename = TMP . 'results_as_xml.xml';
         file_put_contents($filename, Xml::fromArray(['root' => $this->example])->asXML());
@@ -314,15 +314,15 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsXmlDataInvalidForSomeLink()
     {
-        $this->example['links'] = array_map(function ($result) {
+        $this->example['resultMap'] = array_map(function ($result) {
             unset($result['code']);
 
             return $result;
-        }, $this->example['links']);
+        }, $this->example['resultMap']);
 
         $filename = TMP . 'results_as_xml.xml';
-        (new ResultExporter($this->example))->asXml($filename);
 
+        $this->getResultExporterInstance()->asXml($filename);
         $this->ResultImporter->asXml($filename);
     }
 

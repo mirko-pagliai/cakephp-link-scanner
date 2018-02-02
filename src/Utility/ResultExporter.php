@@ -34,12 +34,17 @@ class ResultExporter
 
     /**
      * Construct
-     * @param array $results Results. Data ready to be exported
+     * @param string $fullBaseUrl Full base url
+     * @param int $maxDepth Max depth
+     * @param int $startTime Start time
+     * @param int $elapsedTime Elapsed time
+     * @param array $resultMap Result map
      * @uses $results
      */
-    public function __construct(array $results)
+    public function __construct($fullBaseUrl, $maxDepth, $startTime, $elapsedTime, $resultMap)
     {
-        $this->results = $results;
+        $this->results = compact('fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'resultMap');
+        $this->results['checkedLinks'] = count($resultMap);
     }
 
     /**
@@ -102,7 +107,7 @@ class ResultExporter
 
         $table = null;
 
-        foreach ($this->results['links'] as $link) {
+        foreach ($this->results['resultMap'] as $link) {
             if (array_keys($link) !== ['url', 'code', 'external', 'type']) {
                 throw new InternalErrorException(__('Invalid data'));
             }
@@ -129,7 +134,7 @@ class ResultExporter
     public function asXml($filename)
     {
         $data = ['root' => $this->results];
-        $data['root']['links'] = ['link' => $data['root']['links']];
+        $data['root']['resultMap'] = ['link' => $data['root']['resultMap']];
 
         return $this->write($filename, Xml::fromArray($data, ['format' => 'tags', 'pretty' => true])->asXML());
     }
