@@ -88,6 +88,12 @@ class LinkScanner
     protected $startTime = 0;
 
     /**
+     * Timeout for requests
+     * @var int
+     */
+    protected $timeout = 30;
+
+    /**
      * HTML tags to be scanned, because they can contain links to other
      *  resources. Tag name as key and attribute name as value
      * @var array
@@ -200,12 +206,13 @@ class LinkScanner
      * @return stdClass Object with `_response`, `code`, `external`, `type` and
      *  `links`properties.
      * @uses $Client
+     * @uses $timeout
      * @uses getLinksFromHtml()
      * @uses isExternalUrl()
      */
     protected function get($url)
     {
-        $response = new ScanResponse($this->Client->get($url, [], ['redirect' => true]));
+        $response = new ScanResponse($this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]));
 
         $links = [];
 
@@ -354,6 +361,19 @@ class LinkScanner
     public function setMaxDepth($maxDepth)
     {
         $this->maxDepth = $maxDepth;
+
+        return $this;
+    }
+
+    /**
+     * Sets the timeout for each request of the scan
+     * @param int $timeout Timeout for each request
+     * @return $this
+     * @uses $timeout
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
 
         return $this;
     }

@@ -334,4 +334,23 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertEquals($depth, $maxDepthProperty());
         }
     }
+
+    /**
+     * Test for `setTimeout()` method
+     * @test
+     */
+    public function testSetTimeout()
+    {
+        $timeoutProperty = function () {
+            return $this->getProperty($this->LinkScanner, 'timeout');
+        };
+
+        $this->assertEquals(30, $timeoutProperty());
+
+        foreach ([0, 1] as $timeout) {
+            $result = $this->LinkScanner->setTimeout($timeout);
+            $this->assertInstanceof(get_class($this->LinkScanner), $result);
+            $this->assertEquals($timeout, $timeoutProperty());
+        }
+    }
 }
