@@ -203,7 +203,7 @@ class LinkScanner
      * @uses getLinksFromHtml()
      * @uses isExternalUrl()
      */
-    public function get($url)
+    protected function get($url)
     {
         $response = new ScanResponse($this->Client->get($url, [], ['redirect' => true]));
 

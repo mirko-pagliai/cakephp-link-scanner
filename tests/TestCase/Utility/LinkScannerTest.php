@@ -175,6 +175,10 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testGet()
     {
+        $getMethod = function () {
+            return $this->invokeMethod($this->LinkScanner, 'get', func_get_args());
+        };
+
         $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
             ->setMethods(['get'])
             ->getMock();
@@ -186,20 +190,20 @@ class LinkScannerTest extends IntegrationTestCase
                 return $this->_response;
             }));
 
-        $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
+        $result = $getMethod(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
         $this->assertInstanceof('stdClass', $result);
         $this->assertEquals(200, $result->code);
         $this->assertFalse($result->external);
         $this->assertNotEmpty($result->links);
         $this->assertStringStartsWith('text/html', $result->type);
 
-        $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'home']);
+        $result = $getMethod(['controller' => 'Pages', 'action' => 'display', 'home']);
         $this->assertEquals(200, $result->code);
         $this->assertFalse($result->external);
         $this->assertNotEmpty($result->links);
         $this->assertStringStartsWith('text/html', $result->type);
 
-        $result = $this->LinkScanner->get(['controller' => 'Pages', 'action' => 'display', 'noexisting']);
+        $result = $getMethod(['controller' => 'Pages', 'action' => 'display', 'noexisting']);
         $this->assertEquals(500, $result->code);
         $this->assertFalse($result->external);
         $this->assertEmpty($result->links);
@@ -207,7 +211,7 @@ class LinkScannerTest extends IntegrationTestCase
 
         $this->LinkScanner = $this->getLinkScannerWithStubClient();
 
-        $result = $this->LinkScanner->get('http://www.google.it');
+        $result = $getMethod('http://www.google.it');
         $this->assertInstanceof('stdClass', $result);
         $this->assertEquals(200, $result->code);
         $this->assertTrue($result->external);
