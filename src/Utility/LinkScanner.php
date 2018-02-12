@@ -17,8 +17,8 @@ use Cake\Http\Client;
 use Cake\I18n\Time;
 use DOMDocument;
 use LinkScanner\Http\Client\ScanResponse;
+use LinkScanner\ResultScan;
 use LinkScanner\Utility\ResultExporter;
-use stdClass;
 
 /**
  * A link scanner
@@ -32,10 +32,10 @@ class LinkScanner
     public $Client;
 
     /**
-     * Links that have already been scanned
-     * @var array
+     * Instance of `ResultScan`. This contains the results of the scan
+     * @var \LinkScanner\ResultScan
      */
-    protected $alreadyScanned = [];
+    protected $ResultScan;
 
     /**
      * Current scan depth level
@@ -76,12 +76,6 @@ class LinkScanner
     protected $maxDepth = 0;
 
     /**
-     * Result map
-     * @var array
-     */
-    protected $resultMap = [];
-
-    /**
      * Start time
      * @var int
      */
@@ -118,6 +112,7 @@ class LinkScanner
      * @param string $fullBaseUrl Full base url. If `null`, the value from the
      *  configuration `App.fullBaseUrl` will be used
      * @uses $Client
+     * @uses $ResultScan
      * @uses $fullBaseUrl
      * @uses $host
      */
@@ -128,6 +123,7 @@ class LinkScanner
         }
 
         $this->Client = new Client;
+        $this->ResultScan = new ResultScan;
         $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
         $this->host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
     }
@@ -198,13 +194,9 @@ class LinkScanner
     }
 
     /**
-     * Performs a single GET request.
-     *
-     * Returns a object with `_response` (the original `Response` instance),
-     *  `code`, `external`, `type` and `links` properties.
+     * Performs a single GET request
      * @param string $url The url or path you want to request
-     * @return stdClass Object with `_response`, `code`, `external`, `type` and
-     *  `links`properties.
+     * @return array Array with `code`, `external`, `type`, `url`, `links` keys
      * @uses $Client
      * @uses $timeout
      * @uses getLinksFromHtml()
@@ -220,29 +212,27 @@ class LinkScanner
             $links = $this->getLinksFromHtml($response->body());
         }
 
-        $result = new stdClass;
-        $result->code = $response->getStatusCode();
-        $result->external = $this->isExternalUrl($url);
-        $result->type = $response->getContentType();
-        $result->links = $links;
-
-        return $result;
+        return array_merge([
+            'code' => $response->getStatusCode(),
+            'external' => $this->isExternalUrl($url),
+            'type' => $response->getContentType(),
+        ], compact('url', 'links'));
     }
 
     /**
      * Resets some properties whose initial value may have changed during the
      *  last scan
      * @return $this
-     * @uses $alreadyScanned
+     * @uses $ResultScan
      * @uses $currentDepth
      * @uses $elapsedTime
      * @uses $externalLinks
-     * @uses $resultMap
      * @uses $startTime
      */
     public function reset()
     {
-        $this->alreadyScanned = $this->externalLinks = $this->resultMap = [];
+        $this->ResultScan = new ResultScan();
+        $this->externalLinks = [];
         $this->currentDepth = $this->elapsedTime = $this->startTime = 0;
 
         return $this;
@@ -256,11 +246,11 @@ class LinkScanner
      * @param string $filename Filename where to export
      * @return string|bool Filename where to export or `false` on failure
      * @see ResultExporter
+     * @uses $ResultScan
      * @uses $elapsedTime
      * @uses $fullBaseUrl
      * @uses $host
      * @uses $maxDepth
-     * @uses $resultMap
      * @uses $startTime
      */
     public function export($exportAs = 'array', $filename = null)
@@ -277,7 +267,7 @@ class LinkScanner
             }
         }
 
-        $ResultExporter = new ResultExporter($this->fullBaseUrl, $this->maxDepth, $startTime, $this->elapsedTime, $this->resultMap);
+        $ResultExporter = new ResultExporter($this->fullBaseUrl, $this->maxDepth, $startTime, $this->elapsedTime, $this->ResultScan);
 
         return call_user_func([$ResultExporter, 'as' . ucfirst($exportAs)], $filename);
     }
@@ -290,11 +280,10 @@ class LinkScanner
      *  already been scanned.
      * @param string $url Url to scan
      * @return void
-     * @uses $alreadyScanned
+     * @uses $ResultScan
      * @uses $currentDepth
      * @uses $externalLinks
      * @uses $maxDepth
-     * @uses $resultMap
      * @uses get()
      * @uses isExternalUrl()
      */
@@ -302,12 +291,10 @@ class LinkScanner
     {
         $response = $this->get($url);
 
-        $this->alreadyScanned[] = $url;
-        $this->resultMap[] = array_merge(compact('url'), [
-            'code' => $response->code,
-            'external' => $response->external,
-            'type' => $response->type,
-        ]);
+        $linksToScan = $response['links'];
+        unset($response['links']);
+
+        $this->ResultScan = $this->ResultScan->append([$response]);
 
         //Returns, if the maximum scanning depth has been reached
         if ($this->maxDepth && $this->currentDepth >= $this->maxDepth) {
@@ -316,7 +303,7 @@ class LinkScanner
         $this->currentDepth++;
 
         //Scans links that have not already been scanned
-        $linksToScan = array_diff($response->links, $this->alreadyScanned);
+        $linksToScan = array_diff($linksToScan, $this->ResultScan->extract('url')->toArray());
 
         foreach ($linksToScan as $link) {
             //Skips external links

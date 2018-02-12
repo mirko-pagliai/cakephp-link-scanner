@@ -14,6 +14,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Xml;
+use LinkScanner\ResultScan;
 use LinkScanner\Utility\ResultExporter;
 use LinkScanner\Utility\ResultImporter;
 
@@ -43,7 +44,7 @@ class ResultExporterAndImporterTest extends TestCase
             $this->example['maxDepth'],
             $this->example['startTime'],
             $this->example['elapsedTime'],
-            $this->example['resultMap']
+            $this->example['ResultScan']
         );
     }
 
@@ -63,38 +64,38 @@ class ResultExporterAndImporterTest extends TestCase
             'startTime' => '2018-01-25 13:14:49',
             'elapsedTime' => 1,
             'checkedLinks' => 5,
-            'resultMap' => [
+            'ResultScan' => new ResultScan([
                 [
-                    'url' => 'http://example.com/',
                     'code' => 200,
                     'external' => false,
-                    'type' => 'text/html;charset=UTF-8'
+                    'type' => 'text/html;charset=UTF-8',
+                    'url' => 'http://example.com/',
                 ],
                 [
-                    'url' => 'http://example.com/pageA.html',
                     'code' => 200,
                     'external' => false,
                     'type' => 'text/html; charset=UTF-8',
+                    'url' => 'http://example.com/pageA.html',
                 ],
                 [
-                    'url' => 'http://example.com/pageB.html',
                     'code' => 500,
                     'external' => false,
                     'type' => 'text/html; charset=UTF-8',
+                    'url' => 'http://example.com/pageB.html',
                 ],
                 [
-                    'url' => 'http://example.com/image.gif',
                     'code' => 200,
                     'external' => false,
                     'type' => 'image/gif',
+                    'url' => 'http://example.com/image.gif',
                 ],
                 [
-                    'url' => 'http://google.com',
                     'code' => 200,
                     'external' => true,
                     'type' => 'text/html; charset=UTF-8',
+                    'url' => 'http://google.com',
                 ],
-            ],
+            ]),
         ];
 
         $this->ResultExporter = $this->getResultExporterInstance();
@@ -252,11 +253,11 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsHtmlInvalidTable()
     {
-        $this->example['resultMap'] = array_map(function ($result) {
-            unset($result['code']);
+        $this->example['ResultScan'] = $this->example['ResultScan']->map(function ($row) {
+            unset($row['code']);
 
-            return $result;
-        }, $this->example['resultMap']);
+            return $row;
+        });
 
         $this->getResultExporterInstance()->asHtml(TMP . 'results_as_html.html');
     }
@@ -298,7 +299,7 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsXmlDataInvalidForLinks()
     {
-        unset($this->example['resultMap']['link']);
+        $this->example['ResultScan'] = $this->example['ResultScan']->toArray();
 
         $filename = TMP . 'results_as_xml.xml';
         file_put_contents($filename, Xml::fromArray(['root' => $this->example])->asXML());
@@ -314,11 +315,11 @@ class ResultExporterAndImporterTest extends TestCase
      */
     public function testAsXmlDataInvalidForSomeLink()
     {
-        $this->example['resultMap'] = array_map(function ($result) {
-            unset($result['code']);
+        $this->example['ResultScan'] = $this->example['ResultScan']->map(function ($row) {
+            unset($row['code']);
 
-            return $result;
-        }, $this->example['resultMap']);
+            return $row;
+        });
 
         $filename = TMP . 'results_as_xml.xml';
 

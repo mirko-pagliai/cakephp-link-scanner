@@ -17,6 +17,7 @@ use Cake\Utility\Inflector;
 use Cake\Utility\Xml;
 use DOMDocument;
 use Exception;
+use LinkScanner\ResultScan;
 
 /**
  * A class to import the scan results.
@@ -92,6 +93,8 @@ class ResultImporter
             throw new InternalErrorException(__('Invalid data'));
         }
 
+        $ResultScan = [];
+
         foreach ($tbodyElement->item(0)->getElementsByTagName('tr') as $element) {
             list($url, $code, $external, $type) = array_map(function ($element) {
                 return $element->nodeValue;
@@ -99,10 +102,12 @@ class ResultImporter
 
             $external = $external === 'Yes';
 
-            $content['resultMap'][] = compact('url', 'code', 'external', 'type');
+            $ResultScan[] = compact('url', 'code', 'external', 'type');
         }
 
-        if (empty($content['resultMap'])) {
+        $content['ResultScan'] = new ResultScan($ResultScan);
+
+        if ($content['ResultScan']->isEmpty()) {
             throw new InternalErrorException(__('Invalid data'));
         }
 
@@ -118,8 +123,8 @@ class ResultImporter
      */
     public function asXml($filename)
     {
-        $parseLink = function ($link) {
-            if (array_keys($link) !== ['url', 'code', 'external', 'type']) {
+        $parseLinks = function ($link) {
+            if (array_keys($link) !== ['code', 'external', 'type', 'url']) {
                 throw new InternalErrorException(__('Invalid data'));
             }
 
@@ -132,7 +137,7 @@ class ResultImporter
 
         try {
             $content = Xml::toArray(Xml::build($data))['root'];
-            $content['resultMap'] = array_map($parseLink, $content['resultMap']['link']);
+            $content['ResultScan'] = (new ResultScan($content['ResultScan']['link']))->map($parseLinks);
 
             return $content;
         } catch (Exception $e) {

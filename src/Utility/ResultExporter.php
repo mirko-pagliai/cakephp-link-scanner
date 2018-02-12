@@ -12,8 +12,11 @@
  */
 namespace LinkScanner\Utility;
 
+use Cake\Collection\Iterator\ReplaceIterator;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Utility\Xml;
+use InvalidArgumentException;
+use LinkScanner\ResultScan;
 
 /**
  * A class to export the scan results.
@@ -38,13 +41,14 @@ class ResultExporter
      * @param int $maxDepth Max depth
      * @param int $startTime Start time
      * @param int $elapsedTime Elapsed time
-     * @param array $resultMap Result map
+     * @param ResultScan $ResultScan Instance of `ResultScan` that contains the
+     *  results of the scan
      * @uses $results
      */
-    public function __construct($fullBaseUrl, $maxDepth, $startTime, $elapsedTime, $resultMap)
+    public function __construct($fullBaseUrl, $maxDepth, $startTime, $elapsedTime, ResultScan $ResultScan)
     {
-        $this->results = compact('fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'resultMap');
-        $this->results['checkedLinks'] = count($resultMap);
+        $this->results = compact('fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'ResultScan');
+        $this->results['checkedLinks'] = $ResultScan->count();
     }
 
     /**
@@ -107,8 +111,8 @@ class ResultExporter
 
         $table = null;
 
-        foreach ($this->results['resultMap'] as $link) {
-            if (array_keys($link) !== ['url', 'code', 'external', 'type']) {
+        foreach ($this->results['ResultScan'] as $link) {
+            if (array_keys($link) !== ['code', 'external', 'type', 'url']) {
                 throw new InternalErrorException(__('Invalid data'));
             }
 
@@ -134,7 +138,7 @@ class ResultExporter
     public function asXml($filename)
     {
         $data = ['root' => $this->results];
-        $data['root']['resultMap'] = ['link' => $data['root']['resultMap']];
+        $data['root']['ResultScan'] = ['link' => $data['root']['ResultScan']];
 
         return $this->write($filename, Xml::fromArray($data, ['format' => 'tags', 'pretty' => true])->asXML());
     }
