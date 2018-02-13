@@ -88,7 +88,7 @@ class LinkScannerTest extends IntegrationTestCase
      * Test for `getLinksFromHtml()` method
      * @test
      */
-    public function testgetLinksFromHtml()
+    public function testGetLinksFromHtml()
     {
         $getLinksFromHtmlMethod = function () {
             return $this->invokeMethod($this->LinkScanner, 'getLinksFromHtml', func_get_args());
@@ -170,13 +170,13 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `get()` method
+     * Test for `getResponse()` method
      * @test
      */
-    public function testGet()
+    public function testGetResponse()
     {
-        $getMethod = function () {
-            return $this->invokeMethod($this->LinkScanner, 'get', func_get_args());
+        $getResponseMethod = function () {
+            return $this->invokeMethod($this->LinkScanner, 'getResponse', func_get_args());
         };
 
         $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
@@ -191,38 +191,39 @@ class LinkScannerTest extends IntegrationTestCase
             }));
 
         $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
-        $result = $getMethod($params);
-        $this->assertEquals(200, $result['code']);
-        $this->assertFalse($result['external']);
-        $this->assertNotEmpty($result['links']);
-        $this->assertStringStartsWith('text/html', $result['type']);
-        $this->assertEquals($params, $result['url']);
+        $result = $getResponseMethod($params);
+        $this->assertInstanceof('LinkScanner\Http\Client\ScanResponse', $result);
+        $this->assertEquals(200, $result->getStatusCode());
+//        $this->assertFalse($result['external']);
+//        $this->assertNotEmpty($result['links']);
+        $this->assertStringStartsWith('text/html', $result->getContentType());
+//        $this->assertEquals($params, $result['url']);
 
         $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        $result = $getMethod($params);
-        $this->assertEquals(200, $result['code']);
-        $this->assertFalse($result['external']);
-        $this->assertNotEmpty($result['links']);
-        $this->assertStringStartsWith('text/html', $result['type']);
-        $this->assertEquals($params, $result['url']);
+        $result = $getResponseMethod($params);
+        $this->assertEquals(200, $result->getStatusCode());
+//        $this->assertFalse($result['external']);
+//        $this->assertNotEmpty($result['links']);
+        $this->assertStringStartsWith('text/html', $result->getContentType());
+//        $this->assertEquals($params, $result['url']);
 
         $params = ['controller' => 'Pages', 'action' => 'display', 'noexisting'];
-        $result = $getMethod($params);
-        $this->assertEquals(500, $result['code']);
-        $this->assertFalse($result['external']);
-        $this->assertEmpty($result['links']);
-        $this->assertStringStartsWith('text/html', $result['type']);
-        $this->assertEquals($params, $result['url']);
+        $result = $getResponseMethod($params);
+        $this->assertEquals(500, $result->getStatusCode());
+//        $this->assertFalse($result['external']);
+//        $this->assertEmpty($result['links']);
+        $this->assertStringStartsWith('text/html', $result->getContentType());
+//        $this->assertEquals($params, $result['url']);
 
         $this->LinkScanner = $this->getLinkScannerWithStubClient();
 
         $url = 'http://www.google.it';
-        $result = $getMethod($url);
-        $this->assertEquals(200, $result['code']);
-        $this->assertTrue($result['external']);
-        $this->assertTrue(is_array($result['links']));
-        $this->assertStringStartsWith('text/html', $result['type']);
-        $this->assertEquals($url, $result['url']);
+        $result = $getResponseMethod($url);
+        $this->assertEquals(200, $result->getStatusCode());
+//        $this->assertTrue($result['external']);
+//        $this->assertTrue(is_array($result['links']));
+        $this->assertStringStartsWith('text/html', $result->getContentType());
+//        $this->assertEquals($url, $result['url']);
     }
 
     /**

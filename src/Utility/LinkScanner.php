@@ -194,7 +194,7 @@ class LinkScanner
     }
 
     /**
-     * Performs a single GET request
+     * Performs a single GET request and returns the response as `ScanResponse`
      * @param string $url The url or path you want to request
      * @return array Array with `code`, `external`, `type`, `url`, `links` keys
      * @uses $Client
@@ -202,21 +202,16 @@ class LinkScanner
      * @uses getLinksFromHtml()
      * @uses isExternalUrl()
      */
-    protected function get($url)
+
+    /**
+     * Performs a single GET request and returns the response as `ScanResponse`
+     * @param string $url The url or path you want to request
+     * @return ScanResponse
+     * @uses $timeout
+     */
+    protected function getResponse($url)
     {
-        $response = new ScanResponse($this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]));
-
-        $links = [];
-
-        if ($response->isOk($response) && $response->bodyIsHtml()) {
-            $links = $this->getLinksFromHtml($response->body());
-        }
-
-        return array_merge([
-            'code' => $response->getStatusCode(),
-            'external' => $this->isExternalUrl($url),
-            'type' => $response->getContentType(),
-        ], compact('url', 'links'));
+        return new ScanResponse($this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]));
     }
 
     /**
@@ -284,17 +279,20 @@ class LinkScanner
      * @uses $currentDepth
      * @uses $externalLinks
      * @uses $maxDepth
-     * @uses get()
+     * @uses getResponse()
+     * @uses getLinksFromHtml()
      * @uses isExternalUrl()
      */
     protected function _scan($url)
     {
-        $response = $this->get($url);
+        $response = $this->getResponse($url);
 
-        $linksToScan = $response['links'];
-        unset($response['links']);
-
-        $this->ResultScan = $this->ResultScan->append([$response]);
+        $this->ResultScan = $this->ResultScan->append([[
+            'code' => $response->getStatusCode(),
+            'external' => $this->isExternalUrl($url),
+            'type' => $response->getContentType(),
+            'url' => $url,
+        ]]);
 
         //Returns, if the maximum scanning depth has been reached
         if ($this->maxDepth && $this->currentDepth >= $this->maxDepth) {
@@ -302,8 +300,16 @@ class LinkScanner
         }
         $this->currentDepth++;
 
-        //Scans links that have not already been scanned
-        $linksToScan = array_diff($linksToScan, $this->ResultScan->extract('url')->toArray());
+        $linksToScan = [];
+
+        //The links to be scanned are the difference between the links found in
+        //  the body of the response and the already scanned links
+        if ($response->isOk() && $response->bodyIsHtml()) {
+            $linksToScan = array_diff(
+                $this->getLinksFromHtml($response->body()),
+                $this->ResultScan->extract('url')->toArray()
+            );
+        }
 
         foreach ($linksToScan as $link) {
             //Skips external links
