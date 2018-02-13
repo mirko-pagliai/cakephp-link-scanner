@@ -231,7 +231,7 @@ class LinkScanner
      */
     public function reset()
     {
-        $this->ResultScan = new ResultScan();
+        $this->ResultScan = new ResultScan;
         $this->externalLinks = [];
         $this->currentDepth = $this->elapsedTime = $this->startTime = 0;
 
