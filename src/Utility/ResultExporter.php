@@ -12,10 +12,8 @@
  */
 namespace LinkScanner\Utility;
 
-use Cake\Collection\Iterator\ReplaceIterator;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Utility\Xml;
-use InvalidArgumentException;
 use LinkScanner\ResultScan;
 
 /**
