@@ -38,14 +38,14 @@ class ResultExporter
      * @param string $fullBaseUrl Full base url
      * @param int $maxDepth Max depth
      * @param int $startTime Start time
-     * @param int $elapsedTime Elapsed time
+     * @param int $endTime End time
      * @param ResultScan $ResultScan Instance of `ResultScan` that contains the
      *  results of the scan
      * @uses $results
      */
-    public function __construct($fullBaseUrl, $maxDepth, $startTime, $elapsedTime, ResultScan $ResultScan)
+    public function __construct($fullBaseUrl, $maxDepth, $startTime, $endTime, ResultScan $ResultScan)
     {
-        $this->results = compact('fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'ResultScan');
+        $this->results = compact('fullBaseUrl', 'maxDepth', 'startTime', 'endTime', 'ResultScan');
         $this->results['checkedLinks'] = $ResultScan->count();
     }
 
@@ -94,7 +94,7 @@ class ResultExporter
         $data = '<p><strong>Full base url:</strong> {{fullBaseUrl}}</p>' . PHP_EOL .
             '<p><strong>Max depth:</strong> {{maxDepth}}</p>' . PHP_EOL .
             '<p><strong>Start time:</strong> {{startTime}}</p>' . PHP_EOL .
-            '<p><strong>Elapsed time:</strong> {{elapsedTime}}</p>' . PHP_EOL .
+            '<p><strong>End time:</strong> {{endTime}}</p>' . PHP_EOL .
             '<p><strong>Checked links:</strong> {{checkedLinks}}</p>' . PHP_EOL .
             '<table>' . PHP_EOL .
             '<thead><tr><th>Url</th><th>Code</th><th>External</th><th>Type</th></tr><thead>' . PHP_EOL .
@@ -103,7 +103,7 @@ class ResultExporter
             '</tbody>' . PHP_EOL .
             '</table>';
 
-        foreach (['fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'checkedLinks'] as $var) {
+        foreach (['fullBaseUrl', 'maxDepth', 'startTime', 'endTime', 'checkedLinks'] as $var) {
             $data = str_replace('{{' . $var . '}}', $this->results[$var], $data);
         }
 

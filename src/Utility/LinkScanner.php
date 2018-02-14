@@ -47,10 +47,10 @@ class LinkScanner
     protected $currentDepth = 0;
 
     /**
-     * Elapsed time
+     * End time
      * @var int
      */
-    protected $elapsedTime = 0;
+    protected $endTime;
 
     /**
      * External links found during the scan
@@ -215,18 +215,6 @@ class LinkScanner
     protected function getResponse($url)
     {
         return new ScanResponse($this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]));
-
-        $links = [];
-
-        if ($response->isOk($response) && $response->bodyIsHtml()) {
-            $links = $this->getLinksFromHtml($response->body());
-        }
-
-        return array_merge([
-            'code' => $response->getStatusCode(),
-            'external' => $this->isExternalUrl($url),
-            'type' => $response->getContentType(),
-        ], compact('url', 'links'));
     }
 
     /**
@@ -235,7 +223,7 @@ class LinkScanner
      * @return $this
      * @uses $ResultScan
      * @uses $currentDepth
-     * @uses $elapsedTime
+     * @uses $endTime
      * @uses $externalLinks
      * @uses $startTime
      */
@@ -243,7 +231,7 @@ class LinkScanner
     {
         $this->ResultScan = new ResultScan;
         $this->externalLinks = [];
-        $this->currentDepth = $this->elapsedTime = $this->startTime = 0;
+        $this->currentDepth = $this->endTime = $this->startTime = 0;
 
         return $this;
     }
@@ -257,7 +245,7 @@ class LinkScanner
      * @return string|bool Filename where to export or `false` on failure
      * @see ResultExporter
      * @uses $ResultScan
-     * @uses $elapsedTime
+     * @uses $endTime
      * @uses $fullBaseUrl
      * @uses $host
      * @uses $maxDepth
@@ -266,6 +254,7 @@ class LinkScanner
     public function export($exportAs = 'array', $filename = null)
     {
         $startTime = (new Time($this->startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
+        $endTime = (new Time($this->endTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
 
         if (!$filename) {
             $filename = TMP . sprintf('results_%s_%s', $this->host, $startTime);
@@ -277,7 +266,7 @@ class LinkScanner
             }
         }
 
-        $ResultExporter = new ResultExporter($this->fullBaseUrl, $this->maxDepth, $startTime, $this->elapsedTime, $this->ResultScan);
+        $ResultExporter = new ResultExporter($this->fullBaseUrl, $this->maxDepth, $startTime, $endTime, $this->ResultScan);
 
         return call_user_func([$ResultExporter, 'as' . ucfirst($exportAs)], $filename);
     }
@@ -356,9 +345,17 @@ class LinkScanner
     }
 
     /**
-     * Performs a complete scan
+     * Performs a complete scan.
+     *
+     * ### Events
+     * This method will trigger some events:
+     *  - `LinkScanner.scanStarted`: will be triggered before the scan starts;
+     *  - `LinkScanner.scanCompleted`: will be triggered after the scan is
+     *      finished.
+     *
+     * Other events will be triggered by the `_scan()` method.
      * @return $this
-     * @uses $elapsedTime
+     * @uses $endTime
      * @uses $fullBaseUrl
      * @uses $startTime
      * @uses _scan()
@@ -370,9 +367,13 @@ class LinkScanner
 
         $this->startTime = time();
 
+        $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $this->fullBaseUrl]);
+
         $this->_scan($this->fullBaseUrl);
 
-        $this->elapsedTime = time() - $this->startTime;
+        $this->endTime = time();
+
+        $this->dispatchEvent('LinkScanner.scanCompleted', [$this->endTime]);
 
         return $this;
     }

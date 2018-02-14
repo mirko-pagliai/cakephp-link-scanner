@@ -83,7 +83,7 @@ class ResultImporter
             throw new InternalErrorException(__('Invalid data'));
         }
 
-        if (array_keys($content) !== ['fullBaseUrl', 'maxDepth', 'startTime', 'elapsedTime', 'checkedLinks']) {
+        if (array_keys($content) !== ['fullBaseUrl', 'maxDepth', 'startTime', 'endTime', 'checkedLinks']) {
             throw new InternalErrorException(__('Invalid data'));
         }
 

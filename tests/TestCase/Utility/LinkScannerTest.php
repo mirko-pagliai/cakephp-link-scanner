@@ -234,7 +234,7 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $this->setProperty($this->LinkScanner, 'externalLinks', ['value']);
 
-        foreach (['currentDepth', 'elapsedTime', 'startTime'] as $property) {
+        foreach (['currentDepth', 'endTime', 'startTime'] as $property) {
             $this->setProperty($this->LinkScanner, $property, 1);
         }
 
@@ -247,7 +247,7 @@ class LinkScannerTest extends IntegrationTestCase
 
         $this->assertEquals([], $this->getProperty($this->LinkScanner, 'externalLinks'));
 
-        foreach (['currentDepth', 'elapsedTime', 'startTime'] as $property) {
+        foreach (['currentDepth', 'endTime', 'startTime'] as $property) {
             $this->assertEquals(0, $this->getProperty($this->LinkScanner, $property));
         }
     }
@@ -292,8 +292,8 @@ class LinkScannerTest extends IntegrationTestCase
 
         $this->assertInstanceof('LinkScanner\Utility\LinkScanner', $result);
 
-        $this->assertNotEmpty($this->getProperty($this->LinkScanner, 'startTime'));
-        $this->assertTrue(is_int($this->getProperty($this->LinkScanner, 'elapsedTime')));
+        $this->assertTrue(is_int($this->getProperty($this->LinkScanner, 'startTime')));
+        $this->assertTrue(is_int($this->getProperty($this->LinkScanner, 'endTime')));
 
         $ResultScan = $this->getProperty($this->LinkScanner, 'ResultScan');
         $this->assertInstanceof('LinkScanner\ResultScan', $ResultScan);

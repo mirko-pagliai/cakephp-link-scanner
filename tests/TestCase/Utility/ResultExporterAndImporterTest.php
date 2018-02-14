@@ -43,7 +43,7 @@ class ResultExporterAndImporterTest extends TestCase
             $this->example['fullBaseUrl'],
             $this->example['maxDepth'],
             $this->example['startTime'],
-            $this->example['elapsedTime'],
+            $this->example['endTime'],
             $this->example['ResultScan']
         );
     }
@@ -62,7 +62,7 @@ class ResultExporterAndImporterTest extends TestCase
             'fullBaseUrl' => 'http://example.com/',
             'maxDepth' => 1,
             'startTime' => '2018-01-25 13:14:49',
-            'elapsedTime' => 1,
+            'endTime' => '2018-01-25 13:15:30',
             'checkedLinks' => 5,
             'ResultScan' => new ResultScan([
                 [
@@ -169,6 +169,14 @@ class ResultExporterAndImporterTest extends TestCase
         $this->assertEquals($filename, $result);
         $this->assertFileExists($filename);
 
+        $content = file_get_contents($filename);
+
+        $this->assertContains('<p><strong>Full base url:</strong> http://example.com/</p>', $content);
+        $this->assertContains('<p><strong>Max depth:</strong> 1</p>', $content);
+        $this->assertContains('<p><strong>Start time:</strong> 2018-01-25 13:14:49</p>', $content);
+        $this->assertContains('<p><strong>End time:</strong> 2018-01-25 13:15:30</p>', $content);
+        $this->assertContains('<p><strong>Checked links:</strong> 5</p>', $content);
+
         $result = $this->ResultImporter->asHtml($filename);
         $this->assertEquals($this->example, $result);
     }
@@ -184,7 +192,7 @@ class ResultExporterAndImporterTest extends TestCase
         $html = '<p><strong>Full base url:</strong> http://localhost/</p>
             <p><strong>Max depth:</strong> 1</p>
             <p><strong>Start time:</strong> 2018-01-31 13:18:04</p>
-            <p><strong>Elapsed time:</strong> 4</p>
+            <p><strong>End time:</strong> 4</p>
             <p><strong>Checked links:</strong> 15</p>
             <table>
             <tbody>
@@ -208,7 +216,7 @@ class ResultExporterAndImporterTest extends TestCase
         $html = '<p><strong>Full base url:</strong> http://localhost/</p>
             <p><strong>Max depth:</strong> 1</p>
             <p><strong>Start time:</strong> 2018-01-31 13:18:04</p>
-            <p><strong>Elapsed time:</strong> 4</p>
+            <p><strong>End time:</strong> 4</p>
             <p><strong>Checked links:</strong> 15</p>';
 
         $filename = TMP . 'results_as_html.html';
