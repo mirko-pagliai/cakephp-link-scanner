@@ -13,6 +13,7 @@
 namespace LinkScanner\Utility;
 
 use Cake\Core\Configure;
+use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
 use Cake\I18n\Time;
 use DOMDocument;
@@ -25,6 +26,8 @@ use LinkScanner\Utility\ResultExporter;
  */
 class LinkScanner
 {
+    use EventDispatcherTrait;
+
     /**
      * Instance of `Client`
      * @var \Cake\Http\Client
@@ -212,6 +215,18 @@ class LinkScanner
     protected function getResponse($url)
     {
         return new ScanResponse($this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]));
+
+        $links = [];
+
+        if ($response->isOk($response) && $response->bodyIsHtml()) {
+            $links = $this->getLinksFromHtml($response->body());
+        }
+
+        return array_merge([
+            'code' => $response->getStatusCode(),
+            'external' => $this->isExternalUrl($url),
+            'type' => $response->getContentType(),
+        ], compact('url', 'links'));
     }
 
     /**
@@ -273,6 +288,15 @@ class LinkScanner
      * This method takes an url as a parameter. It scans that URL and
      *  recursively it repeats the scan for all the url found that have not
      *  already been scanned.
+     *
+     * ### Events
+     * This method will trigger some events:
+     *  - `LinkScanner.beforeScanUrl`: will be triggered before a single url is
+     *      scanned;
+     *  - `LinkScanner.afterScanUrl`: will be triggered after a single url is
+     *      scanned;
+     *  - `LinkScanner.foundLinksToBeScanned`: will be triggered if, after
+     *      scanning a single url, other links to be scanned are found.
      * @param string $url Url to scan
      * @return void
      * @uses $ResultScan
@@ -285,7 +309,11 @@ class LinkScanner
      */
     protected function _scan($url)
     {
+        $this->dispatchEvent('LinkScanner.beforeScanUrl', [$url]);
+
         $response = $this->getResponse($url);
+
+        $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
 
         $this->ResultScan = $this->ResultScan->append([[
             'code' => $response->getStatusCode(),
@@ -309,6 +337,10 @@ class LinkScanner
                 $this->getLinksFromHtml($response->body()),
                 $this->ResultScan->extract('url')->toArray()
             );
+
+            if ($linksToScan) {
+                $this->dispatchEvent('LinkScanner.foundLinksToBeScanned', [$linksToScan]);
+            }
         }
 
         foreach ($linksToScan as $link) {
