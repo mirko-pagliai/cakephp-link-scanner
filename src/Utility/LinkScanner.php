@@ -38,7 +38,7 @@ class LinkScanner
      * Instance of `ResultScan`. This contains the results of the scan
      * @var \LinkScanner\ResultScan
      */
-    protected $ResultScan;
+    public $ResultScan;
 
     /**
      * Current scan depth level
@@ -373,7 +373,7 @@ class LinkScanner
 
         $this->endTime = time();
 
-        $this->dispatchEvent('LinkScanner.scanCompleted', [$this->endTime]);
+        $this->dispatchEvent('LinkScanner.scanCompleted', [$this->endTime, $this->ResultScan]);
 
         return $this;
     }

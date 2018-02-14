@@ -13,8 +13,8 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Core\Configure;
+use Cake\Event\EventList;
 use Cake\TestSuite\IntegrationTestCase;
-use Cake\Utility\Hash;
 use LinkScanner\Utility\LinkScanner;
 use Reflection\ReflectionTrait;
 use Zend\Diactoros\Stream;
@@ -319,6 +319,35 @@ class LinkScannerTest extends IntegrationTestCase
              ->method('_scan');
 
         $this->LinkScanner->scan();
+    }
+
+    /**
+     * Test for events triggered by the `scan()` method
+     * @test
+     */
+    public function testScanEvents()
+    {
+        $this->LinkScanner = $this->getLinkScannerWithStubClient();
+
+        //Enables event tracking
+        $this->LinkScanner->getEventManager()->setEventList(new EventList);
+
+        $result = $this->LinkScanner->setMaxDepth(1)->scan();
+
+        $eventList = $this->LinkScanner->getEventManager()->getEventList();
+        $this->assertEquals(21, $eventList->count());
+        $this->assertEquals(LINK_SCANNER . '.scanStarted', $eventList[0]->getName());
+        $this->assertEquals(LINK_SCANNER . '.scanCompleted', $eventList[20]->getName());
+
+        foreach (range(1, 19) as $key) {
+            $validEvents = [
+                LINK_SCANNER . '.beforeScanUrl',
+                LINK_SCANNER . '.afterScanUrl',
+                LINK_SCANNER . '.foundLinksToBeScanned',
+            ];
+
+            $this->assertContains($eventList[$key]->getName(), $validEvents);
+        }
     }
 
     /**
