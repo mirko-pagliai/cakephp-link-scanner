@@ -194,36 +194,24 @@ class LinkScannerTest extends IntegrationTestCase
         $result = $getResponseMethod($params);
         $this->assertInstanceof('LinkScanner\Http\Client\ScanResponse', $result);
         $this->assertEquals(200, $result->getStatusCode());
-//        $this->assertFalse($result['external']);
-//        $this->assertNotEmpty($result['links']);
         $this->assertStringStartsWith('text/html', $result->getContentType());
-//        $this->assertEquals($params, $result['url']);
 
         $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
         $result = $getResponseMethod($params);
         $this->assertEquals(200, $result->getStatusCode());
-//        $this->assertFalse($result['external']);
-//        $this->assertNotEmpty($result['links']);
         $this->assertStringStartsWith('text/html', $result->getContentType());
-//        $this->assertEquals($params, $result['url']);
 
         $params = ['controller' => 'Pages', 'action' => 'display', 'noexisting'];
         $result = $getResponseMethod($params);
         $this->assertEquals(500, $result->getStatusCode());
-//        $this->assertFalse($result['external']);
-//        $this->assertEmpty($result['links']);
         $this->assertStringStartsWith('text/html', $result->getContentType());
-//        $this->assertEquals($params, $result['url']);
 
         $this->LinkScanner = $this->getLinkScannerWithStubClient();
 
         $url = 'http://www.google.it';
         $result = $getResponseMethod($url);
         $this->assertEquals(200, $result->getStatusCode());
-//        $this->assertTrue($result['external']);
-//        $this->assertTrue(is_array($result['links']));
         $this->assertStringStartsWith('text/html', $result->getContentType());
-//        $this->assertEquals($url, $result['url']);
     }
 
     /**
