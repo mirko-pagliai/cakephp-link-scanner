@@ -243,20 +243,20 @@ class LinkScanner
         }
         $this->currentDepth++;
 
-        $linksToScan = [];
+        //Returns, if the response is not ok or if there are no other links to
+        //  be scanned
+        if (!$response->isOk() || !$response->bodyIsHtml()) {
+            return;
+        }
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links
-        if ($response->isOk() && $response->bodyIsHtml()) {
-            $linksToScan = array_diff(
-                $response->extractLinksFromBody(),
-                $this->ResultScan->extract('url')->toArray()
-            );
+        $linksToScan = array_diff(
+            $response->extractLinksFromBody(),
+            $this->ResultScan->extract('url')->toArray()
+        );
 
-            if ($linksToScan) {
-                $this->dispatchEvent('LinkScanner.foundLinksToBeScanned', [$linksToScan]);
-            }
-        }
+        $this->dispatchEvent('LinkScanner.foundLinksToBeScanned', [$linksToScan]);
 
         foreach ($linksToScan as $url) {
             //Skips external links
