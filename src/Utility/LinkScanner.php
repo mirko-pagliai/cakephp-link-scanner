@@ -86,6 +86,7 @@ class LinkScanner
      * Construct
      * @param string $fullBaseUrl Full base url. If `null`, the value from the
      *  configuration `App.fullBaseUrl` will be used
+     * @return $this
      * @uses $Client
      * @uses $ResultScan
      * @uses $fullBaseUrl
@@ -101,6 +102,24 @@ class LinkScanner
         $this->ResultScan = new ResultScan;
         $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
         $this->host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
+
+        return $this;
+    }
+
+    /**
+     * Internal method to append a `ScanResponse`, with url, to the `ResultScan`
+     * @param string $url Url
+     * @param ScanResponse $response A `ScanResponse` instance
+     * @return void
+     */
+    protected function appendToResultsScan($url, ScanResponse $response)
+    {
+        $this->ResultScan = $this->ResultScan->append([[
+            'code' => $response->getStatusCode(),
+            'external' => $this->isExternalUrl($url),
+            'type' => $response->getContentType(),
+            'url' => $url,
+        ]]);
     }
 
     /**
@@ -118,7 +137,7 @@ class LinkScanner
         $host = parse_url($url, PHP_URL_HOST);
 
         //Url with the same host and relative url are not external
-        return !empty($host) && strcasecmp($host, $this->host) !== 0;
+        return $host && strcasecmp($host, $this->host) !== 0;
     }
 
     /**
@@ -204,6 +223,7 @@ class LinkScanner
      * @uses $currentDepth
      * @uses $externalLinks
      * @uses $maxDepth
+     * @uses appendToResultsScan()
      * @uses getResponse()
      * @uses isExternalUrl()
      */
@@ -213,14 +233,9 @@ class LinkScanner
 
         $response = $this->getResponse($url);
 
-        $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
+        $this->appendToResultsScan($url, $response);
 
-        $this->ResultScan = $this->ResultScan->append([[
-            'code' => $response->getStatusCode(),
-            'external' => $this->isExternalUrl($url),
-            'type' => $response->getContentType(),
-            'url' => $url,
-        ]]);
+        $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
 
         //Returns, if the maximum scanning depth has been reached
         if ($this->maxDepth && $this->currentDepth >= $this->maxDepth) {
