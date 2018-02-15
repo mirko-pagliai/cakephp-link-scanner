@@ -251,15 +251,15 @@ class LinkScanner
             }
         }
 
-        foreach ($linksToScan as $link) {
+        foreach ($linksToScan as $url) {
             //Skips external links
-            if ($this->isExternalUrl($link)) {
-                $this->externalLinks[] = $link;
+            if ($this->isExternalUrl($url)) {
+                $this->externalLinks[] = $url;
 
                 continue;
             }
 
-            $this->_scan($link);
+            $this->_scan($url);
         }
     }
 
