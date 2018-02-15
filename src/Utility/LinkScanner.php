@@ -157,17 +157,6 @@ class LinkScanner
     }
 
     /**
-     * Resets some properties whose initial value may have changed during the
-     *  last scan
-     * @return \self
-     * @uses $fullBaseUrl
-     */
-    public function reset()
-    {
-        return new self($this->fullBaseUrl);
-    }
-
-    /**
      * Exports the scan results.
      *
      * Valid formats: `array` (serialized), `html` and `xml`
@@ -200,6 +189,17 @@ class LinkScanner
         $ResultExporter = new ResultExporter($this->fullBaseUrl, $this->maxDepth, $startTime, $endTime, $this->ResultScan);
 
         return call_user_func([$ResultExporter, 'as' . ucfirst($exportAs)], $filename);
+    }
+
+    /**
+     * Resets some properties whose initial value may have changed during the
+     *  last scan
+     * @return \self
+     * @uses $fullBaseUrl
+     */
+    public function reset()
+    {
+        return new self($this->fullBaseUrl);
     }
 
     /**
