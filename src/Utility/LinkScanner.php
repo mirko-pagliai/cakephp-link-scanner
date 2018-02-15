@@ -16,7 +16,6 @@ use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
 use Cake\I18n\Time;
-use DOMDocument;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\Utility\ResultExporter;
@@ -59,13 +58,6 @@ class LinkScanner
     protected $externalLinks = [];
 
     /**
-     * Full base url
-     * @see __construct()
-     * @var string
-     */
-    protected $fullBaseUrl;
-
-    /**
      * Host name
      * @var string
      */
@@ -91,26 +83,6 @@ class LinkScanner
     protected $timeout = 30;
 
     /**
-     * HTML tags to be scanned, because they can contain links to other
-     *  resources. Tag name as key and attribute name as value
-     * @var array
-     */
-    protected $tags = [
-        'a' => 'href',
-        'area' => 'href',
-        'audio' => 'src',
-        'embed' => 'src',
-        'frame' => 'src',
-        'iframe' => 'src',
-        'img' => 'src',
-        'link' => 'href',
-        'script' => 'src',
-        'source' => 'src',
-        'track' => 'src',
-        'video' => 'src',
-    ];
-
-    /**
      * Construct
      * @param string $fullBaseUrl Full base url. If `null`, the value from the
      *  configuration `App.fullBaseUrl` will be used
@@ -129,53 +101,6 @@ class LinkScanner
         $this->ResultScan = new ResultScan;
         $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
         $this->host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
-    }
-
-    /**
-     * Internal method to extract all links from an HTML string
-     * @param string $html HTML string
-     * @return array
-     * @uses $fullBaseUrl
-     * @uses $host
-     * @uses $tags
-     */
-    protected function getLinksFromHtml($html)
-    {
-        $libxmlPreviousState = libxml_use_internal_errors(true);
-
-        $dom = new DOMDocument;
-        $dom->loadHTML($html);
-
-        libxml_clear_errors();
-        libxml_use_internal_errors($libxmlPreviousState);
-
-        $links = [];
-
-        foreach ($this->tags as $tag => $attribute) {
-            foreach ($dom->getElementsByTagName($tag) as $element) {
-                $link = $element->getAttribute($attribute);
-
-                if (!$link) {
-                    continue;
-                }
-
-                if (substr($link, 0, 2) === '//') {
-                    $link = 'http:' . $link;
-                }
-
-                $link = clearUrl($link);
-
-                //Turns links as absolute
-                if (!isUrl($link)) {
-                    $link = parse_url($this->fullBaseUrl, PHP_URL_SCHEME) .
-                        '://' . $this->host . '/' . $link;
-                }
-
-                $links[] = $link;
-            }
-        }
-
-        return array_unique($links);
     }
 
     /**
@@ -199,22 +124,17 @@ class LinkScanner
     /**
      * Performs a single GET request and returns the response as `ScanResponse`
      * @param string $url The url or path you want to request
-     * @return array Array with `code`, `external`, `type`, `url`, `links` keys
-     * @uses $Client
-     * @uses $timeout
-     * @uses getLinksFromHtml()
-     * @uses isExternalUrl()
-     */
-
-    /**
-     * Performs a single GET request and returns the response as `ScanResponse`
-     * @param string $url The url or path you want to request
      * @return ScanResponse
+     * @uses $Client
+     * @uses $fullBaseUrl
      * @uses $timeout
      */
     protected function getResponse($url)
     {
-        return new ScanResponse($this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]));
+        return new ScanResponse(
+            $this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]),
+            $this->fullBaseUrl
+        );
     }
 
     /**
@@ -293,7 +213,6 @@ class LinkScanner
      * @uses $externalLinks
      * @uses $maxDepth
      * @uses getResponse()
-     * @uses getLinksFromHtml()
      * @uses isExternalUrl()
      */
     protected function _scan($url)
@@ -323,7 +242,7 @@ class LinkScanner
         //  the body of the response and the already scanned links
         if ($response->isOk() && $response->bodyIsHtml()) {
             $linksToScan = array_diff(
-                $this->getLinksFromHtml($response->body()),
+                $response->extractLinksFromBody(),
                 $this->ResultScan->extract('url')->toArray()
             );
 

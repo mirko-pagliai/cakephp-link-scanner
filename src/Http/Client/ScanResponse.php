@@ -13,6 +13,7 @@
 namespace LinkScanner\Http\Client;
 
 use Cake\Http\Client\Response;
+use DOMDocument;
 
 /**
  * A scan Response.
@@ -27,14 +28,44 @@ class ScanResponse
     protected $_response;
 
     /**
+     * Full base url
+     * @see __construct()
+     * @var string
+     */
+    protected $fullBaseUrl;
+
+    /**
+     * HTML tags to be scanned, because they can contain links to other
+     *  resources. Tag name as key and attribute name as value
+     * @var array
+     */
+    protected $tags = [
+        'a' => 'href',
+        'area' => 'href',
+        'audio' => 'src',
+        'embed' => 'src',
+        'frame' => 'src',
+        'iframe' => 'src',
+        'img' => 'src',
+        'link' => 'href',
+        'script' => 'src',
+        'source' => 'src',
+        'track' => 'src',
+        'video' => 'src',
+    ];
+
+    /**
      * Construct
      * @param \Cake\Http\Client\Response|\Cake\TestSuite\Stub\Response $response Original
      *  response object
+     * @param string $fullBaseUrl Full base url
      * @uses $_response
+     * @uses $fullBaseUrl
      */
-    public function __construct($response)
+    public function __construct($response, $fullBaseUrl)
     {
         $this->_response = $response;
+        $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
     }
 
     /**
@@ -75,6 +106,53 @@ class ScanResponse
         $body = $this->body();
 
         return strcasecmp($body, strip_tags($body)) !== 0;
+    }
+
+    /**
+     * Internal method to extract all links from an HTML string
+     * @return array
+     * @uses $fullBaseUrl
+     * @uses $tags
+     * @uses body()
+     */
+    public function extractLinksFromBody()
+    {
+        $libxmlPreviousState = libxml_use_internal_errors(true);
+
+        $dom = new DOMDocument;
+        $dom->loadHTML($this->body());
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($libxmlPreviousState);
+
+        $links = [];
+        $scheme = parse_url($this->fullBaseUrl, PHP_URL_SCHEME);
+        $host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
+
+        foreach ($this->tags as $tag => $attribute) {
+            foreach ($dom->getElementsByTagName($tag) as $element) {
+                $link = $element->getAttribute($attribute);
+
+                if (!$link) {
+                    continue;
+                }
+
+                if (substr($link, 0, 2) === '//') {
+                    $link = 'http:' . $link;
+                }
+
+                $link = clearUrl($link);
+
+                //Turns links as absolute
+                if (!isUrl($link)) {
+                    $link = $scheme . '://' . $host . '/' . $link;
+                }
+
+                $links[] = $link;
+            }
+        }
+
+        return array_unique($links);
     }
 
     /**

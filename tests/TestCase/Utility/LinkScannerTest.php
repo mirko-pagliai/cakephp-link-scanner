@@ -85,55 +85,6 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `getLinksFromHtml()` method
-     * @test
-     */
-    public function testGetLinksFromHtml()
-    {
-        $getLinksFromHtmlMethod = function () {
-            return $this->invokeMethod($this->LinkScanner, 'getLinksFromHtml', func_get_args());
-        };
-
-        $html = '<a href="/page.html#fragment">Link</a>' . PHP_EOL .
-            '<map name="example"><area href="area.htm"></map>' . PHP_EOL .
-            '<audio src="/file.mp3"></audio>' . PHP_EOL .
-            '<embed src="helloworld.swf">' . PHP_EOL .
-            '<frame src="frame1.html"></frame>' . PHP_EOL .
-            '<iframe src="frame2.html"></iframe>' . PHP_EOL .
-            '<img src="pic.jpg" />' . PHP_EOL .
-            '<link rel="stylesheet" type="text/css" href="style.css">' . PHP_EOL .
-            '<script type="text/javascript" href="script.js" />' . PHP_EOL .
-            '<audio><source src="file2.mp3" type="audio/mpeg"></audio>' . PHP_EOL .
-            '<video><track src="subtitles_en.vtt"></video>' . PHP_EOL .
-            '<video src="http://localhost/movie.mp4"></video>';
-        $expected = [
-            'http://localhost/page.html',
-            'http://localhost/area.htm',
-            'http://localhost/file.mp3',
-            'http://localhost/helloworld.swf',
-            'http://localhost/frame1.html',
-            'http://localhost/frame2.html',
-            'http://localhost/pic.jpg',
-            'http://localhost/style.css',
-            'http://localhost/file2.mp3',
-            'http://localhost/subtitles_en.vtt',
-            'http://localhost/movie.mp4',
-        ];
-        $this->assertEquals($expected, $getLinksFromHtmlMethod($html));
-
-        $html = '<html><body>' . $html . '</body></html>';
-        $this->assertEquals($expected, $getLinksFromHtmlMethod($html));
-
-        $html = '<b>No links here!</b>';
-        $this->assertEquals([], $getLinksFromHtmlMethod($html));
-
-        $html = '<a href="page.html">Link</a>' . PHP_EOL .
-            '<a href="' . Configure::read('App.fullBaseUrl') . '/page.html">Link</a>';
-        $expected = ['http://localhost/page.html'];
-        $this->assertEquals($expected, $getLinksFromHtmlMethod($html));
-    }
-
-    /**
      * Test for `isExternalUrl()` method
      * @test
      */
