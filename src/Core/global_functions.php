@@ -10,22 +10,17 @@
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
-use Cake\Http\Client\Message;
-
 if (!function_exists('clearUrl')) {
     /**
-     * Deletes all unnecessary parts of an url
+     * Removes all unnecessary parts of an url.
+     *
+     * It removes fragment (#) and trailing slash.
      * @param string $url Url
      * @return string
      */
     function clearUrl($url)
     {
-        //Removes fragment (#)
-        $url = preg_replace('/(\#.*)$/', '', $url);
-        //Removes trailing slash
-        $url = trim($url, '/');
-
-        return $url;
+        return trim(preg_replace('/(\#.*)$/', '', $url), '/');
     }
 }
 
