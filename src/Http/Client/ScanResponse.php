@@ -18,14 +18,21 @@ use DOMDocument;
 /**
  * A scan Response.
  *
- * This class simulates the methods of `Response` the class.
+ * This class simulates the `Response` class.
  */
 class ScanResponse
 {
     /**
-     * @var \Cake\Http\Client\Response|\Cake\TestSuite\Stub\Response
+     * @var \Cake\Http\Client\Response
      */
     protected $_response;
+
+    /**
+     * Extracted links by the `extractLinksFromBody()` method.
+     * This property works as a cache of values.
+     * @var array
+     */
+    protected $extractedLinks = [];
 
     /**
      * Full base url
@@ -111,12 +118,17 @@ class ScanResponse
     /**
      * Internal method to extract all links from an HTML string
      * @return array
+     * @uses $extractedLinks
      * @uses $fullBaseUrl
      * @uses $tags
      * @uses body()
      */
     public function extractLinksFromBody()
     {
+        if (!empty($this->extractedLinks)) {
+            return $this->extractedLinks;
+        }
+
         $libxmlPreviousState = libxml_use_internal_errors(true);
 
         $dom = new DOMDocument;
@@ -152,7 +164,9 @@ class ScanResponse
             }
         }
 
-        return array_unique($links);
+        $this->extractedLinks = array_unique($links);
+
+        return $this->extractedLinks;
     }
 
     /**
@@ -172,12 +186,11 @@ class ScanResponse
      */
     public function isOk()
     {
-        if (method_exists($this->_response, 'isOk')) {
-            return $this->_response->isOk();
-        }
+        $response = $this->_response;
 
-        $response = new Response;
-        $response = $response->withStatus($this->_response->getStatusCode());
+        if (!method_exists($response, 'isOk')) {
+            $response = (new Response)->withStatus($response->getStatusCode());
+        }
 
         return $response->isOk();
     }

@@ -113,6 +113,21 @@ class ScanResponseTest extends TestCase
             '<a href="' . Configure::read('App.fullBaseUrl') . '/page.html">Link</a>';
         $expected = ['http://localhost/page.html'];
         $this->assertEquals($expected, $extractLinksFromBodyMethod($html));
+
+        //Checks that the returned result is the same as that saved in the
+        //  `extractedLinks` property as a cache
+        $response = $this->getResponseWithBody($html);
+        $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
+        $result = $this->invokeMethod($ScanResponse, 'extractLinksFromBody');
+        $expected = $this->getProperty($ScanResponse, 'extractedLinks');
+        $this->assertEquals($expected, $result);
+
+        //Changes the response body. The result remains unchanged, because the
+        //  cached value will be returned
+        $response = $this->getResponseWithBody('another body content...');
+        $this->setProperty($ScanResponse, '_response', $response);
+        $result = $this->invokeMethod($ScanResponse, 'extractLinksFromBody');
+        $this->assertEquals($expected, $result);
     }
 
     /**
