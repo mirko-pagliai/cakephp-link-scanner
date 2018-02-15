@@ -140,20 +140,12 @@ class LinkScanner
     /**
      * Resets some properties whose initial value may have changed during the
      *  last scan
-     * @return $this
-     * @uses $ResultScan
-     * @uses $currentDepth
-     * @uses $endTime
-     * @uses $externalLinks
-     * @uses $startTime
+     * @return \self
+     * @uses $fullBaseUrl
      */
     public function reset()
     {
-        $this->ResultScan = new ResultScan;
-        $this->externalLinks = [];
-        $this->currentDepth = $this->endTime = $this->startTime = 0;
-
-        return $this;
+        return new self($this->fullBaseUrl);
     }
 
     /**

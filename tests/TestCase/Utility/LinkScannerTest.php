@@ -12,10 +12,10 @@
  */
 namespace LinkScanner\Test\TestCase\Utility;
 
-use Cake\Core\Configure;
 use Cake\Event\EventList;
 use Cake\TestSuite\IntegrationTestCase;
 use LinkScanner\Utility\LinkScanner;
+use LinkScanner\ResultScan;
 use Reflection\ReflectionTrait;
 use Zend\Diactoros\Stream;
 
@@ -171,14 +171,17 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testReset()
     {
+        $this->LinkScanner->ResultScan = new ResultScan(['a', 'b', 'c']);
         $this->setProperty($this->LinkScanner, 'externalLinks', ['value']);
 
         foreach (['currentDepth', 'endTime', 'startTime'] as $property) {
             $this->setProperty($this->LinkScanner, $property, 1);
         }
 
-        $result = $this->LinkScanner->reset();
-        $this->assertInstanceof(get_class($this->LinkScanner), $result);
+        $expectedInstance = get_class($this->LinkScanner);
+
+        $this->LinkScanner = $this->LinkScanner->reset();
+        $this->assertInstanceof($expectedInstance, $this->LinkScanner);
 
         $ResultScan = $this->getProperty($this->LinkScanner, 'ResultScan');
         $this->assertInstanceof('LinkScanner\ResultScan', $ResultScan);
