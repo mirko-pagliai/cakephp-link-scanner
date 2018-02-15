@@ -14,8 +14,8 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Event\EventList;
 use Cake\TestSuite\IntegrationTestCase;
-use LinkScanner\Utility\LinkScanner;
 use LinkScanner\ResultScan;
+use LinkScanner\Utility\LinkScanner;
 use Reflection\ReflectionTrait;
 use Zend\Diactoros\Stream;
 

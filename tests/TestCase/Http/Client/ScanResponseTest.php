@@ -87,7 +87,7 @@ class ScanResponseTest extends TestCase
             '<script type="text/javascript" href="script.js" />' . PHP_EOL .
             '<audio><source src="file2.mp3" type="audio/mpeg"></audio>' . PHP_EOL .
             '<video><track src="subtitles_en.vtt"></video>' . PHP_EOL .
-            '<video src="http://localhost/movie.mp4"></video>';
+            '<video src="//localhost/movie.mp4"></video>';
         $expected = [
             'http://localhost/page.html',
             'http://localhost/area.htm',
@@ -125,6 +125,10 @@ class ScanResponseTest extends TestCase
             $response = $response->withStatus(200);
             $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
             $this->assertTrue($ScanResponse->isOk());
+
+            $response = $response->withStatus(400);
+            $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
+            $this->assertFalse($ScanResponse->isOk());
         }
     }
 }
