@@ -305,11 +305,9 @@ class LinkScannerTest extends IntegrationTestCase
 
         $this->LinkScanner->setMaxDepth(1)->scan();
 
-        $this->assertEventFired(LINK_SCANNER . '.scanStarted', $eventManager);
-        $this->assertEventFired(LINK_SCANNER . '.scanCompleted', $eventManager);
-        $this->assertEventFired(LINK_SCANNER . '.beforeScanUrl', $eventManager);
-        $this->assertEventFired(LINK_SCANNER . '.afterScanUrl', $eventManager);
-        $this->assertEventFired(LINK_SCANNER . '.foundLinksToBeScanned', $eventManager);
+        foreach (['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'] as $eventName) {
+            $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $eventManager);
+        }
     }
 
     /**
