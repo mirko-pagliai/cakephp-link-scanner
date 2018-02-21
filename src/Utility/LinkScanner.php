@@ -37,7 +37,7 @@ class LinkScanner
      * Instance of `ResultScan`. This contains the results of the scan
      * @var \LinkScanner\ResultScan
      */
-    public $ResultScan;
+    protected $ResultScan;
 
     /**
      * Current scan depth level
@@ -103,6 +103,7 @@ class LinkScanner
      * @param string $fullBaseUrl Full base url. If `null`, the
      *  `App.fullBaseUrl` value will be used
      * @return $this
+     * @uses setFullBaseUrl()
      * @uses $Client
      * @uses $ResultScan
      */
@@ -335,6 +336,21 @@ class LinkScanner
         $this->endTime = time();
 
         $this->dispatchEvent('LinkScanner.scanCompleted', [$this->endTime, $this->ResultScan]);
+
+        return $this;
+    }
+
+    /**
+     * Sets the full base url
+     * @param string $fullBaseUrl Full base url
+     * @return $this
+     * @uses $fullBaseUrl
+     * @uses $host
+     */
+    public function setFullBaseUrl($fullBaseUrl)
+    {
+        $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
+        $this->host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
 
         return $this;
     }

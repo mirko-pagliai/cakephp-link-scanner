@@ -307,6 +307,21 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
+     * Test for `setFullBaseUrl()` method
+     * @test
+     */
+    public function testSetFullBaseUrl()
+    {
+        $newFullBaseUrl = 'http://newFullBaseUrl.com/site';
+
+        $this->LinkScanner = $this->getLinkScannerWithStubClient();
+        $result = $this->LinkScanner->setFullBaseUrl($newFullBaseUrl);
+        $this->assertInstanceof(LinkScanner::class, $result);
+        $this->assertEquals($newFullBaseUrl . '/', $this->LinkScanner->fullBaseUrl);
+        $this->assertEquals(parse_url($newFullBaseUrl, PHP_URL_HOST), $this->LinkScanner->host);
+    }
+
+    /**
      * Test for `setMaxDepth()` method
      * @test
      */
