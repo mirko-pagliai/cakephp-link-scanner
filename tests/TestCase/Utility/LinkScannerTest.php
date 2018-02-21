@@ -171,20 +171,17 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testReset()
     {
-        $this->LinkScanner->ResultScan = new ResultScan(['a', 'b', 'c']);
-        $this->setProperty($this->LinkScanner, 'externalLinks', ['value']);
+        $this->LinkScanner = $this->getLinkScannerWithStubClient()->setMaxDepth(1)->scan();
 
-        foreach (['currentDepth', 'endTime', 'startTime'] as $property) {
-            $this->setProperty($this->LinkScanner, $property, 1);
+        foreach (['currentDepth' => 1, 'externalLinks' => 'value', 'endTime' => 2, 'startTime' => 1] as $name => $value) {
+            $this->setProperty($this->LinkScanner, $name, $value);
         }
 
-        $expectedInstance = get_class($this->LinkScanner);
-
         $this->LinkScanner = $this->LinkScanner->reset();
-        $this->assertInstanceof($expectedInstance, $this->LinkScanner);
+        $this->assertInstanceof(LinkScanner::class, $this->LinkScanner);
 
         $ResultScan = $this->getProperty($this->LinkScanner, 'ResultScan');
-        $this->assertInstanceof('LinkScanner\ResultScan', $ResultScan);
+        $this->assertInstanceof(ResultScan::class, $ResultScan);
         $this->assertEmpty($ResultScan->toArray());
 
         $this->assertEquals([], $this->getProperty($this->LinkScanner, 'externalLinks'));

@@ -14,6 +14,7 @@ namespace LinkScanner;
 
 use Cake\Collection\Collection;
 use Countable;
+use LogicException;
 use Serializable;
 
 /**
@@ -46,11 +47,17 @@ class ResultScan implements Countable, Serializable
      * Constructor
      * @param array $items Items
      * @return $this
+     * @uses append()
      * @uses $collection
      */
     public function __construct(array $items = [])
     {
-        $this->collection = new Collection($items);
+        //The collection is not created directly with `$items`, but by calling
+        //  the `append()` method for each item.
+        //  This allows checking the validity of the data
+        $this->collection = new Collection([]);
+
+        array_map([$this, 'append'], $items);
 
         return $this;
     }
@@ -59,10 +66,15 @@ class ResultScan implements Countable, Serializable
      * Appends an item
      * @param array $item Item
      * @return $this
+     * @throws LogicException
      * @uses $collection
      */
     public function append(array $item)
     {
+        if (array_keys($item) !== ['code', 'external', 'type', 'url']) {
+            throw new LogicException(__d('link-scanner', 'Missing data in the item to be appended'));
+        }
+
         $existing = $this->collection->toArray();
         $items = [$item];
 

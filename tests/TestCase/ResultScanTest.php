@@ -36,14 +36,12 @@ class ResultScanTest extends TestCase
     {
         parent::setUp();
 
-        $this->ResultScan = new ResultScan([
-            [
-                'code' => 200,
-                'external' => true,
-                'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://google.com',
-            ],
-        ]);
+        $this->ResultScan = new ResultScan([[
+            'code' => 200,
+            'external' => true,
+            'type' => 'text/html; charset=UTF-8',
+            'url' => 'http://google.com',
+        ]]);
     }
 
     /**
@@ -52,14 +50,39 @@ class ResultScanTest extends TestCase
      */
     public function testConstruct()
     {
-        $this->assertEquals([
+        $expected = [
             [
                 'code' => 200,
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
                 'url' => 'http://google.com',
             ],
-        ], $this->ResultScan->toArray());
+            [
+                'code' => 200,
+                'external' => false,
+                'type' => 'text/html;charset=UTF-8',
+                'url' => 'http://example.com/',
+            ],
+        ];
+
+        $this->ResultScan = new ResultScan($expected);
+        $this->assertEquals($expected, $this->ResultScan->toArray());
+    }
+
+    /**
+     * Test for `__construct()` method
+     * @expectedException LogicException
+     * @expectedExceptionMessage Missing data in the item to be appended
+     * @test
+     */
+    public function testConstructMissingData()
+    {
+        //Missing `code` key
+        new ResultScan([[
+            'external' => true,
+            'type' => 'text/html; charset=UTF-8',
+            'url' => 'http://google.com',
+        ]]);
     }
 
     /**
@@ -68,14 +91,12 @@ class ResultScanTest extends TestCase
      */
     public function testCall()
     {
-        $expected = [
-            0 => [
-                'code' => 200,
-                'external' => true,
-                'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://google.com',
-            ],
-        ];
+        $expected = [[
+            'code' => 200,
+            'external' => true,
+            'type' => 'text/html; charset=UTF-8',
+            'url' => 'http://google.com',
+        ]];
         $this->assertEquals($expected, $this->ResultScan->toArray());
         $this->assertEquals($expected, $this->ResultScan->toList());
 
@@ -127,6 +148,22 @@ class ResultScanTest extends TestCase
                 'url' => 'http://example.com/',
             ],
         ], $this->ResultScan->toArray());
+    }
+
+    /**
+     * Test for `append()` method, with missing data
+     * @expectedException LogicException
+     * @expectedExceptionMessage Missing data in the item to be appended
+     * @test
+     */
+    public function testAppendMissingData()
+    {
+        //Missing `code` key
+        $this->ResultScan->append([
+            'external' => false,
+            'type' => 'text/html;charset=UTF-8',
+            'url' => 'http://example.com/',
+        ]);
     }
 
     /**
