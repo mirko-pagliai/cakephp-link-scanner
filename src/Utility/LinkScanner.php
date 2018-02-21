@@ -15,10 +15,10 @@ namespace LinkScanner\Utility;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
-use Cake\I18n\Time;
+use Exception;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
-use LinkScanner\Utility\ResultExporter;
+use LogicException;
 
 /**
  * A link scanner
@@ -56,6 +56,12 @@ class LinkScanner
      * @var array
      */
     protected $externalLinks = [];
+
+    /**
+     * Full base url
+     * @var string
+     */
+    protected $fullBaseUrl;
 
     /**
      * Host name
@@ -107,22 +113,6 @@ class LinkScanner
     }
 
     /**
-     * Internal method to append a `ScanResponse`, with url, to the `ResultScan`
-     * @param string $url Url
-     * @param ScanResponse $response A `ScanResponse` instance
-     * @return void
-     */
-    protected function appendToResultsScan($url, ScanResponse $response)
-    {
-        $this->ResultScan = $this->ResultScan->append([[
-            'code' => $response->getStatusCode(),
-            'external' => $this->isExternalUrl($url),
-            'type' => $response->getContentType(),
-            'url' => $url,
-        ]]);
-    }
-
-    /**
      * Checks if an url is external
      * @param string|array $url Url
      * @return bool
@@ -157,13 +147,10 @@ class LinkScanner
     }
 
     /**
-     * Exports the scan results.
-     *
-     * Valid formats: `array` (serialized), `html` and `xml`
-     * @param string|null $exportAs Format
+     * Exports scan results as serialized array
      * @param string $filename Filename where to export
-     * @return string|bool Filename where to export or `false` on failure
-     * @see ResultExporter
+     * @return string
+     * @throws InternalErrorException
      * @uses $ResultScan
      * @uses $endTime
      * @uses $fullBaseUrl
@@ -171,24 +158,55 @@ class LinkScanner
      * @uses $maxDepth
      * @uses $startTime
      */
-    public function export($exportAs = 'array', $filename = null)
+    public function export($filename = null)
     {
-        $startTime = (new Time($this->startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
-        $endTime = (new Time($this->endTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
-
         if (!$filename) {
-            $filename = TMP . sprintf('results_%s_%s', $this->host, $startTime);
-
-            if ($exportAs === 'html') {
-                $filename .= '.html';
-            } elseif ($exportAs === 'xml') {
-                $filename .= '.xml';
-            }
+            $filename = TMP . sprintf('results_%s_%s', $this->host, $this->startTime);
         }
 
-        $ResultExporter = new ResultExporter($this->fullBaseUrl, $this->maxDepth, $startTime, $endTime, $this->ResultScan);
+        try {
+            $data = [
+                'fullBaseUrl' => $this->fullBaseUrl,
+                'maxDepth' => $this->maxDepth,
+                'startTime' => $this->startTime,
+                'endTime' => $this->endTime,
+                'ResultScan' => $this->ResultScan,
+            ];
 
-        return call_user_func([$ResultExporter, 'as' . ucfirst($exportAs)], $filename);
+            file_put_contents($filename, serialize($data));
+        } catch (Exception $e) {
+            throw new LogicException(__d('link-scanner', 'Failed to export results to file `{0}`', $filename));
+        }
+
+        return $filename;
+    }
+
+    /**
+     * Imports scan results
+     * @param string $filename Filename from which to import
+     * @return $this
+     * @throws InternalErrorException
+     * @uses $ResultScan
+     * @uses $endTime
+     * @uses $fullBaseUrl
+     * @uses $maxDepth
+     * @uses $startTime
+     */
+    public function import($filename)
+    {
+        try {
+            $data = unserialize(file_get_contents($filename));
+
+            $this->fullBaseUrl = $data['fullBaseUrl'];
+            $this->maxDepth = $data['maxDepth'];
+            $this->startTime = $data['startTime'];
+            $this->endTime = $data['endTime'];
+            $this->ResultScan = $data['ResultScan'];
+        } catch (Exception $e) {
+            throw new LogicException(__d('link-scanner', 'Failed to import results from file `{0}`', $filename));
+        }
+
+        return $this;
     }
 
     /**
@@ -223,7 +241,6 @@ class LinkScanner
      * @uses $currentDepth
      * @uses $externalLinks
      * @uses $maxDepth
-     * @uses appendToResultsScan()
      * @uses getResponse()
      * @uses isExternalUrl()
      */
@@ -233,7 +250,12 @@ class LinkScanner
 
         $response = $this->getResponse($url);
 
-        $this->appendToResultsScan($url, $response);
+        $this->ResultScan->append([
+            'code' => $response->getStatusCode(),
+            'external' => $this->isExternalUrl($url),
+            'type' => $response->getContentType(),
+            'url' => $url,
+        ]);
 
         $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
 

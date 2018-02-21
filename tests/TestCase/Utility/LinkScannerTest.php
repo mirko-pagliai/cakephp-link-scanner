@@ -52,7 +52,7 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::tearDown();
 
-        foreach (glob(TMP . "results*") as $file) {
+        foreach (glob(TMP . "results_*") as $file) {
             unlink($file);
         }
     }
@@ -200,26 +200,58 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testExport()
     {
-        $this->LinkScanner = $this->getLinkScannerWithStubClient();
+        $this->LinkScanner = $this->getLinkScannerWithStubClient()->setMaxDepth(1)->scan();
 
-        $this->LinkScanner->setMaxDepth(1)->scan();
-
-        foreach (['array', 'html', 'xml'] as $format) {
-            $result = $this->LinkScanner->export($format);
-
-            $this->assertFileExists($result);
-            $this->assertEquals(TMP, dirname($result) . DS);
-            $this->assertRegexp(
-                '/^results_google\.com_[\d\-]{10}\s[\d:]{8}(\.(html|xml))?$/',
-                basename($result)
-            );
-        }
-
-        //Tries with a custom filename
-        $filename = TMP . 'results_custom_filename';
-        $result = $this->LinkScanner->export('array', $filename);
+        $result = $this->LinkScanner->export();
         $this->assertFileExists($result);
-        $this->assertEquals($result, $filename);
+        $this->assertRegexp('/^' . preg_quote(TMP, '/') . 'results_google\.com_\d+$/', $result);
+
+        $filename = TMP . 'results_as_array';
+
+        $result = $this->LinkScanner->export($filename);
+        $this->assertFileExists($result);
+        $this->assertEquals($filename, $result);
+    }
+
+    /**
+     * Test for `export()` method, with a no existing file
+     * @expectedException LogicException
+     * @expectedExceptionMessage Failed to export results to file `/noExisting`
+     * @test
+     */
+    public function testExportNoExistingFile()
+    {
+        $this->LinkScanner = $this->getLinkScannerWithStubClient()->setMaxDepth(1)->scan();
+        $this->LinkScanner->export('/noExisting');
+    }
+
+    /**
+     * Test for `import()` method
+     * @test
+     */
+    public function testImport()
+    {
+        $this->LinkScanner = $this->getLinkScannerWithStubClient()->setMaxDepth(1)->scan();
+
+        $expectedLinkScanner = $this->LinkScanner;
+        $expectedResultScan = $this->LinkScanner->ResultScan;
+
+        $result = $this->LinkScanner->import($this->LinkScanner->export());
+
+        $this->assertInstanceof(LinkScanner::class, $result);
+        $this->assertEquals($expectedLinkScanner, $result);
+        $this->assertEquals($expectedResultScan, $result->ResultScan);
+    }
+
+    /**
+     * Test for `import()` method, with a no existing file
+     * @expectedException LogicException
+     * @expectedExceptionMessage Failed to import results from file `/noExisting`
+     * @test
+     */
+    public function testImportNoExistingFile()
+    {
+        $this->LinkScanner->import('/noExisting');
     }
 
     /**
@@ -232,13 +264,12 @@ class LinkScannerTest extends IntegrationTestCase
 
         $result = $this->LinkScanner->setMaxDepth(1)->scan();
 
-        $this->assertInstanceof('LinkScanner\Utility\LinkScanner', $result);
-
+        $this->assertInstanceof(LinkScanner::class, $result);
         $this->assertTrue(is_int($this->getProperty($this->LinkScanner, 'startTime')));
         $this->assertTrue(is_int($this->getProperty($this->LinkScanner, 'endTime')));
 
         $ResultScan = $this->getProperty($this->LinkScanner, 'ResultScan');
-        $this->assertInstanceof('LinkScanner\ResultScan', $ResultScan);
+        $this->assertInstanceof(ResultScan::class, $ResultScan);
         $this->assertCount(9, $ResultScan);
 
         foreach ($ResultScan->toArray() as $item) {
@@ -272,24 +303,16 @@ class LinkScannerTest extends IntegrationTestCase
         $this->LinkScanner = $this->getLinkScannerWithStubClient();
 
         //Enables event tracking
-        $this->LinkScanner->getEventManager()->setEventList(new EventList);
+        $eventManager = $this->LinkScanner->getEventManager();
+        $eventManager->setEventList(new EventList);
 
-        $result = $this->LinkScanner->setMaxDepth(1)->scan();
+        $this->LinkScanner->setMaxDepth(1)->scan();
 
-        $eventList = $this->LinkScanner->getEventManager()->getEventList();
-        $this->assertEquals(21, $eventList->count());
-        $this->assertEquals(LINK_SCANNER . '.scanStarted', $eventList[0]->getName());
-        $this->assertEquals(LINK_SCANNER . '.scanCompleted', $eventList[20]->getName());
-
-        foreach (range(1, 19) as $key) {
-            $validEvents = [
-                LINK_SCANNER . '.beforeScanUrl',
-                LINK_SCANNER . '.afterScanUrl',
-                LINK_SCANNER . '.foundLinksToBeScanned',
-            ];
-
-            $this->assertContains($eventList[$key]->getName(), $validEvents);
-        }
+        $this->assertEventFired(LINK_SCANNER . '.scanStarted', $eventManager);
+        $this->assertEventFired(LINK_SCANNER . '.scanCompleted', $eventManager);
+        $this->assertEventFired(LINK_SCANNER . '.beforeScanUrl', $eventManager);
+        $this->assertEventFired(LINK_SCANNER . '.afterScanUrl', $eventManager);
+        $this->assertEventFired(LINK_SCANNER . '.foundLinksToBeScanned', $eventManager);
     }
 
     /**

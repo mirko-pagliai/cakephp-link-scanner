@@ -13,54 +13,97 @@
 namespace LinkScanner;
 
 use Cake\Collection\Collection;
+use Countable;
+use Serializable;
 
 /**
  * This object represents the results of a scan
  */
-class ResultScan extends Collection
+class ResultScan implements Countable, Serializable
 {
     /**
-     * Constructor. You can provide an array or any traversable object
-     * @param array|Traversable $items Items
+     * A `Collection` instance
+     * @var \Cake\Collection\Collection
      */
-    public function __construct($items = [])
+    protected $collection;
+
+    /**
+     * Magic method, triggered when invoking inaccessible methods in an object
+     *  context.
+     *
+     * It invokes the method from the `Collection` instance.
+     * @param string $name Method name
+     * @param array $arguments Method arguments
+     * @return $this|mixed
+     * @uses $collection
+     */
+    public function __call($name, $arguments)
     {
-        parent::__construct($items);
+        return call_user_func_array([$this->collection, $name], $arguments);
     }
 
     /**
-     * Returns a new `ResultScan` object as the result of concatenating the
-     *  list of elements in this collection with the passed list of elements
-     * @param array|Traversable $items Items list
-     * @return \LinkScanner\ResultScan
+     * Constructor
+     * @param array $items Items
+     * @return $this
+     * @uses $collection
      */
-    public function append($items)
+    public function __construct(array $items = [])
     {
-        return new self(array_merge($this->toArray(), $items));
+        $this->collection = new Collection($items);
+
+        return $this;
+    }
+
+    /**
+     * Appends an item
+     * @param array $item Item
+     * @return $this
+     * @uses $collection
+     */
+    public function append(array $item)
+    {
+        $existing = $this->collection->toArray();
+        $items = [$item];
+
+        if (!empty($existing)) {
+            $items = array_merge($existing, $items);
+        }
+
+        $this->collection = new Collection($items);
+
+        return $this;
     }
 
     /**
      * Counts the number of items
      * @return int
+     * @uses $collection
      */
     public function count()
     {
-        return count($this->toArray());
+        return count($this->collection->toArray());
     }
 
     /**
-     * Returns another `ResultScan` object after modifying each of the values in
-     *  this one using the provided callable.
-     *
-     * Each time the callback is executed it will receive the value of the
-     *  element in the current iteration, the key of the element and this
-     *  collection as arguments, in that order.
-     * @param callable $c The method that will receive each of the elements and
-     *  returns the new value for the key that is being iterated
-     * @return \LinkScanner\ResultScan
+     * Returns a string representation of this object that can be used to
+     *  reconstruct it
+     * @return string
+     * @uses $collection
      */
-    public function map(callable $c)
+    public function serialize()
     {
-        return new self(parent::map($c)->toArray());
+        return serialize($this->collection->buffered());
+    }
+
+    /**
+     * Unserializes the passed string and rebuilds the Collection instance
+     * @param string $collection The serialized collection
+     * @return void
+     * @uses __construct()
+     */
+    public function unserialize($collection)
+    {
+        $this->__construct(unserialize($collection)->toArray());
     }
 }
