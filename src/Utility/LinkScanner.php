@@ -278,6 +278,10 @@ class LinkScanner
             $this->ResultScan->extract('url')->toArray()
         );
 
+        if (empty($linksToScan)) {
+            return;
+        }
+
         $this->dispatchEvent('LinkScanner.foundLinksToBeScanned', [$linksToScan]);
 
         foreach ($linksToScan as $url) {
