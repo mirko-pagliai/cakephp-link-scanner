@@ -303,6 +303,7 @@ class LinkScanner
      *
      * Other events will be triggered by the `_scan()` method.
      * @return $this
+     * @uses $ResultScan
      * @uses $endTime
      * @uses $fullBaseUrl
      * @uses $startTime
