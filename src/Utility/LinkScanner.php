@@ -89,25 +89,33 @@ class LinkScanner
     protected $timeout = 30;
 
     /**
+     * Magic method to get the properties value
+     * @param string $name Property name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->$name;
+    }
+
+    /**
      * Construct
      * @param string $fullBaseUrl Full base url. If `null`, the
      *  `App.fullBaseUrl` value will be used
      * @return $this
      * @uses $Client
      * @uses $ResultScan
-     * @uses $fullBaseUrl
-     * @uses $host
      */
     public function __construct($fullBaseUrl = null)
     {
+        $this->Client = new Client;
+        $this->ResultScan = new ResultScan;
+
         if (!$fullBaseUrl) {
             $fullBaseUrl = Configure::read('App.fullBaseUrl');
         }
 
-        $this->Client = new Client;
-        $this->ResultScan = new ResultScan;
-        $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
-        $this->host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
+        $this->setFullBaseUrl($fullBaseUrl);
 
         return $this;
     }

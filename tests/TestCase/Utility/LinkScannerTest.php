@@ -180,14 +180,13 @@ class LinkScannerTest extends IntegrationTestCase
         $this->LinkScanner = $this->LinkScanner->reset();
         $this->assertInstanceof(LinkScanner::class, $this->LinkScanner);
 
-        $ResultScan = $this->getProperty($this->LinkScanner, 'ResultScan');
-        $this->assertInstanceof(ResultScan::class, $ResultScan);
-        $this->assertEmpty($ResultScan->toArray());
+        $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
+        $this->assertEmpty($this->LinkScanner->ResultScan->toArray());
 
         $this->assertEquals([], $this->getProperty($this->LinkScanner, 'externalLinks'));
 
         foreach (['currentDepth', 'endTime', 'startTime'] as $property) {
-            $this->assertEquals(0, $this->getProperty($this->LinkScanner, $property));
+            $this->assertEquals(0, $this->LinkScanner->$property);
         }
     }
 
@@ -235,7 +234,6 @@ class LinkScannerTest extends IntegrationTestCase
 
         $result = $this->LinkScanner->import($this->LinkScanner->export());
 
-        $this->assertInstanceof(LinkScanner::class, $result);
         $this->assertEquals($expectedLinkScanner, $result);
         $this->assertEquals($expectedResultScan, $result->ResultScan);
     }
@@ -262,23 +260,21 @@ class LinkScannerTest extends IntegrationTestCase
         $result = $this->LinkScanner->setMaxDepth(1)->scan();
 
         $this->assertInstanceof(LinkScanner::class, $result);
-        $this->assertTrue(is_int($this->getProperty($this->LinkScanner, 'startTime')));
-        $this->assertTrue(is_int($this->getProperty($this->LinkScanner, 'endTime')));
+        $this->assertTrue(is_int($this->LinkScanner->startTime));
+        $this->assertTrue(is_int($this->LinkScanner->endTime));
 
-        $ResultScan = $this->getProperty($this->LinkScanner, 'ResultScan');
-        $this->assertInstanceof(ResultScan::class, $ResultScan);
-        $this->assertCount(9, $ResultScan);
+        $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
+        $this->assertCount(9, $this->LinkScanner->ResultScan);
 
-        foreach ($ResultScan->toArray() as $item) {
-            $this->assertEquals(['code', 'external', 'type', 'url'], array_keys($item));
+        foreach ($this->LinkScanner->ResultScan->toArray() as $item) {
             $this->assertFalse($item['external']);
             $this->assertContains($item['code'], [200, 500]);
             $this->assertContains($item['type'], ['text/html; charset=ISO-8859-1']);
         }
 
-        $this->assertCount(13, $this->getProperty($this->LinkScanner, 'externalLinks'));
+        $this->assertCount(13, $this->LinkScanner->externalLinks);
 
-        $this->LinkScanner = $this->getMockBuilder(get_class($this->LinkScanner))
+        $this->LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setMethods(['_scan', 'reset'])
             ->getMock();
 
@@ -316,16 +312,12 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testSetMaxDepth()
     {
-        $maxDepthProperty = function () {
-            return $this->getProperty($this->LinkScanner, 'maxDepth');
-        };
-
-        $this->assertEquals(0, $maxDepthProperty());
+        $this->assertEquals(0, $this->LinkScanner->maxDepth);
 
         foreach ([0, 1] as $depth) {
             $result = $this->LinkScanner->setMaxDepth($depth);
-            $this->assertInstanceof(get_class($this->LinkScanner), $result);
-            $this->assertEquals($depth, $maxDepthProperty());
+            $this->assertInstanceof(LinkScanner::class, $result);
+            $this->assertEquals($depth, $this->LinkScanner->maxDepth);
         }
     }
 
@@ -335,16 +327,12 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testSetTimeout()
     {
-        $timeoutProperty = function () {
-            return $this->getProperty($this->LinkScanner, 'timeout');
-        };
-
-        $this->assertEquals(30, $timeoutProperty());
+        $this->assertEquals(30, $this->LinkScanner->timeout);
 
         foreach ([0, 1] as $timeout) {
             $result = $this->LinkScanner->setTimeout($timeout);
-            $this->assertInstanceof(get_class($this->LinkScanner), $result);
-            $this->assertEquals($timeout, $timeoutProperty());
+            $this->assertInstanceof(LinkScanner::class, $result);
+            $this->assertEquals($timeout, $this->LinkScanner->timeout);
         }
     }
 }
