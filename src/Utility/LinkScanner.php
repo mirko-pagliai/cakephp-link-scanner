@@ -83,15 +83,15 @@ class LinkScanner
     protected $startTime = 0;
 
     /**
-     * Timeout for requests
+     * Timeout in seconds for each request
      * @var int
      */
     protected $timeout = 30;
 
     /**
      * Construct
-     * @param string $fullBaseUrl Full base url. If `null`, the value from the
-     *  configuration `App.fullBaseUrl` will be used
+     * @param string $fullBaseUrl Full base url. If `null`, the
+     *  `App.fullBaseUrl` value will be used
      * @return $this
      * @uses $Client
      * @uses $ResultScan
