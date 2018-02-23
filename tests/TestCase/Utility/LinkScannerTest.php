@@ -106,16 +106,7 @@ class LinkScannerTest extends IntegrationTestCase
             return $this->invokeMethod($this->LinkScanner, 'getResponse', func_get_args());
         };
 
-        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
-            ->setMethods(['get'])
-            ->getMock();
-
-        $this->LinkScanner->Client->method('get')
-            ->will($this->returnCallback(function ($url) {
-                $this->get($url);
-
-                return $this->_response;
-            }));
+        $this->LinkScanner = $this->getLinkScannerClientGetsFromTests();
 
         $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
         $result = $getResponseMethod($params);

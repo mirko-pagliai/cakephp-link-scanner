@@ -21,29 +21,53 @@ use Zend\Diactoros\Stream;
 trait LinkScannerWithStubClientTrait
 {
     /**
-     * Internal method to get a `LinkScanner` instance with a stub for the
-     *  `Client` instance.
+     * Returns a stubbed `LinkScanner` instance, where the `Client::get()`
+     *  method calls the `IntegrationTestCase::get()` method and allows you to
+     *  get responses from the test app
+     * @return LinkScanner
+     */
+    protected function getLinkScannerClientGetsFromTests()
+    {
+        $LinkScanner = new LinkScanner;
+
+        $LinkScanner->Client = $this->getMockBuilder(get_class($LinkScanner->Client))
+            ->setMethods(['get'])
+            ->getMock();
+
+        $LinkScanner->Client->method('get')->will($this->returnCallback(function ($url) {
+            $this->get($url);
+
+            return $this->_response;
+        }));
+
+        return $LinkScanner;
+    }
+
+    /**
+     * Returns a stubbed `LinkScanner` instance, where the `Client::get()`
+     *  method always returns a sample response which is read from
+     *  `response_examples/google_response` and `response_examples/google_body`
+     *  files
      * @return LinkScanner
      */
     protected function getLinkScannerClientReturnsSampleResponse()
     {
-        $this->LinkScanner = new LinkScanner('http://google.com');
+        $LinkScanner = new LinkScanner('http://google.com');
 
-        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
+        $LinkScanner->Client = $this->getMockBuilder(get_class($LinkScanner->Client))
             ->setMethods(['get'])
             ->getMock();
 
-        $this->LinkScanner->Client->method('get')
-            ->will($this->returnCallback(function () {
-                $request = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
-                $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
-                $stream = new Stream('php://memory', 'rw');
-                $stream->write($body);
-                $this->setProperty($request, 'stream', $stream);
+        $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
+            $request = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
+            $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
+            $stream = new Stream('php://memory', 'rw');
+            $stream->write($body);
+            $this->setProperty($request, 'stream', $stream);
 
-                return $request;
-            }));
+            return $request;
+        }));
 
-        return $this->LinkScanner;
+        return $LinkScanner;
     }
 }
