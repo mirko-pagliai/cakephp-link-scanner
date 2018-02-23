@@ -89,16 +89,6 @@ class LinkScanner
     protected $timeout = 30;
 
     /**
-     * Magic method to get the properties value
-     * @param string $name Property name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->$name;
-    }
-
-    /**
      * Construct
      * @param string $fullBaseUrl Full base url. If `null`, the
      *  `App.fullBaseUrl` value will be used
@@ -122,21 +112,13 @@ class LinkScanner
     }
 
     /**
-     * Checks if an url is external
-     * @param string|array $url Url
-     * @return bool
-     * @uses $host
+     * Magic method to get the properties value
+     * @param string $name Property name
+     * @return mixed
      */
-    protected function isExternalUrl($url)
+    public function __get($name)
     {
-        if (is_array($url)) {
-            return false;
-        }
-
-        $host = parse_url($url, PHP_URL_HOST);
-
-        //Url with the same host and relative url are not external
-        return $host && strcasecmp($host, $this->host) !== 0;
+        return $this->$name;
     }
 
     /**
@@ -153,6 +135,24 @@ class LinkScanner
             $this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]),
             $this->fullBaseUrl
         );
+    }
+
+    /**
+     * Checks if an url is external
+     * @param string|array $url Url
+     * @return bool
+     * @uses $host
+     */
+    protected function isExternalUrl($url)
+    {
+        if (is_array($url)) {
+            return false;
+        }
+
+        $host = parse_url($url, PHP_URL_HOST);
+
+        //Url with the same host and relative url are not external
+        return $host && strcasecmp($host, $this->host) !== 0;
     }
 
     /**
