@@ -16,14 +16,14 @@ use Cake\Console\ConsoleIo;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Shell\LinkScannerShell;
-use LinkScanner\TestSuite\LinkScannerWithStubClientTrait;
+use LinkScanner\TestSuite\TestCaseTrait;
 
 /**
  * LinkScannerShellTest class
  */
 class LinkScannerShellTest extends ConsoleIntegrationTestCase
 {
-    use LinkScannerWithStubClientTrait;
+    use TestCaseTrait;
 
     /**
      * @var \LinkScanner\Shell\LinkScannerShell;

@@ -15,7 +15,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 use Cake\Event\EventList;
 use Cake\TestSuite\IntegrationTestCase;
 use LinkScanner\ResultScan;
-use LinkScanner\TestSuite\LinkScannerWithStubClientTrait;
+use LinkScanner\TestSuite\TestCaseTrait;
 use LinkScanner\Utility\LinkScanner;
 
 /**
@@ -23,7 +23,7 @@ use LinkScanner\Utility\LinkScanner;
  */
 class LinkScannerTest extends IntegrationTestCase
 {
-    use LinkScannerWithStubClientTrait;
+    use TestCaseTrait;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner

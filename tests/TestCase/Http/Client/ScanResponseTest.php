@@ -17,14 +17,14 @@ use Cake\Http\Client\Response;
 use Cake\TestSuite\Stub\Response as StubResponse;
 use Cake\TestSuite\TestCase;
 use LinkScanner\Http\Client\ScanResponse;
-use LinkScanner\TestSuite\LinkScannerWithStubClientTrait;
+use LinkScanner\TestSuite\TestCaseTrait;
 
 /**
  * ScanResponseTest class
  */
 class ScanResponseTest extends TestCase
 {
-    use LinkScannerWithStubClientTrait;
+    use TestCaseTrait;
 
     /**
      * Test for `bodyIsHtml()` method

@@ -18,9 +18,9 @@ use Reflection\ReflectionTrait;
 use Zend\Diactoros\Stream;
 
 /**
- * This trait provided the `getLinkScannerClientReturnsSampleResponse()` method
+ * This trait provided some methods that can be used in different tests
  */
-trait LinkScannerWithStubClientTrait
+trait TestCaseTrait
 {
     use ReflectionTrait;
 
