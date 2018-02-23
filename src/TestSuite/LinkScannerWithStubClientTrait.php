@@ -16,7 +16,7 @@ use LinkScanner\Utility\LinkScanner;
 use Zend\Diactoros\Stream;
 
 /**
- * This trait provided the `getLinkScannerWithStubClient()` method
+ * This trait provided the `getLinkScannerClientReturnsSampleResponse()` method
  */
 trait LinkScannerWithStubClientTrait
 {
@@ -25,7 +25,7 @@ trait LinkScannerWithStubClientTrait
      *  `Client` instance.
      * @return LinkScanner
      */
-    protected function getLinkScannerWithStubClient()
+    protected function getLinkScannerClientReturnsSampleResponse()
     {
         $this->LinkScanner = new LinkScanner('http://google.com');
 

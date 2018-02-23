@@ -62,7 +62,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             ->setConstructorArgs([$io])
             ->getMock();
 
-        $this->LinkScannerShell->LinkScanner = $this->getLinkScannerWithStubClient();
+        $this->LinkScannerShell->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
     }
 
     /**

@@ -42,7 +42,7 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->LinkScanner = new LinkScanner;
+        $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
     }
 
     /**
@@ -68,14 +68,18 @@ class LinkScannerTest extends IntegrationTestCase
             return $this->invokeMethod($this->LinkScanner, 'isExternalUrl', func_get_args());
         };
 
+        //Arrays always returns `false`
+        $this->assertFalse($isExternalUrlMethod(['controller' => 'Pages', 'action' => 'display', 'nolinks']));
+
         foreach ([
-            ['controller' => 'Pages', 'action' => 'display', 'nolinks'],
-            '//localhost',
-            'http://localhost',
-            'https://localhost',
-            'http://localhost/page',
-            '//localhost/page',
-            'https://localhost/page',
+            '//google.com',
+            '//google.com/',
+            'http://google.com',
+            'http://google.com/',
+            'http://www.google.com',
+            'http://www.google.com/',
+            'http://www.google.com/page.html',
+            'https://google.com',
             'relative.html',
             '/relative.html',
         ] as $url) {
@@ -83,12 +87,10 @@ class LinkScannerTest extends IntegrationTestCase
         }
 
         foreach ([
-            'http://localhost.com',
-            '//localhost.com',
-            'http://subdomain.localhost',
-            'http://www.google.com',
-            'http://google.com',
-            '//google.com',
+            '//site.com',
+            'http://site.com',
+            'http://www.site.com',
+            'http://subdomain.google.com',
         ] as $url) {
             $this->assertTrue($isExternalUrlMethod($url));
         }
@@ -131,7 +133,7 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertEquals(500, $result->getStatusCode());
         $this->assertStringStartsWith('text/html', $result->getContentType());
 
-        $this->LinkScanner = $this->getLinkScannerWithStubClient();
+        $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
 
         $url = 'http://www.google.it';
         $result = $getResponseMethod($url);
@@ -145,7 +147,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testReset()
     {
-        $this->LinkScanner = $this->getLinkScannerWithStubClient()->setMaxDepth(1)->scan();
+        $this->LinkScanner->setMaxDepth(1)->scan();
 
         foreach (['currentDepth' => 1, 'externalLinks' => 'value', 'endTime' => 2, 'startTime' => 1] as $name => $value) {
             $this->setProperty($this->LinkScanner, $name, $value);
@@ -170,7 +172,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testExport()
     {
-        $this->LinkScanner = $this->getLinkScannerWithStubClient()->setMaxDepth(1)->scan();
+        $this->LinkScanner->setMaxDepth(1)->scan();
 
         $result = $this->LinkScanner->export();
         $this->assertFileExists($result);
@@ -191,8 +193,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testExportNoExistingFile()
     {
-        $this->LinkScanner = $this->getLinkScannerWithStubClient()->setMaxDepth(1)->scan();
-        $this->LinkScanner->export('/noExisting');
+        $this->LinkScanner->setMaxDepth(1)->scan()->export('/noExisting');
     }
 
     /**
@@ -201,7 +202,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testImport()
     {
-        $this->LinkScanner = $this->getLinkScannerWithStubClient()->setMaxDepth(1)->scan();
+        $this->LinkScanner->setMaxDepth(1)->scan();
 
         $expectedLinkScanner = $this->LinkScanner;
         $expectedResultScan = $this->LinkScanner->ResultScan;
@@ -229,8 +230,6 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScan()
     {
-        $this->LinkScanner = $this->getLinkScannerWithStubClient();
-
         $result = $this->LinkScanner->setMaxDepth(1)->scan();
 
         $this->assertInstanceof(LinkScanner::class, $result);
@@ -267,8 +266,6 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScanEvents()
     {
-        $this->LinkScanner = $this->getLinkScannerWithStubClient();
-
         //Enables event tracking
         $eventManager = $this->LinkScanner->getEventManager();
         $eventManager->setEventList(new EventList);
@@ -286,13 +283,25 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testSetFullBaseUrl()
     {
-        $newFullBaseUrl = 'http://newFullBaseUrl.com/site';
+        foreach ([
+            'http://newFullBaseUrl.com',
+            'http://newFullBaseUrl.com/',
+            'http://newFullBaseUrl.com/site',
+            'https://newFullBaseUrl.com',
+            'https://www.newFullBaseUrl.com',
+        ] as $newFullBaseUrl) {
+            $result = $this->LinkScanner->setFullBaseUrl($newFullBaseUrl);
 
-        $this->LinkScanner = $this->getLinkScannerWithStubClient();
-        $result = $this->LinkScanner->setFullBaseUrl($newFullBaseUrl);
-        $this->assertInstanceof(LinkScanner::class, $result);
-        $this->assertEquals($newFullBaseUrl . '/', $this->LinkScanner->fullBaseUrl);
-        $this->assertEquals(parse_url($newFullBaseUrl, PHP_URL_HOST), $this->LinkScanner->host);
+            $expectedFullBaseUrl = $newFullBaseUrl;
+
+            if (substr($expectedFullBaseUrl, -1) !== '/') {
+                $expectedFullBaseUrl .= '/';
+            }
+
+            $this->assertInstanceof(LinkScanner::class, $result);
+            $this->assertEquals($expectedFullBaseUrl, $this->LinkScanner->fullBaseUrl);
+            $this->assertEquals('newFullBaseUrl.com', $this->LinkScanner->host);
+        }
     }
 
     /**
