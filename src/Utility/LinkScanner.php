@@ -350,7 +350,10 @@ class LinkScanner
     public function setFullBaseUrl($fullBaseUrl)
     {
         $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
-        $this->host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
+
+        //Sets the host, removing the initial "www"
+        preg_match('/^(www\.)?(.+)$/', parse_url($this->fullBaseUrl, PHP_URL_HOST), $matches);
+        $this->host = $matches[2];
 
         return $this;
     }
