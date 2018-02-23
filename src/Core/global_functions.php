@@ -30,13 +30,11 @@ if (!function_exists('getHostnameFromUrl')) {
      *
      * It also removes the "www." prefix
      * @param string $url Url
-     * @return string
+     * @return string|null
      */
     function getHostnameFromUrl($url)
     {
-        preg_match('/^(www\.)?(.+)$/', parse_url($url, PHP_URL_HOST), $matches);
-
-        return $matches[2];
+        return preg_match('/^(www\.)?(.+)$/', parse_url($url, PHP_URL_HOST), $matches) ? $matches[2] : null;
     }
 }
 

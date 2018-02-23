@@ -73,6 +73,8 @@ class GlobalFunctionsTest extends TestCase
         ] as $url) {
             $this->assertEquals('google.com', getHostnameFromUrl($url));
         }
+
+        $this->assertNull(getHostnameFromUrl('page.html'));
     }
 
     /**
