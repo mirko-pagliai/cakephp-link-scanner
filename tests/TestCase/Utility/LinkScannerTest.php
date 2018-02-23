@@ -15,15 +15,16 @@ namespace LinkScanner\Test\TestCase\Utility;
 use Cake\Event\EventList;
 use Cake\TestSuite\IntegrationTestCase;
 use LinkScanner\ResultScan;
+use LinkScanner\TestSuite\LinkScannerWithStubClientTrait;
 use LinkScanner\Utility\LinkScanner;
 use Reflection\ReflectionTrait;
-use Zend\Diactoros\Stream;
 
 /**
  * LinkScannerTest class
  */
 class LinkScannerTest extends IntegrationTestCase
 {
+    use LinkScannerWithStubClientTrait;
     use ReflectionTrait;
 
     /**
@@ -55,33 +56,6 @@ class LinkScannerTest extends IntegrationTestCase
         foreach (glob(TMP . "results_*") as $file) {
             unlink($file);
         }
-    }
-
-    /**
-     * Internal method to get a `LinkScanner` instance with a stub for the
-     *  `Client` instance.
-     * @return LinkScanner
-     */
-    protected function getLinkScannerWithStubClient()
-    {
-        $this->LinkScanner = new LinkScanner('http://google.com');
-
-        $this->LinkScanner->Client = $this->getMockBuilder(get_class($this->LinkScanner->Client))
-            ->setMethods(['get'])
-            ->getMock();
-
-        $this->LinkScanner->Client->method('get')
-            ->will($this->returnCallback(function () {
-                $request = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
-                $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
-                $stream = new Stream('php://memory', 'rw');
-                $stream->write($body);
-                $this->setProperty($request, 'stream', $stream);
-
-                return $request;
-            }));
-
-        return $this->LinkScanner;
     }
 
     /**

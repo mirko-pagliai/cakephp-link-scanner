@@ -16,15 +16,15 @@ use Cake\Console\ConsoleIo;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Shell\LinkScannerShell;
-use LinkScanner\Utility\LinkScanner;
+use LinkScanner\TestSuite\LinkScannerWithStubClientTrait;
 use Reflection\ReflectionTrait;
-use Zend\Diactoros\Stream;
 
 /**
  * LinkScannerShellTest class
  */
 class LinkScannerShellTest extends ConsoleIntegrationTestCase
 {
+    use LinkScannerWithStubClientTrait;
     use ReflectionTrait;
 
     /**
@@ -41,33 +41,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      * @var \Cake\TestSuite\Stub\ConsoleOutput
      */
     protected $out;
-
-    /**
-     * Internal method to get a `LinkScanner` instance with a stub for the
-     *  `Client` instance.
-     * @return LinkScanner
-     */
-    protected function getLinkScannerWithStubClient()
-    {
-        $LinkScanner = new LinkScanner('http://google.com');
-
-        $LinkScanner->Client = $this->getMockBuilder(get_class($LinkScanner->Client))
-            ->setMethods(['get'])
-            ->getMock();
-
-        $LinkScanner->Client->method('get')
-            ->will($this->returnCallback(function () {
-                $request = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
-                $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
-                $stream = new Stream('php://memory', 'rw');
-                $stream->write($body);
-                $this->setProperty($request, 'stream', $stream);
-
-                return $request;
-            }));
-
-        return $LinkScanner;
-    }
 
     /**
      * Setup the test case, backup the static object values so they can be
