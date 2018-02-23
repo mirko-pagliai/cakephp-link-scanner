@@ -53,6 +53,7 @@ trait TestCaseTrait
      *  `response_examples/google_response` and `response_examples/google_body`
      *  files
      * @return \LinkScanner\Utility\LinkScanner
+     * @uses getResponseWithBody()
      */
     protected function getLinkScannerClientReturnsSampleResponse()
     {
@@ -65,27 +66,31 @@ trait TestCaseTrait
         $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
             $response = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
             $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
-            $stream = new Stream('php://memory', 'rw');
-            $stream->write($body);
-            $this->setProperty($response, 'stream', $stream);
 
-            return $response;
+            return $this->getResponseWithBody($body, $response);
         }));
 
         return $LinkScanner;
     }
 
     /**
-     * Returns an instance of `Response` class with an aribitrary body string
+     * Gets a `Response` instance, writes a new body string and returns.
+     *
+     * If `$response` is null, a new `Response` instance will be created.
      * @param string $body Body of the response
+     * @param Response|null $response A `Response` instance or `null` to create
+     *  a new instance
      * @return \Cake\Http\Client\Response
      */
-    protected function getResponseWithBody($body)
+    protected function getResponseWithBody($body, Response $response = null)
     {
         $stream = new Stream('php://memory', 'rw');
         $stream->write($body);
 
-        $response = new Response;
+        if (!$response) {
+            $response = new Response;
+        }
+
         $this->setProperty($response, 'stream', $stream);
 
         return $response;
