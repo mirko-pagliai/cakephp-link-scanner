@@ -63,13 +63,13 @@ trait TestCaseTrait
             ->getMock();
 
         $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
-            $request = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
+            $response = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
             $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
             $stream = new Stream('php://memory', 'rw');
             $stream->write($body);
-            $this->setProperty($request, 'stream', $stream);
+            $this->setProperty($response, 'stream', $stream);
 
-            return $request;
+            return $response;
         }));
 
         return $LinkScanner;
