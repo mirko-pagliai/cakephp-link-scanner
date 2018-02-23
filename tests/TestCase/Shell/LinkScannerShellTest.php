@@ -17,7 +17,6 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Shell\LinkScannerShell;
 use LinkScanner\TestSuite\LinkScannerWithStubClientTrait;
-use Reflection\ReflectionTrait;
 
 /**
  * LinkScannerShellTest class
@@ -25,7 +24,6 @@ use Reflection\ReflectionTrait;
 class LinkScannerShellTest extends ConsoleIntegrationTestCase
 {
     use LinkScannerWithStubClientTrait;
-    use ReflectionTrait;
 
     /**
      * @var \LinkScanner\Shell\LinkScannerShell;

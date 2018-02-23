@@ -17,30 +17,14 @@ use Cake\Http\Client\Response;
 use Cake\TestSuite\Stub\Response as StubResponse;
 use Cake\TestSuite\TestCase;
 use LinkScanner\Http\Client\ScanResponse;
-use Reflection\ReflectionTrait;
-use Zend\Diactoros\Stream;
+use LinkScanner\TestSuite\LinkScannerWithStubClientTrait;
 
 /**
  * ScanResponseTest class
  */
 class ScanResponseTest extends TestCase
 {
-    use ReflectionTrait;
-
-    /**
-     * Internal method to get a `Response` instance with a body
-     * @param string $body Body
-     * @return Response
-     */
-    protected function getResponseWithBody($body)
-    {
-        $stream = new Stream('php://memory', 'rw');
-        $stream->write($body);
-        $response = new Response;
-        $this->setProperty($response, 'stream', $stream);
-
-        return $response;
-    }
+    use LinkScannerWithStubClientTrait;
 
     /**
      * Test for `bodyIsHtml()` method

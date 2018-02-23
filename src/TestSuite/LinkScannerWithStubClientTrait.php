@@ -12,7 +12,9 @@
  */
 namespace LinkScanner\TestSuite;
 
+use Cake\Http\Client\Response;
 use LinkScanner\Utility\LinkScanner;
+use Reflection\ReflectionTrait;
 use Zend\Diactoros\Stream;
 
 /**
@@ -20,11 +22,13 @@ use Zend\Diactoros\Stream;
  */
 trait LinkScannerWithStubClientTrait
 {
+    use ReflectionTrait;
+
     /**
      * Returns a stubbed `LinkScanner` instance, where the `Client::get()`
      *  method calls the `IntegrationTestCase::get()` method and allows you to
      *  get responses from the test app
-     * @return LinkScanner
+     * @return \LinkScanner\Utility\LinkScanner
      */
     protected function getLinkScannerClientGetsFromTests()
     {
@@ -48,7 +52,7 @@ trait LinkScannerWithStubClientTrait
      *  method always returns a sample response which is read from
      *  `response_examples/google_response` and `response_examples/google_body`
      *  files
-     * @return LinkScanner
+     * @return \LinkScanner\Utility\LinkScanner
      */
     protected function getLinkScannerClientReturnsSampleResponse()
     {
@@ -69,5 +73,21 @@ trait LinkScannerWithStubClientTrait
         }));
 
         return $LinkScanner;
+    }
+
+    /**
+     * Returns an instance of `Response` class with an aribitrary body string
+     * @param string $body Body of the response
+     * @return \Cake\Http\Client\Response
+     */
+    protected function getResponseWithBody($body)
+    {
+        $stream = new Stream('php://memory', 'rw');
+        $stream->write($body);
+
+        $response = new Response;
+        $this->setProperty($response, 'stream', $stream);
+
+        return $response;
     }
 }

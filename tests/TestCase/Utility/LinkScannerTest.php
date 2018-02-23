@@ -17,7 +17,6 @@ use Cake\TestSuite\IntegrationTestCase;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\LinkScannerWithStubClientTrait;
 use LinkScanner\Utility\LinkScanner;
-use Reflection\ReflectionTrait;
 
 /**
  * LinkScannerTest class
@@ -25,7 +24,6 @@ use Reflection\ReflectionTrait;
 class LinkScannerTest extends IntegrationTestCase
 {
     use LinkScannerWithStubClientTrait;
-    use ReflectionTrait;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner
