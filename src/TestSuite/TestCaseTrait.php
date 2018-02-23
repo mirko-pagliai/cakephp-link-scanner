@@ -87,10 +87,7 @@ trait TestCaseTrait
         $stream = new Stream('php://memory', 'rw');
         $stream->write($body);
 
-        if (!$response) {
-            $response = new Response;
-        }
-
+        $response = $response ?: new Response;
         $this->setProperty($response, 'stream', $stream);
 
         return $response;
