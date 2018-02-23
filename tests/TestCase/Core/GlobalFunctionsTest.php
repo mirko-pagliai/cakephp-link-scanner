@@ -49,6 +49,33 @@ class GlobalFunctionsTest extends TestCase
     }
 
     /**
+     * Test for `getHostnameFromUrl()` global function
+     * @test
+     */
+    public function testGetHostnameFromUrl()
+    {
+        foreach (['http://127.0.0.1', 'http://127.0.0.1/'] as $url) {
+            $this->assertEquals('127.0.0.1', getHostnameFromUrl($url));
+        }
+
+        foreach (['http://localhost', 'http://localhost/'] as $url) {
+            $this->assertEquals('localhost', getHostnameFromUrl($url));
+        }
+
+        foreach ([
+            '//google.com',
+            'http://google.com',
+            'http://google.com/',
+            'http://www.google.com',
+            'https://google.com',
+            'http://google.com/page',
+            'http://google.com/page?name=value',
+        ] as $url) {
+            $this->assertEquals('google.com', getHostnameFromUrl($url));
+        }
+    }
+
+    /**
      * Test for `isUrl()` global function
      * @test
      */

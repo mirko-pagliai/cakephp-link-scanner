@@ -149,7 +149,7 @@ class LinkScanner
             return false;
         }
 
-        $host = parse_url($url, PHP_URL_HOST);
+        $host = getHostnameFromUrl($url);
 
         //Url with the same host and relative url are not external
         return $host && strcasecmp($host, $this->host) !== 0;
@@ -350,10 +350,7 @@ class LinkScanner
     public function setFullBaseUrl($fullBaseUrl)
     {
         $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
-
-        //Sets the host, removing the initial "www"
-        preg_match('/^(www\.)?(.+)$/', parse_url($this->fullBaseUrl, PHP_URL_HOST), $matches);
-        $this->host = $matches[2];
+        $this->host = getHostnameFromUrl($fullBaseUrl);
 
         return $this;
     }

@@ -24,6 +24,22 @@ if (!function_exists('clearUrl')) {
     }
 }
 
+if (!function_exists('getHostnameFromUrl')) {
+    /**
+     * Gets the host name from an url.
+     *
+     * It also removes the "www." prefix
+     * @param string $url Url
+     * @return string
+     */
+    function getHostnameFromUrl($url)
+    {
+        preg_match('/^(www\.)?(.+)$/', parse_url($url, PHP_URL_HOST), $matches);
+
+        return $matches[2];
+    }
+}
+
 if (!function_exists('isUrl')) {
     /**
      * Checks whether a url is invalid
