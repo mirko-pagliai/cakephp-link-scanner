@@ -30,6 +30,7 @@ trait TestCaseTrait
      * @param string $name Event name
      * @param Cake\Event\EventManager|null $eventManager Event manager to check,
      *  defaults to global event manager
+     * @return void
      */
     public function assertEventNotFired($name, $eventManager = null)
     {
