@@ -20,7 +20,7 @@ class PagesController extends AppController
     public function display(...$path)
     {
         //Disables the layout for the `nolinks` page
-        if($path === ['nolinks']) {
+        if ($path === ['nolinks']) {
             $this->viewBuilder()->setLayout(false);
         }
 
