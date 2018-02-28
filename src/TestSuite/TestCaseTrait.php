@@ -25,6 +25,25 @@ trait TestCaseTrait
     use ReflectionTrait;
 
     /**
+     * Asserts that a global event was not fired. You must track events in your
+     *  event manager for this assertion to work
+     * @param string $name Event name
+     * @param Cake\Event\EventManager|null $eventManager Event manager to check,
+     *  defaults to global event manager
+     */
+    public function assertEventNotFired($name, $eventManager = null)
+    {
+        if (!$eventManager) {
+            $eventManager = EventManager::instance();
+        }
+
+        $this->assertFalse(
+            $eventManager->getEventList()->hasEvent($name),
+            sprintf('Failed asserting that \'%s\' was not fired.', $name)
+        );
+    }
+
+    /**
      * Returns a stubbed `LinkScanner` instance, where the `Client::get()`
      *  method calls the `IntegrationTestCase::get()` method and allows you to
      *  get responses from the test app
