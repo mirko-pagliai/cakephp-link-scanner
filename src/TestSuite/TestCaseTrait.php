@@ -28,11 +28,13 @@ trait TestCaseTrait
      * Returns a stubbed `LinkScanner` instance, where the `Client::get()`
      *  method calls the `IntegrationTestCase::get()` method and allows you to
      *  get responses from the test app
+     * @param string|array|null $fullBaseUrl Full base url. If `null`, the
+     *  `App.fullBaseUrl` value will be used
      * @return \LinkScanner\Utility\LinkScanner
      */
-    protected function getLinkScannerClientGetsFromTests()
+    protected function getLinkScannerClientGetsFromTests($fullBaseUrl = null)
     {
-        $LinkScanner = new LinkScanner;
+        $LinkScanner = new LinkScanner($fullBaseUrl);
 
         $LinkScanner->Client = $this->getMockBuilder(get_class($LinkScanner->Client))
             ->setMethods(['get'])
