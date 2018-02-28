@@ -19,6 +19,11 @@ class PagesController extends AppController
      */
     public function display(...$path)
     {
+        //Disables the layout for the `nolinks` page
+        if($path === ['nolinks']) {
+            $this->viewBuilder()->setLayout(false);
+        }
+
         $count = count($path);
         if (!$count) {
             return $this->redirect('/');
