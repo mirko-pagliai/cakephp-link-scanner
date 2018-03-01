@@ -267,6 +267,24 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
+     * Test for `scan()` method, with no other links to scan
+     * @test
+     */
+    public function testScanNoOtherLinks()
+    {
+        $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
+        $this->LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+
+        //Enables event tracking
+        $eventManager = $this->LinkScanner->getEventManager();
+        $eventManager->setEventList(new EventList);
+
+        $this->LinkScanner->scan();
+
+        $this->assertEventNotFired(LINK_SCANNER . '.foundLinksToBeScanned', $eventManager);
+    }
+
+    /**
      * Test for `setFullBaseUrl()` method
      * @test
      */

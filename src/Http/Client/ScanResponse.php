@@ -13,6 +13,7 @@
 namespace LinkScanner\Http\Client;
 
 use Cake\Http\Client\Response;
+use Cake\Routing\Router;
 use DOMDocument;
 
 /**
@@ -72,7 +73,12 @@ class ScanResponse
     public function __construct($response, $fullBaseUrl)
     {
         $this->_response = $response;
-        $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
+
+        if (is_string($fullBaseUrl)) {
+            $fullBaseUrl = clearUrl($fullBaseUrl) . '/';
+        }
+
+        $this->fullBaseUrl = $fullBaseUrl;
     }
 
     /**
@@ -137,9 +143,16 @@ class ScanResponse
         libxml_clear_errors();
         libxml_use_internal_errors($libxmlPreviousState);
 
+        $fullBaseUrl = $this->fullBaseUrl;
+
+        if (!is_string($fullBaseUrl)) {
+            $fullBaseUrl = Router::url($fullBaseUrl, true);
+        }
+
+        $scheme = parse_url($fullBaseUrl, PHP_URL_SCHEME);
+        $host = parse_url($fullBaseUrl, PHP_URL_HOST);
+
         $links = [];
-        $scheme = parse_url($this->fullBaseUrl, PHP_URL_SCHEME);
-        $host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
 
         foreach ($this->tags as $tag => $attribute) {
             foreach ($dom->getElementsByTagName($tag) as $element) {

@@ -15,6 +15,7 @@ namespace LinkScanner\Utility;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
+use Cake\Routing\Router;
 use Exception;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
@@ -59,15 +60,15 @@ class LinkScanner
 
     /**
      * Full base url
-     * @var string
+     * @var string|array|null
      */
-    protected $fullBaseUrl;
+    protected $fullBaseUrl = null;
 
     /**
      * Host name
-     * @var string
+     * @var string|array|null
      */
-    protected $host;
+    protected $host = null;
 
     /**
      * Maximum depth of the scan
@@ -90,7 +91,7 @@ class LinkScanner
 
     /**
      * Construct
-     * @param string $fullBaseUrl Full base url. If `null`, the
+     * @param string|array|null $fullBaseUrl Full base url. If `null`, the
      *  `App.fullBaseUrl` value will be used
      * @return $this
      * @uses setFullBaseUrl()
@@ -244,7 +245,7 @@ class LinkScanner
      *      scanned;
      *  - `LinkScanner.foundLinksToBeScanned`: will be triggered if, after
      *      scanning a single url, other links to be scanned are found.
-     * @param string $url Url to scan
+     * @param string|array $url Url to scan
      * @return void
      * @uses $ResultScan
      * @uses $currentDepth
@@ -263,7 +264,7 @@ class LinkScanner
             'code' => $response->getStatusCode(),
             'external' => $this->isExternalUrl($url),
             'type' => $response->getContentType(),
-            'url' => $url,
+            'url' => is_string($url) ? $url : Router::url($url, true),
         ]);
 
         $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
@@ -342,15 +343,21 @@ class LinkScanner
 
     /**
      * Sets the full base url
-     * @param string $fullBaseUrl Full base url
+     * @param string|array $fullBaseUrl Full base url
      * @return $this
      * @uses $fullBaseUrl
      * @uses $host
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
-        $this->fullBaseUrl = clearUrl($fullBaseUrl) . '/';
-        $this->host = getHostnameFromUrl($fullBaseUrl);
+        $this->host = null;
+
+        if (is_string($fullBaseUrl)) {
+            $fullBaseUrl = clearUrl($fullBaseUrl) . '/';
+            $this->host = getHostnameFromUrl($fullBaseUrl);
+        }
+
+        $this->fullBaseUrl = $fullBaseUrl;
 
         return $this;
     }
