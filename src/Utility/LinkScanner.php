@@ -17,6 +17,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
 use Cake\Routing\Router;
 use Exception;
+use InvalidArgumentException;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LogicException;
@@ -357,11 +358,16 @@ class LinkScanner
      * Sets the full base url
      * @param string|array $fullBaseUrl Full base url
      * @return $this
+     * @throws InvalidArgumentException
      * @uses $fullBaseUrl
      * @uses $host
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
+        if (!isUrl($fullBaseUrl)) {
+            throw new InvalidArgumentException(__d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl));
+        }
+
         $this->host = null;
 
         if (is_string($fullBaseUrl)) {

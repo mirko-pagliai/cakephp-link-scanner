@@ -339,6 +339,17 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
+     * Test for `setFullBaseUrl()` method, with an invalid url
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Invalid url `invalid`
+     * @test
+     */
+    public function testSetFullBaseUrlInvalidUrl()
+    {
+        $this->LinkScanner->setFullBaseUrl('invalid');
+    }
+
+    /**
      * Test for `setMaxDepth()` method
      * @test
      */
