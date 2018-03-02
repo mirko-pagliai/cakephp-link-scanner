@@ -53,8 +53,8 @@ class LinkScannerShell extends Shell
             if ($this->param('fullBaseUrl')) {
                 $this->LinkScanner->setFullBaseUrl($this->param('fullBaseUrl'));
             }
-            if ($this->param('depth')) {
-                $this->LinkScanner->setMaxDepth($this->param('depth'));
+            if ($this->param('maxDepth')) {
+                $this->LinkScanner->setMaxDepth($this->param('maxDepth'));
             }
             if ($this->param('timeout')) {
                 $this->LinkScanner->setTimeout($this->param('timeout'));
@@ -83,7 +83,7 @@ class LinkScannerShell extends Shell
             'help' => __d('link-scanner', 'Performs a complete scan'),
             'parser' => [
                 'options' => [
-                    'depth' => [
+                    'maxDepth' => [
                         'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->maxDepth),
                         'short' => 'd',
                     ],

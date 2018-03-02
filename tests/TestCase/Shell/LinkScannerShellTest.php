@@ -79,6 +79,24 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     }
 
     /**
+     * Test for `scan()` method, with some parameters
+     * @test
+     */
+    public function testScanParams()
+    {
+        $this->LinkScannerShell->params = [
+            'maxDepth' => 3,
+            'fullBaseUrl' => 'http://anotherFullBaseUrl/',
+            'timeout' => 1,
+        ];
+        $this->LinkScannerShell->scan();
+
+        foreach ($this->LinkScannerShell->params as $name => $value) {
+            $this->assertEquals($value, $this->LinkScannerShell->LinkScanner->{$name});
+        }
+    }
+
+    /**
      * Test for `scan()` method, with verbose
      * @test
      */
@@ -137,9 +155,9 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         //`scan` subcommand
         $scanSubcommandParser = $parser->subcommands()['scan']->parser();
         $this->assertEquals([
-            'depth',
             'fullBaseUrl',
             'help',
+            'maxDepth',
             'quiet',
             'timeout',
             'verbose',
