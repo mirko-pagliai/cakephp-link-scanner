@@ -364,7 +364,7 @@ class LinkScanner
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
-        if (!isUrl($fullBaseUrl)) {
+        if (is_string($fullBaseUrl) && !isUrl($fullBaseUrl)) {
             throw new InvalidArgumentException(__d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl));
         }
 
