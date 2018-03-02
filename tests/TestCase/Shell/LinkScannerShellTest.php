@@ -72,10 +72,25 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->scan();
         $messages = $this->out->messages();
         $this->assertCount(3, $messages);
-        $this->assertRegexp('/^Scan started for ' . preg_quote('http://google.com/', '/') . ' at [\d\-]+\s[\d\:]+$/', current($messages));
+        $this->assertRegexp(
+            '/^Scan started for ' . preg_quote('http://google.com/', '/') . ' at [\d\-]+\s[\d\:]+$/',
+            current($messages)
+        );
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
         $this->assertEmpty($this->err->messages());
+    }
+
+    /**
+     * Test for `scan()` method, with an invalid url
+     * @expectedException Cake\Console\Exception\StopException
+     * @expectedExceptionMessage Invalid url `invalid`
+     * @test
+     */
+    public function testScanInvalidUrl()
+    {
+        $this->LinkScannerShell->params['fullBaseUrl'] = 'invalid';
+        $this->LinkScannerShell->scan();
     }
 
     /**
