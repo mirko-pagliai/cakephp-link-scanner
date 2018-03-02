@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\TestSuite;
 
+use Cake\Event\EventList;
 use Cake\Http\Client\Response;
 use LinkScanner\Utility\LinkScanner;
 use Reflection\ReflectionTrait;
@@ -40,6 +41,23 @@ trait TestCaseTrait
             $eventManager->getEventList()->hasEvent($name),
             sprintf('Failed asserting that \'%s\' was not fired.', $name)
         );
+    }
+
+    /**
+     * Sets the event list and returns the `EventManager` instance
+     * @param LinkScanner|null $LinkScanner `LinkScanner` instance or `null`
+     * @return \Cake\Event\EventManager
+     */
+    protected function getEventManager(LinkScanner $LinkScanner = null)
+    {
+        if (!$LinkScanner) {
+            $LinkScanner = $this->LinkScanner;
+        }
+
+        $eventManager = $LinkScanner->getEventManager();
+        $eventManager->setEventList(new EventList);
+
+        return $eventManager;
     }
 
     /**

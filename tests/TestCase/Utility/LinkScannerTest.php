@@ -12,9 +12,7 @@
  */
 namespace LinkScanner\Test\TestCase\Utility;
 
-use Cake\Event\EventList;
 use Cake\TestSuite\IntegrationTestCase;
-use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\TestCaseTrait;
 use LinkScanner\Utility\LinkScanner;
@@ -25,6 +23,11 @@ use LinkScanner\Utility\LinkScanner;
 class LinkScannerTest extends IntegrationTestCase
 {
     use TestCaseTrait;
+
+    /**
+     * @var \Cake\Event\EventManager
+     */
+    protected $EventManager;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner
@@ -42,6 +45,7 @@ class LinkScannerTest extends IntegrationTestCase
         parent::setUp();
 
         $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
+        $this->EventManager = $this->getEventManager();
     }
 
     /**
@@ -256,14 +260,10 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScanEvents()
     {
-        //Enables event tracking
-        $eventManager = $this->LinkScanner->getEventManager();
-        $eventManager->setEventList(new EventList);
-
         $this->LinkScanner->setMaxDepth(1)->scan();
 
         foreach (['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'] as $eventName) {
-            $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $eventManager);
+            $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
         }
     }
 
@@ -274,15 +274,12 @@ class LinkScannerTest extends IntegrationTestCase
     public function testScanNoOtherLinks()
     {
         $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
-        $this->LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+        $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+        $EventManager = $this->getEventManager($LinkScanner);
 
-        //Enables event tracking
-        $eventManager = $this->LinkScanner->getEventManager();
-        $eventManager->setEventList(new EventList);
+        $LinkScanner->scan();
 
-        $this->LinkScanner->scan();
-
-        $this->assertEventNotFired(LINK_SCANNER . '.foundLinksToBeScanned', $eventManager);
+        $this->assertEventNotFired(LINK_SCANNER . '.foundLinksToBeScanned', $EventManager);
     }
 
     /**
@@ -293,14 +290,11 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $params = ['controller' => 'Pages', 'action' => 'display', 'nohtml'];
         $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
-
-        //Enables event tracking
-        $eventManager = $LinkScanner->getEventManager();
-        $eventManager->setEventList(new EventList);
+        $EventManager = $this->getEventManager($LinkScanner);
 
         $LinkScanner->scan();
 
-        $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotHtml', $eventManager);
+        $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotHtml', $EventManager);
     }
 
     /**
@@ -310,14 +304,11 @@ class LinkScannerTest extends IntegrationTestCase
     public function testScanResponseNotOk()
     {
         $LinkScanner = $this->getLinkScannerClientGetsFromTests('http://localhost/noExisting');
-
-        //Enables event tracking
-        $eventManager = $LinkScanner->getEventManager();
-        $eventManager->setEventList(new EventList);
+        $EventManager = $this->getEventManager($LinkScanner);
 
         $LinkScanner->scan();
 
-        $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotOk', $eventManager);
+        $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotOk', $EventManager);
     }
 
     /**
