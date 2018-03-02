@@ -34,9 +34,7 @@ trait TestCaseTrait
      */
     public function assertEventNotFired($name, $eventManager = null)
     {
-        if (!$eventManager) {
-            $eventManager = EventManager::instance();
-        }
+        $eventManager = $eventManager ?: EventManager::instance();
 
         $this->assertFalse(
             $eventManager->getEventList()->hasEvent($name),
