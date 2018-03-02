@@ -19,8 +19,8 @@ class PagesController extends AppController
      */
     public function display(...$path)
     {
-        //Disables the layout for the `nolinks` page
-        if ($path === ['nolinks']) {
+        //Disables the layout for `nohtml` and `nolinks` pages
+        if (in_array(array_values($path)[0], ['nohtml', 'nolinks'])) {
             $this->viewBuilder()->setLayout(false);
         }
 

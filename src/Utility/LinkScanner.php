@@ -244,7 +244,11 @@ class LinkScanner
      *  - `LinkScanner.afterScanUrl`: will be triggered after a single url is
      *      scanned;
      *  - `LinkScanner.foundLinksToBeScanned`: will be triggered if, after
-     *      scanning a single url, other links to be scanned are found.
+     *      scanning a single url, other links to be scanned are found;
+     *  - `LinkScanner.responseNotHtml`: will be triggered when a single url is
+     *      scanned and the response body does not contain html code;
+     *  - `LinkScanner.responseNotOk`: will be triggered when a single url is
+     *      scanned and the response is not ok.
      * @param string|array $url Url to scan
      * @return void
      * @uses $ResultScan
@@ -275,11 +279,19 @@ class LinkScanner
         }
         $this->currentDepth++;
 
-        //Returns, if the response is not ok or if there are no other links to
-        //  be scanned
-        if (!$response->isOk() || !$response->bodyIsHtml()) {
+        //Returns, if the response is not ok
+        if (!$response->isOk()) {
+            $this->dispatchEvent('LinkScanner.responseNotOk', [$url]);
+
             return;
         }
+
+        //Returns, if the response body does not contain html code
+        if (!$response->bodyIsHtml()) {
+            $this->dispatchEvent('LinkScanner.responseNotHtml', [$url]);
+
+            return;
+        };
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links

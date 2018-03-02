@@ -14,6 +14,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Event\EventList;
 use Cake\TestSuite\IntegrationTestCase;
+use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\TestCaseTrait;
 use LinkScanner\Utility\LinkScanner;
@@ -282,6 +283,41 @@ class LinkScannerTest extends IntegrationTestCase
         $this->LinkScanner->scan();
 
         $this->assertEventNotFired(LINK_SCANNER . '.foundLinksToBeScanned', $eventManager);
+    }
+
+    /**
+     * Test for `scan()` method, with a response that doesn't contain html code
+     * @test
+     */
+    public function testScanResponseNotHtml()
+    {
+        $params = ['controller' => 'Pages', 'action' => 'display', 'nohtml'];
+        $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+
+        //Enables event tracking
+        $eventManager = $LinkScanner->getEventManager();
+        $eventManager->setEventList(new EventList);
+
+        $LinkScanner->scan();
+
+        $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotHtml', $eventManager);
+    }
+
+    /**
+     * Test for `scan()` method, with a response that is not ok
+     * @test
+     */
+    public function testScanResponseNotOk()
+    {
+        $LinkScanner = $this->getLinkScannerClientGetsFromTests('http://localhost/noExisting');
+
+        //Enables event tracking
+        $eventManager = $LinkScanner->getEventManager();
+        $eventManager->setEventList(new EventList);
+
+        $LinkScanner->scan();
+
+        $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotOk', $eventManager);
     }
 
     /**
