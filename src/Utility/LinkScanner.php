@@ -124,6 +124,28 @@ class LinkScanner
     }
 
     /**
+     * Internal method to create a lock file
+     * @return bool
+     * @throws LogicException
+     */
+    protected function createLockFile()
+    {
+        if (!LINK_SCANNER_LOCK_FILE) {
+            return true;
+        }
+
+        if (file_exists(LINK_SCANNER_LOCK_FILE)) {
+            throw new LogicException(__d(
+                'link-scanner',
+                'The lock file `{0}` already exists. This means that a scan is already in progress. If not, remove it manually',
+                LINK_SCANNER_LOCK_FILE
+            ));
+        }
+
+        return file_put_contents(LINK_SCANNER_LOCK_FILE, null) !== false;
+    }
+
+    /**
      * Performs a single GET request and returns the response as `ScanResponse`
      * @param string $url The url or path you want to request
      * @return ScanResponse
@@ -335,10 +357,13 @@ class LinkScanner
      * @uses $fullBaseUrl
      * @uses $startTime
      * @uses _scan()
+     * @uses createLockFile()
      * @uses reset()
      */
     public function scan()
     {
+        $this->createLockFile();
+
         $this->reset();
 
         $this->startTime = time();
@@ -348,6 +373,9 @@ class LinkScanner
         $this->_scan($this->fullBaseUrl);
 
         $this->endTime = time();
+
+        //@codingStandardsIgnoreLine
+        @unlink(LINK_SCANNER_LOCK_FILE);
 
         $this->dispatchEvent('LinkScanner.scanCompleted', [$this->endTime, $this->ResultScan]);
 

@@ -56,6 +56,9 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::tearDown();
 
+        //@codingStandardsIgnoreLine
+        @unlink(LINK_SCANNER_LOCK_FILE);
+
         foreach (glob(TMP . "results_*") as $file) {
             unlink($file);
         }
@@ -265,6 +268,20 @@ class LinkScannerTest extends IntegrationTestCase
         foreach (['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'] as $eventName) {
             $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
         }
+    }
+
+    /**
+     * Test for `setFullBaseUrl()` method, with an invalid url
+     * @expectedException LogicException
+     * @expectedExceptionMessage The lock file `/tmp/link_scanner_lock_file` already exists.
+     *  This means that a scan is already in progress. If not, remove it manually
+     * @test
+     */
+    public function testScanLockFileAlreadyExists()
+    {
+        file_put_contents(LINK_SCANNER_LOCK_FILE, null);
+
+        $this->LinkScanner->scan();
     }
 
     /**
