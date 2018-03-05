@@ -183,7 +183,7 @@ class LinkScanner
      * Exports scan results as serialized array
      * @param string $filename Filename where to export
      * @return string
-     * @throws InternalErrorException
+     * @throws LogicException
      * @uses $ResultScan
      * @uses $endTime
      * @uses $fullBaseUrl
@@ -193,9 +193,11 @@ class LinkScanner
      */
     public function export($filename = null)
     {
-        if (!$filename) {
-            $filename = TMP . sprintf('results_%s_%s', $this->host, $this->startTime);
+        if ($this->ResultScan->isEmpty()) {
+            throw new LogicException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
         }
+
+        $filename = $filename ?: TMP . sprintf('results_%s_%s', $this->host, $this->startTime);
 
         try {
             $data = [

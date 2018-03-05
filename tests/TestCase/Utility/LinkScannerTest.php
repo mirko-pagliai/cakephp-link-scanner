@@ -194,6 +194,17 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
+     * Test for `export()` method, without the scan being performed
+     * @expectedException LogicException
+     * @expectedExceptionMessage There is no result to export. Perhaps the scan was not performed?
+     * @test
+     */
+    public function testExportNoScan()
+    {
+        $this->LinkScanner->export();
+    }
+
+    /**
      * Test for `import()` method
      * @test
      */
