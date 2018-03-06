@@ -50,12 +50,12 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
     public function implementedEvents()
     {
         return [
-            'LinkScanner.afterScanUrl' => 'afterScanUrl',
-            'LinkScanner.beforeScanUrl' => 'beforeScanUrl',
-            'LinkScanner.resultsExported' => 'resultsExported',
-            'LinkScanner.foundLinksToBeScanned' => 'foundLinksToBeScanned',
-            'LinkScanner.scanCompleted' => 'scanCompleted',
-            'LinkScanner.scanStarted' => 'startScan',
+            LINK_SCANNER . '.afterScanUrl' => 'afterScanUrl',
+            LINK_SCANNER . '.beforeScanUrl' => 'beforeScanUrl',
+            LINK_SCANNER . '.resultsExported' => 'resultsExported',
+            LINK_SCANNER . '.foundLinksToBeScanned' => 'foundLinksToBeScanned',
+            LINK_SCANNER . '.scanCompleted' => 'scanCompleted',
+            LINK_SCANNER . '.scanStarted' => 'startScan',
         ];
     }
 
