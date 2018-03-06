@@ -52,6 +52,7 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
         return [
             'LinkScanner.afterScanUrl' => 'afterScanUrl',
             'LinkScanner.beforeScanUrl' => 'beforeScanUrl',
+            'LinkScanner.resultsExported' => 'resultsExported',
             'LinkScanner.foundLinksToBeScanned' => 'foundLinksToBeScanned',
             'LinkScanner.scanCompleted' => 'scanCompleted',
             'LinkScanner.scanStarted' => 'startScan',
@@ -116,6 +117,20 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
         }
 
         $this->Shell->out(__d('link-scanner', 'Links found: {0}', $count));
+
+        return true;
+    }
+
+    /**
+     * `LinkScanner.resultsExported` event
+     * @param Event $event An `Event` instance
+     * @param string $filename End time Filename
+     * @return bool
+     * @uses $Shell
+     */
+    public function resultsExported(Event $event, $filename)
+    {
+        $this->Shell->out(__d('link-scanner', 'Results have been exported to {0}', $filename));
 
         return true;
     }

@@ -106,9 +106,24 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         ];
         $this->LinkScannerShell->scan();
 
+        $this->assertStringStartsWith('Scan started for http://anotherFullBaseUrl/', $this->out->messages()[0]);
+        $this->assertEmpty($this->err->messages());
+
         foreach ($this->LinkScannerShell->params as $name => $value) {
             $this->assertEquals($value, $this->LinkScannerShell->LinkScanner->{$name});
         }
+
+        //Resets
+        $this->setUp();
+
+        //Tries with the `export` param
+        $export = tempnam(TMP, 'scan');
+        $this->LinkScannerShell->params = compact('export');
+        $this->LinkScannerShell->scan();
+
+        $this->assertContains('Results have been exported to ' . $export, $this->out->messages());
+        $this->assertEmpty($this->err->messages());
+        $this->assertFileExists($export);
     }
 
     /**
@@ -167,6 +182,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         //`scan` subcommand
         $scanSubcommandParser = $parser->subcommands()['scan']->parser();
         $this->assertEquals([
+            'export',
             'fullBaseUrl',
             'help',
             'maxDepth',

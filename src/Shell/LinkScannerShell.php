@@ -50,6 +50,9 @@ class LinkScannerShell extends Shell
     public function scan()
     {
         try {
+            //This method will trigger events provided by `EventListenerForLinkScannerShell`
+            $this->LinkScanner->getEventManager()->on(new EventListenerForLinkScannerShell($this));
+
             if ($this->param('fullBaseUrl')) {
                 $this->LinkScanner->setFullBaseUrl($this->param('fullBaseUrl'));
             }
@@ -60,10 +63,11 @@ class LinkScannerShell extends Shell
                 $this->LinkScanner->setTimeout($this->param('timeout'));
             }
 
-            //This method will trigger events provided by `EventListenerForLinkScannerShell`
-            $this->LinkScanner->getEventManager()->on(new EventListenerForLinkScannerShell($this));
-
             $this->LinkScanner->scan();
+
+            if ($this->param('export')) {
+                $this->LinkScanner->export($this->param('export'));
+            }
         } catch (Exception $e) {
             $this->abort($e->getMessage());
         }
@@ -83,6 +87,10 @@ class LinkScannerShell extends Shell
             'help' => __d('link-scanner', 'Performs a complete scan'),
             'parser' => [
                 'options' => [
+                    'export' => [
+                        'help' => __d('link-scanner', 'Path to the file where to export results'),
+                        'short' => 'e',
+                    ],
                     'maxDepth' => [
                         'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->maxDepth),
                         'short' => 'd',
