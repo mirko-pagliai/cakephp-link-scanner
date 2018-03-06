@@ -174,12 +174,15 @@ class LinkScannerTest extends IntegrationTestCase
         $result = $this->LinkScanner->export();
         $this->assertFileExists($result);
         $this->assertRegexp('/^' . preg_quote(TMP, '/') . 'results_google\.com_\d+$/', $result);
+        $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
 
         $filename = TMP . 'results_as_array';
+        $this->EventManager = $this->getEventManager();
 
         $result = $this->LinkScanner->export($filename);
         $this->assertFileExists($result);
         $this->assertEquals($filename, $result);
+        $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
     }
 
     /**
@@ -210,15 +213,14 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testImport()
     {
-        $this->LinkScanner->setMaxDepth(1)->scan();
-
         $expectedLinkScanner = $this->LinkScanner;
         $expectedResultScan = $this->LinkScanner->ResultScan;
 
+        $this->LinkScanner->setMaxDepth(1)->scan();
         $result = $this->LinkScanner->import($this->LinkScanner->export());
-
         $this->assertEquals($expectedLinkScanner, $result);
         $this->assertEquals($expectedResultScan, $result->ResultScan);
+        $this->assertEventFired(LINK_SCANNER . '.resultsImported', $this->EventManager);
     }
 
     /**

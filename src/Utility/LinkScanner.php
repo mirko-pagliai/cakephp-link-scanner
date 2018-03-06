@@ -180,7 +180,12 @@ class LinkScanner
     }
 
     /**
-     * Exports scan results as serialized array
+     * Exports scan results as serialized array.
+     *
+     * ### Events
+     * This method will trigger some events:
+     *  - `LinkScanner.resultsExported`: will be triggered when the results have
+     *  been exported.
      * @param string $filename Filename where to export
      * @return string
      * @throws LogicException
@@ -213,11 +218,18 @@ class LinkScanner
             throw new LogicException(__d('link-scanner', 'Failed to export results to file `{0}`', $filename));
         }
 
+        $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
+
         return $filename;
     }
 
     /**
-     * Imports scan results
+     * Imports scan results.
+     *
+     * ### Events
+     * This method will trigger some events:
+     *  - `LinkScanner.resultsImported`: will be triggered when the results have
+     *  been exported.
      * @param string $filename Filename from which to import
      * @return $this
      * @throws InternalErrorException
@@ -240,6 +252,8 @@ class LinkScanner
         } catch (Exception $e) {
             throw new LogicException(__d('link-scanner', 'Failed to import results from file `{0}`', $filename));
         }
+
+        $this->dispatchEvent('LinkScanner.resultsImported', [$filename]);
 
         return $this;
     }
