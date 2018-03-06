@@ -242,6 +242,10 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $result = $this->LinkScanner->setMaxDepth(1)->scan();
 
+        foreach (['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'] as $eventName) {
+            $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
+        }
+
         $this->assertInstanceof(LinkScanner::class, $result);
         $this->assertTrue(is_int($this->LinkScanner->startTime));
         $this->assertTrue(is_int($this->LinkScanner->endTime));
@@ -268,19 +272,6 @@ class LinkScannerTest extends IntegrationTestCase
              ->method('_scan');
 
         $this->LinkScanner->scan();
-    }
-
-    /**
-     * Test for events triggered by the `scan()` method
-     * @test
-     */
-    public function testScanEvents()
-    {
-        $this->LinkScanner->setMaxDepth(1)->scan();
-
-        foreach (['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'] as $eventName) {
-            $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
-        }
     }
 
     /**
