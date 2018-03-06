@@ -26,6 +26,11 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     use TestCaseTrait;
 
     /**
+     * @var \Cake\Event\EventManager
+     */
+    protected $EventManager;
+
+    /**
      * @var \LinkScanner\Shell\LinkScannerShell;
      */
     protected $LinkScannerShell;
@@ -61,6 +66,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             ->getMock();
 
         $this->LinkScannerShell->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
+
+        $this->EventManager = $this->getEventManager($this->LinkScannerShell->LinkScanner);
     }
 
     /**
@@ -79,6 +86,10 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
         $this->assertEmpty($this->err->messages());
+
+        foreach (['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'] as $eventName) {
+            $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
+        }
     }
 
     /**
@@ -124,6 +135,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertContains('Results have been exported to ' . $export, $this->out->messages());
         $this->assertEmpty($this->err->messages());
         $this->assertFileExists($export);
+        $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
     }
 
     /**
