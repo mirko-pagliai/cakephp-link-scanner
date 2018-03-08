@@ -13,6 +13,7 @@
 namespace LinkScanner;
 
 use Cake\Collection\Collection;
+use Cake\ORM\Entity;
 use Countable;
 use IteratorAggregate;
 use LogicException;
@@ -63,6 +64,11 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
         return $this;
     }
 
+    /**
+     * Creates a new iterator from an `ArrayObject` instance
+     * @return Collection
+     * @uses $collection
+     */
     public function getIterator()
     {
         return $this->collection;
@@ -70,14 +76,14 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
 
     /**
      * Appends an item
-     * @param array $item Item
+     * @param Entity $item Item to append, as Entity
      * @return $this
      * @throws LogicException
      * @uses $collection
      */
-    public function append(array $item)
+    public function append(Entity $item)
     {
-        if (array_keys($item) !== ['code', 'external', 'type', 'url']) {
+        if (!$item->has(['code', 'external', 'type', 'url'])) {
             throw new LogicException(__d('link-scanner', 'Missing data in the item to be appended'));
         }
 

@@ -15,6 +15,7 @@ namespace LinkScanner\Utility;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
+use Cake\ORM\Entity;
 use Cake\Routing\Router;
 use Exception;
 use InvalidArgumentException;
@@ -303,12 +304,13 @@ class LinkScanner
 
         $response = $this->getResponse($url);
 
-        $this->ResultScan->append([
-            'code' => $response->getStatusCode(),
-            'external' => $this->isExternalUrl($url),
-            'type' => $response->getContentType(),
-            'url' => is_string($url) ? $url : Router::url($url, true),
-        ]);
+        $item = new Entity;
+        $item->code = $response->getStatusCode();
+        $item->external = $this->isExternalUrl($url);
+        $item->type = $response->getContentType();
+        $item->url = is_string($url) ? $url : Router::url($url, true);
+
+        $this->ResultScan->append($item);
 
         $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
 
