@@ -14,13 +14,14 @@ namespace LinkScanner;
 
 use Cake\Collection\Collection;
 use Countable;
+use IteratorAggregate;
 use LogicException;
 use Serializable;
 
 /**
  * This object represents the results of a scan
  */
-class ResultScan implements Countable, Serializable
+class ResultScan implements Countable, IteratorAggregate, Serializable
 {
     /**
      * A `Collection` instance
@@ -60,6 +61,11 @@ class ResultScan implements Countable, Serializable
         array_map([$this, 'append'], $items);
 
         return $this;
+    }
+
+    public function getIterator()
+    {
+        return $this->collection;
     }
 
     /**
