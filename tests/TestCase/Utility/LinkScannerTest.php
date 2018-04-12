@@ -188,12 +188,12 @@ class LinkScannerTest extends IntegrationTestCase
     /**
      * Test for `export()` method, with a no existing file
      * @expectedException LogicException
-     * @expectedExceptionMessage Failed to export results to file `/noExisting`
+     * @expectedExceptionMessageRegExp /^Failed to export results to file `[\\\/\w\d:]+`$/
      * @test
      */
     public function testExportNoExistingFile()
     {
-        $this->LinkScanner->setMaxDepth(1)->scan()->export(DS . 'noExisting');
+        $this->LinkScanner->setMaxDepth(1)->scan()->export(TMP . 'noExistingDir' . DS . 'result');
     }
 
     /**
@@ -226,12 +226,12 @@ class LinkScannerTest extends IntegrationTestCase
     /**
      * Test for `import()` method, with a no existing file
      * @expectedException LogicException
-     * @expectedExceptionMessage Failed to import results from file `/noExisting`
+     * @expectedExceptionMessageRegExp /^Failed to import results from file `[\\\/\w\d:]+`$/
      * @test
      */
     public function testImportNoExistingFile()
     {
-        $this->LinkScanner->import(DS . 'noExisting');
+        $this->LinkScanner->import(TMP . 'noExistingDir' . DS . 'result');
     }
 
     /**
