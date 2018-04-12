@@ -193,7 +193,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testExportNoExistingFile()
     {
-        $this->LinkScanner->setMaxDepth(1)->scan()->export('/noExisting');
+        $this->LinkScanner->setMaxDepth(1)->scan()->export(DS . 'noExisting');
     }
 
     /**
@@ -231,7 +231,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testImportNoExistingFile()
     {
-        $this->LinkScanner->import('/noExisting');
+        $this->LinkScanner->import(DS . 'noExisting');
     }
 
     /**
@@ -277,8 +277,7 @@ class LinkScannerTest extends IntegrationTestCase
     /**
      * Test for `setFullBaseUrl()` method, with an invalid url
      * @expectedException LogicException
-     * @expectedExceptionMessage The lock file `/tmp/link_scanner_lock_file` already exists.
-     *  This means that a scan is already in progress. If not, remove it manually
+     * @expectedExceptionMessageRegExp /^The lock file `[\\\/\w\d_:]+` already exists\. This means that a scan is already in progress\. If not, remove it manually$/
      * @test
      */
     public function testScanLockFileAlreadyExists()
