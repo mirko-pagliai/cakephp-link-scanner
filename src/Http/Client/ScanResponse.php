@@ -189,7 +189,10 @@ class ScanResponse
      */
     public function getContentType()
     {
-        return $this->_response->getHeaderLine('content-type');
+        $contentType = $this->_response->getHeaderLine('content-type');
+
+        //This removes an eventual charset
+        return trim(array_values(explode(';', $contentType))[0]);
     }
 
     /**
