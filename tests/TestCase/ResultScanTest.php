@@ -188,6 +188,15 @@ class ResultScanTest extends TestCase
     }
 
     /**
+     * Test for `getIterator()` method
+     * @test
+     */
+    public function testGetIterator()
+    {
+        $this->assertInstanceof('Cake\Collection\Collection', $this->ResultScan->getIterator());
+    }
+
+    /**
      * Test for `serialize()` and `unserialize()` methods
      * @test
      */

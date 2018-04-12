@@ -131,11 +131,7 @@ class LinkScanner
      */
     protected function createLockFile()
     {
-        if (!LINK_SCANNER_LOCK_FILE) {
-            return true;
-        }
-
-        if (file_exists(LINK_SCANNER_LOCK_FILE)) {
+        if (LINK_SCANNER_LOCK_FILE && file_exists(LINK_SCANNER_LOCK_FILE)) {
             throw new LogicException(__d(
                 'link-scanner',
                 'The lock file `{0}` already exists. This means that a scan is already in progress. If not, remove it manually',
@@ -143,7 +139,7 @@ class LinkScanner
             ));
         }
 
-        return file_put_contents(LINK_SCANNER_LOCK_FILE, null) !== false;
+        return LINK_SCANNER_LOCK_FILE ? file_put_contents(LINK_SCANNER_LOCK_FILE, null) !== false : true;
     }
 
     /**
