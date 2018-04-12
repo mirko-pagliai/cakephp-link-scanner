@@ -80,7 +80,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $messages = $this->out->messages();
         $this->assertCount(3, $messages);
         $this->assertRegexp(
-            '/^Scan started for ' . preg_quote('http://google.com/', '/') . ' at [\d\-]+\s[\d\:]+$/',
+            '/^Scan started for ' . preg_quote($this->LinkScannerShell->LinkScanner->fullBaseUrl, '/') . ' at [\d\-]+\s[\d\:]+$/',
             current($messages)
         );
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
@@ -112,12 +112,12 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     {
         $this->LinkScannerShell->params = [
             'maxDepth' => 3,
-            'fullBaseUrl' => 'http://anotherFullBaseUrl/',
+            'fullBaseUrl' => 'http://anotherFullBaseUrl',
             'timeout' => 1,
         ];
         $this->LinkScannerShell->scan();
 
-        $this->assertStringStartsWith('Scan started for http://anotherFullBaseUrl/', $this->out->messages()[0]);
+        $this->assertStringStartsWith('Scan started for ' . $this->LinkScannerShell->params['fullBaseUrl'], $this->out->messages()[0]);
         $this->assertEmpty($this->err->messages());
 
         foreach ($this->LinkScannerShell->params as $name => $value) {
@@ -151,7 +151,10 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         //First three lines
         $this->assertRegexp('/^\-{63}$/', $messages[0]);
-        $this->assertRegexp('/^Scan started for ' . preg_quote('http://google.com/', '/') . ' at [\d\-]+\s[\d\:]+$/', $messages[1]);
+        $this->assertRegexp(
+            '/^Scan started for ' . preg_quote($this->LinkScannerShell->LinkScanner->fullBaseUrl, '/') . ' at [\d\-]+\s[\d\:]+$/',
+            $messages[1]
+        );
         $this->assertRegexp('/^\-{63}$/', $messages[2]);
 
         //Last four lines

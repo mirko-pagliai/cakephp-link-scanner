@@ -256,7 +256,7 @@ class LinkScannerTest extends IntegrationTestCase
         foreach ($this->LinkScanner->ResultScan->toArray() as $item) {
             $this->assertFalse($item['external']);
             $this->assertContains($item['code'], [200, 500]);
-            $this->assertContains($item['type'], ['text/html; charset=ISO-8859-1']);
+            $this->assertContains($item['type'], ['text/html']);
         }
 
         $this->assertCount(13, $this->LinkScanner->externalLinks);
@@ -339,23 +339,16 @@ class LinkScannerTest extends IntegrationTestCase
     public function testSetFullBaseUrl()
     {
         foreach ([
-            'http://newFullBaseUrl.com',
-            'http://newFullBaseUrl.com/',
-            'http://newFullBaseUrl.com/site',
-            'https://newFullBaseUrl.com',
-            'https://www.newFullBaseUrl.com',
-        ] as $newFullBaseUrl) {
-            $result = $this->LinkScanner->setFullBaseUrl($newFullBaseUrl);
-
-            $expectedFullBaseUrl = $newFullBaseUrl;
-
-            if (substr($expectedFullBaseUrl, -1) !== '/') {
-                $expectedFullBaseUrl .= '/';
-            }
-
+            'http://fullBaseUrl.com',
+            'http://fullBaseUrl.com/',
+            'http://fullBaseUrl.com/site',
+            'https://fullBaseUrl.com',
+            'https://www.fullBaseUrl.com',
+        ] as $fullBaseUrl) {
+            $result = $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
             $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertEquals($expectedFullBaseUrl, $this->LinkScanner->fullBaseUrl);
-            $this->assertEquals('newFullBaseUrl.com', $this->LinkScanner->host);
+            $this->assertEquals(rtrim($fullBaseUrl, '/'), $this->LinkScanner->fullBaseUrl);
+            $this->assertEquals('fullBaseUrl.com', $this->LinkScanner->host);
         }
     }
 
