@@ -417,7 +417,7 @@ class LinkScanner
         $this->host = null;
 
         if (is_string($fullBaseUrl)) {
-            $fullBaseUrl = clearUrl($fullBaseUrl) . '/';
+            $fullBaseUrl = clearUrl($fullBaseUrl);
             $this->host = getHostnameFromUrl($fullBaseUrl);
         }
 
