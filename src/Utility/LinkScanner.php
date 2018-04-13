@@ -21,7 +21,7 @@ use Exception;
 use InvalidArgumentException;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
-use LogicException;
+use RuntimeException;
 
 /**
  * A link scanner
@@ -105,11 +105,7 @@ class LinkScanner
         $this->Client = new Client;
         $this->ResultScan = new ResultScan;
 
-        if (!$fullBaseUrl) {
-            $fullBaseUrl = Configure::read('App.fullBaseUrl');
-        }
-
-        $this->setFullBaseUrl($fullBaseUrl);
+        $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
 
         return $this;
     }
@@ -127,12 +123,12 @@ class LinkScanner
     /**
      * Internal method to create a lock file
      * @return bool
-     * @throws LogicException
+     * @throws RuntimeException
      */
     protected function createLockFile()
     {
         if (LINK_SCANNER_LOCK_FILE && file_exists(LINK_SCANNER_LOCK_FILE)) {
-            throw new LogicException(__d(
+            throw new RuntimeException(__d(
                 'link-scanner',
                 'The lock file `{0}` already exists. This means that a scan is already in progress. If not, remove it manually',
                 LINK_SCANNER_LOCK_FILE
@@ -185,7 +181,7 @@ class LinkScanner
      *  been exported.
      * @param string $filename Filename where to export
      * @return string
-     * @throws LogicException
+     * @throws RuntimeException
      * @uses $ResultScan
      * @uses $endTime
      * @uses $fullBaseUrl
@@ -196,7 +192,7 @@ class LinkScanner
     public function export($filename = null)
     {
         if ($this->ResultScan->isEmpty()) {
-            throw new LogicException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
+            throw new RuntimeException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
         }
 
         $filename = $filename ?: TMP . sprintf('results_%s_%s', $this->host, $this->startTime);
@@ -212,7 +208,7 @@ class LinkScanner
 
             file_put_contents($filename, serialize($data));
         } catch (Exception $e) {
-            throw new LogicException(__d('link-scanner', 'Failed to export results to file `{0}`', $filename));
+            throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}`', $filename));
         }
 
         $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
@@ -247,7 +243,7 @@ class LinkScanner
             $this->endTime = $data['endTime'];
             $this->ResultScan = $data['ResultScan'];
         } catch (Exception $e) {
-            throw new LogicException(__d('link-scanner', 'Failed to import results from file `{0}`', $filename));
+            throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}`', $filename));
         }
 
         $this->dispatchEvent('LinkScanner.resultsImported', [$filename]);

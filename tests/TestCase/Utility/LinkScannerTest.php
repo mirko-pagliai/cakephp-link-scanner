@@ -187,7 +187,7 @@ class LinkScannerTest extends IntegrationTestCase
 
     /**
      * Test for `export()` method, with a no existing file
-     * @expectedException LogicException
+     * @expectedException RuntimeException
      * @expectedExceptionMessageRegExp /^Failed to export results to file `[\\\/\w\d:]+`$/
      * @test
      */
@@ -198,7 +198,7 @@ class LinkScannerTest extends IntegrationTestCase
 
     /**
      * Test for `export()` method, without the scan being performed
-     * @expectedException LogicException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage There is no result to export. Perhaps the scan was not performed?
      * @test
      */
@@ -225,7 +225,7 @@ class LinkScannerTest extends IntegrationTestCase
 
     /**
      * Test for `import()` method, with a no existing file
-     * @expectedException LogicException
+     * @expectedException RuntimeException
      * @expectedExceptionMessageRegExp /^Failed to import results from file `[\\\/\w\d:]+`$/
      * @test
      */
@@ -276,7 +276,7 @@ class LinkScannerTest extends IntegrationTestCase
 
     /**
      * Test for `setFullBaseUrl()` method, with an invalid url
-     * @expectedException LogicException
+     * @expectedException RuntimeException
      * @expectedExceptionMessageRegExp /^The lock file `[\\\/\w\d_:]+` already exists\. This means that a scan is already in progress\. If not, remove it manually$/
      * @test
      */
