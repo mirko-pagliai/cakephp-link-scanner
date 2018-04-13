@@ -130,7 +130,7 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
      */
     public function resultsExported(Event $event, $filename)
     {
-        $this->Shell->out(__d('link-scanner', 'Results have been exported to {0}', $filename));
+        $this->Shell->success(__d('link-scanner', 'Results have been exported to {0}', $filename));
 
         return true;
     }

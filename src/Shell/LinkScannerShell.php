@@ -43,11 +43,12 @@ class LinkScannerShell extends Shell
 
     /**
      * Performs a complete scan
+     * @param string $filename Filename where to export
      * @return void
      * @see EventListenerForLinkScannerShell::implementedEvents()
      * @uses LinkScanner
      */
-    public function scan()
+    public function scan($filename)
     {
         try {
             //This method will trigger events provided by `EventListenerForLinkScannerShell`
@@ -64,10 +65,7 @@ class LinkScannerShell extends Shell
             }
 
             $this->LinkScanner->scan();
-
-            if ($this->param('export')) {
-                $this->LinkScanner->export($this->param('export'));
-            }
+            $this->LinkScanner->export($filename);
         } catch (Exception $e) {
             $this->abort($e->getMessage());
         }
@@ -86,11 +84,13 @@ class LinkScannerShell extends Shell
         $parser->addSubcommand('scan', [
             'help' => __d('link-scanner', 'Performs a complete scan'),
             'parser' => [
-                'options' => [
-                    'export' => [
+                'arguments' => [
+                    'filename' => [
                         'help' => __d('link-scanner', 'Path to the file where to export results'),
-                        'short' => 'e',
+                        'required' => true,
                     ],
+                ],
+                'options' => [
                     'maxDepth' => [
                         'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->maxDepth),
                         'short' => 'd',
