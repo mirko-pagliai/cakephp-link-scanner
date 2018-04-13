@@ -56,49 +56,9 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::tearDown();
 
-        //@codingStandardsIgnoreLine
-        @unlink(LINK_SCANNER_LOCK_FILE);
-
-        foreach (glob(TMP . "results_*") as $file) {
-            unlink($file);
-        }
-    }
-
-    /**
-     * Test for `isExternalUrl()` method
-     * @test
-     */
-    public function testIsExternalUrl()
-    {
-        $isExternalUrlMethod = function () {
-            return $this->invokeMethod($this->LinkScanner, 'isExternalUrl', func_get_args());
-        };
-
-        //Arrays always returns `false`
-        $this->assertFalse($isExternalUrlMethod(['controller' => 'Pages', 'action' => 'display', 'nolinks']));
-
-        foreach ([
-            '//google.com',
-            '//google.com/',
-            'http://google.com',
-            'http://google.com/',
-            'http://www.google.com',
-            'http://www.google.com/',
-            'http://www.google.com/page.html',
-            'https://google.com',
-            'relative.html',
-            '/relative.html',
-        ] as $url) {
-            $this->assertFalse($isExternalUrlMethod($url));
-        }
-
-        foreach ([
-            '//site.com',
-            'http://site.com',
-            'http://www.site.com',
-            'http://subdomain.google.com',
-        ] as $url) {
-            $this->assertTrue($isExternalUrlMethod($url));
+        foreach (array_merge([LINK_SCANNER_LOCK_FILE], glob(TMP . "results_*")) as $file) {
+            //@codingStandardsIgnoreLine
+            @unlink($file);
         }
     }
 

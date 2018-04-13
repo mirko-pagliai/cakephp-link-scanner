@@ -155,24 +155,6 @@ class LinkScanner
     }
 
     /**
-     * Checks if an url is external
-     * @param string|array $url Url
-     * @return bool
-     * @uses $host
-     */
-    protected function isExternalUrl($url)
-    {
-        if (is_array($url)) {
-            return false;
-        }
-
-        $host = get_hostname_from_url($url);
-
-        //Url with the same host and relative url are not external
-        return $host && strcasecmp($host, $this->host) !== 0;
-    }
-
-    /**
      * Exports scan results as serialized array.
      *
      * ### Events
@@ -286,6 +268,7 @@ class LinkScanner
      * @uses $ResultScan
      * @uses $currentDepth
      * @uses $externalLinks
+     * @uses $host
      * @uses $maxDepth
      * @uses getResponse()
      * @uses isExternalUrl()
@@ -298,7 +281,7 @@ class LinkScanner
 
         $item = new Entity;
         $item->code = $response->getStatusCode();
-        $item->external = $this->isExternalUrl($url);
+        $item->external = is_array($url) ? false : is_external_url($url, $this->host);
         $item->type = $response->getContentType();
         $item->url = is_string($url) ? $url : Router::url($url, true);
 
@@ -341,7 +324,7 @@ class LinkScanner
 
         foreach ($linksToScan as $url) {
             //Skips external links
-            if ($this->isExternalUrl($url)) {
+            if (is_array($url) ? false : is_external_url($url, $this->host)) {
                 $this->externalLinks[] = $url;
 
                 continue;
