@@ -75,7 +75,7 @@ class ScanResponse
         $this->_response = $response;
 
         if (is_string($fullBaseUrl)) {
-            $fullBaseUrl = clearUrl($fullBaseUrl) . '/';
+            $fullBaseUrl = clean_url($fullBaseUrl) . '/';
         }
 
         $this->fullBaseUrl = $fullBaseUrl;
@@ -166,10 +166,10 @@ class ScanResponse
                     $link = 'http:' . $link;
                 }
 
-                $link = clearUrl($link);
+                $link = clean_url($link);
 
                 //Turns links as absolute
-                if (!isUrl($link)) {
+                if (!is_url($link)) {
                     $link = $scheme . '://' . $host . '/' . $link;
                 }
 

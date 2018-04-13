@@ -170,7 +170,7 @@ class LinkScanner
             return false;
         }
 
-        $host = getHostnameFromUrl($url);
+        $host = get_hostname_from_url($url);
 
         //Url with the same host and relative url are not external
         return $host && strcasecmp($host, $this->host) !== 0;
@@ -406,15 +406,15 @@ class LinkScanner
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
-        if (is_string($fullBaseUrl) && !isUrl($fullBaseUrl)) {
+        if (is_string($fullBaseUrl) && !is_url($fullBaseUrl)) {
             throw new InvalidArgumentException(__d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl));
         }
 
         $this->host = null;
 
         if (is_string($fullBaseUrl)) {
-            $fullBaseUrl = clearUrl($fullBaseUrl);
-            $this->host = getHostnameFromUrl($fullBaseUrl);
+            $fullBaseUrl = clean_url($fullBaseUrl);
+            $this->host = get_hostname_from_url($fullBaseUrl);
         }
 
         $this->fullBaseUrl = $fullBaseUrl;
