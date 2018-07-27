@@ -78,10 +78,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     {
         parent::tearDown();
 
-        //Deletes all export files
-        foreach (glob(TMP . 'scanExport*') as $filename) {
-            safe_unlink($filename);
-        }
+        safe_unlink_recursive(TMP);
     }
 
     /**
