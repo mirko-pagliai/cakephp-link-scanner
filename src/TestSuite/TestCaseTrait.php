@@ -13,9 +13,11 @@
 namespace LinkScanner\TestSuite;
 
 use Cake\Event\EventList;
+use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use LinkScanner\Utility\LinkScanner;
 use Tools\ReflectionTrait;
+use Tools\TestSuite\TestCaseTrait as BaseTestCaseTrait;
 use Zend\Diactoros\Stream;
 
 /**
@@ -23,6 +25,7 @@ use Zend\Diactoros\Stream;
  */
 trait TestCaseTrait
 {
+    use BaseTestCaseTrait;
     use ReflectionTrait;
 
     /**
@@ -72,7 +75,7 @@ trait TestCaseTrait
     {
         $LinkScanner = new LinkScanner($fullBaseUrl);
 
-        $LinkScanner->Client = $this->getMockBuilder(get_class($LinkScanner->Client))
+        $LinkScanner->Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
 
@@ -97,13 +100,13 @@ trait TestCaseTrait
     {
         $LinkScanner = new LinkScanner('http://google.com');
 
-        $LinkScanner->Client = $this->getMockBuilder(get_class($LinkScanner->Client))
+        $LinkScanner->Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
 
         $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
-            $response = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
-            $body = unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
+            $response = safe_unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
+            $body = safe_unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
 
             return $this->getResponseWithBody($body, $response);
         }));

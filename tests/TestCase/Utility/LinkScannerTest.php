@@ -57,8 +57,7 @@ class LinkScannerTest extends IntegrationTestCase
         parent::tearDown();
 
         foreach (array_merge([LINK_SCANNER_LOCK_FILE], glob(TMP . "results_*")) as $file) {
-            //@codingStandardsIgnoreLine
-            @unlink($file);
+            safe_unlink($file);
         }
     }
 

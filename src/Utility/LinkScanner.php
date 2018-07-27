@@ -367,8 +367,7 @@ class LinkScanner
 
         $this->endTime = time();
 
-        //@codingStandardsIgnoreLine
-        @unlink(LINK_SCANNER_LOCK_FILE);
+        safe_unlink(LINK_SCANNER_LOCK_FILE);
 
         $this->dispatchEvent('LinkScanner.scanCompleted', [$this->endTime, $this->ResultScan]);
 

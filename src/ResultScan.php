@@ -90,7 +90,7 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
         $existing = $this->collection->toArray();
         $items = [$item];
 
-        if (!empty($existing)) {
+        if ($existing) {
             $items = array_merge($existing, $items);
         }
 
@@ -128,6 +128,6 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
      */
     public function unserialize($collection)
     {
-        $this->__construct(unserialize($collection)->toArray());
+        $this->__construct(safe_unserialize($collection)->toArray());
     }
 }

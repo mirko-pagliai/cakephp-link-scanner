@@ -80,8 +80,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         //Deletes all export files
         foreach (glob(TMP . 'scanExport*') as $filename) {
-            //@codingStandardsIgnoreLine
-            @unlink($filename);
+            safe_unlink($filename);
         }
     }
 
@@ -233,13 +232,13 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertTrue($scanSubcommandParser->arguments()[0]->isRequired());
 
         //Tests options
-        $this->assertEquals([
+        $this->assertArrayKeysEqual([
             'fullBaseUrl',
             'help',
             'maxDepth',
             'quiet',
             'timeout',
             'verbose',
-        ], array_keys($scanSubcommandParser->options()));
+        ], $scanSubcommandParser->options());
     }
 }
