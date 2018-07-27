@@ -135,7 +135,7 @@ class LinkScanner
             ));
         }
 
-        return LINK_SCANNER_LOCK_FILE ? file_put_contents(LINK_SCANNER_LOCK_FILE, null) !== false : true;
+        return LINK_SCANNER_LOCK_FILE ? touch(LINK_SCANNER_LOCK_FILE) !== false : true;
     }
 
     /**
@@ -208,22 +208,17 @@ class LinkScanner
      * @param string $filename Filename from which to import
      * @return $this
      * @throws InternalErrorException
-     * @uses $ResultScan
-     * @uses $endTime
-     * @uses $fullBaseUrl
-     * @uses $maxDepth
-     * @uses $startTime
      */
     public function import($filename)
     {
         try {
             $data = unserialize(file_get_contents($filename));
 
-            $this->fullBaseUrl = $data['fullBaseUrl'];
-            $this->maxDepth = $data['maxDepth'];
-            $this->startTime = $data['startTime'];
-            $this->endTime = $data['endTime'];
-            $this->ResultScan = $data['ResultScan'];
+            foreach ($data as $key => $value) {
+                if (property_exists($this, $key)) {
+                    $this->$key = $value;
+                }
+            }
         } catch (Exception $e) {
             throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}`', $filename));
         }

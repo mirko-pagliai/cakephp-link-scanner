@@ -73,12 +73,7 @@ class ScanResponse
     public function __construct($response, $fullBaseUrl)
     {
         $this->_response = $response;
-
-        if (is_string($fullBaseUrl)) {
-            $fullBaseUrl = clean_url($fullBaseUrl) . '/';
-        }
-
-        $this->fullBaseUrl = $fullBaseUrl;
+        $this->fullBaseUrl = is_string($fullBaseUrl) ? clean_url($fullBaseUrl) . '/' : $fullBaseUrl;
     }
 
     /**
@@ -131,7 +126,7 @@ class ScanResponse
      */
     public function extractLinksFromBody()
     {
-        if (!empty($this->extractedLinks)) {
+        if ($this->extractedLinks) {
             return $this->extractedLinks;
         }
 
@@ -144,11 +139,7 @@ class ScanResponse
         libxml_use_internal_errors($libxmlPreviousState);
 
         $fullBaseUrl = $this->fullBaseUrl;
-
-        if (!is_string($fullBaseUrl)) {
-            $fullBaseUrl = Router::url($fullBaseUrl, true);
-        }
-
+        $fullBaseUrl = is_array($fullBaseUrl) ? Router::url($fullBaseUrl, true) : $fullBaseUrl;
         $scheme = parse_url($fullBaseUrl, PHP_URL_SCHEME);
         $host = parse_url($fullBaseUrl, PHP_URL_HOST);
 

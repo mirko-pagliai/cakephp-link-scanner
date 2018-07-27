@@ -53,10 +53,7 @@ trait TestCaseTrait
      */
     protected function getEventManager(LinkScanner $LinkScanner = null)
     {
-        if (!$LinkScanner) {
-            $LinkScanner = $this->LinkScanner;
-        }
-
+        $LinkScanner = $LinkScanner ?: $this->LinkScanner;
         $eventManager = $LinkScanner->getEventManager();
         $eventManager->setEventList(new EventList);
 
@@ -79,8 +76,8 @@ trait TestCaseTrait
             ->setMethods(['get'])
             ->getMock();
 
-        $LinkScanner->Client->method('get')->will($this->returnCallback(function ($url) {
-            $this->get($url);
+        $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
+            $this->get(func_get_arg(0));
 
             return $this->_response;
         }));

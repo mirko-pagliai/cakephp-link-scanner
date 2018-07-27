@@ -149,7 +149,8 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
             $this->Shell->hr();
         }
 
-        $this->Shell->out(__d('link-scanner', 'Scan completed at {0}', (new Time($endTime))->i18nFormat('yyyy-MM-dd HH:mm:ss')));
+        $endTime = (new Time($endTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
+        $this->Shell->out(__d('link-scanner', 'Scan completed at {0}', $endTime));
         $this->Shell->out(__d('link-scanner', 'Total scanned links: {0}', $ResultScan->count()));
 
         if ($this->Shell->param('verbose')) {
@@ -173,12 +174,8 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
             $this->Shell->hr();
         }
 
-        $this->Shell->out(__d(
-            'link-scanner',
-            'Scan started for {0} at {1}',
-            $fullBaseUrl,
-            (new Time($startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss')
-        ));
+        $startTime = (new Time($startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
+        $this->Shell->out(__d('link-scanner', 'Scan started for {0} at {1}', $fullBaseUrl, $startTime));
 
         if ($this->Shell->param('verbose')) {
             $this->Shell->hr();
