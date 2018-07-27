@@ -199,18 +199,19 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $result = $this->LinkScanner->setMaxDepth(1)->scan();
 
-        foreach (['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'] as $eventName) {
+        $expectedEvents = ['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'];
+        foreach ($expectedEvents as $eventName) {
             $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
         }
 
         $this->assertInstanceof(LinkScanner::class, $result);
-        $this->assertTrue(is_int($this->LinkScanner->startTime));
-        $this->assertTrue(is_int($this->LinkScanner->endTime));
+        $this->assertIsInt($this->LinkScanner->startTime);
+        $this->assertIsInt($this->LinkScanner->endTime);
 
         $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
         $this->assertCount(9, $this->LinkScanner->ResultScan);
 
-        foreach ($this->LinkScanner->ResultScan->toArray() as $item) {
+        foreach ($this->LinkScanner->ResultScan as $item) {
             $this->assertFalse($item['external']);
             $this->assertContains($item['code'], [200, 500]);
             $this->assertContains($item['type'], ['text/html']);

@@ -76,13 +76,18 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
 
     /**
      * Appends an item
-     * @param Entity $item Item to append, as Entity
+     * @param array|Entity $item Item to append as `Entity` or as array that
+     *  will be transformed into an entity
      * @return $this
      * @throws LogicException
      * @uses $collection
      */
-    public function append(Entity $item)
+    public function append($item)
     {
+        if (!$item instanceof Entity) {
+            $item = new Entity($item);
+        }
+
         if (!$item->has(['code', 'external', 'type', 'url'])) {
             throw new LogicException(__d('link-scanner', 'Missing data in the item to be appended'));
         }

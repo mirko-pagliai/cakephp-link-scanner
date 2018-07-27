@@ -79,11 +79,11 @@ class ResultScanTest extends TestCase
     public function testConstructMissingData()
     {
         //Missing `code` key
-        new ResultScan([new Entity([
+        new ResultScan([[
             'external' => true,
             'type' => 'text/html; charset=UTF-8',
             'url' => 'http://google.com',
-        ])]);
+        ]]);
     }
 
     /**
@@ -101,12 +101,12 @@ class ResultScanTest extends TestCase
         $this->assertEquals($expected, $this->ResultScan->toArray());
         $this->assertEquals($expected, $this->ResultScan->toList());
 
-        $this->ResultScan->append(new Entity([
+        $this->ResultScan->append([
             'code' => 200,
             'external' => false,
             'type' => 'text/html;charset=UTF-8',
             'url' => 'http://example.com/',
-        ]));
+        ]);
         $this->assertEquals($expected[0], $this->ResultScan->first());
 
         $result = $this->ResultScan->map(function ($item) {
@@ -127,12 +127,12 @@ class ResultScanTest extends TestCase
      */
     public function testAppend()
     {
-        $result = $this->ResultScan->append(new Entity([
+        $result = $this->ResultScan->append([
             'code' => 200,
             'external' => false,
             'type' => 'text/html;charset=UTF-8',
             'url' => 'http://example.com/',
-        ]));
+        ]);
 
         $this->assertInstanceof(ResultScan::class, $result);
         $this->assertEquals([
@@ -160,11 +160,11 @@ class ResultScanTest extends TestCase
     public function testAppendMissingData()
     {
         //Missing `code` key
-        $this->ResultScan->append(new Entity([
+        $this->ResultScan->append([
             'external' => false,
             'type' => 'text/html;charset=UTF-8',
             'url' => 'http://example.com/',
-        ]));
+        ]);
     }
 
     /**
@@ -175,12 +175,12 @@ class ResultScanTest extends TestCase
     {
         $this->assertEquals(1, $this->ResultScan->count());
 
-        $this->ResultScan->append(new Entity([
+        $this->ResultScan->append([
             'code' => 200,
             'external' => false,
             'type' => 'text/html;charset=UTF-8',
             'url' => 'http://example.com/',
-        ]));
+        ]);
 
         $this->assertEquals(2, $this->ResultScan->count());
 

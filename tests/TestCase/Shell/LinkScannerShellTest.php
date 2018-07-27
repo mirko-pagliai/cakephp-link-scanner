@@ -216,9 +216,9 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $parser = $this->LinkScannerShell->getOptionParser();
 
         $this->assertInstanceOf('Cake\Console\ConsoleOptionParser', $parser);
-        $this->assertEquals(['scan'], array_keys($parser->subcommands()));
+        $this->assertArrayKeysEqual(['scan'], $parser->subcommands());
         $this->assertEquals('Shell to perform links scanner', $parser->getDescription());
-        $this->assertEquals(['help', 'quiet', 'verbose'], array_keys($parser->options()));
+        $this->assertArrayKeysEqual(['help', 'quiet', 'verbose'], $parser->options());
 
         //`scan` subcommand
         $scanSubcommandParser = $parser->subcommands()['scan']->parser();
