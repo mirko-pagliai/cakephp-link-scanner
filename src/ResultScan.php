@@ -20,7 +20,10 @@ use LogicException;
 use Serializable;
 
 /**
- * This object represents the results of a scan
+ * This class contains the results of the scan.
+ *
+ * Summarily, it works like the `Collection` class, simulating all its methods
+ *  and adding the `append()` method.
  */
 class ResultScan implements Countable, IteratorAggregate, Serializable
 {
@@ -48,7 +51,6 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
     /**
      * Constructor
      * @param array $items Items
-     * @return $this
      * @uses append()
      * @uses $Collection
      */
@@ -60,8 +62,6 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
         $this->Collection = new Collection([]);
 
         array_map([$this, 'append'], $items);
-
-        return $this;
     }
 
     /**
