@@ -28,7 +28,7 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
      * A `Collection` instance
      * @var \Cake\Collection\Collection
      */
-    protected $collection;
+    protected $Collection;
 
     /**
      * Magic method, triggered when invoking inaccessible methods in an object
@@ -38,11 +38,11 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
      * @param string $name Method name
      * @param array $arguments Method arguments
      * @return $this|mixed
-     * @uses $collection
+     * @uses $Collection
      */
     public function __call($name, $arguments)
     {
-        return call_user_func_array([$this->collection, $name], $arguments);
+        return call_user_func_array([$this->Collection, $name], $arguments);
     }
 
     /**
@@ -50,14 +50,14 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
      * @param array $items Items
      * @return $this
      * @uses append()
-     * @uses $collection
+     * @uses $Collection
      */
     public function __construct(array $items = [])
     {
         //The collection is not created directly with `$items`, but by calling
         //  the `append()` method for each item.
-        //  This allows checking the validity of the data
-        $this->collection = new Collection([]);
+        //  This allows checking their validity.
+        $this->Collection = new Collection([]);
 
         array_map([$this, 'append'], $items);
 
@@ -66,12 +66,12 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
 
     /**
      * Creates a new iterator from an `ArrayObject` instance
-     * @return Collection
-     * @uses $collection
+     * @return \Cake\Collection\Collection
+     * @uses $Collection
      */
     public function getIterator()
     {
-        return $this->collection;
+        return $this->Collection;
     }
 
     /**
@@ -80,26 +80,19 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
      *  will be transformed into an entity
      * @return $this
      * @throws LogicException
-     * @uses $collection
+     * @uses $Collection
      */
     public function append($item)
     {
-        if (!$item instanceof Entity) {
-            $item = new Entity($item);
-        }
+        $item = $item instanceof Entity ? $item : new Entity($item);
 
         if (!$item->has(['code', 'external', 'type', 'url'])) {
             throw new LogicException(__d('link-scanner', 'Missing data in the item to be appended'));
         }
 
-        $existing = $this->collection->toArray();
+        $existing = $this->Collection->toArray();
         $items = [$item];
-
-        if ($existing) {
-            $items = array_merge($existing, $items);
-        }
-
-        $this->collection = new Collection($items);
+        $this->Collection = new Collection($existing ? array_merge($existing, $items) : $items);
 
         return $this;
     }
@@ -107,32 +100,32 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
     /**
      * Counts the number of items
      * @return int
-     * @uses $collection
+     * @uses $Collection
      */
     public function count()
     {
-        return count($this->collection->toArray());
+        return count($this->Collection->toArray());
     }
 
     /**
      * Returns a string representation of this object that can be used to
      *  reconstruct it
      * @return string
-     * @uses $collection
+     * @uses $Collection
      */
     public function serialize()
     {
-        return serialize($this->collection->buffered());
+        return serialize($this->Collection->buffered());
     }
 
     /**
      * Unserializes the passed string and rebuilds the Collection instance
-     * @param string $collection The serialized collection
+     * @param string $Collection The serialized collection
      * @return void
      * @uses __construct()
      */
-    public function unserialize($collection)
+    public function unserialize($Collection)
     {
-        $this->__construct(safe_unserialize($collection)->toArray());
+        $this->__construct(safe_unserialize($Collection)->toArray());
     }
 }
