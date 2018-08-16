@@ -70,7 +70,7 @@ class LinkScanner
      * Host name
      * @var string|array|null
      */
-    protected $host = null;
+    protected $hostname = null;
 
     /**
      * Maximum depth of the scan
@@ -92,10 +92,12 @@ class LinkScanner
     protected $timeout = 30;
 
     /**
-     * Construct
-     * @param string|array|null $fullBaseUrl Full base url. If `null`, the
-     *  `App.fullBaseUrl` value will be used
-     * @return $this
+     * Construct.
+     *
+     * The full base url can be a string or an array of parameters as for the
+     *  `Router::url()` method.
+     * If `null` the `App.fullBaseUrl` value will be used.
+     * @param string|array|null $fullBaseUrl Full base url
      * @uses setFullBaseUrl()
      * @uses $Client
      * @uses $ResultScan
@@ -106,8 +108,6 @@ class LinkScanner
         $this->ResultScan = new ResultScan;
 
         $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
-
-        return $this;
     }
 
     /**
@@ -148,10 +148,9 @@ class LinkScanner
      */
     protected function getResponse($url)
     {
-        return new ScanResponse(
-            $this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]),
-            $this->fullBaseUrl
-        );
+        $response = $this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]);
+
+        return new ScanResponse($response, $this->fullBaseUrl);
     }
 
     /**
@@ -167,7 +166,7 @@ class LinkScanner
      * @uses $ResultScan
      * @uses $endTime
      * @uses $fullBaseUrl
-     * @uses $host
+     * @uses $hostname
      * @uses $maxDepth
      * @uses $startTime
      */
@@ -177,7 +176,7 @@ class LinkScanner
             throw new RuntimeException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
         }
 
-        $filename = $filename ?: TMP . sprintf('results_%s_%s', $this->host, $this->startTime);
+        $filename = $filename ?: TMP . sprintf('results_%s_%s', $this->hostname, $this->startTime);
 
         try {
             $data = [
@@ -263,7 +262,7 @@ class LinkScanner
      * @uses $ResultScan
      * @uses $currentDepth
      * @uses $externalLinks
-     * @uses $host
+     * @uses $hostname
      * @uses $maxDepth
      * @uses getResponse()
      * @uses isExternalUrl()
@@ -276,7 +275,7 @@ class LinkScanner
 
         $item = new Entity;
         $item->code = $response->getStatusCode();
-        $item->external = is_array($url) ? false : is_external_url($url, $this->host);
+        $item->external = is_array($url) ? false : is_external_url($url, $this->hostname);
         $item->type = $response->getContentType();
         $item->url = is_string($url) ? $url : Router::url($url, true);
 
@@ -319,7 +318,7 @@ class LinkScanner
 
         foreach ($linksToScan as $url) {
             //Skips external links
-            if (is_array($url) ? false : is_external_url($url, $this->host)) {
+            if (is_array($url) ? false : is_external_url($url, $this->hostname)) {
                 $this->externalLinks[] = $url;
 
                 continue;
@@ -375,7 +374,7 @@ class LinkScanner
      * @return $this
      * @throws InvalidArgumentException
      * @uses $fullBaseUrl
-     * @uses $host
+     * @uses $hostname
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
@@ -383,11 +382,11 @@ class LinkScanner
             throw new InvalidArgumentException(__d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl));
         }
 
-        $this->host = null;
+        $this->hostname = null;
 
         if (is_string($fullBaseUrl)) {
             $fullBaseUrl = clean_url($fullBaseUrl);
-            $this->host = get_hostname_from_url($fullBaseUrl);
+            $this->hostname = get_hostname_from_url($fullBaseUrl);
         }
 
         $this->fullBaseUrl = $fullBaseUrl;
