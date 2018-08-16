@@ -26,7 +26,7 @@ class ScanResponse
     /**
      * @var \Cake\Http\Client\Response
      */
-    protected $_response;
+    protected $Response;
 
     /**
      * Extracted links by the `extractLinksFromBody()` method.
@@ -67,26 +67,27 @@ class ScanResponse
      * @param \Cake\Http\Client\Response|\Cake\TestSuite\Stub\Response $response Original
      *  response object
      * @param string $fullBaseUrl Full base url
-     * @uses $_response
+     * @uses $Response
      * @uses $fullBaseUrl
      */
     public function __construct($response, $fullBaseUrl)
     {
-        $this->_response = $response;
+        $this->Response = $response;
         $this->fullBaseUrl = is_string($fullBaseUrl) ? clean_url($fullBaseUrl) . '/' : $fullBaseUrl;
     }
 
     /**
      * Magic method, is triggered when invoking inaccessible methods. It calls
-     *  the same method name from the original response object
+     *  the same method name from the original `Response` class
      * @param string $name Method name
      * @param mixed $arguments Method arguments
      * @return mixed
-     * @uses $_response
+     * @see Cake\Http\Client\Response
+     * @uses $Response
      */
     public function __call($name, $arguments)
     {
-        return call_user_func([$this->_response, $name], $arguments);
+        return call_user_func([$this->Response, $name], $arguments);
     }
 
     /**
@@ -97,11 +98,11 @@ class ScanResponse
      * @param callable|null $parser The callback to use to decode the response
      *  body
      * @return mixed The response body
-     * @uses $_response
+     * @uses $Response
      */
     public function body($parser = null)
     {
-        return $this->_response->body($parser);
+        return $this->Response->body($parser);
     }
 
     /**
@@ -176,24 +177,24 @@ class ScanResponse
     /**
      * Gets the content type from the request header
      * @return string
-     * @uses $_response
+     * @uses $Response
      */
     public function getContentType()
     {
-        $contentType = $this->_response->getHeaderLine('content-type');
+        $contentType = $this->Response->getHeaderLine('content-type');
 
         //This removes an eventual charset
-        return trim(array_values(explode(';', $contentType))[0]);
+        return trim(first_value(explode(';', $contentType)));
     }
 
     /**
      * Checks if the response is ok
      * @return bool
-     * @uses $_response
+     * @uses $Response
      */
     public function isOk()
     {
-        $response = $this->_response;
+        $response = $this->Response;
 
         if (!method_exists($response, 'isOk')) {
             $response = (new Response)->withStatus($response->getStatusCode());

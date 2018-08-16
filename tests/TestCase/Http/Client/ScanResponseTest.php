@@ -109,7 +109,7 @@ class ScanResponseTest extends TestCase
         //Changes the response body. The result remains unchanged, because the
         //  cached value will be returned
         $response = $this->getResponseWithBody('another body content...');
-        $this->setProperty($ScanResponse, '_response', $response);
+        $this->setProperty($ScanResponse, 'Response', $response);
         $result = $this->invokeMethod($ScanResponse, 'extractLinksFromBody');
         $this->assertEquals($expected, $result);
     }
