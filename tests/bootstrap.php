@@ -15,7 +15,9 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Routing\DispatcherFactory;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+ini_set('intl.default_locale', 'en_US');
+date_default_timezone_set('UTC');
+mb_internal_encoding('UTF-8');
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
@@ -45,10 +47,8 @@ safe_mkdir(CACHE);
 safe_mkdir(CACHE . 'views');
 safe_mkdir(CACHE . 'models');
 
+require dirname(__DIR__) . '/vendor/autoload.php';
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
-
-date_default_timezone_set('UTC');
-mb_internal_encoding('UTF-8');
 
 Configure::write('debug', true);
 Configure::write('App', [
@@ -94,7 +94,4 @@ Configure::write('Session', ['defaults' => 'php']);
  */
 Plugin::load('LinkScanner', ['bootstrap' => true, 'path' => ROOT]);
 
-DispatcherFactory::add('Routing');
-DispatcherFactory::add('ControllerFactory');
-
-ini_set('intl.default_locale', 'en_US');
+$_SERVER['PHP_SELF'] = '/';

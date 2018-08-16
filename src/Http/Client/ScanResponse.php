@@ -91,28 +91,12 @@ class ScanResponse
     }
 
     /**
-     * Gets the response body.
-     *
-     * By passing in a $parser callable, you can get the decoded response
-     *  content back.
-     * @param callable|null $parser The callback to use to decode the response
-     *  body
-     * @return mixed The response body
-     * @uses $Response
-     */
-    public function body($parser = null)
-    {
-        return $this->Response->body($parser);
-    }
-
-    /**
      * Checks if the body contains html code
      * @return bool
-     * @uses body()
      */
     public function bodyIsHtml()
     {
-        $body = $this->body();
+        $body = $this->getBody();
 
         return strcasecmp($body, strip_tags($body)) !== 0;
     }
@@ -134,7 +118,7 @@ class ScanResponse
         $libxmlPreviousState = libxml_use_internal_errors(true);
 
         $dom = new DOMDocument;
-        $dom->loadHTML($this->body());
+        $dom->loadHTML($this->getBody());
 
         libxml_clear_errors();
         libxml_use_internal_errors($libxmlPreviousState);
