@@ -24,7 +24,7 @@ use LinkScanner\Shell\LinkScannerShell;
  *
  * This class provided methods to be performed as events by `LinkScannerShell`.
  */
-class EventListenerForLinkScannerShell implements EventListenerInterface
+class LinkScannerShellEventListener implements EventListenerInterface
 {
     /**
      * @var \LinkScanner\Shell\LinkScannerShell

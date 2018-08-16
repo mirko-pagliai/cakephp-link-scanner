@@ -15,7 +15,7 @@ namespace LinkScanner\Shell;
 use Cake\Console\ConsoleIo;
 use Cake\Console\Shell;
 use Exception;
-use LinkScanner\Event\EventListenerForLinkScannerShell;
+use LinkScanner\Event\LinkScannerShellEventListener;
 use LinkScanner\Utility\LinkScanner;
 
 /**
@@ -45,14 +45,14 @@ class LinkScannerShell extends Shell
      * Performs a complete scan
      * @param string $filename Filename where to export
      * @return void
-     * @see EventListenerForLinkScannerShell::implementedEvents()
+     * @see LinkScannerShellEventListener::implementedEvents()
      * @uses LinkScanner
      */
     public function scan($filename)
     {
         try {
-            //This method will trigger events provided by `EventListenerForLinkScannerShell`
-            $this->LinkScanner->getEventManager()->on(new EventListenerForLinkScannerShell($this));
+            //This method will trigger events provided by `LinkScannerShellEventListener`
+            $this->LinkScanner->getEventManager()->on(new LinkScannerShellEventListener($this));
 
             if ($this->param('fullBaseUrl')) {
                 $this->LinkScanner->setFullBaseUrl($this->param('fullBaseUrl'));
