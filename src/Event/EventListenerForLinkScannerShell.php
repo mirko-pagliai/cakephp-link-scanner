@@ -29,16 +29,16 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
     /**
      * @var \LinkScanner\Shell\LinkScannerShell
      */
-    protected $Shell;
+    protected $LinkScannerShell;
 
     /**
      * Construct
      * @param LinkScannerShell $shell A `LinkScannerShell` instance
-     * @uses $Shell
+     * @uses $LinkScannerShell
      */
     public function __construct(LinkScannerShell $shell)
     {
-        $this->Shell = $shell;
+        $this->LinkScannerShell = $shell;
     }
 
     /**
@@ -49,14 +49,18 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
      */
     public function implementedEvents()
     {
-        return [
-            LINK_SCANNER . '.afterScanUrl' => 'afterScanUrl',
-            LINK_SCANNER . '.beforeScanUrl' => 'beforeScanUrl',
-            LINK_SCANNER . '.resultsExported' => 'resultsExported',
-            LINK_SCANNER . '.foundLinksToBeScanned' => 'foundLinksToBeScanned',
-            LINK_SCANNER . '.scanCompleted' => 'scanCompleted',
-            LINK_SCANNER . '.scanStarted' => 'startScan',
+        $events = [
+            'afterScanUrl',
+            'beforeScanUrl',
+            'foundLinksToBeScanned',
+            'resultsExported',
+            'scanCompleted',
+            'scanStarted',
         ];
+
+        return array_combine(array_map(function ($event) {
+            return LINK_SCANNER . '.' . $event;
+        }, $events), $events);
     }
 
     /**
@@ -64,21 +68,19 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
      * @param Event $event An `Event` instance
      * @param ScanResponse $response A `ScanResponse` instance
      * @return bool
-     * @uses $Shell
+     * @uses $LinkScannerShell
      */
     public function afterScanUrl(Event $event, ScanResponse $response)
     {
-        if (!$this->Shell->param('verbose')) {
+        if (!$this->LinkScannerShell->param('verbose')) {
             return true;
         }
 
-        $out = $response->getStatusCode();
-
         if ($response->isOk()) {
-            $out = '<success>' . __d('link-scanner', 'OK') . '</success>';
+            $this->LinkScannerShell->success(__d('link-scanner', 'OK'));
+        } else {
+            $this->LinkScannerShell->out($response->getStatusCode());
         }
-
-        $this->Shell->out($out);
 
         return true;
     }
@@ -88,15 +90,15 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
      * @param Event $event An `Event` instance
      * @param string $url Url
      * @return bool
-     * @uses $Shell
+     * @uses $LinkScannerShell
      */
     public function beforeScanUrl(Event $event, $url)
     {
-        if (!$this->Shell->param('verbose')) {
+        if (!$this->LinkScannerShell->param('verbose')) {
             return true;
         }
 
-        $this->Shell->out(__d('link-scanner', 'Checking {0} ...', $url), 0);
+        $this->LinkScannerShell->out(__d('link-scanner', 'Checking {0} ...', $url), 0);
 
         return true;
     }
@@ -106,17 +108,17 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
      * @param Event $event An `Event` instance
      * @param array $linksToScan Links to scan
      * @return bool
-     * @uses $Shell
+     * @uses $LinkScannerShell
      */
     public function foundLinksToBeScanned(Event $event, $linksToScan)
     {
         $count = count($linksToScan);
 
-        if (!$this->Shell->param('verbose') || !$count) {
+        if (!$this->LinkScannerShell->param('verbose') || !$count) {
             return true;
         }
 
-        $this->Shell->out(__d('link-scanner', 'Links found: {0}', $count));
+        $this->LinkScannerShell->out(__d('link-scanner', 'Links found: {0}', $count));
 
         return true;
     }
@@ -126,11 +128,11 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
      * @param Event $event An `Event` instance
      * @param string $filename End time Filename
      * @return bool
-     * @uses $Shell
+     * @uses $LinkScannerShell
      */
     public function resultsExported(Event $event, $filename)
     {
-        $this->Shell->success(__d('link-scanner', 'Results have been exported to {0}', $filename));
+        $this->LinkScannerShell->success(__d('link-scanner', 'Results have been exported to {0}', $filename));
 
         return true;
     }
@@ -141,44 +143,44 @@ class EventListenerForLinkScannerShell implements EventListenerInterface
      * @param int $endTime End time
      * @param ResultScan $ResultScan A `ResultScan` instance
      * @return bool
-     * @uses $Shell
+     * @uses $LinkScannerShell
      */
     public function scanCompleted(Event $event, $endTime, ResultScan $ResultScan)
     {
-        if ($this->Shell->param('verbose')) {
-            $this->Shell->hr();
+        if ($this->LinkScannerShell->param('verbose')) {
+            $this->LinkScannerShell->hr();
         }
 
         $endTime = (new Time($endTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
-        $this->Shell->out(__d('link-scanner', 'Scan completed at {0}', $endTime));
-        $this->Shell->out(__d('link-scanner', 'Total scanned links: {0}', $ResultScan->count()));
+        $this->LinkScannerShell->out(__d('link-scanner', 'Scan completed at {0}', $endTime));
+        $this->LinkScannerShell->out(__d('link-scanner', 'Total scanned links: {0}', $ResultScan->count()));
 
-        if ($this->Shell->param('verbose')) {
-            $this->Shell->hr();
+        if ($this->LinkScannerShell->param('verbose')) {
+            $this->LinkScannerShell->hr();
         }
 
         return true;
     }
 
     /**
-     * `LinkScanner.startScan` event
+     * `LinkScanner.scanStarted` event
      * @param Event $event An `Event` instance
      * @param int $startTime Start time
      * @param string $fullBaseUrl Full base url
      * @return bool
-     * @uses $Shell
+     * @uses $LinkScannerShell
      */
-    public function startScan(Event $event, $startTime, $fullBaseUrl)
+    public function scanStarted(Event $event, $startTime, $fullBaseUrl)
     {
-        if ($this->Shell->param('verbose')) {
-            $this->Shell->hr();
+        if ($this->LinkScannerShell->param('verbose')) {
+            $this->LinkScannerShell->hr();
         }
 
         $startTime = (new Time($startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
-        $this->Shell->out(__d('link-scanner', 'Scan started for {0} at {1}', $fullBaseUrl, $startTime));
+        $this->LinkScannerShell->out(__d('link-scanner', 'Scan started for {0} at {1}', $fullBaseUrl, $startTime));
 
-        if ($this->Shell->param('verbose')) {
-            $this->Shell->hr();
+        if ($this->LinkScannerShell->param('verbose')) {
+            $this->LinkScannerShell->hr();
         }
 
         return true;
