@@ -1,6 +1,3 @@
-<?php
-use Cake\Routing\Router;
-?>
 <h1>Home</h1>
 
 <a title="Google" href="http://google.it">Google</a>
@@ -10,5 +7,7 @@ use Cake\Routing\Router;
 <a href="#text">Text</a>
 <a>No href...</a>
 
-<a href="<?= Router::url(['controller' => 'Pages', 'action' => 'display', 'firstpage']) ?>">First page</a>
-<a href="<?= Router::url(['controller' => 'Pages', 'action' => 'display', 'secondpage']) ?>">First page</a>
+<?php
+    echo $this->Html->link('First page', ['controller' => 'Pages', 'action' => 'display', 'firstpage']);
+    echo $this->Html->link('Second page', ['controller' => 'Pages', 'action' => 'display', 'secondpage']);
+?>
