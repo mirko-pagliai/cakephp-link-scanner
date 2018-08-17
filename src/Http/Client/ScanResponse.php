@@ -142,14 +142,12 @@ class ScanResponse
                     $link = 'http:' . $link;
                 }
 
-                $link = clean_url($link);
-
                 //Turns links as absolute
                 if (!is_url($link)) {
-                    $link = $scheme . '://' . $host . '/' . $link;
+                    $link = $scheme . '://' . $host . '/' . ltrim($link, '/');
                 }
 
-                $links[] = $link;
+                $links[] = clean_url($link);
             }
         }
 
