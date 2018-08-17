@@ -13,6 +13,7 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\TestSuite\IntegrationTestCase;
+use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\TestCaseTrait;
 use LinkScanner\Utility\LinkScanner;
@@ -73,7 +74,7 @@ class LinkScannerTest extends IntegrationTestCase
 
         $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
         $result = $getResponseMethod($params);
-        $this->assertInstanceof('LinkScanner\Http\Client\ScanResponse', $result);
+        $this->assertInstanceof(ScanResponse::class, $result);
         $this->assertEquals(200, $result->getStatusCode());
         $this->assertStringStartsWith('text/html', $result->getContentType());
 
