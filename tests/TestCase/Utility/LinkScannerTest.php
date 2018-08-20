@@ -215,24 +215,25 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertCount(9, $this->LinkScanner->ResultScan);
 
         foreach ($this->LinkScanner->ResultScan as $item) {
-            $this->assertFalse($item['external']);
-            $this->assertContains($item['code'], [200, 500]);
-            $this->assertContains($item['type'], ['text/html']);
+            $this->assertRegExp('/^http:\/\/google\.com/', $item->url);
+            $this->assertFalse($item->external);
+            $this->assertContains($item->code, [200, 500]);
+            $this->assertEquals($item->type, 'text/html');
         }
 
         $this->assertCount(13, $this->LinkScanner->externalLinks);
 
-        $this->LinkScanner = $this->getMockBuilder(LinkScanner::class)
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setMethods(['_scan', 'reset'])
             ->getMock();
 
-        $this->LinkScanner->expects($this->once())
+        $LinkScanner->expects($this->once())
              ->method('reset');
 
-        $this->LinkScanner->expects($this->once())
+        $LinkScanner->expects($this->once())
              ->method('_scan');
 
-        $this->LinkScanner->scan();
+        $LinkScanner->scan();
     }
 
     /**
