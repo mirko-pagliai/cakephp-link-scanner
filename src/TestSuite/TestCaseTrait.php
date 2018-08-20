@@ -15,6 +15,7 @@ namespace LinkScanner\TestSuite;
 use Cake\Event\EventList;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
+use LinkScanner\ResultScan;
 use LinkScanner\Utility\LinkScanner;
 use Tools\ReflectionTrait;
 use Tools\TestSuite\TestCaseTrait as BaseTestCaseTrait;
@@ -70,12 +71,20 @@ trait TestCaseTrait
      */
     protected function getLinkScannerClientGetsFromTests($fullBaseUrl = null)
     {
-        $LinkScanner = new LinkScanner($fullBaseUrl);
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['createLockFile', 'setFullBaseUrl', 'reset'])
+            ->getMock();
+
+        //This rewrites the constructor
+        $this->setProperty($LinkScanner, 'ResultScan', new ResultScan);
+        $this->setProperty($LinkScanner, 'fullBaseUrl', $fullBaseUrl);
 
         $LinkScanner->Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
 
+        //This allows the `Class` instance to use the `IntegrationTestCase::get()` method
         $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
             $this->get(func_get_arg(0));
 

@@ -369,8 +369,8 @@ class LinkScanner
     }
 
     /**
-     * Sets the full base url
-     * @param string|array $fullBaseUrl Full base url
+     * Sets the full base url and, consequently, the hostname
+     * @param string $fullBaseUrl Full base url
      * @return $this
      * @throws InvalidArgumentException
      * @uses $fullBaseUrl
@@ -378,18 +378,12 @@ class LinkScanner
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
-        if (is_string($fullBaseUrl) && !is_url($fullBaseUrl)) {
+        if (!is_string($fullBaseUrl) || !is_url($fullBaseUrl)) {
             throw new InvalidArgumentException(__d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl));
         }
 
-        $this->hostname = null;
-
-        if (is_string($fullBaseUrl)) {
-            $fullBaseUrl = clean_url($fullBaseUrl);
-            $this->hostname = get_hostname_from_url($fullBaseUrl);
-        }
-
-        $this->fullBaseUrl = $fullBaseUrl;
+        $this->fullBaseUrl = clean_url($fullBaseUrl);
+        $this->hostname = get_hostname_from_url($fullBaseUrl);
 
         return $this;
     }
