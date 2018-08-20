@@ -72,26 +72,19 @@ class LinkScannerTest extends IntegrationTestCase
 
         $this->LinkScanner = $this->getLinkScannerClientGetsFromTests();
 
-        $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
-        $result = $getResponseMethod($params);
-        $this->assertInstanceof(ScanResponse::class, $result);
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertStringStartsWith('text/html', $result->getContentType());
-
-        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        $result = $getResponseMethod($params);
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertStringStartsWith('text/html', $result->getContentType());
-
-        $params = ['controller' => 'Pages', 'action' => 'display', 'noexisting'];
-        $result = $getResponseMethod($params);
-        $this->assertEquals(500, $result->getStatusCode());
-        $this->assertStringStartsWith('text/html', $result->getContentType());
+        foreach ([
+            'nolinks' => 200,
+            'home' => 200,
+            'noexisting' => 500,
+        ] as $pageName => $expectedStatusCode) {
+            $result = $getResponseMethod(['controller' => 'Pages', 'action' => 'display', $pageName]);
+            $this->assertInstanceof(ScanResponse::class, $result);
+            $this->assertEquals($expectedStatusCode, $result->getStatusCode());
+            $this->assertStringStartsWith('text/html', $result->getContentType());
+        }
 
         $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
-
-        $url = 'http://www.google.it';
-        $result = $getResponseMethod($url);
+        $result = $getResponseMethod('http://www.google.it');
         $this->assertEquals(200, $result->getStatusCode());
         $this->assertStringStartsWith('text/html', $result->getContentType());
     }
@@ -104,20 +97,30 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $this->LinkScanner->setMaxDepth(1)->scan();
 
-        foreach (['currentDepth' => 1, 'externalLinks' => 'value', 'endTime' => 2, 'startTime' => 1] as $name => $value) {
+        $exampleValues = [
+            'currentDepth' => 1,
+            'externalLinks' => ['value'],
+            'endTime' => 2,
+            'startTime' => 1,
+        ];
+        $expectedValuesAfterReset = [
+            'currentDepth' => 0,
+            'externalLinks' => [],
+            'endTime' => 0,
+            'startTime' => 0,
+        ];
+
+        foreach ($exampleValues as $name => $value) {
             $this->setProperty($this->LinkScanner, $name, $value);
         }
 
         $this->LinkScanner = $this->LinkScanner->reset();
         $this->assertInstanceof(LinkScanner::class, $this->LinkScanner);
-
         $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
         $this->assertEmpty($this->LinkScanner->ResultScan->toArray());
 
-        $this->assertEquals([], $this->getProperty($this->LinkScanner, 'externalLinks'));
-
-        foreach (['currentDepth', 'endTime', 'startTime'] as $property) {
-            $this->assertEquals(0, $this->LinkScanner->$property);
+        foreach ($expectedValuesAfterReset as $name => $expectedValue) {
+            $this->assertEquals($expectedValue, $this->LinkScanner->$name);
         }
     }
 
@@ -208,7 +211,6 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertInstanceof(LinkScanner::class, $result);
         $this->assertIsInt($this->LinkScanner->startTime);
         $this->assertIsInt($this->LinkScanner->endTime);
-
         $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
         $this->assertCount(9, $this->LinkScanner->ResultScan);
 
