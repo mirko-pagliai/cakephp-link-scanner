@@ -7,7 +7,5 @@
 <a href="#text">Text</a>
 <a>No href...</a>
 
-<?php
-    echo $this->Html->link('First page', ['controller' => 'Pages', 'action' => 'display', 'firstpage']);
-    echo $this->Html->link('Second page', ['controller' => 'Pages', 'action' => 'display', 'secondpage']);
-?>
+<?= $this->Html->link('First page', ['controller' => 'Pages', 'action' => 'display', 'first_page']) ?>
+<?= $this->Html->link('Second page', ['controller' => 'Pages', 'action' => 'display', 'second_page']) ?>
