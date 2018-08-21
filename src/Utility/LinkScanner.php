@@ -16,7 +16,6 @@ use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
 use Cake\ORM\Entity;
-use Cake\Routing\Router;
 use Exception;
 use InvalidArgumentException;
 use LinkScanner\Http\Client\ScanResponse;
@@ -154,6 +153,27 @@ class LinkScanner
     }
 
     /**
+     * Internal method to get the already scanned links
+     * @return array
+     * @uses $ResultScan
+     */
+    protected function getScannedLinks()
+    {
+        return $this->ResultScan->extract('url')->toArray();
+    }
+
+    /**
+     * Internal method to check if a link is external
+     * @param string $link Link to check
+     * @return bool
+     * @uses $hostname
+     */
+    protected function isExternalLink($link)
+    {
+        return is_external_url($link, $this->hostname);
+    }
+
+    /**
      * Exports scan results as serialized array.
      *
      * ### Events
@@ -265,7 +285,8 @@ class LinkScanner
      * @uses $hostname
      * @uses $maxDepth
      * @uses getResponse()
-     * @uses isExternalUrl()
+     * @uses getScannedLinks()
+     * @uses isExternalLink()
      */
     protected function _scan($url)
     {
@@ -273,21 +294,21 @@ class LinkScanner
 
         $response = $this->getResponse($url);
 
-        $item = new Entity;
+        $item = new Entity(compact('url'));
         $item->code = $response->getStatusCode();
-        $item->external = is_array($url) ? false : is_external_url($url, $this->hostname);
+        $item->external = $this->isExternalLink($url);
         $item->type = $response->getContentType();
-        $item->url = is_string($url) ? $url : Router::url($url, true);
 
         $this->ResultScan->append($item);
 
         $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
 
+        $this->currentDepth++;
+
         //Returns, if the maximum scanning depth has been reached
         if ($this->maxDepth && $this->currentDepth >= $this->maxDepth) {
             return;
         }
-        $this->currentDepth++;
 
         //Returns, if the response is not ok
         if (!$response->isOk()) {
@@ -305,10 +326,7 @@ class LinkScanner
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links
-        $linksToScan = array_diff(
-            $response->extractLinksFromBody(),
-            $this->ResultScan->extract('url')->toArray()
-        );
+        $linksToScan = array_diff($response->extractLinksFromBody(), $this->getScannedLinks());
 
         if (empty($linksToScan)) {
             return;
@@ -316,15 +334,20 @@ class LinkScanner
 
         $this->dispatchEvent('LinkScanner.foundLinksToBeScanned', [$linksToScan]);
 
-        foreach ($linksToScan as $url) {
+        foreach ($linksToScan as $link) {
+            //Checks that the link has not already been scanned
+            if (in_array($link, $this->getScannedLinks())) {
+                continue;
+            }
+
             //Skips external links
-            if (is_array($url) ? false : is_external_url($url, $this->hostname)) {
-                $this->externalLinks[] = $url;
+            if ($this->isExternalLink($link)) {
+                $this->externalLinks[] = $link;
 
                 continue;
             }
 
-            $this->_scan($url);
+            $this->_scan($link);
         }
     }
 

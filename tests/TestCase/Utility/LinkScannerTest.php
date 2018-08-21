@@ -36,6 +36,12 @@ class LinkScannerTest extends IntegrationTestCase
     protected $LinkScanner;
 
     /**
+     * Can cointain some debug notices
+     * @var array
+     */
+    protected $debug;
+
+    /**
      * Setup the test case, backup the static object values so they can be
      * restored. Specifically backs up the contents of Configure and paths in
      *  App if they have not already been backed up
@@ -47,6 +53,7 @@ class LinkScannerTest extends IntegrationTestCase
 
         $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
         $this->EventManager = $this->getEventManager();
+        $this->debug = [];
     }
 
     /**
@@ -201,7 +208,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScan()
     {
-        $result = $this->LinkScanner->setMaxDepth(1)->scan();
+        $result = $this->LinkScanner->setMaxDepth(2)->scan();
 
         $expectedEvents = ['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'];
         foreach ($expectedEvents as $eventName) {
@@ -234,6 +241,51 @@ class LinkScannerTest extends IntegrationTestCase
              ->method('_scan');
 
         $LinkScanner->scan();
+    }
+
+    /**
+     * Test for `scan()` method, from tests
+     * @test
+     */
+    public function testScanFromTests()
+    {
+        $this->debug = [];
+
+        $this->getEventManager()->instance()
+            ->on(LINK_SCANNER . '.beforeScanUrl', function ($event, $url) {
+                $this->debug[] = sprintf('Scanning %s', $url);
+            })
+            ->on(LINK_SCANNER . '.foundLinksToBeScanned', function ($event, $linksToScan) {
+                foreach ($linksToScan as $link) {
+                    $this->debug[] = sprintf('Found link: %s', $link);
+                }
+            });
+
+        $expectedResults = [
+            'http://localhost',
+            'http://localhost/pages/first_page',
+            'http://localhost/favicon.ico',
+            'http://localhost/css/default.css',
+            'http://localhost/js/default.js',
+            'http://localhost/pages/second_page',
+
+        ];
+        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
+        $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+        $LinkScanner->scan();
+        $this->assertCount(6, $LinkScanner->ResultScan);
+        $results = $LinkScanner->ResultScan->extract('url')->toArray();
+        $this->assertEquals($expectedResults, $results);
+        $this->assertNotEmpty($this->debug);
+
+        $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+        $LinkScanner->setMaxDepth(1)->scan();
+        $this->assertCount(1, $LinkScanner->ResultScan);
+        $item = $LinkScanner->ResultScan->first();
+        $this->assertEquals($item->code, 200);
+        $this->assertFalse($item->external);
+        $this->assertEquals($item->type, 'text/html');
+        $this->assertEquals($item->url, 'http://localhost');
     }
 
     /**

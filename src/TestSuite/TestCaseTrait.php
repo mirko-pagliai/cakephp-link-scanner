@@ -15,6 +15,7 @@ namespace LinkScanner\TestSuite;
 use Cake\Event\EventList;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
+use Cake\Routing\Router;
 use LinkScanner\ResultScan;
 use LinkScanner\Utility\LinkScanner;
 use Tools\ReflectionTrait;
@@ -40,11 +41,9 @@ trait TestCaseTrait
     public function assertEventNotFired($name, $eventManager = null)
     {
         $eventManager = $eventManager ?: EventManager::instance();
+        $eventHasFired = $eventManager->getEventList()->hasEvent($name);
 
-        $this->assertFalse(
-            $eventManager->getEventList()->hasEvent($name),
-            sprintf('Failed asserting that \'%s\' was not fired.', $name)
-        );
+        $this->assertFalse($eventHasFired, sprintf('Failed asserting that \'%s\' was not fired.', $name));
     }
 
     /**
@@ -73,20 +72,47 @@ trait TestCaseTrait
     {
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->disableOriginalConstructor()
-            ->setMethods(['createLockFile', 'setFullBaseUrl', 'reset'])
+            ->setMethods(['createLockFile', 'getScannedLinks', 'isExternalLink', 'setFullBaseUrl', 'reset'])
             ->getMock();
 
-        //This rewrites the constructor
+        //This rewrites the instructions of the constructor
+        $fullBaseUrl = clean_url(is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true));
         $this->setProperty($LinkScanner, 'ResultScan', new ResultScan);
         $this->setProperty($LinkScanner, 'fullBaseUrl', $fullBaseUrl);
+
+        //This ensures the `getScannedLinks()` method returns all the urls as strings
+        $LinkScanner->method('getScannedLinks')
+            ->will($this->returnCallback(function () use ($LinkScanner) {
+                return $LinkScanner->ResultScan->extract('url')->map(function ($url) {
+                    return is_string($url) ? $url : Router::url($url, true);
+                })->toArray();
+            }));
+
+        //`isExternalLink()` method returns false for links that start with
+        //  `http://localhost/pages/`
+        $LinkScanner->method('isExternalLink')
+            ->will($this->returnCallback(function ($link) {
+                return get_hostname_from_url($link) !== 'localhost';
+            }));
 
         $LinkScanner->Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
 
-        //This allows the `Class` instance to use the `IntegrationTestCase::get()` method
+        //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
+        //It also analyzes the url of the test application and transforms them into parameter arrays
         $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
-            $this->get(func_get_arg(0));
+            $url = func_get_arg(0);
+
+            if (is_string($url)) {
+                if ($url === 'http://localhost') {
+                    $url = ['controller' => 'Pages', 'action' => 'display', 'home'];
+                } elseif (preg_match('/^http:\/\/localhost\/pages\/(.+)/', $url, $matches)) {
+                    $url = ['controller' => 'Pages', 'action' => 'display', $matches[1]];
+                }
+            }
+
+            $this->get($url);
 
             return $this->_response;
         }));
