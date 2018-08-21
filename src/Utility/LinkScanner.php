@@ -212,7 +212,7 @@ class LinkScanner
             throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}`', $filename));
         }
 
-        $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
+        $this->dispatchEvent(LINK_SCANNER . '.resultsExported', [$filename]);
 
         return $filename;
     }
@@ -242,7 +242,7 @@ class LinkScanner
             throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}`', $filename));
         }
 
-        $this->dispatchEvent('LinkScanner.resultsImported', [$filename]);
+        $this->dispatchEvent(LINK_SCANNER . '.resultsImported', [$filename]);
 
         return $this;
     }
@@ -290,7 +290,7 @@ class LinkScanner
      */
     protected function _scan($url)
     {
-        $this->dispatchEvent('LinkScanner.beforeScanUrl', [$url]);
+        $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
 
         $response = $this->getResponse($url);
 
@@ -301,7 +301,7 @@ class LinkScanner
 
         $this->ResultScan->append($item);
 
-        $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
+        $this->dispatchEvent(LINK_SCANNER . '.afterScanUrl', [$response]);
 
         $this->currentDepth++;
 
@@ -312,14 +312,14 @@ class LinkScanner
 
         //Returns, if the response is not ok
         if (!$response->isOk()) {
-            $this->dispatchEvent('LinkScanner.responseNotOk', [$url]);
+            $this->dispatchEvent(LINK_SCANNER . '.responseNotOk', [$url]);
 
             return;
         }
 
         //Returns, if the response body does not contain html code
         if (!$response->bodyIsHtml()) {
-            $this->dispatchEvent('LinkScanner.responseNotHtml', [$url]);
+            $this->dispatchEvent(LINK_SCANNER . '.responseNotHtml', [$url]);
 
             return;
         };
@@ -332,7 +332,7 @@ class LinkScanner
             return;
         }
 
-        $this->dispatchEvent('LinkScanner.foundLinksToBeScanned', [$linksToScan]);
+        $this->dispatchEvent(LINK_SCANNER . '.foundLinksToBeScanned', [$linksToScan]);
 
         foreach ($linksToScan as $link) {
             //Checks that the link has not already been scanned
@@ -378,7 +378,7 @@ class LinkScanner
 
         $this->startTime = time();
 
-        $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $this->fullBaseUrl]);
+        $this->dispatchEvent(LINK_SCANNER . '.scanStarted', [$this->startTime, $this->fullBaseUrl]);
 
         $this->_scan($this->fullBaseUrl);
 
@@ -386,7 +386,7 @@ class LinkScanner
 
         safe_unlink(LINK_SCANNER_LOCK_FILE);
 
-        $this->dispatchEvent('LinkScanner.scanCompleted', [$this->endTime, $this->ResultScan]);
+        $this->dispatchEvent(LINK_SCANNER . '.scanCompleted', [$this->endTime, $this->ResultScan]);
 
         return $this;
     }
