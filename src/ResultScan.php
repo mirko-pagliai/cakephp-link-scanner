@@ -90,9 +90,14 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
             throw new LogicException(__d('link-scanner', 'Missing data in the item to be appended'));
         }
 
-        $existing = $this->Collection->toArray();
         $items = [$item];
-        $this->Collection = new Collection($existing ? array_merge($existing, $items) : $items);
+
+        if (!$this->Collection->isEmpty()) {
+            $existing = $this->Collection->toArray();
+            $items = array_merge($existing, $items);
+        }
+
+        $this->Collection = new Collection($items);
 
         return $this;
     }
