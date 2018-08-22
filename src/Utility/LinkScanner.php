@@ -282,8 +282,8 @@ class LinkScanner
      * @uses $ResultScan
      * @uses $currentDepth
      * @uses $externalLinks
-     * @uses $hostname
      * @uses $maxDepth
+     * @uses _scan()
      * @uses getResponse()
      * @uses getScannedLinks()
      * @uses isExternalLink()
