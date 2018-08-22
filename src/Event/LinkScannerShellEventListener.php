@@ -52,7 +52,7 @@ class LinkScannerShellEventListener implements EventListenerInterface
         $events = [
             'afterScanUrl',
             'beforeScanUrl',
-            'foundLinksToBeScanned',
+            'foundLinkToBeScanned',
             'resultsExported',
             'scanCompleted',
             'scanStarted',
@@ -94,31 +94,24 @@ class LinkScannerShellEventListener implements EventListenerInterface
      */
     public function beforeScanUrl(Event $event, $url)
     {
-        if (!$this->LinkScannerShell->param('verbose')) {
-            return true;
+        if ($this->LinkScannerShell->param('verbose')) {
+            $this->LinkScannerShell->out(__d('link-scanner', 'Checking {0} ...', $url), 0);
         }
-
-        $this->LinkScannerShell->out(__d('link-scanner', 'Checking {0} ...', $url), 0);
 
         return true;
     }
 
     /**
-     * `LinkScanner.foundLinksToBeScanned` event
+     * `LinkScanner.foundLinkToBeScanned` event
      * @param Event $event An `Event` instance
-     * @param array $linksToScan Links to scan
+     * @param string $link Link
      * @return bool
-     * @uses $LinkScannerShell
      */
-    public function foundLinksToBeScanned(Event $event, $linksToScan)
+    public function foundLinkToBeScanned(Event $event, $link)
     {
-        $count = count($linksToScan);
-
-        if (!$this->LinkScannerShell->param('verbose') || !$count) {
-            return true;
+        if ($this->LinkScannerShell->param('verbose')) {
+            $this->LinkScannerShell->out(__d('link-scanner', 'Link found: {0}', $link));
         }
-
-        $this->LinkScannerShell->out(__d('link-scanner', 'Links found: {0}', $count));
 
         return true;
     }

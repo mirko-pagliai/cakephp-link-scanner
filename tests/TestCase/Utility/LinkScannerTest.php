@@ -210,7 +210,7 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $result = $this->LinkScanner->setMaxDepth(2)->scan();
 
-        $expectedEvents = ['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinksToBeScanned'];
+        $expectedEvents = ['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinkToBeScanned'];
         foreach ($expectedEvents as $eventName) {
             $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
         }
@@ -255,10 +255,8 @@ class LinkScannerTest extends IntegrationTestCase
             ->on(LINK_SCANNER . '.beforeScanUrl', function ($event, $url) {
                 $this->debug[] = sprintf('Scanning %s', $url);
             })
-            ->on(LINK_SCANNER . '.foundLinksToBeScanned', function ($event, $linksToScan) {
-                foreach ($linksToScan as $link) {
-                    $this->debug[] = sprintf('Found link: %s', $link);
-                }
+            ->on(LINK_SCANNER . '.foundLinkToBeScanned', function ($event, $link) {
+                $this->debug[] = sprintf('Found link: %s', $link);
             });
 
         $expectedResults = [
@@ -313,7 +311,7 @@ class LinkScannerTest extends IntegrationTestCase
 
         $LinkScanner->scan();
 
-        $this->assertEventNotFired(LINK_SCANNER . '.foundLinksToBeScanned', $EventManager);
+        $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $EventManager);
     }
 
     /**

@@ -271,8 +271,8 @@ class LinkScanner
      *      scanned;
      *  - `LinkScanner.afterScanUrl`: will be triggered after a single url is
      *      scanned;
-     *  - `LinkScanner.foundLinksToBeScanned`: will be triggered if, after
-     *      scanning a single url, other links to be scanned are found;
+     *  - `LinkScanner.foundLinkToBeScanned`: will be triggered if, after
+     *      scanning a single url, an other link to be scanned are found;
      *  - `LinkScanner.responseNotHtml`: will be triggered when a single url is
      *      scanned and the response body does not contain html code;
      *  - `LinkScanner.responseNotOk`: will be triggered when a single url is
@@ -328,12 +328,6 @@ class LinkScanner
         //  the body of the response and the already scanned links
         $linksToScan = array_diff($response->extractLinksFromBody(), $this->getScannedLinks());
 
-        if (empty($linksToScan)) {
-            return;
-        }
-
-        $this->dispatchEvent(LINK_SCANNER . '.foundLinksToBeScanned', [$linksToScan]);
-
         foreach ($linksToScan as $link) {
             //Checks that the link has not already been scanned
             if (in_array($link, $this->getScannedLinks())) {
@@ -346,6 +340,8 @@ class LinkScanner
 
                 continue;
             }
+
+            $this->dispatchEvent(LINK_SCANNER . '.foundLinkToBeScanned', [$link]);
 
             $this->_scan($link);
         }

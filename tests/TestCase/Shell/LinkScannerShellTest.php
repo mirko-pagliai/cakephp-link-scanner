@@ -119,7 +119,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             'scanCompleted',
             'beforeScanUrl',
             'afterScanUrl',
-            'foundLinksToBeScanned',
+            'foundLinkToBeScanned',
             'resultsExported',
         ] as $eventName) {
             $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
@@ -189,21 +189,19 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', $messages[$count - 4]);
         $this->assertRegexp('/^\-{63}$/', $messages[$count - 5]);
 
-        //Removes the already checked lines
+        //Removes already checked lines
         foreach ([0, 1, 2, $count - 1, $count - 2, $count - 3, $count - 4, $count - 5] as $line) {
             unset($messages[$line]);
         }
 
-        $messages = array_values($messages);
-        $count = count($messages);
+        //Checks intermediate lines
+        foreach (array_chunk($messages, 3) as $messages) {
+            $this->assertRegExp('/^Checking .+ \.{3}$/', $messages[0]);
+            $this->assertEquals('<success>OK</success>', $messages[1]);
 
-        //Checks the intermediate lines
-        for ($line = 0; $line < $count;) {
-            $this->assertTextStartsWith('Checking ', $messages[$line]);
-            $this->assertTextEndsWith(' ...', $messages[$line]);
-            $line++;
-            $this->assertEquals('<success>OK</success>', $messages[$line++]);
-            $this->assertRegexp('/^Links found: \d+$/', $messages[$line++]);
+            if (key_exists(2, $messages)) {
+                $this->assertRegexp('/^Link found: .+/', $messages[2]);
+            }
         }
     }
 
