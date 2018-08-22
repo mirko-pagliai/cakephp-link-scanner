@@ -93,8 +93,7 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
         $items = [$item];
 
         if (!$this->Collection->isEmpty()) {
-            $existing = $this->Collection->toArray();
-            $items = array_merge($existing, $items);
+            $items = array_merge($this->Collection->toArray(), $items);
         }
 
         $this->Collection = new Collection($items);
@@ -109,7 +108,7 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
      */
     public function count()
     {
-        return count($this->Collection->toArray());
+        return $this->Collection->count();
     }
 
     /**
@@ -120,17 +119,17 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
      */
     public function serialize()
     {
-        return serialize($this->Collection->buffered());
+        return $this->Collection->serialize();
     }
 
     /**
      * Unserializes the passed string and rebuilds the Collection instance
-     * @param string $Collection The serialized collection
+     * @param string $collection The serialized collection
      * @return void
-     * @uses __construct()
+     * @uses $Collection
      */
-    public function unserialize($Collection)
+    public function unserialize($collection)
     {
-        $this->__construct(safe_unserialize($Collection)->toArray());
+        $this->Collection = new Collection(unserialize($collection));
     }
 }
