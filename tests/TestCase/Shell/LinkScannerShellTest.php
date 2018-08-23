@@ -215,13 +215,17 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         }
 
         //Checks intermediate lines
-        foreach (array_chunk($messages, 3) as $messages) {
+        $i = 0;
+        $chunkMessages = array_chunk($messages, 3);
+        $count = count($chunkMessages);
+        foreach ($chunkMessages as $messages) {
             $this->assertRegExp('/^Checking .+ \.{3}$/', $messages[0]);
             $this->assertEquals('<success>OK</success>', $messages[1]);
 
-            if (key_exists(2, $messages)) {
+            if ($i !== $count - 1) {
                 $this->assertRegexp('/^Link found: .+/', $messages[2]);
             }
+            $i++;
         }
     }
 
