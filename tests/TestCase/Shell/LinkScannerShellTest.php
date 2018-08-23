@@ -130,7 +130,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertRegexp(sprintf('/^Checking %s ...$/', $fullBaseUrlRegex), next($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
-        $this->assertRegexp('/^<success>Results have been exported to [\w\/\-]+<\/success>$/', next($messages));
+        $this->assertRegexp('/^<success>Results have been exported to [\w\/\-\:\.\\\d]+<\/success>$/', next($messages));
         $this->assertEmpty($this->err->messages());
 
         foreach ([
