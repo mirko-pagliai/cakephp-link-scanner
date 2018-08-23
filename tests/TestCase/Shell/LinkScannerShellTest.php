@@ -90,6 +90,28 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         return tempnam(TMP, 'scanExport');
     }
 
+    public function testParam()
+    {
+        $this->assertNull($this->LinkScannerShell->param('verbose'));
+        $this->assertNull($this->LinkScannerShell->param('veryVerbose'));
+
+        $this->LinkScannerShell->params['verbose'] = true;
+        $this->assertTrue($this->LinkScannerShell->param('verbose'));
+        $this->assertNull($this->LinkScannerShell->param('veryVerbose'));
+
+        $this->LinkScannerShell->params['veryVerbose'] = true;
+        $this->assertTrue($this->LinkScannerShell->param('verbose'));
+        $this->assertTrue($this->LinkScannerShell->param('veryVerbose'));
+
+        unset($this->LinkScannerShell->params['verbose']);
+        $this->assertTrue($this->LinkScannerShell->param('verbose'));
+        $this->assertTrue($this->LinkScannerShell->param('veryVerbose'));
+
+        unset($this->LinkScannerShell->params['veryVerbose']);
+        $this->assertNull($this->LinkScannerShell->param('verbose'));
+        $this->assertNull($this->LinkScannerShell->param('veryVerbose'));
+    }
+
     /**
      * Test for `scan()` method
      * @test
@@ -97,21 +119,18 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     public function testScan()
     {
         $filename = $this->getTempname();
+        $fullBaseUrlRegex = preg_quote($this->LinkScannerShell->LinkScanner->fullBaseUrl, '/');
+        $this->LinkScannerShell->params['maxDepth'] = 1;
         $this->LinkScannerShell->scan($filename);
         $this->assertFileExists($filename);
 
         $messages = $this->out->messages();
-        $this->assertCount(4, $messages);
-        $this->assertRegexp(
-            sprintf('/^Scan started for %s at [\d\-]+\s[\d\:]+$/', preg_quote($this->LinkScannerShell->LinkScanner->fullBaseUrl, '/')),
-            current($messages)
-        );
+        $this->assertCount(5, $messages);
+        $this->assertRegexp(sprintf('/^Scan started for %s at [\d\-]+\s[\d\:]+$/', $fullBaseUrlRegex), current($messages));
+        $this->assertRegexp(sprintf('/^Checking %s ...$/', $fullBaseUrlRegex), next($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
-        $this->assertRegexp(
-            sprintf('/^<success>Results have been exported to %s<\/success>$/', preg_quote($filename, DS)),
-            next($messages)
-        );
+        $this->assertRegexp('/^<success>Results have been exported to [\w\/\-]+<\/success>$/', next($messages));
         $this->assertEmpty($this->err->messages());
 
         foreach ([
@@ -119,11 +138,12 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             'scanCompleted',
             'beforeScanUrl',
             'afterScanUrl',
-            'foundLinkToBeScanned',
             'resultsExported',
         ] as $eventName) {
             $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
         }
+
+        $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $this->EventManager);
     }
 
     /**
@@ -166,7 +186,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     public function testScanVerbose()
     {
         $filename = $this->getTempname();
-        $this->LinkScannerShell->params['verbose'] = true;
+        $this->LinkScannerShell->params['veryVerbose'] = true;
         $this->LinkScannerShell->scan($filename);
         $messages = $this->out->messages();
         $count = count($messages);
@@ -234,6 +254,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             'quiet',
             'timeout',
             'verbose',
+            'veryVerbose',
         ], $scanSubcommandParser->options());
     }
 }

@@ -94,9 +94,7 @@ class LinkScannerShellEventListener implements EventListenerInterface
      */
     public function beforeScanUrl(Event $event, $url)
     {
-        if ($this->LinkScannerShell->param('verbose')) {
-            $this->LinkScannerShell->out(__d('link-scanner', 'Checking {0} ...', $url), 0);
-        }
+        $this->LinkScannerShell->verbose(__d('link-scanner', 'Checking {0} ...', $url), 0);
 
         return true;
     }
@@ -109,7 +107,7 @@ class LinkScannerShellEventListener implements EventListenerInterface
      */
     public function foundLinkToBeScanned(Event $event, $link)
     {
-        if ($this->LinkScannerShell->param('verbose')) {
+        if ($this->LinkScannerShell->param('veryVerbose')) {
             $this->LinkScannerShell->out(__d('link-scanner', 'Link found: {0}', $link));
         }
 
