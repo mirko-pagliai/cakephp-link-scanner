@@ -292,13 +292,17 @@ class LinkScanner
     {
         $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
 
-        $response = $this->getResponse($url);
+        try {
+            $response = $this->getResponse($url);
+        } catch (Exception $e) {
+            return;
+        }
 
+        //Appends result
         $item = new Entity(compact('url'));
         $item->code = $response->getStatusCode();
         $item->external = $this->isExternalLink($url);
         $item->type = $response->getContentType();
-
         $this->ResultScan->append($item);
 
         $this->dispatchEvent(LINK_SCANNER . '.afterScanUrl', [$response]);

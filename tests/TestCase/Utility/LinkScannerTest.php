@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\Test\TestCase\Utility;
 
+use Cake\Http\Client;
 use Cake\TestSuite\IntegrationTestCase;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
@@ -297,6 +298,18 @@ class LinkScannerTest extends IntegrationTestCase
         file_put_contents(LINK_SCANNER_LOCK_FILE, null);
 
         $this->LinkScanner->scan();
+    }
+
+    /**
+     * Test for `scan()` method, with a no existing url
+     * @test
+     */
+    public function testScanNoExistingUrl()
+    {
+        $LinkScanner = new LinkScanner('http://noExisting');
+        $LinkScanner->Client = new Client(['timeout' => 1]);
+        $LinkScanner->scan();
+        $this->assertTrue($LinkScanner->ResultScan->isEmpty());
     }
 
     /**
