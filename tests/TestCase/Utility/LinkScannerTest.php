@@ -283,6 +283,7 @@ class LinkScannerTest extends IntegrationTestCase
         $item = $LinkScanner->ResultScan->first();
         $this->assertEquals($item->code, 200);
         $this->assertFalse($item->external);
+        $this->assertFalse($item->referer);
         $this->assertEquals($item->type, 'text/html');
         $this->assertEquals($item->url, 'http://localhost');
     }
@@ -422,12 +423,13 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testSetTimeout()
     {
-        $this->assertEquals(30, $this->LinkScanner->timeout);
+        $LinkScanner = new LinkScanner;
+        $this->assertEquals(30, $LinkScanner->Client->getConfig('timeout'));
 
         foreach ([0, 1] as $timeout) {
-            $result = $this->LinkScanner->setTimeout($timeout);
+            $result = $LinkScanner->setTimeout($timeout);
             $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertEquals($timeout, $this->LinkScanner->timeout);
+            $this->assertEquals($timeout, $LinkScanner->Client->getConfig('timeout'));
         }
     }
 }

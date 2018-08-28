@@ -13,7 +13,6 @@
 namespace LinkScanner\Http\Client;
 
 use Cake\Http\Client\Response;
-use Cake\Routing\Router;
 use DOMDocument;
 
 /**
@@ -123,12 +122,9 @@ class ScanResponse
         libxml_clear_errors();
         libxml_use_internal_errors($libxmlPreviousState);
 
-        $fullBaseUrl = $this->fullBaseUrl;
-        $fullBaseUrl = is_array($fullBaseUrl) ? Router::url($fullBaseUrl, true) : $fullBaseUrl;
-        $scheme = parse_url($fullBaseUrl, PHP_URL_SCHEME);
-        $host = parse_url($fullBaseUrl, PHP_URL_HOST);
-
         $links = [];
+        $scheme = parse_url($this->fullBaseUrl, PHP_URL_SCHEME);
+        $host = parse_url($this->fullBaseUrl, PHP_URL_HOST);
 
         foreach ($this->tags as $tag => $attribute) {
             foreach ($dom->getElementsByTagName($tag) as $element) {
@@ -138,12 +134,10 @@ class ScanResponse
                     continue;
                 }
 
-                if (substr($link, 0, 2) === '//') {
-                    $link = 'http:' . $link;
-                }
-
                 //Turns links as absolute
-                if (!is_url($link)) {
+                if (substr($link, 0, 2) === '//') {
+                    $link = $scheme . ':' . $link;
+                } elseif (!is_url($link)) {
                     $link = $scheme . '://' . $host . '/' . ltrim($link, '/');
                 }
 

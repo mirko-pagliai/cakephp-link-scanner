@@ -167,7 +167,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->params = [
             'maxDepth' => 3,
             'fullBaseUrl' => 'http://anotherFullBaseUrl',
-            'timeout' => 1,
         ];
         $this->LinkScannerShell->scan($this->getTempname());
 

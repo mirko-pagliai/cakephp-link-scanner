@@ -85,12 +85,6 @@ class LinkScanner
     protected $startTime = 0;
 
     /**
-     * Timeout in seconds for each request
-     * @var int
-     */
-    protected $timeout = 30;
-
-    /**
      * Construct.
      *
      * The full base url can be a string or an array of parameters as for the
@@ -103,7 +97,7 @@ class LinkScanner
      */
     public function __construct($fullBaseUrl = null)
     {
-        $this->Client = new Client;
+        $this->Client = new Client(['redirect' => true]);
         $this->ResultScan = new ResultScan;
 
         $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
@@ -143,13 +137,10 @@ class LinkScanner
      * @return ScanResponse
      * @uses $Client
      * @uses $fullBaseUrl
-     * @uses $timeout
      */
     protected function getResponse($url)
     {
-        $response = $this->Client->get($url, [], ['redirect' => true, 'timeout' => $this->timeout]);
-
-        return new ScanResponse($response, $this->fullBaseUrl);
+        return new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
     }
 
     /**
@@ -288,7 +279,7 @@ class LinkScanner
      * @uses getScannedLinks()
      * @uses isExternalLink()
      */
-    protected function _scan($url)
+    protected function _scan($url, $referer = false)
     {
         $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
 
@@ -299,7 +290,7 @@ class LinkScanner
         }
 
         //Appends result
-        $item = new Entity(compact('url'));
+        $item = new Entity(compact('referer', 'url'));
         $item->code = $response->getStatusCode();
         $item->external = $this->isExternalLink($url);
         $item->type = $response->getContentType();
@@ -347,7 +338,7 @@ class LinkScanner
 
             $this->dispatchEvent(LINK_SCANNER . '.foundLinkToBeScanned', [$link]);
 
-            $this->_scan($link);
+            $this->_scan($link, $url);
         }
     }
 
@@ -428,11 +419,11 @@ class LinkScanner
      * Sets the timeout for each request of the scan
      * @param int $timeout Timeout for each request
      * @return $this
-     * @uses $timeout
+     * @uses $Client
      */
     public function setTimeout($timeout)
     {
-        $this->timeout = $timeout;
+        $this->Client->setConfig(compact('timeout'));
 
         return $this;
     }

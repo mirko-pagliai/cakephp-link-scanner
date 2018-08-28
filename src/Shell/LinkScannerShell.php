@@ -115,7 +115,7 @@ class LinkScannerShell extends Shell
                         'short' => 'd',
                     ],
                     'timeout' => [
-                        'help' => __d('link-scanner', 'Timeout in seconds for each request. Default: {0}', $this->LinkScanner->timeout),
+                        'help' => __d('link-scanner', 'Timeout in seconds for each request. Default: {0}', $this->LinkScanner->Client->getConfig('timeout')),
                         'short' => 't',
                     ],
                     'veryVerbose' => [
