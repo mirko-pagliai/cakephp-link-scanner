@@ -76,7 +76,7 @@ trait TestCaseTrait
             ->getMock();
 
         //This rewrites the instructions of the constructor
-        $fullBaseUrl = clean_url(is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true));
+        $fullBaseUrl = clean_url(is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true), true);
         $this->setProperty($LinkScanner, 'ResultScan', new ResultScan);
         $this->setProperty($LinkScanner, 'fullBaseUrl', $fullBaseUrl);
 

@@ -147,7 +147,7 @@ class ScanResponse
                     $link = $scheme . '://' . $host . '/' . ltrim($link, '/');
                 }
 
-                $links[] = clean_url($link);
+                $links[] = clean_url($link, true);
             }
         }
 

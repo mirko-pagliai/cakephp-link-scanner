@@ -405,7 +405,7 @@ class LinkScanner
             throw new InvalidArgumentException(__d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl));
         }
 
-        $this->fullBaseUrl = clean_url($fullBaseUrl);
+        $this->fullBaseUrl = clean_url($fullBaseUrl, true);
         $this->hostname = get_hostname_from_url($fullBaseUrl);
 
         return $this;

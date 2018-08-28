@@ -368,6 +368,8 @@ class LinkScannerTest extends IntegrationTestCase
             'http://fullBaseUrl.com/site',
             'https://fullBaseUrl.com',
             'https://www.fullBaseUrl.com',
+            'ftp://fullBaseUrl.com',
+            'ftp://www.fullBaseUrl.com',
         ] as $fullBaseUrl) {
             $result = $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
             $this->assertInstanceof(LinkScanner::class, $result);
