@@ -74,7 +74,6 @@ class ScanResponse
     {
         $this->Response = $response;
         $this->fullBaseUrl = clean_url($fullBaseUrl, true);
-//        $this->fullBaseUrl = is_string($fullBaseUrl) ? clean_url($fullBaseUrl) . '/' : $fullBaseUrl;
     }
 
     /**
