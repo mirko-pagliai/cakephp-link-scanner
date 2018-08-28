@@ -73,7 +73,8 @@ class ScanResponse
     public function __construct($response, $fullBaseUrl)
     {
         $this->Response = $response;
-        $this->fullBaseUrl = is_string($fullBaseUrl) ? clean_url($fullBaseUrl) . '/' : $fullBaseUrl;
+        $this->fullBaseUrl = clean_url($fullBaseUrl, true);
+//        $this->fullBaseUrl = is_string($fullBaseUrl) ? clean_url($fullBaseUrl) . '/' : $fullBaseUrl;
     }
 
     /**

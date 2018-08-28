@@ -366,6 +366,7 @@ class LinkScannerTest extends IntegrationTestCase
             'http://fullBaseUrl.com',
             'http://fullBaseUrl.com/',
             'http://fullBaseUrl.com/site',
+            'http://www.fullBaseUrl.com/site',
             'https://fullBaseUrl.com',
             'https://www.fullBaseUrl.com',
             'ftp://fullBaseUrl.com',
@@ -373,7 +374,7 @@ class LinkScannerTest extends IntegrationTestCase
         ] as $fullBaseUrl) {
             $result = $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
             $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertEquals(rtrim($fullBaseUrl, '/'), $this->LinkScanner->fullBaseUrl);
+            $this->assertRegexp('/^(ftp|https?):\/\/fullBaseUrl\.com(\/(site)?)?$/', $this->LinkScanner->fullBaseUrl);
             $this->assertEquals('fullBaseUrl.com', $this->LinkScanner->hostname);
         }
     }
