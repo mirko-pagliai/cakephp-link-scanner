@@ -10,11 +10,11 @@
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace LinkScanner;
+namespace LinkScanner\Test\TestCase;
 
 use Cake\Collection\CollectionInterface;
-use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
+use LinkScanner\ORM\ScanEntity;
 use LinkScanner\ResultScan;
 
 /**
@@ -37,7 +37,7 @@ class ResultScanTest extends TestCase
     {
         parent::setUp();
 
-        $this->ResultScan = new ResultScan([new Entity([
+        $this->ResultScan = new ResultScan([new ScanEntity([
             'code' => 200,
             'external' => true,
             'type' => 'text/html; charset=UTF-8',
@@ -52,13 +52,13 @@ class ResultScanTest extends TestCase
     public function testConstruct()
     {
         $expected = [
-            new Entity([
+            new ScanEntity([
                 'code' => 200,
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
                 'url' => 'http://google.com',
             ]),
-            new Entity([
+            new ScanEntity([
                 'code' => 200,
                 'external' => false,
                 'type' => 'text/html;charset=UTF-8',
@@ -92,7 +92,7 @@ class ResultScanTest extends TestCase
      */
     public function testCall()
     {
-        $expected = [new Entity([
+        $expected = [new ScanEntity([
             'code' => 200,
             'external' => true,
             'type' => 'text/html; charset=UTF-8',
@@ -136,13 +136,13 @@ class ResultScanTest extends TestCase
 
         $this->assertInstanceof(ResultScan::class, $result);
         $this->assertEquals([
-            new Entity([
+            new ScanEntity([
                 'code' => 200,
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
                 'url' => 'http://google.com',
             ]),
-            new Entity([
+            new ScanEntity([
                 'code' => 200,
                 'external' => false,
                 'type' => 'text/html;charset=UTF-8',

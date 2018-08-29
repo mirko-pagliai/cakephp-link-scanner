@@ -15,10 +15,10 @@ namespace LinkScanner\Utility;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
-use Cake\ORM\Entity;
 use Exception;
 use InvalidArgumentException;
 use LinkScanner\Http\Client\ScanResponse;
+use LinkScanner\ORM\ScanEntity;
 use LinkScanner\ResultScan;
 use RuntimeException;
 
@@ -269,6 +269,7 @@ class LinkScanner
      *  - `LinkScanner.responseNotOk`: will be triggered when a single url is
      *      scanned and the response is not ok.
      * @param string|array $url Url to scan
+     * @param string|null $referer Referer of this url
      * @return void
      * @uses $ResultScan
      * @uses $currentDepth
@@ -279,7 +280,7 @@ class LinkScanner
      * @uses getScannedLinks()
      * @uses isExternalLink()
      */
-    protected function _scan($url, $referer = false)
+    protected function _scan($url, $referer = null)
     {
         $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
 
@@ -290,7 +291,7 @@ class LinkScanner
         }
 
         //Appends result
-        $item = new Entity(compact('referer', 'url'));
+        $item = new ScanEntity(compact('referer', 'url'));
         $item->code = $response->getStatusCode();
         $item->external = $this->isExternalLink($url);
         $item->type = $response->getContentType();

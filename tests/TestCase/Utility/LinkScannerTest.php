@@ -283,7 +283,7 @@ class LinkScannerTest extends IntegrationTestCase
         $item = $LinkScanner->ResultScan->first();
         $this->assertEquals($item->code, 200);
         $this->assertFalse($item->external);
-        $this->assertFalse($item->referer);
+        $this->assertNull($item->referer);
         $this->assertEquals($item->type, 'text/html');
         $this->assertEquals($item->url, 'http://localhost');
     }
