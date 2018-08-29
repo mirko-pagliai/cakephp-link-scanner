@@ -19,6 +19,11 @@ Then you have to edit `APP/config/bootstrap.php` to load the plugin:
 For more information on how to load the plugin, please refer to the 
 [Cookbook](http://book.cakephp.org/3.0/en/plugins.html#loading-a-plugin).
 
+## To do list
+* allow optional scanning of external links, without recursion;
+* allow the use of a configuration file for the shell;
+* allow to use a regex to exclude links.
+
 ## Versioning
 For transparency and insight into our release cycle and to maintain backward 
 compatibility, *Assets* will be maintained under the 
