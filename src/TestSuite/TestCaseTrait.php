@@ -139,7 +139,7 @@ trait TestCaseTrait
             ->setMethods(['get'])
             ->getMock();
 
-        $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
+        $LinkScanner->Client->method('get')->will($this->returnCallback(function ($url) {
             $responseFile = TESTS . 'response_examples' . DS . 'google_response';
             $bodyFile = TESTS . 'response_examples' . DS . 'google_body';
 
@@ -147,7 +147,7 @@ trait TestCaseTrait
                 $response = safe_unserialize(file_get_contents($responseFile));
                 $body = safe_unserialize(file_get_contents($bodyFile));
             } else {
-                $response = call_user_func_array([new Client, 'get'], func_get_args());
+                $response = (new Client(['redirect' => true]))->get($url);
                 $body = (string)$response->getBody();
 
                 file_put_contents($responseFile, serialize($response));
