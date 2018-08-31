@@ -137,8 +137,19 @@ trait TestCaseTrait
             ->getMock();
 
         $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
-            $response = safe_unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_response'));
-            $body = safe_unserialize(file_get_contents(TESTS . 'response_examples' . DS . 'google_body'));
+            $responseFile = TESTS . 'response_examples' . DS . 'google_response';
+            $bodyFile = TESTS . 'response_examples' . DS . 'google_body';
+
+            if (is_readable($responseFile) && is_readable($bodyFile)) {
+                $response = safe_unserialize(file_get_contents($responseFile));
+                $body = safe_unserialize(file_get_contents($bodyFile));
+            } else {
+                $response = call_user_func_array([new Client, 'get'], func_get_args());
+                $body = (string)$response->getBody();
+
+                file_put_contents($responseFile, serialize($response));
+                file_put_contents($bodyFile, serialize($body));
+            }
 
             return $this->getResponseWithBody($body, $response);
         }));
@@ -157,12 +168,12 @@ trait TestCaseTrait
      */
     protected function getResponseWithBody($body, Response $response = null)
     {
-        $stream = new Stream('php://memory', 'rw');
-        $stream->write($body);
-
         $response = $response ?: new Response;
-        $this->setProperty($response, 'stream', $stream);
 
-        return $response;
+        $stream = new Stream('php://memory', 'wb+');
+        $stream->write($body);
+        $stream->rewind();
+
+        return $response->withBody($stream);
     }
 }
