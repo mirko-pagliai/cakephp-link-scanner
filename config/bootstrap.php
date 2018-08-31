@@ -10,6 +10,8 @@
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
+use Cake\Cache\Cache;
+
 //Sets the default LinkScanner name
 if (!defined('LINK_SCANNER')) {
     define('LINK_SCANNER', 'LinkScanner');
@@ -18,4 +20,13 @@ if (!defined('LINK_SCANNER')) {
 //Sets the path of the lock file. Use `false` if you don't want to use a lock file
 if (!defined('LINK_SCANNER_LOCK_FILE')) {
     define('LINK_SCANNER_LOCK_FILE', TMP . 'link_scanner_lock_file');
+}
+
+if (!Cache::getConfig(LINK_SCANNER)) {
+    Cache::setConfig(LINK_SCANNER, [
+        'className' => 'File',
+        'duration' => '+1 day',
+        'path' => CACHE,
+        'prefix' => null,
+    ]);
 }

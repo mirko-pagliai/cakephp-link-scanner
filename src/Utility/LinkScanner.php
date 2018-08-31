@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\Utility;
 
+use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
@@ -140,7 +141,9 @@ class LinkScanner
      */
     protected function getResponse($url)
     {
-        return new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
+        return Cache::remember(sprintf('response_%s', md5(serialize($url))), function() use ($url) {
+            return new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
+        }, LINK_SCANNER);
     }
 
     /**

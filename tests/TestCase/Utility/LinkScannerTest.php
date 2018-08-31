@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\Test\TestCase\Utility;
 
+use Cake\Cache\Cache;
 use Cake\Http\Client;
 use Cake\TestSuite\IntegrationTestCase;
 use LinkScanner\Http\Client\ScanResponse;
@@ -52,6 +53,8 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::setUp();
 
+        Cache::clearAll();
+
         $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
         $this->EventManager = $this->getEventManager();
         $this->debug = [];
@@ -74,8 +77,13 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testGetResponse()
     {
+        Cache::enable();
+
         $getResponseMethod = function () {
             return $this->invokeMethod($this->LinkScanner, 'getResponse', func_get_args());
+        };
+        $getResponseFromCache = function($url) {
+            return Cache::read(sprintf('response_%s', md5(serialize($url))), LINK_SCANNER);
         };
 
         $this->LinkScanner = $this->getLinkScannerClientGetsFromTests();
@@ -85,16 +93,27 @@ class LinkScannerTest extends IntegrationTestCase
             'home' => 200,
             'noexisting' => 500,
         ] as $pageName => $expectedStatusCode) {
-            $result = $getResponseMethod(['controller' => 'Pages', 'action' => 'display', $pageName]);
-            $this->assertInstanceof(ScanResponse::class, $result);
-            $this->assertEquals($expectedStatusCode, $result->getStatusCode());
-            $this->assertStringStartsWith('text/html', $result->getContentType());
+            $params = ['controller' => 'Pages', 'action' => 'display', $pageName];
+
+            $response = $getResponseMethod($params);
+            $this->assertInstanceof(ScanResponse::class, $response);
+            $this->assertEquals($expectedStatusCode, $response->getStatusCode());
+            $this->assertStringStartsWith('text/html', $response->getContentType());
+
+            $responseFromCache = $getResponseFromCache($params);
+            $this->assertNotEmpty($responseFromCache);
+            $this->assertInstanceof(ScanResponse::class, $responseFromCache);
         }
 
         $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
-        $result = $getResponseMethod('http://www.google.it');
-        $this->assertEquals(200, $result->getStatusCode());
-        $this->assertStringStartsWith('text/html', $result->getContentType());
+        $response = $getResponseMethod('http://www.google.it');
+        $this->assertInstanceof(ScanResponse::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertStringStartsWith('text/html', $response->getContentType());
+
+        $responseFromCache = $getResponseFromCache('http://www.google.it');
+        $this->assertNotEmpty($responseFromCache);
+        $this->assertInstanceof(ScanResponse::class, $responseFromCache);
     }
 
     /**
