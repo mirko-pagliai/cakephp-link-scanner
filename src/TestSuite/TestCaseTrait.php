@@ -130,7 +130,10 @@ trait TestCaseTrait
      */
     protected function getLinkScannerClientReturnsSampleResponse()
     {
-        $LinkScanner = new LinkScanner('http://google.com');
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs(['http://google.com'])
+            ->setMethods(['createLockFile'])
+            ->getMock();
 
         $LinkScanner->Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
