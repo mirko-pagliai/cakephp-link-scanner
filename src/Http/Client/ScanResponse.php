@@ -14,25 +14,27 @@ namespace LinkScanner\Http\Client;
 
 use Cake\Http\Client\Response;
 use DOMDocument;
+use Serializable;
+use Zend\Diactoros\Stream;
 
 /**
  * A scan Response.
  *
  * This class simulates the `Response` class.
  */
-class ScanResponse
+class ScanResponse implements Serializable
 {
     /**
      * @var \Cake\Http\Client\Response
      */
-    protected $Response;
+    public $Response;
 
     /**
      * Extracted links by the `extractLinksFromBody()` method.
      * This property works as a cache of values.
-     * @var array
+     * @var array|null
      */
-    protected $extractedLinks = [];
+    protected $extractedLinks = null;
 
     /**
      * Full base url
@@ -90,6 +92,38 @@ class ScanResponse
     }
 
     /**
+     * Returns the string representation of the object
+     * @return string
+     * @uses $Response
+     * @uses $extractedLinks
+     * @uses $fullBaseUrl
+     */
+    public function serialize()
+    {
+        $body = (string)$this->Response->getBody();
+
+        return serialize([$this->Response, $body, $this->extractedLinks, $this->fullBaseUrl]);
+    }
+
+    /**
+     * Called during unserialization of the object
+     * @param string $serialized String representation of object
+     * @uses $Response
+     * @uses $extractedLinks
+     * @uses $fullBaseUrl
+     */
+    public function unserialize($serialized)
+    {
+        list($this->Response, $body, $this->extractedLinks, $this->fullBaseUrl) = unserialize($serialized);
+
+        $stream = new Stream('php://memory', 'wb+');
+        $stream->write($body);
+        $stream->rewind();
+
+        $this->Response = $this->Response->withBody($stream);
+    }
+
+    /**
      * Checks if the body contains html code
      * @return bool
      */
@@ -110,7 +144,7 @@ class ScanResponse
      */
     public function extractLinksFromBody()
     {
-        if ($this->extractedLinks) {
+        if (!is_null($this->extractedLinks)) {
             return $this->extractedLinks;
         }
 

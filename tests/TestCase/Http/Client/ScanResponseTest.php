@@ -130,4 +130,30 @@ class ScanResponseTest extends TestCase
             $this->assertFalse($ScanResponse->isOk());
         }
     }
+
+    /**
+     * Test for `serialize()` and `unserialize()` methods
+     * @test
+     */
+    public function testSerializeAndUnserialize()
+    {
+        //Creates a response. Sets body and status
+        $response = new Response;
+        $response = $response->withStatus(200);
+        $response = $this->getResponseWithBody('a body', $response);
+
+        //Creates a scan response. Sets extracted links
+        $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
+        $this->setProperty($ScanResponse, 'extractedLinks', ['link1', 'link2']);
+
+        $unserialized = unserialize(serialize($ScanResponse));
+        $this->assertInstanceof(ScanResponse::class, $unserialized);
+        $this->assertEquals($this->getProperty($unserialized, 'extractedLinks'), ['link1', 'link2']);
+        $this->assertEquals($this->getProperty($unserialized, 'fullBaseUrl'), Configure::read('App.fullBaseUrl'));
+        $this->assertNotEmpty($this->getProperty($unserialized, 'tags'));
+
+        $this->assertInstanceof(Response::class, $unserialized->Response);
+        $this->assertTrue($unserialized->Response->isOk());
+        $this->assertTextEquals('a body', $unserialized->Response->getBody());
+    }
 }
