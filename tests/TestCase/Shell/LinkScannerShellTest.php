@@ -90,28 +90,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         return tempnam(TMP, 'scanExport');
     }
 
-    public function testParam()
-    {
-        $this->assertNull($this->LinkScannerShell->param('verbose'));
-        $this->assertNull($this->LinkScannerShell->param('veryVerbose'));
-
-        $this->LinkScannerShell->params['verbose'] = true;
-        $this->assertTrue($this->LinkScannerShell->param('verbose'));
-        $this->assertNull($this->LinkScannerShell->param('veryVerbose'));
-
-        $this->LinkScannerShell->params['veryVerbose'] = true;
-        $this->assertTrue($this->LinkScannerShell->param('verbose'));
-        $this->assertTrue($this->LinkScannerShell->param('veryVerbose'));
-
-        unset($this->LinkScannerShell->params['verbose']);
-        $this->assertTrue($this->LinkScannerShell->param('verbose'));
-        $this->assertTrue($this->LinkScannerShell->param('veryVerbose'));
-
-        unset($this->LinkScannerShell->params['veryVerbose']);
-        $this->assertNull($this->LinkScannerShell->param('verbose'));
-        $this->assertNull($this->LinkScannerShell->param('veryVerbose'));
-    }
-
     /**
      * Test for `scan()` method
      * @test
@@ -185,7 +163,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     public function testScanVerbose()
     {
         $filename = $this->getTempname();
-        $this->LinkScannerShell->params['veryVerbose'] = true;
+        $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan($filename);
         $messages = $this->out->messages();
         $count = count($messages);
@@ -257,7 +235,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             'quiet',
             'timeout',
             'verbose',
-            'veryVerbose',
         ], $scanSubcommandParser->options());
     }
 }

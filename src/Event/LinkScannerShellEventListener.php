@@ -107,9 +107,7 @@ class LinkScannerShellEventListener implements EventListenerInterface
      */
     public function foundLinkToBeScanned(Event $event, $link)
     {
-        if ($this->LinkScannerShell->param('veryVerbose')) {
-            $this->LinkScannerShell->out(__d('link-scanner', 'Link found: {0}', $link));
-        }
+        $this->LinkScannerShell->verbose(__d('link-scanner', 'Link found: {0}', $link));
 
         return true;
     }

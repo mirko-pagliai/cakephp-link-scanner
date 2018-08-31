@@ -42,21 +42,6 @@ class LinkScannerShell extends Shell
     }
 
     /**
-     * Safely access the values in $this->params.
-     *
-     * This method overwrites `Shell::param()` so if the `veryVerbose` mode is
-     *  enabled, the` verbose` mode will also be enabled
-     * @param string $name The name of the parameter to get
-     * @return string|bool|null Value. Will return `nul`l if it doesn't exist
-     */
-    public function param($name)
-    {
-        $name = $name === 'verbose' && parent::param('veryVerbose') ? 'veryVerbose' : $name;
-
-        return parent::param($name);
-    }
-
-    /**
      * Performs a complete scan
      * @param string $filename Filename where to export
      * @return void
@@ -117,9 +102,6 @@ class LinkScannerShell extends Shell
                     'timeout' => [
                         'help' => __d('link-scanner', 'Timeout in seconds for each request. Default: {0}', $this->LinkScanner->Client->getConfig('timeout')),
                         'short' => 't',
-                    ],
-                    'veryVerbose' => [
-                        'help' => __d('link-scanner', 'Very verbose mode'),
                     ],
                 ],
             ],
