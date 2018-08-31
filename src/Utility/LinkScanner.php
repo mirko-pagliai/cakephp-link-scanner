@@ -141,7 +141,7 @@ class LinkScanner
      */
     protected function getResponse($url)
     {
-        return Cache::remember(sprintf('response_%s', md5(serialize($url))), function() use ($url) {
+        return Cache::remember(sprintf('response_%s', md5(serialize($url))), function () use ($url) {
             return new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
         }, LINK_SCANNER);
     }

@@ -108,6 +108,7 @@ class ScanResponse implements Serializable
     /**
      * Called during unserialization of the object
      * @param string $serialized String representation of object
+     * @return void
      * @uses $Response
      * @uses $extractedLinks
      * @uses $fullBaseUrl
