@@ -30,7 +30,7 @@ class ScanResponse implements Serializable
     public $Response;
 
     /**
-     * Extracted links by the `extractLinksFromBody()` method.
+     * Extracted links by the `getExtractedLinks()` method.
      * This property works as a cache of values.
      * @var array|null
      */
@@ -136,6 +136,19 @@ class ScanResponse implements Serializable
     }
 
     /**
+     * Gets the content type from the request header
+     * @return string
+     * @uses $Response
+     */
+    public function getContentType()
+    {
+        $contentType = $this->Response->getHeaderLine('content-type');
+
+        //This removes an eventual charset
+        return trim(first_value(explode(';', $contentType)));
+    }
+
+    /**
      * Internal method to extract all links from an HTML string
      * @return array
      * @uses $extractedLinks
@@ -143,7 +156,7 @@ class ScanResponse implements Serializable
      * @uses $tags
      * @uses body()
      */
-    public function extractLinksFromBody()
+    public function getExtractedLinks()
     {
         if (!is_null($this->extractedLinks)) {
             return $this->extractedLinks;
@@ -183,19 +196,6 @@ class ScanResponse implements Serializable
         $this->extractedLinks = array_unique($links);
 
         return $this->extractedLinks;
-    }
-
-    /**
-     * Gets the content type from the request header
-     * @return string
-     * @uses $Response
-     */
-    public function getContentType()
-    {
-        $contentType = $this->Response->getHeaderLine('content-type');
-
-        //This removes an eventual charset
-        return trim(first_value(explode(';', $contentType)));
     }
 
     /**

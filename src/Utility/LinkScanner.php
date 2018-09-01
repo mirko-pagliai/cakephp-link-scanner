@@ -325,7 +325,7 @@ class LinkScanner
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links
-        $linksToScan = array_diff($response->extractLinksFromBody(), $this->getScannedLinks());
+        $linksToScan = array_diff($response->getExtractedLinks(), $this->getScannedLinks());
 
         foreach ($linksToScan as $link) {
             //Checks that the link has not already been scanned

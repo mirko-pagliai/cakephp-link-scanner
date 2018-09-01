@@ -76,18 +76,6 @@ class ScanResponseTest extends TestCase
             return $ScanResponse->getExtractedLinks();
         };
 
-        $html = '<a href="/page.html#fragment">Link</a>' . PHP_EOL .
-            '<map name="example"><area href="area.htm"></map>' . PHP_EOL .
-            '<audio src="/file.mp3"></audio>' . PHP_EOL .
-            '<embed src="helloworld.swf">' . PHP_EOL .
-            '<frame src="frame1.html"></frame>' . PHP_EOL .
-            '<iframe src="frame2.html"></iframe>' . PHP_EOL .
-            '<img src="pic.jpg" />' . PHP_EOL .
-            '<link rel="stylesheet" type="text/css" href="style.css">' . PHP_EOL .
-            '<script type="text/javascript" href="script.js" />' . PHP_EOL .
-            '<audio><source src="file2.mp3" type="audio/mpeg"></audio>' . PHP_EOL .
-            '<video><track src="subtitles_en.vtt"></video>' . PHP_EOL .
-            '<video src="//localhost/movie.mp4"></video>';
         $expected = [
             'http://localhost/page.html',
             'http://localhost/area.htm',
@@ -101,6 +89,7 @@ class ScanResponseTest extends TestCase
             'http://localhost/subtitles_en.vtt',
             'http://localhost/movie.mp4',
         ];
+        $html = file_get_contents(TESTS . 'examples' . DS . 'pagewithsomelinks.html');
         $this->assertEquals($expected, $getExtractedLinksMethod($html));
 
         $html = '<html><body>' . $html . '</body></html>';

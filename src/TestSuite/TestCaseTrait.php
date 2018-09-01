@@ -123,7 +123,7 @@ trait TestCaseTrait
     /**
      * Returns a stubbed `LinkScanner` instance, where the `Client::get()`
      *  method always returns a sample response which is read from
-     *  `response_examples/google_response` and `response_examples/google_body`
+     *  `examples/responses/google_response` and `examples/responses/google_body`
      *  files
      * @return \LinkScanner\Utility\LinkScanner
      * @uses getResponseWithBody()
@@ -140,8 +140,8 @@ trait TestCaseTrait
             ->getMock();
 
         $LinkScanner->Client->method('get')->will($this->returnCallback(function ($url) {
-            $responseFile = TESTS . 'response_examples' . DS . 'google_response';
-            $bodyFile = TESTS . 'response_examples' . DS . 'google_body';
+            $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
+            $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
 
             if (is_readable($responseFile) && is_readable($bodyFile)) {
                 $response = safe_unserialize(file_get_contents($responseFile));
