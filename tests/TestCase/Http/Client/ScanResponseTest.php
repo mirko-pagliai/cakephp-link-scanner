@@ -48,16 +48,32 @@ class ScanResponseTest extends TestCase
     }
 
     /**
-     * Test for `extractLinksFromBody()` method
+     * Test for `getContentType()` method
      * @test
      */
-    public function testExtractLinksFromBody()
+    public function testGetContentType()
     {
-        $extractLinksFromBodyMethod = function ($body) {
-            $response = $this->getResponseWithBody($body);
-            $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
+        $contentTypes = [
+            'text/html; charset=UTF-8' => 'text/html',
+        ];
 
-            return $this->invokeMethod($ScanResponse, 'extractLinksFromBody');
+        foreach ($contentTypes as $originalContentType => $expectedContentType) {
+            $Response = (new Response)->withHeader('content-type', $originalContentType);
+            $ScanResponse = new ScanResponse($Response, Configure::read('App.fullBaseUrl'));
+            $this->assertEquals($expectedContentType, $ScanResponse->getContentType());
+        }
+    }
+
+    /**
+     * Test for `getExtractedLinks()` method
+     * @test
+     */
+    public function testGetExtractedLinks()
+    {
+        $getExtractedLinksMethod = function ($body) {
+            $ScanResponse = new ScanResponse($this->getResponseWithBody($body), Configure::read('App.fullBaseUrl'));
+
+            return $ScanResponse->getExtractedLinks();
         };
 
         $html = '<a href="/page.html#fragment">Link</a>' . PHP_EOL .
@@ -85,24 +101,24 @@ class ScanResponseTest extends TestCase
             'http://localhost/subtitles_en.vtt',
             'http://localhost/movie.mp4',
         ];
-        $this->assertEquals($expected, $extractLinksFromBodyMethod($html));
+        $this->assertEquals($expected, $getExtractedLinksMethod($html));
 
         $html = '<html><body>' . $html . '</body></html>';
-        $this->assertEquals($expected, $extractLinksFromBodyMethod($html));
+        $this->assertEquals($expected, $getExtractedLinksMethod($html));
 
         $html = '<b>No links here!</b>';
-        $this->assertEquals([], $extractLinksFromBodyMethod($html));
+        $this->assertEquals([], $getExtractedLinksMethod($html));
 
         $html = '<a href="page.html">Link</a>' . PHP_EOL .
             '<a href="' . Configure::read('App.fullBaseUrl') . '/page.html">Link</a>';
         $expected = ['http://localhost/page.html'];
-        $this->assertEquals($expected, $extractLinksFromBodyMethod($html));
+        $this->assertEquals($expected, $getExtractedLinksMethod($html));
 
         //Checks that the returned result is the same as that saved in the
         //  `extractedLinks` property as a cache
         $response = $this->getResponseWithBody($html);
         $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
-        $result = $this->invokeMethod($ScanResponse, 'extractLinksFromBody');
+        $result = $this->invokeMethod($ScanResponse, 'getExtractedLinks');
         $expected = $this->getProperty($ScanResponse, 'extractedLinks');
         $this->assertEquals($expected, $result);
 
@@ -110,7 +126,7 @@ class ScanResponseTest extends TestCase
         //  cached value will be returned
         $response = $this->getResponseWithBody('another body content...');
         $this->setProperty($ScanResponse, 'Response', $response);
-        $result = $this->invokeMethod($ScanResponse, 'extractLinksFromBody');
+        $result = $this->invokeMethod($ScanResponse, 'getExtractedLinks');
         $this->assertEquals($expected, $result);
     }
 
