@@ -104,6 +104,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         $messages = $this->out->messages();
         $this->assertCount(5, $messages);
+
         $this->assertRegexp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', $fullBaseUrlRegex), current($messages));
         $this->assertRegexp(sprintf('/^Checking %s ...$/', $fullBaseUrlRegex), next($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
@@ -142,11 +143,13 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanParams()
     {
+        $filename = $this->getTempname();
         $this->LinkScannerShell->params = [
             'maxDepth' => 3,
             'fullBaseUrl' => 'http://anotherFullBaseUrl',
         ];
-        $this->LinkScannerShell->scan($this->getTempname());
+        $this->LinkScannerShell->scan($filename);
+        $this->assertFileExists($filename);
 
         $this->assertTextContains('Scan started for ' . $this->LinkScannerShell->params['fullBaseUrl'], $this->out->messages()[0]);
         $this->assertEmpty($this->err->messages());
@@ -166,6 +169,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $filename = $this->getTempname();
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan($filename);
+        $this->assertFileExists($filename);
+        
         $messages = $this->out->messages();
         $count = count($messages);
 
