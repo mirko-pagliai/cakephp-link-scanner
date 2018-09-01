@@ -143,14 +143,17 @@ trait TestCaseTrait
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
 
-            if (is_readable($responseFile) && is_readable($bodyFile)) {
+            if (is_readable($responseFile)) {
                 $response = safe_unserialize(file_get_contents($responseFile));
-                $body = safe_unserialize(file_get_contents($bodyFile));
             } else {
                 $response = (new Client(['redirect' => true]))->get($url);
-                $body = (string)$response->getBody();
-
                 file_put_contents($responseFile, serialize($response));
+            }
+
+            if (is_readable($bodyFile)) {
+                $body = safe_unserialize(file_get_contents($bodyFile));
+            } else {
+                $body = (string)$response->getBody();
                 file_put_contents($bodyFile, serialize($body));
             }
 
