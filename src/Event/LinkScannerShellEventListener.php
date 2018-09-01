@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\Event;
 
+use Cake\Cache\Cache;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\I18n\Time;
@@ -166,9 +167,18 @@ class LinkScannerShellEventListener implements EventListenerInterface
         }
 
         $startTime = (new Time($startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
-        $this->LinkScannerShell->out(__d('link-scanner', 'Scan started for {0} at {1}', $fullBaseUrl, $startTime));
+        $this->LinkScannerShell->info(__d('link-scanner', 'Scan started for {0} at {1}', $fullBaseUrl, $startTime));
 
         if ($this->LinkScannerShell->param('verbose')) {
+            $this->LinkScannerShell->hr();
+
+            $cache = Cache::getConfig(LINK_SCANNER);
+            if (Cache::enabled() && !empty($cache['duration'])) {
+                $this->LinkScannerShell->success(__d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']));
+            } else {
+                $this->LinkScannerShell->info(__d('link-scanner', 'The cache is disabled'));
+            }
+
             $this->LinkScannerShell->hr();
         }
 

@@ -104,11 +104,11 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         $messages = $this->out->messages();
         $this->assertCount(5, $messages);
-        $this->assertRegexp(sprintf('/^Scan started for %s at [\d\-]+\s[\d\:]+$/', $fullBaseUrlRegex), current($messages));
+        $this->assertRegexp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', $fullBaseUrlRegex), current($messages));
         $this->assertRegexp(sprintf('/^Checking %s ...$/', $fullBaseUrlRegex), next($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
-        $this->assertRegexp('/^<success>Results have been exported to [\w\/\-\:\.\\\d]+<\/success>$/', next($messages));
+        $this->assertRegexp('/Results have been exported to [\w\/\-\:\.\\\d]+/', next($messages));
         $this->assertEmpty($this->err->messages());
 
         foreach ([
@@ -148,7 +148,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         ];
         $this->LinkScannerShell->scan($this->getTempname());
 
-        $this->assertStringStartsWith('Scan started for ' . $this->LinkScannerShell->params['fullBaseUrl'], $this->out->messages()[0]);
+        $this->assertTextContains('Scan started for ' . $this->LinkScannerShell->params['fullBaseUrl'], $this->out->messages()[0]);
         $this->assertEmpty($this->err->messages());
 
         foreach ($this->LinkScannerShell->params as $name => $value) {
@@ -162,44 +162,42 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanVerbose()
     {
+        $fullBaseUrl = $this->LinkScannerShell->LinkScanner->fullBaseUrl;
         $filename = $this->getTempname();
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan($filename);
         $messages = $this->out->messages();
         $count = count($messages);
 
-        //First three lines
-        $this->assertRegexp('/^\-{63}$/', $messages[0]);
-        $this->assertRegexp(
-            sprintf('/^Scan started for %s at [\d\-]+\s[\d\:]+$/', preg_quote($this->LinkScannerShell->LinkScanner->fullBaseUrl, '/')),
-            $messages[1]
-        );
-        $this->assertRegexp('/^\-{63}$/', $messages[2]);
+        //First five lines
+        $this->assertRegexp('/^\-{63}$/', current($messages));
+        $this->assertTextStartsWith(sprintf('<info>Scan started for %s', $fullBaseUrl), next($messages));
+        $this->assertRegexp(sprintf('/t [\d\-]+\s[\d\:]+<\/info>$/'), current($messages));
+        $this->assertRegexp('/^\-{63}$/', next($messages));
+        $this->assertTextContains('The cache is disabled', next($messages));
+        $this->assertRegexp('/^\-{63}$/', next($messages));
 
         //Last five lines
-        $this->assertRegexp(
-            sprintf('/^<success>Results have been exported to %s<\/success>$/', preg_quote($filename, DS)),
-            $messages[$count - 1]
-        );
-        $this->assertRegexp('/^\-{63}$/', $messages[$count - 2]);
-        $this->assertRegexp('/^Total scanned links: \d+$/', $messages[$count - 3]);
-        $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', $messages[$count - 4]);
-        $this->assertRegexp('/^\-{63}$/', $messages[$count - 5]);
+        while (key($messages) !== $count - 5) { next($messages); };
+        $this->assertRegexp('/^\-{63}$/', current($messages));
+        $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
+        $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
+        $this->assertRegexp('/^\-{63}$/', next($messages));
+        $this->assertTextStartsWith('<success>Results have been exported to ', next($messages));
+        $this->assertTextEndsWith(sprintf('%s</success>', $filename), current($messages));
 
         //Removes already checked lines
-        foreach ([0, 1, 2, $count - 1, $count - 2, $count - 3, $count - 4, $count - 5] as $line) {
-            unset($messages[$line]);
-        }
+        $messages = array_slice($messages, 5, -5);
 
-        //Checks intermediate lines
+        //Checks intermediate lines. It chunks them into groups of three
         $i = 0;
         $chunkMessages = array_chunk($messages, 3);
-        $count = count($chunkMessages);
         foreach ($chunkMessages as $messages) {
             $this->assertRegExp('/^Checking .+ \.{3}$/', $messages[0]);
             $this->assertEquals('<success>OK</success>', $messages[1]);
 
-            if ($i !== $count - 1) {
+            //Not for last line
+            if ($i !== count($chunkMessages) - 1) {
                 $this->assertRegexp('/^Link found: .+/', $messages[2]);
             }
             $i++;
