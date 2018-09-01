@@ -40,6 +40,7 @@ define('CONFIG', APP . 'config' . DS);
 define('LOGS', TMP);
 define('SESSIONS', TMP . 'sessions' . DS);
 
+safe_mkdir(sys_get_temp_dir() . DS . 'cakephp-link-scanner');
 safe_mkdir(TMP);
 safe_mkdir(LOGS);
 safe_mkdir(SESSIONS);
