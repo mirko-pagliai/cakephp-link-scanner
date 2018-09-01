@@ -178,7 +178,9 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertRegexp('/^\-{63}$/', next($messages));
 
         //Last five lines
-        while (key($messages) !== $count - 5) { next($messages); };
+        while (key($messages) !== $count - 5) {
+            next($messages);
+        };
         $this->assertRegexp('/^\-{63}$/', current($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
