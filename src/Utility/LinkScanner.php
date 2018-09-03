@@ -317,7 +317,7 @@ class LinkScanner
         }
 
         //Returns, if the response body does not contain html code
-        if (!$response->bodyIsHtml()) {
+        if (!$response->BodyParser->isHtml()) {
             $this->dispatchEvent(LINK_SCANNER . '.responseNotHtml', [$url]);
 
             return;
@@ -325,7 +325,7 @@ class LinkScanner
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links
-        $linksToScan = array_diff($response->getExtractedLinks(), $this->getScannedLinks());
+        $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->getScannedLinks());
 
         foreach ($linksToScan as $link) {
             //Checks that the link has not already been scanned

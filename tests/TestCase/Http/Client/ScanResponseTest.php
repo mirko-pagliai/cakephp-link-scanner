@@ -18,6 +18,7 @@ use Cake\TestSuite\Stub\Response as StubResponse;
 use Cake\TestSuite\TestCase;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\TestSuite\TestCaseTrait;
+use Tools\BodyParser;
 
 /**
  * ScanResponseTest class
@@ -25,27 +26,6 @@ use LinkScanner\TestSuite\TestCaseTrait;
 class ScanResponseTest extends TestCase
 {
     use TestCaseTrait;
-
-    /**
-     * Test for `bodyIsHtml()` method
-     * @test
-     */
-    public function testBodyIsHtml()
-    {
-        foreach ([
-            '<b>String</b>' => true,
-            '</b>' => true,
-            '<b>String' => true,
-            '<tag>String</tag>' => true,
-            'String' => false,
-            '' => false,
-        ] as $string => $expected) {
-            $response = $this->getResponseWithBody($string);
-            $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
-
-            $this->assertEquals($expected, $ScanResponse->bodyIsHtml());
-        }
-    }
 
     /**
      * Test for `getContentType()` method
@@ -62,62 +42,6 @@ class ScanResponseTest extends TestCase
             $ScanResponse = new ScanResponse($Response, Configure::read('App.fullBaseUrl'));
             $this->assertEquals($expectedContentType, $ScanResponse->getContentType());
         }
-    }
-
-    /**
-     * Test for `getExtractedLinks()` method
-     * @test
-     */
-    public function testGetExtractedLinks()
-    {
-        $getExtractedLinksMethod = function ($body) {
-            $ScanResponse = new ScanResponse($this->getResponseWithBody($body), Configure::read('App.fullBaseUrl'));
-
-            return $ScanResponse->getExtractedLinks();
-        };
-
-        $expected = [
-            'http://localhost/page.html',
-            'http://localhost/area.htm',
-            'http://localhost/file.mp3',
-            'http://localhost/helloworld.swf',
-            'http://localhost/frame1.html',
-            'http://localhost/frame2.html',
-            'http://localhost/pic.jpg',
-            'http://localhost/style.css',
-            'http://localhost/script.js',
-            'http://localhost/file2.mp3',
-            'http://localhost/subtitles_en.vtt',
-            'http://localhost/movie.mp4',
-        ];
-        $html = file_get_contents(TESTS . 'examples' . DS . 'page_with_some_links.html');
-        $this->assertEquals($expected, $getExtractedLinksMethod($html));
-
-        $html = '<html><body>' . $html . '</body></html>';
-        $this->assertEquals($expected, $getExtractedLinksMethod($html));
-
-        $html = '<b>No links here!</b>';
-        $this->assertEquals([], $getExtractedLinksMethod($html));
-
-        $html = '<a href="page.html">Link</a>' . PHP_EOL .
-            '<a href="' . Configure::read('App.fullBaseUrl') . '/page.html">Link</a>';
-        $expected = [Configure::read('App.fullBaseUrl') . '/page.html'];
-        $this->assertEquals($expected, $getExtractedLinksMethod($html));
-
-        //Checks that the returned result is the same as that saved in the
-        //  `extractedLinks` property as a cache
-        $response = $this->getResponseWithBody($html);
-        $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
-        $result = $this->invokeMethod($ScanResponse, 'getExtractedLinks');
-        $expected = $this->getProperty($ScanResponse, 'extractedLinks');
-        $this->assertEquals($expected, $result);
-
-        //Changes the response body. The result remains unchanged, because the
-        //  cached value will be returned
-        $response = $this->getResponseWithBody('another body content...');
-        $this->setProperty($ScanResponse, 'Response', $response);
-        $result = $this->invokeMethod($ScanResponse, 'getExtractedLinks');
-        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -143,23 +67,18 @@ class ScanResponseTest extends TestCase
      */
     public function testSerializeAndUnserialize()
     {
-        //Creates a response. Sets body and status
+        //Creates a response (with body and status) and a scan response
         $response = new Response;
         $response = $response->withStatus(200);
-        $response = $this->getResponseWithBody('a body', $response);
-
-        //Creates a scan response. Sets extracted links
+        $response = $this->getResponseWithBody('a body with <a href="link1.html">Link</a>', $response);
         $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
-        $this->setProperty($ScanResponse, 'extractedLinks', ['link1', 'link2']);
+        $ScanResponse = unserialize(serialize($ScanResponse));
 
-        $unserialized = unserialize(serialize($ScanResponse));
-        $this->assertInstanceof(ScanResponse::class, $unserialized);
-        $this->assertEquals($this->getProperty($unserialized, 'extractedLinks'), ['link1', 'link2']);
-        $this->assertEquals($this->getProperty($unserialized, 'fullBaseUrl'), Configure::read('App.fullBaseUrl'));
-        $this->assertNotEmpty($this->getProperty($unserialized, 'tags'));
+        $this->assertInstanceof(ScanResponse::class, $ScanResponse);
+        $this->assertEquals($this->getProperty($ScanResponse, 'fullBaseUrl'), Configure::read('App.fullBaseUrl'));
 
-        $this->assertInstanceof(Response::class, $unserialized->Response);
-        $this->assertTrue($unserialized->Response->isOk());
-        $this->assertTextEquals('a body', $unserialized->Response->getBody());
+        $this->assertInstanceof(BodyParser::class, $ScanResponse->BodyParser);
+        $this->assertEquals(['http://localhost/link1.html'], $ScanResponse->BodyParser->extractLinks());
+        $this->assertTrue($ScanResponse->BodyParser->isHtml());
     }
 }
