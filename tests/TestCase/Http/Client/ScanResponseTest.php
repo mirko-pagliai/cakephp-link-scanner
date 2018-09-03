@@ -85,11 +85,12 @@ class ScanResponseTest extends TestCase
             'http://localhost/frame2.html',
             'http://localhost/pic.jpg',
             'http://localhost/style.css',
+            'http://localhost/script.js',
             'http://localhost/file2.mp3',
             'http://localhost/subtitles_en.vtt',
             'http://localhost/movie.mp4',
         ];
-        $html = file_get_contents(TESTS . 'examples' . DS . 'pagewithsomelinks.html');
+        $html = file_get_contents(TESTS . 'examples' . DS . 'page_with_some_links.html');
         $this->assertEquals($expected, $getExtractedLinksMethod($html));
 
         $html = '<html><body>' . $html . '</body></html>';
@@ -100,7 +101,7 @@ class ScanResponseTest extends TestCase
 
         $html = '<a href="page.html">Link</a>' . PHP_EOL .
             '<a href="' . Configure::read('App.fullBaseUrl') . '/page.html">Link</a>';
-        $expected = ['http://localhost/page.html'];
+        $expected = [Configure::read('App.fullBaseUrl') . '/page.html'];
         $this->assertEquals($expected, $getExtractedLinksMethod($html));
 
         //Checks that the returned result is the same as that saved in the
