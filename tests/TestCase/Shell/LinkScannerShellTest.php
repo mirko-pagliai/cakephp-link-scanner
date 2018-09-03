@@ -170,7 +170,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan($filename);
         $this->assertFileExists($filename);
-        
+
         $messages = $this->out->messages();
         $count = count($messages);
 
