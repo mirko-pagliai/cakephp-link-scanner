@@ -118,41 +118,6 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `reset()` method
-     * @test
-     */
-    public function testReset()
-    {
-        $this->LinkScanner->setMaxDepth(1)->scan();
-
-        $exampleValues = [
-            'currentDepth' => 1,
-            'externalLinks' => ['value'],
-            'endTime' => 2,
-            'startTime' => 1,
-        ];
-        $expectedValuesAfterReset = [
-            'currentDepth' => 0,
-            'externalLinks' => [],
-            'endTime' => 0,
-            'startTime' => 0,
-        ];
-
-        foreach ($exampleValues as $name => $value) {
-            $this->setProperty($this->LinkScanner, $name, $value);
-        }
-
-        $this->LinkScanner = $this->LinkScanner->reset();
-        $this->assertInstanceof(LinkScanner::class, $this->LinkScanner);
-        $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
-        $this->assertEmpty($this->LinkScanner->ResultScan->toArray());
-
-        foreach ($expectedValuesAfterReset as $name => $expectedValue) {
-            $this->assertEquals($expectedValue, $this->LinkScanner->$name);
-        }
-    }
-
-    /**
      * Test for `export()` method
      * @test
      */
@@ -252,11 +217,8 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertGreaterThan(1, $this->LinkScanner->externalLinks);
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setMethods(['_scan', 'reset'])
+            ->setMethods(['_scan'])
             ->getMock();
-
-        $LinkScanner->expects($this->once())
-             ->method('reset');
 
         $LinkScanner->expects($this->once())
              ->method('_scan');

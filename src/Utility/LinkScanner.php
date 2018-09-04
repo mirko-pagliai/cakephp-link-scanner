@@ -242,17 +242,6 @@ class LinkScanner
     }
 
     /**
-     * Resets some properties whose initial value may have changed during the
-     *  last scan
-     * @return \self
-     * @uses $fullBaseUrl
-     */
-    public function reset()
-    {
-        return new self($this->fullBaseUrl);
-    }
-
-    /**
      * Internal method to scan.
      *
      * This method takes an url as a parameter. It scans that URL and
@@ -363,13 +352,10 @@ class LinkScanner
      * @uses $startTime
      * @uses _scan()
      * @uses createLockFile()
-     * @uses reset()
      */
     public function scan()
     {
         $this->createLockFile();
-
-        $this->reset();
 
         $this->startTime = time();
 
