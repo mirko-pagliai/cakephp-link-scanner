@@ -65,16 +65,6 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
     }
 
     /**
-     * Creates a new iterator from an `ArrayObject` instance
-     * @return \Cake\Collection\Collection
-     * @uses $Collection
-     */
-    public function getIterator()
-    {
-        return $this->Collection;
-    }
-
-    /**
      * Appends an item
      * @param array|Entity $item Item to append as `ScanEntity` or as array that
      *  will be transformed into a `ScanEntity`
@@ -109,6 +99,16 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
     public function count()
     {
         return $this->Collection->count();
+    }
+
+    /**
+     * Creates a new iterator from an `ArrayObject` instance
+     * @return \Cake\Collection\Collection
+     * @uses $Collection
+     */
+    public function getIterator()
+    {
+        return $this->Collection;
     }
 
     /**
