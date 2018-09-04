@@ -97,7 +97,7 @@ trait TestCaseTrait
             ->getMock();
 
         //This ensures the `getScannedUrl()` method returns all the urls as strings
-        $ResultScan->method('getScannedUrl')->will($this->returnCallback(function() use ($ResultScan) {
+        $ResultScan->method('getScannedUrl')->will($this->returnCallback(function () use ($ResultScan) {
             return $ResultScan->getIterator()->extract('url')->map(function ($url) {
                 return is_string($url) ? $url : Router::url($url, true);
             })->toArray();
