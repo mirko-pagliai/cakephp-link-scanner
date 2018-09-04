@@ -70,23 +70,26 @@ trait TestCaseTrait
      */
     protected function getLinkScannerClientGetsFromTests($fullBaseUrl = null)
     {
+        $ResultScan = $this->getMockBuilder(ResultScan::class)
+            ->setMethods(['getScannedUrl'])
+            ->getMock();
+
+        //This ensures the `getScannedUrl()` method returns all the urls as strings
+        $ResultScan->method('getScannedUrl')->will($this->returnCallback(function() use ($ResultScan) {
+            return $ResultScan->getIterator()->extract('url')->map(function ($url) {
+                return is_string($url) ? $url : Router::url($url, true);
+            })->toArray();
+        }));
+
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->disableOriginalConstructor()
-            ->setMethods(['createLockFile', 'getScannedLinks', 'isExternalLink', 'setFullBaseUrl'])
+            ->setMethods(['createLockFile', 'isExternalLink', 'setFullBaseUrl'])
             ->getMock();
 
         //This rewrites the instructions of the constructor
         $fullBaseUrl = clean_url(is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true), true);
-        $this->setProperty($LinkScanner, 'ResultScan', new ResultScan);
+        $this->setProperty($LinkScanner, 'ResultScan', $ResultScan);
         $this->setProperty($LinkScanner, 'fullBaseUrl', $fullBaseUrl);
-
-        //This ensures the `getScannedLinks()` method returns all the urls as strings
-        $LinkScanner->method('getScannedLinks')
-            ->will($this->returnCallback(function () use ($LinkScanner) {
-                return $LinkScanner->ResultScan->extract('url')->map(function ($url) {
-                    return is_string($url) ? $url : Router::url($url, true);
-                })->toArray();
-            }));
 
         //`isExternalLink()` method returns false for links that start with
         //  `http://localhost/pages/`

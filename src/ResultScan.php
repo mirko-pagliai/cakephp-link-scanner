@@ -112,6 +112,16 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
     }
 
     /**
+     * Get the already scanned links
+     * @return array
+     * @uses $Collection
+     */
+    public function getScannedUrl()
+    {
+        return $this->Collection->extract('url')->toArray();
+    }
+
+    /**
      * Returns a string representation of this object that can be used to
      *  reconstruct it
      * @return string

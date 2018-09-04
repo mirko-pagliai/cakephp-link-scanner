@@ -147,16 +147,6 @@ class LinkScanner
     }
 
     /**
-     * Internal method to get the already scanned links
-     * @return array
-     * @uses $ResultScan
-     */
-    protected function getScannedLinks()
-    {
-        return $this->ResultScan->extract('url')->toArray();
-    }
-
-    /**
      * Internal method to check if a link is external
      * @param string $link Link to check
      * @return bool
@@ -269,7 +259,6 @@ class LinkScanner
      * @uses $maxDepth
      * @uses _scan()
      * @uses getResponse()
-     * @uses getScannedLinks()
      * @uses isExternalLink()
      */
     protected function _scan($url, $referer = null)
@@ -314,11 +303,11 @@ class LinkScanner
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links
-        $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->getScannedLinks());
+        $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->ResultScan->getScannedUrl());
 
         foreach ($linksToScan as $link) {
             //Checks that the link has not already been scanned
-            if (in_array($link, $this->getScannedLinks())) {
+            if (in_array($link, $this->ResultScan->getScannedUrl())) {
                 continue;
             }
 
