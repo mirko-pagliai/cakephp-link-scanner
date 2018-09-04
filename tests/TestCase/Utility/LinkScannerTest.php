@@ -13,7 +13,6 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
-use Cake\Http\Client;
 use Cake\TestSuite\IntegrationTestCase;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
@@ -290,8 +289,7 @@ class LinkScannerTest extends IntegrationTestCase
     public function testScanNoExistingUrl()
     {
         $LinkScanner = new LinkScanner('http://noExisting');
-        $LinkScanner->Client = new Client(['timeout' => 1]);
-        $LinkScanner->scan();
+        $LinkScanner->setTimeout(1)->scan();
         $this->assertTrue($LinkScanner->ResultScan->isEmpty());
     }
 
@@ -408,7 +406,7 @@ class LinkScannerTest extends IntegrationTestCase
         $LinkScanner = new LinkScanner;
         $this->assertEquals(30, $LinkScanner->Client->getConfig('timeout'));
 
-        foreach ([0, 1] as $timeout) {
+        foreach ([0, 1, 30] as $timeout) {
             $result = $LinkScanner->setTimeout($timeout);
             $this->assertInstanceof(LinkScanner::class, $result);
             $this->assertEquals($timeout, $LinkScanner->Client->getConfig('timeout'));

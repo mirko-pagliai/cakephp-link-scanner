@@ -70,6 +70,28 @@ trait TestCaseTrait
      */
     protected function getLinkScannerClientGetsFromTests($fullBaseUrl = null)
     {
+        $Client = $this->getMockBuilder(Client::class)
+            ->setMethods(['get'])
+            ->getMock();
+
+        //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
+        //It also analyzes the url of the test application and transforms them into parameter arrays
+        $Client->method('get')->will($this->returnCallback(function () {
+            $args = func_get_args();
+
+            if (is_string($args[0])) {
+                if ($args[0] === 'http://localhost') {
+                    $args[0] = ['controller' => 'Pages', 'action' => 'display', 'home'];
+                } elseif (preg_match('/^http:\/\/localhost\/pages\/(.+)/', $args[0], $matches)) {
+                    $args[0] = ['controller' => 'Pages', 'action' => 'display', $matches[1]];
+                }
+            }
+
+            call_user_func_array([$this, 'get'], $args);
+
+            return $this->_response;
+        }));
+
         $ResultScan = $this->getMockBuilder(ResultScan::class)
             ->setMethods(['getScannedUrl'])
             ->getMock();
@@ -88,6 +110,7 @@ trait TestCaseTrait
 
         //This rewrites the instructions of the constructor
         $fullBaseUrl = clean_url(is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true), true);
+        $this->setProperty($LinkScanner, 'Client', $Client);
         $this->setProperty($LinkScanner, 'ResultScan', $ResultScan);
         $this->setProperty($LinkScanner, 'fullBaseUrl', $fullBaseUrl);
 
@@ -97,28 +120,6 @@ trait TestCaseTrait
             ->will($this->returnCallback(function ($link) {
                 return get_hostname_from_url($link) !== 'localhost';
             }));
-
-        $LinkScanner->Client = $this->getMockBuilder(Client::class)
-            ->setMethods(['get'])
-            ->getMock();
-
-        //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
-        //It also analyzes the url of the test application and transforms them into parameter arrays
-        $LinkScanner->Client->method('get')->will($this->returnCallback(function () {
-            $url = func_get_arg(0);
-
-            if (is_string($url)) {
-                if ($url === 'http://localhost') {
-                    $url = ['controller' => 'Pages', 'action' => 'display', 'home'];
-                } elseif (preg_match('/^http:\/\/localhost\/pages\/(.+)/', $url, $matches)) {
-                    $url = ['controller' => 'Pages', 'action' => 'display', $matches[1]];
-                }
-            }
-
-            $this->get($url);
-
-            return $this->_response;
-        }));
 
         return $LinkScanner;
     }
@@ -133,16 +134,11 @@ trait TestCaseTrait
      */
     protected function getLinkScannerClientReturnsSampleResponse()
     {
-        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs(['http://google.com'])
-            ->setMethods(['createLockFile'])
-            ->getMock();
-
-        $LinkScanner->Client = $this->getMockBuilder(Client::class)
+        $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
 
-        $LinkScanner->Client->method('get')->will($this->returnCallback(function ($url) {
+        $Client->method('get')->will($this->returnCallback(function ($url) {
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
 
@@ -162,6 +158,13 @@ trait TestCaseTrait
 
             return $this->getResponseWithBody($body, $response);
         }));
+
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs(['http://google.com'])
+            ->setMethods(['createLockFile'])
+            ->getMock();
+
+        $this->setProperty($LinkScanner, 'Client', $Client);
 
         return $LinkScanner;
     }

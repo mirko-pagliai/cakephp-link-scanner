@@ -34,7 +34,7 @@ class LinkScanner
      * Instance of `Client`
      * @var \Cake\Http\Client
      */
-    public $Client;
+    protected $Client;
 
     /**
      * Instance of `ResultScan`. This contains the results of the scan
