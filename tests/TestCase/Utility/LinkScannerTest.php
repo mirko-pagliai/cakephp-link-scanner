@@ -122,7 +122,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testExport()
     {
-        $this->LinkScanner->setMaxDepth(1)->scan();
+        $this->LinkScanner->setConfig('maxDepth', 1)->scan();
 
         $result = $this->LinkScanner->export();
         $this->assertFileExists($result);
@@ -146,7 +146,9 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testExportNoExistingFile()
     {
-        $this->LinkScanner->setMaxDepth(1)->scan()->export(TMP . 'noExistingDir' . DS . 'result');
+        $this->LinkScanner->setConfig('maxDepth', 1)
+            ->scan()
+            ->export(TMP . 'noExistingDir' . DS . 'result');
     }
 
     /**
@@ -169,7 +171,7 @@ class LinkScannerTest extends IntegrationTestCase
         $expectedLinkScanner = $this->LinkScanner;
         $expectedResultScan = $this->LinkScanner->ResultScan;
 
-        $this->LinkScanner->setMaxDepth(1)->scan();
+        $this->LinkScanner->setConfig('maxDepth', 1)->scan();
         $result = $this->LinkScanner->import($this->LinkScanner->export());
         $this->assertEquals($expectedLinkScanner, $result);
         $this->assertEquals($expectedResultScan, $result->ResultScan);
@@ -193,7 +195,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScan()
     {
-        $result = $this->LinkScanner->setMaxDepth(2)->scan();
+        $result = $this->LinkScanner->setConfig('maxDepth', 2)->scan();
 
         $expectedEvents = ['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinkToBeScanned'];
         foreach ($expectedEvents as $eventName) {
@@ -259,7 +261,7 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertNotEmpty($this->debug);
 
         $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
-        $LinkScanner->setMaxDepth(1)->scan();
+        $LinkScanner->setConfig('maxDepth', 1)->scan();
         $this->assertCount(1, $LinkScanner->ResultScan);
         $item = $LinkScanner->ResultScan->first();
         $this->assertEquals($item->code, 200);
@@ -289,7 +291,8 @@ class LinkScannerTest extends IntegrationTestCase
     public function testScanNoExistingUrl()
     {
         $LinkScanner = new LinkScanner('http://noExisting');
-        $LinkScanner->setTimeout(1)->scan();
+        $LinkScanner->Client->setConfig('timeout', 1);
+        $LinkScanner->scan();
         $this->assertTrue($LinkScanner->ResultScan->isEmpty());
     }
 
@@ -380,36 +383,5 @@ class LinkScannerTest extends IntegrationTestCase
     public function testSetFullBaseUrlArray()
     {
         $this->LinkScanner->setFullBaseUrl(['invalid']);
-    }
-
-    /**
-     * Test for `setMaxDepth()` method
-     * @test
-     */
-    public function testSetMaxDepth()
-    {
-        $this->assertEquals(0, $this->LinkScanner->maxDepth);
-
-        foreach ([0, 1] as $depth) {
-            $result = $this->LinkScanner->setMaxDepth($depth);
-            $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertEquals($depth, $this->LinkScanner->maxDepth);
-        }
-    }
-
-    /**
-     * Test for `setTimeout()` method
-     * @test
-     */
-    public function testSetTimeout()
-    {
-        $LinkScanner = new LinkScanner;
-        $this->assertEquals(30, $LinkScanner->Client->getConfig('timeout'));
-
-        foreach ([0, 1, 30] as $timeout) {
-            $result = $LinkScanner->setTimeout($timeout);
-            $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertEquals($timeout, $LinkScanner->Client->getConfig('timeout'));
-        }
     }
 }

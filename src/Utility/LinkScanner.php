@@ -14,6 +14,7 @@ namespace LinkScanner\Utility;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Client;
 use Exception;
@@ -29,6 +30,7 @@ use RuntimeException;
 class LinkScanner
 {
     use EventDispatcherTrait;
+    use InstanceConfigTrait;
 
     /**
      * Instance of `Client`
@@ -41,6 +43,14 @@ class LinkScanner
      * @var \LinkScanner\ResultScan
      */
     protected $ResultScan;
+
+    /**
+     * Default configuration
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'maxDepth' => 0,
+    ];
 
     /**
      * Current scan depth level
@@ -71,13 +81,6 @@ class LinkScanner
      * @var string|array|null
      */
     protected $hostname = null;
-
-    /**
-     * Maximum depth of the scan
-     * @see setMaxDepth()
-     * @var int
-     */
-    protected $maxDepth = 0;
 
     /**
      * Start time
@@ -171,7 +174,6 @@ class LinkScanner
      * @uses $endTime
      * @uses $fullBaseUrl
      * @uses $hostname
-     * @uses $maxDepth
      * @uses $startTime
      */
     public function export($filename = null)
@@ -184,11 +186,11 @@ class LinkScanner
 
         try {
             $data = [
-                'fullBaseUrl' => $this->fullBaseUrl,
-                'maxDepth' => $this->maxDepth,
-                'startTime' => $this->startTime,
-                'endTime' => $this->endTime,
                 'ResultScan' => $this->ResultScan,
+                'config' => $this->getConfig(),
+                'endTime' => $this->endTime,
+                'fullBaseUrl' => $this->fullBaseUrl,
+                'startTime' => $this->startTime,
             ];
 
             file_put_contents($filename, serialize($data));
@@ -216,6 +218,9 @@ class LinkScanner
     {
         try {
             $data = unserialize(file_get_contents($filename));
+
+            $this->setConfig($data['config']);
+            unset($data['config']);
 
             foreach ($data as $key => $value) {
                 if (property_exists($this, $key)) {
@@ -256,7 +261,6 @@ class LinkScanner
      * @uses $ResultScan
      * @uses $currentDepth
      * @uses $externalLinks
-     * @uses $maxDepth
      * @uses _scan()
      * @uses getResponse()
      * @uses isExternalLink()
@@ -283,7 +287,7 @@ class LinkScanner
         $this->currentDepth++;
 
         //Returns, if the maximum scanning depth has been reached
-        if ($this->maxDepth && $this->currentDepth >= $this->maxDepth) {
+        if ($this->getConfig('maxDepth') && $this->currentDepth >= $this->getConfig('maxDepth')) {
             return;
         }
 
@@ -377,32 +381,6 @@ class LinkScanner
 
         $this->fullBaseUrl = clean_url($fullBaseUrl, true);
         $this->hostname = get_hostname_from_url($fullBaseUrl);
-
-        return $this;
-    }
-
-    /**
-     * Sets the maximum depth of the scan
-     * @param int $maxDepth Maximum depth of the scan
-     * @return $this
-     * @uses $maxDepth
-     */
-    public function setMaxDepth($maxDepth)
-    {
-        $this->maxDepth = $maxDepth;
-
-        return $this;
-    }
-
-    /**
-     * Sets the timeout for each request of the scan
-     * @param int $timeout Timeout for each request
-     * @return $this
-     * @uses $Client
-     */
-    public function setTimeout($timeout)
-    {
-        $this->Client->setConfig(compact('timeout'));
 
         return $this;
     }

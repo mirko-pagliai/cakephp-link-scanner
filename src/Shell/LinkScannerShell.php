@@ -58,14 +58,13 @@ class LinkScannerShell extends Shell
                 $this->LinkScanner->setFullBaseUrl($this->param('fullBaseUrl'));
             }
             if ($this->param('maxDepth')) {
-                $this->LinkScanner->setMaxDepth($this->param('maxDepth'));
+                $this->LinkScanner->setConfig('maxDepth', $this->param('maxDepth'));
             }
             if ($this->param('timeout')) {
-                $this->LinkScanner->setTimeout($this->param('timeout'));
+                $this->LinkScanner->Client->setConfig('timeout', $this->param('timeout'));
             }
 
-            $this->LinkScanner->scan();
-            $this->LinkScanner->export($filename);
+            $this->LinkScanner->scan()->export($filename);
         } catch (Exception $e) {
             $this->abort($e->getMessage());
         }
@@ -96,7 +95,7 @@ class LinkScannerShell extends Shell
                         'short' => 'f',
                     ],
                     'maxDepth' => [
-                        'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->maxDepth),
+                        'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->getConfig('maxDepth')),
                         'short' => 'd',
                     ],
                     'timeout' => [

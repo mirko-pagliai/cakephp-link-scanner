@@ -61,8 +61,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $io->level(2);
 
         $this->LinkScannerShell = $this->getMockBuilder(LinkScannerShell::class)
-            ->setMethods(['in', '_stop'])
             ->setConstructorArgs([$io])
+            ->setMethods(['in', '_stop'])
             ->getMock();
 
         $this->LinkScannerShell->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
@@ -144,19 +144,22 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     public function testScanParams()
     {
         $filename = $this->getTempname();
-        $this->LinkScannerShell->params = [
-            'maxDepth' => 3,
+        $params = [
             'fullBaseUrl' => 'http://anotherFullBaseUrl',
+            'maxDepth' => 3,
+            'timeout' => 15,
         ];
+
+        $this->LinkScannerShell->params = $params;
         $this->LinkScannerShell->scan($filename);
         $this->assertFileExists($filename);
 
-        $this->assertTextContains('Scan started for ' . $this->LinkScannerShell->params['fullBaseUrl'], $this->out->messages()[0]);
+        $this->assertTextContains('Scan started for ' . $params['fullBaseUrl'], $this->out->messages()[0]);
         $this->assertEmpty($this->err->messages());
 
-        foreach ($this->LinkScannerShell->params as $name => $value) {
-            $this->assertEquals($value, $this->LinkScannerShell->LinkScanner->{$name});
-        }
+        $this->assertEquals($params['fullBaseUrl'], $this->LinkScannerShell->LinkScanner->fullBaseUrl);
+        $this->assertEquals($params['maxDepth'], $this->LinkScannerShell->LinkScanner->getConfig('maxDepth'));
+        $this->assertEquals($params['timeout'], $this->LinkScannerShell->LinkScanner->Client->getConfig('timeout'));
     }
 
     /**
