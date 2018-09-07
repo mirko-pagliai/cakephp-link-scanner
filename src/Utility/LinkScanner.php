@@ -150,17 +150,6 @@ class LinkScanner
     }
 
     /**
-     * Internal method to check if a link is external
-     * @param string $link Link to check
-     * @return bool
-     * @uses $hostname
-     */
-    protected function isExternalLink($link)
-    {
-        return is_external_url($link, $this->hostname);
-    }
-
-    /**
      * Exports scan results as serialized array.
      *
      * ### Events
@@ -258,12 +247,12 @@ class LinkScanner
      * @param string|array $url Url to scan
      * @param string|null $referer Referer of this url
      * @return void
+     * @uses _scan()
+     * @uses getResponse()
      * @uses $ResultScan
      * @uses $currentDepth
      * @uses $externalLinks
-     * @uses _scan()
-     * @uses getResponse()
-     * @uses isExternalLink()
+     * @uses $hostname
      */
     protected function _scan($url, $referer = null)
     {
@@ -278,7 +267,7 @@ class LinkScanner
         //Appends result
         $item = new ScanEntity(compact('referer', 'url'));
         $item->code = $response->getStatusCode();
-        $item->external = $this->isExternalLink($url);
+        $item->external = is_external_url($url, $this->hostname);
         $item->type = $response->getContentType();
         $this->ResultScan->append($item);
 
@@ -316,7 +305,7 @@ class LinkScanner
             }
 
             //Skips external links
-            if ($this->isExternalLink($link)) {
+            if (is_external_url($link, $this->hostname)) {
                 $this->externalLinks[] = $link;
 
                 continue;

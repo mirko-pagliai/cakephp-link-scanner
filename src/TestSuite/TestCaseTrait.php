@@ -105,21 +105,15 @@ trait TestCaseTrait
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->disableOriginalConstructor()
-            ->setMethods(['createLockFile', 'isExternalLink', 'setFullBaseUrl'])
+            ->setMethods(['createLockFile', 'setFullBaseUrl'])
             ->getMock();
 
-        //This rewrites the instructions of the constructor
+        //This rewrites constructor's instructions
         $fullBaseUrl = clean_url(is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true), true);
         $this->setProperty($LinkScanner, 'Client', $Client);
         $this->setProperty($LinkScanner, 'ResultScan', $ResultScan);
         $this->setProperty($LinkScanner, 'fullBaseUrl', $fullBaseUrl);
-
-        //`isExternalLink()` method returns false for links that start with
-        //  `http://localhost/pages/`
-        $LinkScanner->method('isExternalLink')
-            ->will($this->returnCallback(function ($link) {
-                return get_hostname_from_url($link) !== 'localhost';
-            }));
+        $this->setProperty($LinkScanner, 'hostname', 'localhost');
 
         return $LinkScanner;
     }
