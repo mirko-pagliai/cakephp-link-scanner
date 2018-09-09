@@ -184,7 +184,8 @@ class LinkScanner
 
             file_put_contents($filename, serialize($data));
         } catch (Exception $e) {
-            throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}`', $filename));
+            $message = preg_replace('/^file_put_contents\([\\w\d\:\/\-]+\)\: /', null, $e->getMessage());
+            throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}` with message `{1}`', $filename, $message));
         }
 
         $this->dispatchEvent(LINK_SCANNER . '.resultsExported', [$filename]);
@@ -217,7 +218,8 @@ class LinkScanner
                 }
             }
         } catch (Exception $e) {
-            throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}`', $filename));
+            $message = preg_replace('/^file_get_contents\([\\w\d\:\/\-]+\)\: /', null, $e->getMessage());
+            throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}` with message `{1}`', $filename, $message));
         }
 
         $this->dispatchEvent(LINK_SCANNER . '.resultsImported', [$filename]);

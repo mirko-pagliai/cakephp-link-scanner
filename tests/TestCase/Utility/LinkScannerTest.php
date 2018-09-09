@@ -141,7 +141,7 @@ class LinkScannerTest extends IntegrationTestCase
     /**
      * Test for `export()` method, with a no existing file
      * @expectedException RuntimeException
-     * @expectedExceptionMessageRegExp /^Failed to export results to file `[\\\/\w\d:\-]+`$/
+     * @expectedExceptionMessageRegExp /^Failed to export results to file `[\\\/\w\d:\-]+` with message `failed to open stream: No such file or directory`$/
      * @test
      */
     public function testExportNoExistingFile()
@@ -181,7 +181,7 @@ class LinkScannerTest extends IntegrationTestCase
     /**
      * Test for `import()` method, with a no existing file
      * @expectedException RuntimeException
-     * @expectedExceptionMessageRegExp /^Failed to import results from file `[\\\/\w\d:\-]+`$/
+     * @expectedExceptionMessageRegExp /^Failed to import results from file `[\\\/\w\d:\-]+` with message `failed to open stream: No such file or directory`$/
      * @test
      */
     public function testImportNoExistingFile()
