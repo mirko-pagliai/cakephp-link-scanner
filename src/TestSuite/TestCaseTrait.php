@@ -108,12 +108,13 @@ trait TestCaseTrait
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->disableOriginalConstructor()
-            ->setMethods(['createLockFile'])
+            ->setMethods(['createLockFile', 'getClient'])
             ->getMock();
+
+        $LinkScanner->method('getClient')->will($this->returnValue($Client));
 
         //This rewrites constructor's instructions
         $fullBaseUrl = clean_url(is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true), true);
-        $this->setProperty($LinkScanner, 'Client', $Client);
         $this->setProperty($LinkScanner, 'ResultScan', $ResultScan);
         $this->setProperty($LinkScanner, 'fullBaseUrl', $fullBaseUrl);
         $this->setProperty($LinkScanner, 'hostname', 'localhost');
@@ -158,10 +159,10 @@ trait TestCaseTrait
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs(['http://google.com'])
-            ->setMethods(['createLockFile'])
+            ->setMethods(['createLockFile', 'getClient'])
             ->getMock();
 
-        $this->setProperty($LinkScanner, 'Client', $Client);
+        $LinkScanner->method('getClient')->will($this->returnValue($Client));
 
         return $LinkScanner;
     }

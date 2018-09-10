@@ -96,12 +96,10 @@ class LinkScanner
      * If `null` the `App.fullBaseUrl` value will be used.
      * @param string|array|null $fullBaseUrl Full base url
      * @uses setFullBaseUrl()
-     * @uses $Client
      * @uses $ResultScan
      */
     public function __construct($fullBaseUrl = null)
     {
-        $this->Client = new Client(['redirect' => true]);
         $this->ResultScan = new ResultScan;
 
         $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
@@ -136,16 +134,30 @@ class LinkScanner
     }
 
     /**
+     * Returns the `Client` instance
+     * @return \Cake\Http\Client
+     * @uses $Client
+     */
+    public function getClient()
+    {
+        if (!$this->Client) {
+            $this->Client = new Client(['redirect' => true]);
+        }
+
+        return $this->Client;
+    }
+
+    /**
      * Performs a single GET request and returns the response as `ScanResponse`
      * @param string $url The url or path you want to request
      * @return ScanResponse
-     * @uses $Client
+     * @uses getClient()
      * @uses $fullBaseUrl
      */
     protected function getResponse($url)
     {
         return Cache::remember(sprintf('response_%s', md5(serialize($url))), function () use ($url) {
-            return new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
+            return new ScanResponse($this->getClient()->get($url), $this->fullBaseUrl);
         }, LINK_SCANNER);
     }
 
