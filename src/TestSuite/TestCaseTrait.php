@@ -55,7 +55,10 @@ trait TestCaseTrait
     {
         $LinkScanner = $LinkScanner ?: $this->LinkScanner;
         $eventManager = $LinkScanner->getEventManager();
-        $eventManager->setEventList(new EventList);
+
+        if (!$eventManager->getEventList()) {
+            $eventManager->setEventList(new EventList);
+        }
 
         return $eventManager;
     }
