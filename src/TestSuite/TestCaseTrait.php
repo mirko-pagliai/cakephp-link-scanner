@@ -108,7 +108,7 @@ trait TestCaseTrait
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->disableOriginalConstructor()
-            ->setMethods(['createLockFile', 'setFullBaseUrl'])
+            ->setMethods(['createLockFile'])
             ->getMock();
 
         //This rewrites constructor's instructions
