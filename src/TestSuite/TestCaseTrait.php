@@ -219,7 +219,6 @@ trait TestCaseTrait
     /**
      * Returns a stub of `LinkScanner` instance, with the `Client::get()`
      *  method that always returns a response with error (404 status code)
-     * @param string|array|null $fullBaseUrl Full base url
      * @return \LinkScanner\Utility\LinkScanner
      * @uses getClientReturnsErrorResponse()
      */
