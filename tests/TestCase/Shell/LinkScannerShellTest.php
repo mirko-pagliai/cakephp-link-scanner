@@ -147,7 +147,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan($this->getTempname());
 
-        $this->assertContains(spritnf(
+        $this->assertContains(sprintf(
             '<success>The cache is enabled and its duration is `%s`</success>',
             Cache::getConfig(LINK_SCANNER)['duration']
         ), $this->out->messages());
