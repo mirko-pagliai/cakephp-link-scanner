@@ -98,6 +98,30 @@ trait TestCaseTrait
     }
 
     /**
+     * Returns a stub of `Client`, where the `get()` method always returns a
+     *  response with error (404 status code)
+     * @return \Cake\Http\Client
+     * @uses getResponseWithBody()
+     */
+    protected function getClientReturnsErrorResponse()
+    {
+        $Client = $this->getMockBuilder(Client::class)
+            ->setMethods(['get'])
+            ->getMock();
+
+        //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
+        //It also analyzes the url of the test application and transforms them into parameter arrays
+        $Client->method('get')->will($this->returnCallback(function () {
+            $response = $this->getResponseWithBody(null);
+            $response = $response->withStatus(404);
+
+            return $response;
+        }));
+
+        return $Client;
+    }
+
+    /**
      * Returns a stub of `Client`, where the `get()` method returns a sample
      *  response which is read from `examples/responses` files
      * @return \Cake\Http\Client
@@ -188,6 +212,24 @@ trait TestCaseTrait
             ->getMock();
 
         $LinkScanner->method('getClient')->will($this->returnValue($this->getClientReturnsSampleResponse()));
+
+        return $LinkScanner;
+    }
+
+    /**
+     * Returns a stub of `LinkScanner` instance, with the `Client::get()`
+     *  method that always returns a response with error (404 status code)
+     * @param string|array|null $fullBaseUrl Full base url
+     * @return \LinkScanner\Utility\LinkScanner
+     * @uses getClientReturnsErrorResponse()
+     */
+    protected function getLinkScannerClientReturnsError()
+    {
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->setMethods(['createLockFile', 'getClient'])
+            ->getMock();
+
+        $LinkScanner->method('getClient')->will($this->returnValue($this->getClientReturnsErrorResponse()));
 
         return $LinkScanner;
     }

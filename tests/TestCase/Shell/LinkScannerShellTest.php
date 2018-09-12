@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\Test\TestCase\Shell;
 
+use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\TestSuite\Stub\ConsoleOutput;
@@ -85,6 +86,9 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     {
         parent::tearDown();
 
+        Cache::clearAll();
+        Cache::disable();
+
         safe_unlink_recursive(TMP);
     }
 
@@ -130,6 +134,23 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         }
 
         $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $this->EventManager);
+    }
+
+    /**
+     * Test for `scan()` method, with cache enabled
+     * @test
+     */
+    public function testScanCacheEnabled()
+    {
+        Cache::enable();
+
+        $this->LinkScannerShell->params['verbose'] = true;
+        $this->LinkScannerShell->scan($this->getTempname());
+
+        $this->assertContains(spritnf(
+            '<success>The cache is enabled and its duration is `%s`</success>',
+            Cache::getConfig(LINK_SCANNER)['duration']
+        ), $this->out->messages());
     }
 
     /**
@@ -218,6 +239,22 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             }
             $i++;
         }
+    }
+
+    /**
+     * Test for `scan()` method, with an error response (404 status code)
+     * @test
+     */
+    public function testScanWithErrorResponse()
+    {
+        $this->LinkScannerShell->LinkScanner = $this->getLinkScannerClientReturnsError($this->fullBaseUrl);
+
+        $this->LinkScannerShell->params['verbose'] = true;
+        $this->LinkScannerShell->scan($this->getTempname());
+
+        $errors = $this->err->messages();
+        $this->assertCount(1, $errors);
+        $this->assertEquals('<warning>404</warning>', current($errors));
     }
 
     /**

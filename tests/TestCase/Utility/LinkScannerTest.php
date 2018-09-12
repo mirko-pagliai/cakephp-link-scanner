@@ -52,9 +52,6 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        Cache::clearAll();
-        Cache::disable();
-
         $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
         $this->EventManager = $this->getEventManager();
         $this->debug = [];
@@ -67,6 +64,9 @@ class LinkScannerTest extends IntegrationTestCase
     public function tearDown()
     {
         parent::tearDown();
+
+        Cache::clearAll();
+        Cache::disable();
 
         safe_unlink_recursive(TMP);
     }
