@@ -137,19 +137,11 @@ trait TestCaseTrait
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
 
-            if (is_readable($responseFile)) {
-                $response = safe_unserialize(file_get_contents($responseFile));
-            } else {
-                $response = (new Client(['redirect' => true]))->get($url);
-                file_put_contents($responseFile, serialize($response));
-            }
+            $response = is_readable($responseFile) ? safe_unserialize(file_get_contents($responseFile)) : (new Client(['redirect' => true]))->get($url);
+            is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($response));
 
-            if (is_readable($bodyFile)) {
-                $body = safe_unserialize(file_get_contents($bodyFile));
-            } else {
-                $body = (string)$response->getBody();
-                file_put_contents($bodyFile, serialize($body));
-            }
+            $body = is_readable($bodyFile) ? safe_unserialize(file_get_contents($bodyFile)) : (string)$response->getBody();
+            is_readable($bodyFile) ? null : file_put_contents($bodyFile, serialize($body));
 
             return $this->getResponseWithBody($body, $response);
         }));
