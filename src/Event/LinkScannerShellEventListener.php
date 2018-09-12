@@ -80,7 +80,7 @@ class LinkScannerShellEventListener implements EventListenerInterface
         if ($response->isOk()) {
             $this->LinkScannerShell->success(__d('link-scanner', 'OK'));
         } else {
-            $this->LinkScannerShell->out($response->getStatusCode());
+            $this->LinkScannerShell->warn((string)$response->getStatusCode());
         }
 
         return true;
