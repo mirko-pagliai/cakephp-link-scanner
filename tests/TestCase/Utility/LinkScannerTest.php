@@ -86,7 +86,7 @@ class LinkScannerTest extends IntegrationTestCase
             return Cache::read(sprintf('response_%s', md5(serialize($url))), LINK_SCANNER);
         };
 
-        $this->LinkScanner = $this->getLinkScannerClientGetsFromTests();
+        $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
 
         foreach ([
             'nolinks' => 200,
@@ -252,14 +252,14 @@ class LinkScannerTest extends IntegrationTestCase
 
         ];
         $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->scan();
         $this->assertCount(6, $LinkScanner->getResults());
         $results = $LinkScanner->getResults()->extract('url')->toArray();
         $this->assertEquals($expectedResults, $results);
         $this->assertNotEmpty($this->debug);
 
-        $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->setConfig('maxDepth', 1)->scan();
         $this->assertCount(1, $LinkScanner->getResults());
         $item = $LinkScanner->getResults()->first();
@@ -302,7 +302,7 @@ class LinkScannerTest extends IntegrationTestCase
     public function testScanNoOtherLinks()
     {
         $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
-        $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $EventManager = $this->getEventManager($LinkScanner);
 
         $LinkScanner->scan();
@@ -317,7 +317,7 @@ class LinkScannerTest extends IntegrationTestCase
     public function testScanResponseNotHtml()
     {
         $params = ['controller' => 'Pages', 'action' => 'display', 'nohtml'];
-        $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $EventManager = $this->getEventManager($LinkScanner);
 
         $LinkScanner->scan();
@@ -331,7 +331,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScanResponseNotOk()
     {
-        $LinkScanner = $this->getLinkScannerClientGetsFromTests('http://localhost/noExisting');
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests('http://localhost/noExisting');
         $EventManager = $this->getEventManager($LinkScanner);
 
         $LinkScanner->scan();

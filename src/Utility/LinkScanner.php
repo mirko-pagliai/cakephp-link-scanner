@@ -95,12 +95,13 @@ class LinkScanner
      *  `Router::url()` method.
      * If `null` the `App.fullBaseUrl` value will be used.
      * @param string|array|null $fullBaseUrl Full base url
+     * @param ResultScan $ResultScan A `ResultScan` instance
      * @uses setFullBaseUrl()
      * @uses $ResultScan
      */
-    public function __construct($fullBaseUrl = null)
+    public function __construct($fullBaseUrl = null, ResultScan $ResultScan = null)
     {
-        $this->ResultScan = new ResultScan;
+        $this->ResultScan = $ResultScan ?: new ResultScan;
 
         $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
     }
