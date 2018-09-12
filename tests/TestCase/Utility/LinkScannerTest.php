@@ -169,12 +169,11 @@ class LinkScannerTest extends IntegrationTestCase
     public function testImport()
     {
         $expectedLinkScanner = $this->LinkScanner;
-        $expectedResultScan = $this->LinkScanner->ResultScan;
 
         $this->LinkScanner->setConfig('maxDepth', 1)->scan();
         $result = $this->LinkScanner->import($this->LinkScanner->export());
         $this->assertEquals($expectedLinkScanner, $result);
-        $this->assertEquals($expectedResultScan, $result->ResultScan);
+        $this->assertEquals($expectedLinkScanner->getResults(), $result->getResults());
         $this->assertEventFired(LINK_SCANNER . '.resultsImported', $this->EventManager);
     }
 
@@ -203,19 +202,19 @@ class LinkScannerTest extends IntegrationTestCase
         }
 
         $this->assertInstanceof(LinkScanner::class, $result);
-        $this->assertIsInt($this->LinkScanner->startTime);
-        $this->assertIsInt($this->LinkScanner->endTime);
-        $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
-        $this->assertGreaterThan(1, $this->LinkScanner->ResultScan->count());
+        $this->assertIsInt($this->getProperty($this->LinkScanner, 'startTime'));
+        $this->assertIsInt($this->getProperty($this->LinkScanner, 'endTime'));
+        $this->assertInstanceof(ResultScan::class, $this->LinkScanner->getResults());
+        $this->assertGreaterThan(1, $this->LinkScanner->getResults()->count());
 
-        foreach ($this->LinkScanner->ResultScan as $item) {
+        foreach ($this->LinkScanner->getResults() as $item) {
             $this->assertRegExp('/^http:\/\/google\.com/', $item->url);
             $this->assertFalse($item->external);
             $this->assertContains($item->code, [200, 500]);
             $this->assertEquals($item->type, 'text/html');
         }
 
-        $this->assertGreaterThan(1, $this->LinkScanner->externalLinks);
+        $this->assertGreaterThan(1, $this->getProperty($this->LinkScanner, 'externalLinks'));
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setMethods(['_scan'])
@@ -255,15 +254,15 @@ class LinkScannerTest extends IntegrationTestCase
         $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
         $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
         $LinkScanner->scan();
-        $this->assertCount(6, $LinkScanner->ResultScan);
-        $results = $LinkScanner->ResultScan->extract('url')->toArray();
+        $this->assertCount(6, $LinkScanner->getResults());
+        $results = $LinkScanner->getResults()->extract('url')->toArray();
         $this->assertEquals($expectedResults, $results);
         $this->assertNotEmpty($this->debug);
 
         $LinkScanner = $this->getLinkScannerClientGetsFromTests($params);
         $LinkScanner->setConfig('maxDepth', 1)->scan();
-        $this->assertCount(1, $LinkScanner->ResultScan);
-        $item = $LinkScanner->ResultScan->first();
+        $this->assertCount(1, $LinkScanner->getResults());
+        $item = $LinkScanner->getResults()->first();
         $this->assertEquals($item->code, 200);
         $this->assertFalse($item->external);
         $this->assertNull($item->referer);
@@ -293,7 +292,7 @@ class LinkScannerTest extends IntegrationTestCase
         $LinkScanner = new LinkScanner('http://noExisting');
         $LinkScanner->getClient()->setConfig('timeout', 1);
         $LinkScanner->scan();
-        $this->assertTrue($LinkScanner->ResultScan->isEmpty());
+        $this->assertTrue($LinkScanner->getResults()->isEmpty());
     }
 
     /**
@@ -347,19 +346,20 @@ class LinkScannerTest extends IntegrationTestCase
     public function testSetFullBaseUrl()
     {
         foreach ([
-            'http://fullBaseUrl.com',
-            'http://fullBaseUrl.com/',
-            'http://fullBaseUrl.com/site',
-            'http://www.fullBaseUrl.com/site',
-            'https://fullBaseUrl.com',
-            'https://www.fullBaseUrl.com',
-            'ftp://fullBaseUrl.com',
-            'ftp://www.fullBaseUrl.com',
-        ] as $fullBaseUrl) {
+            'http://fullBaseUrl.com' => 'http://fullBaseUrl.com',
+            'http://fullBaseUrl.com/' => 'http://fullBaseUrl.com',
+            'http://fullBaseUrl.com/site' => 'http://fullBaseUrl.com/site',
+            'http://fullBaseUrl.com/site/' => 'http://fullBaseUrl.com/site',
+            'http://www.fullBaseUrl.com/site' => 'http://fullBaseUrl.com/site',
+            'https://fullBaseUrl.com' => 'https://fullBaseUrl.com',
+            'https://www.fullBaseUrl.com' => 'https://fullBaseUrl.com',
+            'ftp://fullBaseUrl.com' => 'ftp://fullBaseUrl.com',
+            'ftp://www.fullBaseUrl.com' => 'ftp://fullBaseUrl.com',
+        ] as $fullBaseUrl => $expectedFullBaseUrl) {
             $result = $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
             $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertRegexp('/^(ftp|https?):\/\/fullBaseUrl\.com(\/(site)?)?$/', $this->LinkScanner->fullBaseUrl);
-            $this->assertEquals('fullBaseUrl.com', $this->LinkScanner->hostname);
+            $this->assertEquals($expectedFullBaseUrl, $this->getProperty($this->LinkScanner, 'fullBaseUrl'));
+            $this->assertEquals('fullBaseUrl.com', $this->getProperty($this->LinkScanner, 'hostname'));
         }
     }
 

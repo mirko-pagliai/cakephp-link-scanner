@@ -106,16 +106,6 @@ class LinkScanner
     }
 
     /**
-     * Magic method to get the properties value
-     * @param string $name Property name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->$name;
-    }
-
-    /**
      * Internal method to create a lock file
      * @return bool
      * @throws RuntimeException
@@ -162,6 +152,15 @@ class LinkScanner
     }
 
     /**
+     * Safely access to `ResultScan` instance. This contains the results of the scan
+     * @return \LinkScanner\ResultScan
+     */
+    public function getResults()
+    {
+        return $this->ResultScan;
+    }
+
+    /**
      * Exports scan results as serialized array.
      *
      * ### Events
@@ -171,7 +170,7 @@ class LinkScanner
      * @param string $filename Filename where to export
      * @return string
      * @throws RuntimeException
-     * @uses $ResultScan
+     * @uses getResults()
      * @uses $endTime
      * @uses $fullBaseUrl
      * @uses $hostname
@@ -179,7 +178,7 @@ class LinkScanner
      */
     public function export($filename = null)
     {
-        if ($this->ResultScan->isEmpty()) {
+        if ($this->getResults()->isEmpty()) {
             throw new RuntimeException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
         }
 
@@ -187,7 +186,7 @@ class LinkScanner
 
         try {
             $data = [
-                'ResultScan' => $this->ResultScan,
+                'ResultScan' => $this->getResults(),
                 'config' => $this->getConfig(),
                 'endTime' => $this->endTime,
                 'fullBaseUrl' => $this->fullBaseUrl,
@@ -263,7 +262,7 @@ class LinkScanner
      * @return void
      * @uses _scan()
      * @uses getResponse()
-     * @uses $ResultScan
+     * @uses getResults()
      * @uses $currentDepth
      * @uses $externalLinks
      * @uses $hostname
@@ -283,7 +282,7 @@ class LinkScanner
         $item->code = $response->getStatusCode();
         $item->external = is_external_url($url, $this->hostname);
         $item->type = $response->getContentType();
-        $this->ResultScan->append($item);
+        $this->getResults()->append($item);
 
         $this->dispatchEvent(LINK_SCANNER . '.afterScanUrl', [$response]);
 
@@ -310,11 +309,11 @@ class LinkScanner
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links
-        $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->ResultScan->getScannedUrl());
+        $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->getResults()->getScannedUrl());
 
         foreach ($linksToScan as $link) {
             //Checks that the link has not already been scanned
-            if (in_array($link, $this->ResultScan->getScannedUrl())) {
+            if (in_array($link, $this->getResults()->getScannedUrl())) {
                 continue;
             }
 
@@ -342,12 +341,12 @@ class LinkScanner
      *
      * Other events will be triggered by the `_scan()` method.
      * @return $this
-     * @uses $ResultScan
+     * @uses _scan()
+     * @uses createLockFile()
+     * @uses getResults()
      * @uses $endTime
      * @uses $fullBaseUrl
      * @uses $startTime
-     * @uses _scan()
-     * @uses createLockFile()
      */
     public function scan()
     {
@@ -363,7 +362,7 @@ class LinkScanner
 
         safe_unlink(LINK_SCANNER_LOCK_FILE);
 
-        $this->dispatchEvent(LINK_SCANNER . '.scanCompleted', [$this->endTime, $this->ResultScan]);
+        $this->dispatchEvent(LINK_SCANNER . '.scanCompleted', [$this->endTime, $this->getResults()]);
 
         return $this;
     }

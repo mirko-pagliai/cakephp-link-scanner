@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\TestSuite;
 
+use Cake\Core\Configure;
 use Cake\Event\EventList;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
@@ -67,12 +68,15 @@ trait TestCaseTrait
      * Returns a stubbed `LinkScanner` instance, where the `Client::get()`
      *  method calls the `IntegrationTestCase::get()` method and allows you to
      *  get responses from the test app
-     * @param string|array|null $fullBaseUrl Full base url. If `null`, the
-     *  `App.fullBaseUrl` value will be used
+     * @param string|array|null $fullBaseUrl Full base url
      * @return \LinkScanner\Utility\LinkScanner
      */
     protected function getLinkScannerClientGetsFromTests($fullBaseUrl = null)
     {
+        $fullBaseUrl = $fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl');
+        $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
+        $fullBaseUrl = clean_url($fullBaseUrl, true);
+
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
@@ -114,10 +118,9 @@ trait TestCaseTrait
         $LinkScanner->method('getClient')->will($this->returnValue($Client));
 
         //This rewrites constructor's instructions
-        $fullBaseUrl = clean_url(is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true), true);
         $this->setProperty($LinkScanner, 'ResultScan', $ResultScan);
         $this->setProperty($LinkScanner, 'fullBaseUrl', $fullBaseUrl);
-        $this->setProperty($LinkScanner, 'hostname', 'localhost');
+        $this->setProperty($LinkScanner, 'hostname', get_hostname_from_url($fullBaseUrl));
 
         return $LinkScanner;
     }
@@ -127,11 +130,16 @@ trait TestCaseTrait
      *  method always returns a sample response which is read from
      *  `examples/responses/google_response` and `examples/responses/google_body`
      *  files
+     * @param string|array|null $fullBaseUrl Full base url
      * @return \LinkScanner\Utility\LinkScanner
      * @uses getResponseWithBody()
      */
-    protected function getLinkScannerClientReturnsSampleResponse()
+    protected function getLinkScannerClientReturnsSampleResponse($fullBaseUrl = null)
     {
+        $fullBaseUrl = $fullBaseUrl ?: 'http://google.com';
+        $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
+        $fullBaseUrl = clean_url($fullBaseUrl, true);
+
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
@@ -158,7 +166,7 @@ trait TestCaseTrait
         }));
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs(['http://google.com'])
+            ->setConstructorArgs([$fullBaseUrl])
             ->setMethods(['createLockFile', 'getClient'])
             ->getMock();
 

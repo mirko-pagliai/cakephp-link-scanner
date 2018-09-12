@@ -41,6 +41,11 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     protected $err;
 
     /**
+     * @var string|array|null
+     */
+    protected $fullBaseUrl;
+
+    /**
      * @var \Cake\TestSuite\Stub\ConsoleOutput
      */
     protected $out;
@@ -60,12 +65,14 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $io = new ConsoleIo($this->out, $this->err);
         $io->level(2);
 
+        $this->fullBaseUrl = 'http://google.com';
+
         $this->LinkScannerShell = $this->getMockBuilder(LinkScannerShell::class)
             ->setConstructorArgs([$io])
             ->setMethods(['in', '_stop'])
             ->getMock();
 
-        $this->LinkScannerShell->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
+        $this->LinkScannerShell->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse($this->fullBaseUrl);
 
         $this->EventManager = $this->getEventManager($this->LinkScannerShell->LinkScanner);
     }
@@ -97,7 +104,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     public function testScan()
     {
         $filename = $this->getTempname();
-        $fullBaseUrlRegex = preg_quote($this->LinkScannerShell->LinkScanner->fullBaseUrl, '/');
         $this->LinkScannerShell->params['maxDepth'] = 1;
         $this->LinkScannerShell->scan($filename);
         $this->assertFileExists($filename);
@@ -105,11 +111,12 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $messages = $this->out->messages();
         $this->assertCount(5, $messages);
 
-        $this->assertRegexp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', $fullBaseUrlRegex), current($messages));
-        $this->assertRegexp(sprintf('/^Checking %s ...$/', $fullBaseUrlRegex), next($messages));
+        $this->assertTextStartsWith(sprintf('<info>Scan started for %s', $this->fullBaseUrl), current($messages));
+        $this->assertRegexp('/at [\d\-]+\s[\d\:]+<\/info>$/', current($messages));
+        $this->assertEquals(sprintf('Checking %s ...', $this->fullBaseUrl), next($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
-        $this->assertRegexp('/Results have been exported to [\w\/\-\:\.\\\d]+/', next($messages));
+        $this->assertTextContains(sprintf('Results have been exported to %s', $filename), next($messages));
         $this->assertEmpty($this->err->messages());
 
         foreach ([
@@ -157,7 +164,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertTextContains('Scan started for ' . $params['fullBaseUrl'], $this->out->messages()[0]);
         $this->assertEmpty($this->err->messages());
 
-        $this->assertEquals($params['fullBaseUrl'], $this->LinkScannerShell->LinkScanner->fullBaseUrl);
+        $this->assertEquals($params['fullBaseUrl'], $this->getProperty($this->LinkScannerShell->LinkScanner, 'fullBaseUrl'));
         $this->assertEquals($params['maxDepth'], $this->LinkScannerShell->LinkScanner->getConfig('maxDepth'));
         $this->assertEquals($params['timeout'], $this->LinkScannerShell->LinkScanner->getClient()->getConfig('timeout'));
     }
@@ -168,7 +175,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanVerbose()
     {
-        $fullBaseUrl = $this->LinkScannerShell->LinkScanner->fullBaseUrl;
         $filename = $this->getTempname();
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan($filename);
@@ -179,7 +185,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         //First five lines
         $this->assertRegexp('/^\-{63}$/', current($messages));
-        $this->assertTextStartsWith(sprintf('<info>Scan started for %s', $fullBaseUrl), next($messages));
+        $this->assertTextStartsWith(sprintf('<info>Scan started for %s', $this->fullBaseUrl), next($messages));
         $this->assertRegexp(sprintf('/t [\d\-]+\s[\d\:]+<\/info>$/'), current($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
         $this->assertTextContains('The cache is disabled', next($messages));
