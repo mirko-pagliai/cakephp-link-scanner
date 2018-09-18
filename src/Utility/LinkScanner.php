@@ -16,6 +16,7 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventList;
 use Cake\Http\Client;
 use Exception;
 use InvalidArgumentException;
@@ -23,11 +24,12 @@ use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ORM\ScanEntity;
 use LinkScanner\ResultScan;
 use RuntimeException;
+use Serializable;
 
 /**
  * A link scanner
  */
-class LinkScanner
+class LinkScanner implements Serializable
 {
     use EventDispatcherTrait;
     use InstanceConfigTrait;
@@ -36,7 +38,7 @@ class LinkScanner
      * Instance of `Client`
      * @var \Cake\Http\Client
      */
-    protected $Client;
+    public $Client;
 
     /**
      * Instance of `ResultScan`. This contains the results of the scan
@@ -95,15 +97,55 @@ class LinkScanner
      *  `Router::url()` method.
      * If `null` the `App.fullBaseUrl` value will be used.
      * @param string|array|null $fullBaseUrl Full base url
-     * @param ResultScan $ResultScan A `ResultScan` instance
-     * @uses setFullBaseUrl()
+     * @param ResultScan $ResultScan Optional `ResultScan` instance
+     * @param Client $Client Optional `Client` instance
+     * @uses $Client
      * @uses $ResultScan
+     * @uses setFullBaseUrl()
      */
-    public function __construct($fullBaseUrl = null, ResultScan $ResultScan = null)
+    public function __construct($fullBaseUrl = null, ResultScan $ResultScan = null, Client $Client = null)
     {
+        $this->Client = $Client ?: new Client(['redirect' => true]);
         $this->ResultScan = $ResultScan ?: new ResultScan;
 
         $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
+
+        $this->getEventManager()->setEventList(new EventList);
+    }
+
+    /**
+     * Returns the string representation of the object
+     * @return string
+     * @uses $Client
+     */
+    public function serialize()
+    {
+        $properties = get_object_vars($this);
+
+        $properties['Client'] = [];
+        if ($this->Client instanceof Client) {
+            $properties['Client'] = $this->Client->getConfig() + ['cookieJar' => $this->Client->cookies()];
+        }
+
+        return serialize($properties);
+    }
+
+    /**
+     * Called during unserialization of the object
+     * @param string $serialized The string representation of the object
+     * @return void
+     * @uses $Client
+     */
+    public function unserialize($serialized)
+    {
+        $properties = unserialize($serialized);
+
+        $this->Client = new Client($properties['Client'] ?: []);
+        unset($properties['Client']);
+
+        foreach ($properties as $name => $value) {
+            $this->$name = $value;
+        }
     }
 
     /**
@@ -125,30 +167,16 @@ class LinkScanner
     }
 
     /**
-     * Returns the `Client` instance
-     * @return \Cake\Http\Client
-     * @uses $Client
-     */
-    public function getClient()
-    {
-        if (!$this->Client) {
-            $this->Client = new Client(['redirect' => true]);
-        }
-
-        return $this->Client;
-    }
-
-    /**
      * Performs a single GET request and returns the response as `ScanResponse`
      * @param string $url The url or path you want to request
      * @return ScanResponse
-     * @uses getClient()
+     * @uses $Client
      * @uses $fullBaseUrl
      */
     protected function getResponse($url)
     {
         return Cache::remember(sprintf('response_%s', md5(serialize($url))), function () use ($url) {
-            return new ScanResponse($this->getClient()->get($url), $this->fullBaseUrl);
+            return new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
         }, LINK_SCANNER);
     }
 
@@ -170,10 +198,9 @@ class LinkScanner
      *  been exported.
      * @param string $filename Filename where to export
      * @return string
+     * @see serialize()
      * @throws RuntimeException
      * @uses getResults()
-     * @uses $endTime
-     * @uses $fullBaseUrl
      * @uses $hostname
      * @uses $startTime
      */
@@ -183,18 +210,9 @@ class LinkScanner
             throw new RuntimeException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
         }
 
-        $filename = $filename ?: TMP . sprintf('results_%s_%s', $this->hostname, $this->startTime);
-
         try {
-            $data = [
-                'ResultScan' => $this->getResults(),
-                'config' => $this->getConfig(),
-                'endTime' => $this->endTime,
-                'fullBaseUrl' => $this->fullBaseUrl,
-                'startTime' => $this->startTime,
-            ];
-
-            file_put_contents($filename, serialize($data));
+            $filename = $filename ?: TMP . sprintf('results_%s_%s', $this->hostname, $this->startTime);
+            file_put_contents($filename, serialize($this));
         } catch (Exception $e) {
             $message = preg_replace('/^file_put_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
             throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}` with message `{1}`', $filename, $message));
@@ -214,29 +232,21 @@ class LinkScanner
      *  been exported.
      * @param string $filename Filename from which to import
      * @return $this
-     * @throws InternalErrorException
+     * @see unserialize()
+     * @throws RuntimeException
      */
     public function import($filename)
     {
         try {
-            $data = unserialize(file_get_contents($filename));
-
-            $this->setConfig($data['config']);
-            unset($data['config']);
-
-            foreach ($data as $key => $value) {
-                if (property_exists($this, $key)) {
-                    $this->$key = $value;
-                }
-            }
+            $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
             $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
             throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}` with message `{1}`', $filename, $message));
         }
 
-        $this->dispatchEvent(LINK_SCANNER . '.resultsImported', [$filename]);
+        $instance->dispatchEvent(LINK_SCANNER . '.resultsImported', [$filename]);
 
-        return $this;
+        return $instance;
     }
 
     /**

@@ -61,7 +61,7 @@ class LinkScannerShell extends Shell
                 $this->LinkScanner->setConfig('maxDepth', $this->param('maxDepth'));
             }
             if ($this->param('timeout')) {
-                $this->LinkScanner->getClient()->setConfig('timeout', $this->param('timeout'));
+                $this->LinkScanner->Client->setConfig('timeout', $this->param('timeout'));
             }
 
             $this->LinkScanner->scan()->export($filename);
@@ -100,7 +100,7 @@ class LinkScannerShell extends Shell
                         'short' => 'd',
                     ],
                     'timeout' => [
-                        'help' => __d('link-scanner', 'Timeout in seconds for each request. Default: {0}', $this->LinkScanner->getClient()->getConfig('timeout')),
+                        'help' => __d('link-scanner', 'Timeout in seconds for each request. Default: {0}', $this->LinkScanner->Client->getConfig('timeout')),
                         'short' => 't',
                     ],
                 ],

@@ -174,14 +174,10 @@ trait TestCaseTrait
             })->toArray();
         }));
 
-        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs([$fullBaseUrl, $ResultScan])
-            ->setMethods(['createLockFile', 'getClient'])
+        return $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([$fullBaseUrl, $ResultScan, $this->getClientReturnsFromTests()])
+            ->setMethods(['createLockFile'])
             ->getMock();
-
-        $LinkScanner->method('getClient')->will($this->returnValue($this->getClientReturnsFromTests()));
-
-        return $LinkScanner;
     }
 
     /**
@@ -198,14 +194,10 @@ trait TestCaseTrait
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
         $fullBaseUrl = clean_url($fullBaseUrl, true);
 
-        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs([$fullBaseUrl])
-            ->setMethods(['createLockFile', 'getClient'])
+        return $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([$fullBaseUrl, null, $this->getClientReturnsSampleResponse()])
+            ->setMethods(['createLockFile'])
             ->getMock();
-
-        $LinkScanner->method('getClient')->will($this->returnValue($this->getClientReturnsSampleResponse()));
-
-        return $LinkScanner;
     }
 
     /**
@@ -216,13 +208,10 @@ trait TestCaseTrait
      */
     protected function getLinkScannerClientReturnsError()
     {
-        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setMethods(['createLockFile', 'getClient'])
+        return $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([null, null, $this->getClientReturnsErrorResponse()])
+            ->setMethods(['createLockFile'])
             ->getMock();
-
-        $LinkScanner->method('getClient')->will($this->returnValue($this->getClientReturnsErrorResponse()));
-
-        return $LinkScanner;
     }
 
     /**

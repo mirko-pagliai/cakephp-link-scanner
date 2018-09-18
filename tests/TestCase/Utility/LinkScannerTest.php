@@ -146,9 +146,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testExportNoExistingFile()
     {
-        $this->LinkScanner->setConfig('maxDepth', 1)
-            ->scan()
-            ->export(TMP . 'noExistingDir' . DS . 'result');
+        $this->LinkScanner->scan()->export(TMP . 'noExistingDir' . DS . 'result');
     }
 
     /**
@@ -168,13 +166,28 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testImport()
     {
-        $expectedLinkScanner = $this->LinkScanner;
+        $this->LinkScanner->setConfig('maxDepth', 1);
+        $this->LinkScanner->Client->setConfig('timeout', 100);
+        $this->LinkScanner->scan();
+        $filename = $this->LinkScanner->export();
 
-        $this->LinkScanner->setConfig('maxDepth', 1)->scan();
-        $result = $this->LinkScanner->import($this->LinkScanner->export());
-        $this->assertEquals($expectedLinkScanner, $result);
-        $this->assertEquals($expectedLinkScanner->getResults(), $result->getResults());
-        $this->assertEventFired(LINK_SCANNER . '.resultsImported', $this->EventManager);
+        $result = (new LinkScanner)->import($filename);
+
+        //Checks the event is fired only on the new object. Then, it unsets both
+        //  event lists, so that the objects comparison will run
+        $this->assertEventNotFired(LINK_SCANNER . '.resultsImported', $this->getEventManager());
+        $this->assertEventFired(LINK_SCANNER . '.resultsImported', $this->getEventManager($result));
+        $this->getEventManager()->unsetEventList();
+        $this->getEventManager($result)->unsetEventList();
+
+        //Gets properties from both client, fixes properties of the `Client`
+        //  instances and performs the comparison
+        $originalProperties = $this->getProperties($this->LinkScanner);
+        $resultProperties = $this->getProperties($result);
+        $originalProperties['Client'] = $this->getProperties($this->LinkScanner->Client);
+        $resultProperties['Client'] = $this->getProperties($result->Client);
+        unset($originalProperties['Client']['_adapter'], $resultProperties['Client']['_adapter']);
+        $this->assertEquals($resultProperties, $originalProperties);
     }
 
     /**
@@ -290,7 +303,7 @@ class LinkScannerTest extends IntegrationTestCase
     public function testScanNoExistingUrl()
     {
         $LinkScanner = new LinkScanner('http://noExisting');
-        $LinkScanner->getClient()->setConfig('timeout', 1);
+        $LinkScanner->Client->setConfig('timeout', 1);
         $LinkScanner->scan();
         $this->assertTrue($LinkScanner->getResults()->isEmpty());
     }
@@ -304,7 +317,6 @@ class LinkScannerTest extends IntegrationTestCase
         $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $EventManager = $this->getEventManager($LinkScanner);
-
         $LinkScanner->scan();
 
         $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $EventManager);
@@ -319,7 +331,6 @@ class LinkScannerTest extends IntegrationTestCase
         $params = ['controller' => 'Pages', 'action' => 'display', 'nohtml'];
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $EventManager = $this->getEventManager($LinkScanner);
-
         $LinkScanner->scan();
 
         $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotHtml', $EventManager);
@@ -333,7 +344,6 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests('http://localhost/noExisting');
         $EventManager = $this->getEventManager($LinkScanner);
-
         $LinkScanner->scan();
 
         $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotOk', $EventManager);
