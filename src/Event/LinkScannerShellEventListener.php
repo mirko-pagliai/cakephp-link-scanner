@@ -130,19 +130,23 @@ class LinkScannerShellEventListener implements EventListenerInterface
     /**
      * `LinkScanner.scanCompleted` event
      * @param Event $event An `Event` instance
+     * @param int $startTime Start time
      * @param int $endTime End time
      * @param ResultScan $ResultScan A `ResultScan` instance
      * @return bool
      * @uses $LinkScannerShell
      */
-    public function scanCompleted(Event $event, $endTime, ResultScan $ResultScan)
+    public function scanCompleted(Event $event, $startTime, $endTime, ResultScan $ResultScan)
     {
         if ($this->LinkScannerShell->param('verbose')) {
             $this->LinkScannerShell->hr();
         }
 
-        $endTime = (new Time($endTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
-        $this->LinkScannerShell->out(__d('link-scanner', 'Scan completed at {0}', $endTime));
+        $endTime = new Time($endTime);
+        $elapsedTime = $endTime->diffForHumans(new Time($startTime), true);
+
+        $this->LinkScannerShell->out(__d('link-scanner', 'Scan completed at {0}', $endTime->i18nFormat('yyyy-MM-dd HH:mm:ss')));
+        $this->LinkScannerShell->out(__d('link-scanner', 'Elapsed time: {0}', $elapsedTime));
         $this->LinkScannerShell->out(__d('link-scanner', 'Total scanned links: {0}', $ResultScan->count()));
 
         if ($this->LinkScannerShell->param('verbose')) {

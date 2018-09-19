@@ -374,7 +374,7 @@ class LinkScanner implements Serializable
 
         safe_unlink(LINK_SCANNER_LOCK_FILE);
 
-        $this->dispatchEvent(LINK_SCANNER . '.scanCompleted', [$this->endTime, $this->getResults()]);
+        $this->dispatchEvent(LINK_SCANNER . '.scanCompleted', [$this->startTime, $this->endTime, $this->getResults()]);
 
         return $this;
     }

@@ -113,12 +113,14 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertFileExists($filename);
 
         $messages = $this->out->messages();
-        $this->assertCount(5, $messages);
+        $this->assertCount(6, $messages);
 
         $this->assertTextStartsWith(sprintf('<info>Scan started for %s', $this->fullBaseUrl), current($messages));
         $this->assertRegexp('/at [\d\-]+\s[\d\:]+<\/info>$/', current($messages));
         $this->assertEquals(sprintf('Checking %s ...', $this->fullBaseUrl), next($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
+        $this->assertTextStartsWith('Elapsed time: ', next($messages));
+        $this->assertTextEndsWith(' seconds', current($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
         $this->assertTextContains(sprintf('Results have been exported to %s', $filename), next($messages));
         $this->assertEmpty($this->err->messages());
@@ -212,12 +214,14 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertTextContains('The cache is disabled', next($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
 
-        //Last five lines
-        while (key($messages) !== $count - 5) {
+        //Last lines
+        while (key($messages) !== $count - 6) {
             next($messages);
         };
         $this->assertRegexp('/^\-{63}$/', current($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
+        $this->assertTextStartsWith('Elapsed time: ', next($messages));
+        $this->assertTextEndsWith(' seconds', current($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
         $this->assertTextStartsWith('<success>Results have been exported to ', next($messages));
