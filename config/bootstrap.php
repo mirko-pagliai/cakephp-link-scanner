@@ -26,7 +26,7 @@ if (!Cache::getConfig(LINK_SCANNER)) {
     Cache::setConfig(LINK_SCANNER, [
         'className' => 'File',
         'duration' => '+1 day',
-        'path' => CACHE,
+        'path' => CACHE . 'link_scanner',
         'prefix' => null,
     ]);
 }
