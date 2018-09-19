@@ -221,7 +221,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertRegexp('/^\-{63}$/', current($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertTextStartsWith('Elapsed time: ', next($messages));
-        $this->assertTextEndsWith(' seconds', current($messages));
+        $this->assertRegexp('/\d+ seconds?$/', current($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
         $this->assertTextStartsWith('<success>Results have been exported to ', next($messages));

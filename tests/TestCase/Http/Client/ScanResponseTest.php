@@ -35,6 +35,11 @@ class ScanResponseTest extends TestCase
     {
         $contentTypes = [
             'text/html; charset=UTF-8' => 'text/html',
+            'application/rss+xml; charset=UTF-8' => 'application/rss+xml',
+            'image/png' => 'image/png',
+            'text/css' => 'text/css',
+            'text/css; charset=UTF-8' => 'text/css',
+            'application/javascript; charset=UTF-8' => 'application/javascript',
         ];
 
         foreach ($contentTypes as $originalContentType => $expectedContentType) {

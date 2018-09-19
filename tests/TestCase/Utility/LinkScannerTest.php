@@ -172,6 +172,7 @@ class LinkScannerTest extends IntegrationTestCase
         $filename = $this->LinkScanner->export();
 
         $result = (new LinkScanner)->import($filename);
+        $this->assertInstanceof(LinkScanner::class, $result);
 
         //Checks the event is fired only on the new object. Then, it unsets both
         //  event lists, so that the objects comparison will run
