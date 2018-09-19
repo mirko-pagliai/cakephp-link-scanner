@@ -109,8 +109,6 @@ class LinkScanner implements Serializable
         $this->ResultScan = $ResultScan ?: new ResultScan;
 
         $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
-
-        $this->getEventManager()->setEventList(new EventList);
     }
 
     /**
@@ -122,10 +120,11 @@ class LinkScanner implements Serializable
     {
         $properties = get_object_vars($this);
 
-        $properties['Client'] = [];
-        if ($this->Client instanceof Client) {
-            $properties['Client'] = $this->Client->getConfig() + ['cookieJar' => $this->Client->cookies()];
-        }
+        //Unsets the event class and event manager. For the `Client` instance,
+        //  it takes only configuration and cookies
+        unset($properties['_eventClass'], $properties['_eventManager']);
+
+        $properties['Client'] = $this->Client->getConfig() + ['cookieJar' => $this->Client->cookies()];
 
         return serialize($properties);
     }
@@ -140,6 +139,8 @@ class LinkScanner implements Serializable
     {
         $properties = unserialize($serialized);
 
+        //Resets the event list and the Client instance
+        $this->getEventManager()->setEventList(new EventList);
         $this->Client = new Client($properties['Client'] ?: []);
         unset($properties['Client']);
 
