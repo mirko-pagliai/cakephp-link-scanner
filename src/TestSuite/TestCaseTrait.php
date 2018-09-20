@@ -181,40 +181,6 @@ trait TestCaseTrait
     }
 
     /**
-     * Returns a stub of `LinkScanner` instance, with the `Client::get()`
-     *  method that returns a sample response which is read from
-     *  `examples/responses` files
-     * @param string|array|null $fullBaseUrl Full base url
-     * @return \LinkScanner\Utility\LinkScanner
-     * @uses getClientReturnsSampleResponse()
-     */
-    protected function getLinkScannerClientReturnsSampleResponse($fullBaseUrl = null)
-    {
-        $fullBaseUrl = $fullBaseUrl ?: 'http://google.com';
-        $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
-        $fullBaseUrl = clean_url($fullBaseUrl, true);
-
-        return $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs([$fullBaseUrl, null, $this->getClientReturnsSampleResponse()])
-            ->setMethods(null)
-            ->getMock();
-    }
-
-    /**
-     * Returns a stub of `LinkScanner` instance, with the `Client::get()`
-     *  method that always returns a response with error (404 status code)
-     * @return \LinkScanner\Utility\LinkScanner
-     * @uses getClientReturnsErrorResponse()
-     */
-    protected function getLinkScannerClientReturnsError()
-    {
-        return $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs([null, null, $this->getClientReturnsErrorResponse()])
-            ->setMethods(['createLockFile'])
-            ->getMock();
-    }
-
-    /**
      * Gets a `Response` instance, writes a new body string and returns.
      *
      * If `$response` is null, a new `Response` instance will be created.

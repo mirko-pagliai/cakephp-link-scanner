@@ -18,6 +18,7 @@ use Cake\TestSuite\ConsoleIntegrationTestCase;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Shell\LinkScannerShell;
 use LinkScanner\TestSuite\TestCaseTrait;
+use LinkScanner\Utility\LinkScanner;
 
 /**
  * LinkScannerShellTest class
@@ -73,7 +74,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             ->setMethods(['in', '_stop'])
             ->getMock();
 
-        $this->LinkScannerShell->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse($this->fullBaseUrl);
+        $this->LinkScannerShell->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
 
         $this->EventManager = $this->getEventManager($this->LinkScannerShell->LinkScanner);
     }
@@ -254,8 +255,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanWithErrorResponse()
     {
-        $this->LinkScannerShell->LinkScanner = $this->getLinkScannerClientReturnsError($this->fullBaseUrl);
-
+        $this->LinkScannerShell->LinkScanner = new LinkScanner(null, null, $this->getClientReturnsErrorResponse());
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan($this->getTempname());
 

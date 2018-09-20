@@ -52,7 +52,7 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
+        $this->LinkScanner = new LinkScanner('http://google.com', null, $this->getClientReturnsSampleResponse());
         $this->EventManager = $this->getEventManager();
         $this->debug = [];
     }
@@ -105,7 +105,7 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertInstanceof(ScanResponse::class, $responseFromCache);
         }
 
-        $this->LinkScanner = $this->getLinkScannerClientReturnsSampleResponse();
+        $this->LinkScanner = new LinkScanner('http://google.com', null, $this->getClientReturnsSampleResponse());
         $response = $getResponseMethod('http://www.google.it');
         $this->assertInstanceof(ScanResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
