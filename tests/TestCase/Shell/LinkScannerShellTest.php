@@ -191,7 +191,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertTextContains('Scan started for ' . $params['fullBaseUrl'], $this->out->messages()[0]);
         $this->assertEmpty($this->err->messages());
 
-        $this->assertEquals($params['fullBaseUrl'], $this->getProperty($this->LinkScannerShell->LinkScanner, 'fullBaseUrl'));
+        $this->assertEquals($params['fullBaseUrl'], $this->LinkScannerShell->LinkScanner->fullBaseUrl);
         $this->assertEquals($params['maxDepth'], $this->LinkScannerShell->LinkScanner->getConfig('maxDepth'));
         $this->assertEquals($params['timeout'], $this->LinkScannerShell->LinkScanner->Client->getConfig('timeout'));
     }

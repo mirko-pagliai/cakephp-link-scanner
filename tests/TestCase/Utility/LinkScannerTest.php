@@ -231,8 +231,8 @@ class LinkScannerTest extends IntegrationTestCase
         }
 
         $this->assertInstanceof(LinkScanner::class, $result);
-        $this->assertIsInt($this->getProperty($this->LinkScanner, 'startTime'));
-        $this->assertIsInt($this->getProperty($this->LinkScanner, 'endTime'));
+        $this->assertIsInt($this->LinkScanner->startTime);
+        $this->assertIsInt($this->LinkScanner->endTime);
         $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
         $this->assertGreaterThan(1, $this->LinkScanner->ResultScan->count());
 
