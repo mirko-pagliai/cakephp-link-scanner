@@ -62,6 +62,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     {
         parent::setUp();
 
+        safe_unlink(LINK_SCANNER);
+
         $this->out = new ConsoleOutput;
         $this->err = new ConsoleOutput;
         $io = new ConsoleIo($this->out, $this->err);

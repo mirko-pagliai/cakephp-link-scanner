@@ -57,6 +57,8 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::setUp();
 
+        safe_unlink(LINK_SCANNER);
+
         $this->debug = [];
         $this->fullBaseUrl = 'http://google.com';
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
