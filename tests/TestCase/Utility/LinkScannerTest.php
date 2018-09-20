@@ -192,24 +192,28 @@ class LinkScannerTest extends IntegrationTestCase
         $this->LinkScanner->scan();
         $filename = $this->LinkScanner->export();
 
-        $result = (new LinkScanner)->import($filename);
-        $this->assertInstanceof(LinkScanner::class, $result);
+        $resultAsObject = (new LinkScanner)->import($filename);
+        $resultAsStatic = LinkScanner::import($filename);
 
-        //Checks the event is fired only on the new object. Then, it unsets both
-        //  event lists, so that the objects comparison will run
-        $this->assertEventNotFired(LINK_SCANNER . '.resultsImported', $this->getEventManager());
-        $this->assertEventFired(LINK_SCANNER . '.resultsImported', $this->getEventManager($result));
-        $this->getEventManager()->unsetEventList();
-        $this->getEventManager($result)->unsetEventList();
+        foreach ([$resultAsObject, $resultAsStatic] as $result) {
+            $this->assertInstanceof(LinkScanner::class, $result);
 
-        //Gets properties from both client, fixes properties of the `Client`
-        //  instances and performs the comparison
-        $originalProperties = $this->getProperties($this->LinkScanner);
-        $resultProperties = $this->getProperties($result);
-        $originalProperties['Client'] = $this->getProperties($this->LinkScanner->Client);
-        $resultProperties['Client'] = $this->getProperties($result->Client);
-        unset($originalProperties['Client']['_adapter'], $resultProperties['Client']['_adapter']);
-        $this->assertEquals($resultProperties, $originalProperties);
+            //Checks the event is fired only on the new object. Then, it unsets both
+            //  event lists, so that the objects comparison will run
+            $this->assertEventNotFired(LINK_SCANNER . '.resultsImported', $this->getEventManager());
+            $this->assertEventFired(LINK_SCANNER . '.resultsImported', $this->getEventManager($result));
+            $this->getEventManager()->unsetEventList();
+            $this->getEventManager($result)->unsetEventList();
+
+            //Gets properties from both client, fixes properties of the `Client`
+            //  instances and performs the comparison
+            $originalProperties = $this->getProperties($this->LinkScanner);
+            $resultProperties = $this->getProperties($result);
+            $originalProperties['Client'] = $this->getProperties($this->LinkScanner->Client);
+            $resultProperties['Client'] = $this->getProperties($result->Client);
+            unset($originalProperties['Client']['_adapter'], $resultProperties['Client']['_adapter']);
+            $this->assertEquals($resultProperties, $originalProperties);
+        }
     }
 
     /**
@@ -220,7 +224,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testImportNoExistingFile()
     {
-        $this->LinkScanner->import(TMP . 'noExistingDir' . DS . 'result');
+        LinkScanner::import(TMP . 'noExistingDir' . DS . 'result');
     }
 
     /**

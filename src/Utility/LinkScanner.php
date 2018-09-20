@@ -244,11 +244,11 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.resultsImported`: will be triggered when the results have
      *  been exported.
      * @param string $filename Filename from which to import
-     * @return $this
+     * @return object
      * @see unserialize()
      * @throws RuntimeException
      */
-    public function import($filename)
+    public static function import($filename)
     {
         try {
             $instance = unserialize(file_get_contents($filename));
