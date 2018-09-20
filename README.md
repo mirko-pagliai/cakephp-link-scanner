@@ -5,7 +5,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/hqk7fxtad6r75wk3?svg=true)](https://ci.appveyor.com/project/mirko-pagliai/cakephp-link-scanner)
 [![codecov](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner/branch/master/graph/badge.svg)](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner)
 
-*Link scanner* is a CakePHP plugin to scan links for CakePHP.
+*Link scanner* is a CakePHP plugin to scan links.
 
 ## Installation
 You can install the plugin via composer:
