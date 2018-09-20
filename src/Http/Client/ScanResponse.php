@@ -32,7 +32,7 @@ class ScanResponse implements Serializable
     /**
      * @var \Cake\Http\Client\Response
      */
-    public $Response;
+    protected $Response;
 
     /**
      * Full base url
