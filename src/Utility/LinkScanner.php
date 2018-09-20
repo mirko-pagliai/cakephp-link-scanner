@@ -112,6 +112,16 @@ class LinkScanner implements Serializable
     }
 
     /**
+     * Magic method for reading data from inaccessible properties
+     * @param string $name Property name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->$name;
+    }
+
+    /**
      * Returns the string representation of the object
      * @return string
      * @uses $Client
@@ -182,15 +192,6 @@ class LinkScanner implements Serializable
     }
 
     /**
-     * Safely access to `ResultScan` instance. This contains the results of the scan
-     * @return \LinkScanner\ResultScan
-     */
-    public function getResults()
-    {
-        return $this->ResultScan;
-    }
-
-    /**
      * Exports scan results as serialized array.
      *
      * ### Events
@@ -207,7 +208,7 @@ class LinkScanner implements Serializable
      */
     public function export($filename = null)
     {
-        if ($this->getResults()->isEmpty()) {
+        if ($this->ResultScan->isEmpty()) {
             throw new RuntimeException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
         }
 
@@ -294,7 +295,7 @@ class LinkScanner implements Serializable
         $item->code = $response->getStatusCode();
         $item->external = is_external_url($url, $this->hostname);
         $item->type = $response->getContentType();
-        $this->getResults()->append($item);
+        $this->ResultScan->append($item);
 
         $this->dispatchEvent(LINK_SCANNER . '.afterScanUrl', [$response]);
 
@@ -321,11 +322,11 @@ class LinkScanner implements Serializable
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links
-        $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->getResults()->getScannedUrl());
+        $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->ResultScan->getScannedUrl());
 
         foreach ($linksToScan as $link) {
             //Checks that the link has not already been scanned
-            if (in_array($link, $this->getResults()->getScannedUrl())) {
+            if (in_array($link, $this->ResultScan->getScannedUrl())) {
                 continue;
             }
 
@@ -374,7 +375,7 @@ class LinkScanner implements Serializable
 
         safe_unlink(LINK_SCANNER_LOCK_FILE);
 
-        $this->dispatchEvent(LINK_SCANNER . '.scanCompleted', [$this->startTime, $this->endTime, $this->getResults()]);
+        $this->dispatchEvent(LINK_SCANNER . '.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
 
         return $this;
     }

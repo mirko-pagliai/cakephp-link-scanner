@@ -43,6 +43,11 @@ class LinkScannerTest extends IntegrationTestCase
     protected $debug;
 
     /**
+     * @var string
+     */
+    protected $fullBaseUrl;
+
+    /**
      * Setup the test case, backup the static object values so they can be
      * restored. Specifically backs up the contents of Configure and paths in
      *  App if they have not already been backed up
@@ -52,9 +57,10 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->LinkScanner = new LinkScanner('http://google.com', null, $this->getClientReturnsSampleResponse());
-        $this->EventManager = $this->getEventManager();
         $this->debug = [];
+        $this->fullBaseUrl = 'http://google.com';
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $this->EventManager = $this->getEventManager();
     }
 
     /**
@@ -69,6 +75,15 @@ class LinkScannerTest extends IntegrationTestCase
         Cache::disable();
 
         safe_unlink_recursive(TMP);
+    }
+
+    /**
+     * Test for `__get()` magic method
+     * @test
+     */
+    public function testMagicGet()
+    {
+        $this->assertEquals($this->fullBaseUrl, $this->LinkScanner->fullBaseUrl);
     }
 
     /**
@@ -105,13 +120,13 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertInstanceof(ScanResponse::class, $responseFromCache);
         }
 
-        $this->LinkScanner = new LinkScanner('http://google.com', null, $this->getClientReturnsSampleResponse());
-        $response = $getResponseMethod('http://www.google.it');
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $response = $getResponseMethod($this->fullBaseUrl);
         $this->assertInstanceof(ScanResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringStartsWith('text/html', $response->getContentType());
 
-        $responseFromCache = $getResponseFromCache('http://www.google.it');
+        $responseFromCache = $getResponseFromCache($this->fullBaseUrl);
         $this->assertNotEmpty($responseFromCache);
         $this->assertInstanceof(ScanResponse::class, $responseFromCache);
     }
@@ -126,7 +141,7 @@ class LinkScannerTest extends IntegrationTestCase
 
         $result = $this->LinkScanner->export();
         $this->assertFileExists($result);
-        $this->assertRegexp('/^' . preg_quote(TMP, '/') . 'results_google\.com_\d+$/', $result);
+        $this->assertEquals(TMP . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime, $result);
         $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
 
         $filename = TMP . 'results_as_array';
@@ -218,11 +233,11 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertInstanceof(LinkScanner::class, $result);
         $this->assertIsInt($this->getProperty($this->LinkScanner, 'startTime'));
         $this->assertIsInt($this->getProperty($this->LinkScanner, 'endTime'));
-        $this->assertInstanceof(ResultScan::class, $this->LinkScanner->getResults());
-        $this->assertGreaterThan(1, $this->LinkScanner->getResults()->count());
+        $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
+        $this->assertGreaterThan(1, $this->LinkScanner->ResultScan->count());
 
-        foreach ($this->LinkScanner->getResults() as $item) {
-            $this->assertRegExp('/^http:\/\/google\.com/', $item->url);
+        foreach ($this->LinkScanner->ResultScan as $item) {
+            $this->assertTextStartsWith($this->fullBaseUrl, $item->url);
             $this->assertFalse($item->external);
             $this->assertContains($item->code, [200, 500]);
             $this->assertEquals($item->type, 'text/html');
@@ -268,15 +283,15 @@ class LinkScannerTest extends IntegrationTestCase
         $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->scan();
-        $this->assertCount(6, $LinkScanner->getResults());
-        $results = $LinkScanner->getResults()->extract('url')->toArray();
+        $this->assertCount(6, $LinkScanner->ResultScan);
+        $results = $LinkScanner->ResultScan->extract('url')->toArray();
         $this->assertEquals($expectedResults, $results);
         $this->assertNotEmpty($this->debug);
 
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->setConfig('maxDepth', 1)->scan();
-        $this->assertCount(1, $LinkScanner->getResults());
-        $item = $LinkScanner->getResults()->first();
+        $this->assertCount(1, $LinkScanner->ResultScan);
+        $item = $LinkScanner->ResultScan->first();
         $this->assertEquals($item->code, 200);
         $this->assertFalse($item->external);
         $this->assertNull($item->referer);
@@ -306,7 +321,7 @@ class LinkScannerTest extends IntegrationTestCase
         $LinkScanner = new LinkScanner('http://noExisting');
         $LinkScanner->Client->setConfig('timeout', 1);
         $LinkScanner->scan();
-        $this->assertTrue($LinkScanner->getResults()->isEmpty());
+        $this->assertTrue($LinkScanner->ResultScan->isEmpty());
     }
 
     /**
