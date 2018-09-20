@@ -123,7 +123,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertEquals(sprintf('Checking %s ...', $this->fullBaseUrl), next($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
         $this->assertTextStartsWith('Elapsed time: ', next($messages));
-        $this->assertTextEndsWith(' seconds?', current($messages));
+        $this->assertRegexp('/\d+ seconds?$/', current($messages));
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
         $this->assertTextContains(sprintf('Results have been exported to %s', $filename), next($messages));
         $this->assertEmpty($this->err->messages());
