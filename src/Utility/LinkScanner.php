@@ -178,7 +178,9 @@ class LinkScanner implements Serializable
     }
 
     /**
-     * Performs a single GET request and returns the response as `ScanResponse`
+     * Performs a single GET request and returns the response as `ScanResponse`.
+     *
+     * The response will be cached, if that's ok and the cache is enabled.
      * @param string $url The url or path you want to request
      * @return ScanResponse
      * @uses $Client
@@ -186,9 +188,18 @@ class LinkScanner implements Serializable
      */
     protected function getResponse($url)
     {
-        return Cache::remember(sprintf('response_%s', md5(serialize($url))), function () use ($url) {
-            return new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
-        }, LINK_SCANNER);
+        $cacheKey = sprintf('response_%s', md5(serialize($url)));
+        $response = Cache::read($cacheKey, LINK_SCANNER);
+
+        if (!$response) {
+            $response = new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
+
+            if ($response->isOk()) {
+                Cache::write($cacheKey, $response, LINK_SCANNER);
+            }
+        }
+
+        return $response;
     }
 
     /**

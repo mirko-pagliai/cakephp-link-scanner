@@ -96,8 +96,8 @@ class LinkScannerTest extends IntegrationTestCase
     {
         Cache::enable();
 
-        $getResponseMethod = function () {
-            return $this->invokeMethod($this->LinkScanner, 'getResponse', func_get_args());
+        $getResponseMethod = function ($url) {
+            return $this->invokeMethod($this->LinkScanner, 'getResponse', [$url]);
         };
         $getResponseFromCache = function ($url) {
             return Cache::read(sprintf('response_%s', md5(serialize($url))), LINK_SCANNER);
@@ -118,8 +118,12 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertStringStartsWith('text/html', $response->getContentType());
 
             $responseFromCache = $getResponseFromCache($params);
-            $this->assertNotEmpty($responseFromCache);
-            $this->assertInstanceof(ScanResponse::class, $responseFromCache);
+            if ($response->isOk()) {
+                $this->assertNotEmpty($responseFromCache);
+                $this->assertInstanceof(ScanResponse::class, $responseFromCache);
+            } else {
+                $this->assertEmpty($responseFromCache);
+            }
         }
 
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
