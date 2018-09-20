@@ -54,6 +54,9 @@ class LinkScannerShell extends Shell
             //This method will trigger events provided by `LinkScannerShellEventListener`
             $this->LinkScanner->getEventManager()->on(new LinkScannerShellEventListener($this));
 
+            if ($this->param('force')) {
+                safe_unlink(LINK_SCANNER_LOCK_FILE);
+            }
             if ($this->param('fullBaseUrl')) {
                 $this->LinkScanner->setFullBaseUrl($this->param('fullBaseUrl'));
             }
@@ -91,9 +94,12 @@ class LinkScannerShell extends Shell
                     ],
                 ],
                 'options' => [
+                    'force' => [
+                        'help' => __d('link-scanner', 'Force mode: removes the lock file and does not ask questions'),
+                        'short' => 'f',
+                    ],
                     'fullBaseUrl' => [
                         'help' => __d('link-scanner', 'Full base url. By default, the `{0}` value will be used', 'App.fullBaseUrl'),
-                        'short' => 'f',
                     ],
                     'maxDepth' => [
                         'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->getConfig('maxDepth')),

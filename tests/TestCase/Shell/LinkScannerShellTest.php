@@ -173,8 +173,10 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanParams()
     {
+        touch(LINK_SCANNER_LOCK_FILE);
         $filename = $this->getTempname();
         $params = [
+            'force' => true,
             'fullBaseUrl' => 'http://anotherFullBaseUrl',
             'maxDepth' => 3,
             'timeout' => 15,
@@ -183,6 +185,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->params = $params;
         $this->LinkScannerShell->scan($filename);
         $this->assertFileExists($filename);
+        $this->assertFileNotExists(LINK_SCANNER_LOCK_FILE);
 
         $this->assertTextContains('Scan started for ' . $params['fullBaseUrl'], $this->out->messages()[0]);
         $this->assertEmpty($this->err->messages());
@@ -284,6 +287,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         //Tests options
         $this->assertArrayKeysEqual([
+            'force',
             'fullBaseUrl',
             'help',
             'maxDepth',
