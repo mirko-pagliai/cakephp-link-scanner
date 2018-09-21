@@ -43,12 +43,11 @@ class LinkScannerShell extends Shell
 
     /**
      * Performs a complete scan
-     * @param string $filename Filename where to export
      * @return void
      * @see LinkScannerShellEventListener::implementedEvents()
      * @uses LinkScanner
      */
-    public function scan($filename)
+    public function scan()
     {
         try {
             //This method will trigger events provided by `LinkScannerShellEventListener`
@@ -67,7 +66,11 @@ class LinkScannerShell extends Shell
                 $this->LinkScanner->Client->setConfig('timeout', $this->param('timeout'));
             }
 
-            $this->LinkScanner->scan()->export($filename);
+            $this->LinkScanner->scan();
+
+            if (array_key_exists('export', $this->params)) {
+                $this->LinkScanner->export($this->param('export'));
+            }
         } catch (Exception $e) {
             $this->abort($e->getMessage());
         }
@@ -87,13 +90,11 @@ class LinkScannerShell extends Shell
         $parser->addSubcommand('scan', [
             'help' => __d('link-scanner', 'Performs a complete scan'),
             'parser' => [
-                'arguments' => [
-                    'filename' => [
-                        'help' => __d('link-scanner', 'Path to the file where to export results'),
-                        'required' => true,
-                    ],
-                ],
                 'options' => [
+                    'export' => [
+                        'help' => __d('link-scanner', 'Export results. The filename will be generated automatically, or you can indicate a relative or absolute path'),
+                        'short' => 'e',
+                    ],
                     'force' => [
                         'help' => __d('link-scanner', 'Force mode: removes the lock file and does not ask questions'),
                         'short' => 'f',
