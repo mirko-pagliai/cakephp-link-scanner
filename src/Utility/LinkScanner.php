@@ -227,8 +227,8 @@ class LinkScanner implements Serializable
         }
 
         try {
-            $filename = $filename ?: TMP . sprintf('results_%s_%s', $this->hostname, $this->startTime);
-            $filename = Folder::isAbsolute($filename) ? $filename : TMP . $filename;
+            $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
+            $filename = Folder::isAbsolute($filename) ? $filename : LINK_SCANNER_TARGET . DS . $filename;
             file_put_contents($filename, serialize($this));
         } catch (Exception $e) {
             $message = preg_replace('/^file_put_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
@@ -256,7 +256,7 @@ class LinkScanner implements Serializable
     public static function import($filename)
     {
         try {
-            $filename = Folder::isAbsolute($filename) ? $filename : TMP . $filename;
+            $filename = Folder::isAbsolute($filename) ? $filename : LINK_SCANNER_TARGET . DS . $filename;
             $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
             $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());

@@ -34,13 +34,12 @@ define('APP', TEST_APP . 'TestApp' . DS);
 define('APP_DIR', 'TestApp');
 define('WEBROOT_DIR', 'webroot');
 define('WWW_ROOT', APP . 'webroot' . DS);
-define('TMP', sys_get_temp_dir() . DS . 'cakephp-link-scanner' . DS . 'tmp' . DS);
-define('CACHE', sys_get_temp_dir() . DS . 'cakephp-link-scanner' . DS . 'cache' . DS);
+define('TMP', sys_get_temp_dir() . DS . 'cakephp-link-scanner' . DS);
+define('CACHE', TMP . 'cache' . DS);
 define('CONFIG', APP . 'config' . DS);
 define('LOGS', TMP);
 define('SESSIONS', TMP . 'sessions' . DS);
 
-safe_mkdir(sys_get_temp_dir() . DS . 'cakephp-link-scanner');
 safe_mkdir(TMP);
 safe_mkdir(LOGS);
 safe_mkdir(SESSIONS);

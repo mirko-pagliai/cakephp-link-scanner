@@ -192,7 +192,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
 
-        $expectedExportFile = TMP . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
+        $expectedExportFile = LINK_SCANNER_TARGET . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
         $this->assertFileExists($expectedExportFile);
 
         $messages = $this->out->messages();
@@ -207,8 +207,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertEquals($params['timeout'], $this->LinkScanner->Client->getConfig('timeout'));
 
         foreach ([
-            'example' => TMP . 'example',
-            sys_get_temp_dir() . DS . 'example' => sys_get_temp_dir() . DS . 'example',
+            'example' => LINK_SCANNER_TARGET . DS . 'example',
+            TMP . 'example' => TMP . 'example',
         ] as $filename => $expectedExportFile) {
             $this->LinkScannerShell = $this->getLinkScannerShell();
             $this->LinkScannerShell->params = ['export' => $filename] + $params;

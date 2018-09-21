@@ -22,11 +22,24 @@ if (!defined('LINK_SCANNER_LOCK_FILE')) {
     define('LINK_SCANNER_LOCK_FILE', TMP . 'link_scanner_lock_file');
 }
 
+//Sets the path where to export results
+if (!defined('LINK_SCANNER_TARGET')) {
+    define('LINK_SCANNER_TARGET', TMP . 'link-scanner');
+}
+
+if (!file_exists(LINK_SCANNER_TARGET)) {
+    safe_mkdir(LINK_SCANNER_TARGET);
+}
+
+if (!is_writeable(LINK_SCANNER_TARGET)) {
+    trigger_error(sprintf('Directory %s not writeable', LINK_SCANNER_TARGET), E_USER_ERROR);
+}
+
 if (!Cache::getConfig(LINK_SCANNER)) {
     Cache::setConfig(LINK_SCANNER, [
         'className' => 'File',
         'duration' => '+1 day',
-        'path' => CACHE . 'link_scanner',
-        'prefix' => null,
+        'path' => CACHE,
+        'prefix' => 'link_scanner_',
     ]);
 }
