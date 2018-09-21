@@ -148,8 +148,8 @@ class LinkScannerTest extends IntegrationTestCase
         //Filename can be `null`, relative or absolute
         foreach ([
             null => TMP . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
-            'result_scan' => TMP . 'result_scan',
-            TMP . 'result_scan' => TMP . 'result_scan',
+            'example' => TMP . 'example',
+            TMP . 'example' => TMP . 'example',
         ] as $filenameWhereToExport => $expectedFilename) {
             $result = $this->LinkScanner->export($filenameWhereToExport);
             $this->assertFileExists($result);
