@@ -145,18 +145,17 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $this->LinkScanner->setConfig('maxDepth', 1)->scan();
 
-        $result = $this->LinkScanner->export();
-        $this->assertFileExists($result);
-        $this->assertEquals(TMP . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime, $result);
-        $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
-
-        $filename = TMP . 'results_as_array';
-        $this->EventManager = $this->getEventManager();
-
-        $result = $this->LinkScanner->export($filename);
-        $this->assertFileExists($result);
-        $this->assertEquals($filename, $result);
-        $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
+        //Filename can be `null`, relative or absolute
+        foreach ([
+            null => TMP . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
+            'result_scan' => TMP . 'result_scan',
+            TMP . 'result_scan' => TMP . 'result_scan',
+        ] as $filenameWhereToExport => $expectedFilename) {
+            $result = $this->LinkScanner->export($filenameWhereToExport);
+            $this->assertFileExists($result);
+            $this->assertEquals($expectedFilename, $result);
+            $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
+        }
     }
 
     /**

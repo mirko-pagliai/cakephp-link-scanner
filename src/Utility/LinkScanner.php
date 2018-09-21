@@ -17,6 +17,7 @@ use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
+use Cake\Filesystem\Folder;
 use Cake\Http\Client;
 use Exception;
 use InvalidArgumentException;
@@ -203,13 +204,15 @@ class LinkScanner implements Serializable
     }
 
     /**
-     * Exports scan results as serialized array.
+     * Exports scan results.
      *
+     * The filename will be generated automatically, or you can indicate a
+     *  relative or absolute path.
      * ### Events
      * This method will trigger some events:
      *  - `LinkScanner.resultsExported`: will be triggered when the results have
      *  been exported.
-     * @param string $filename Filename where to export
+     * @param string|null $filename Filename where to export
      * @return string
      * @see serialize()
      * @throws RuntimeException
@@ -225,6 +228,7 @@ class LinkScanner implements Serializable
 
         try {
             $filename = $filename ?: TMP . sprintf('results_%s_%s', $this->hostname, $this->startTime);
+            $filename = Folder::isAbsolute($filename) ? $filename : TMP . $filename;
             file_put_contents($filename, serialize($this));
         } catch (Exception $e) {
             $message = preg_replace('/^file_put_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
@@ -239,6 +243,7 @@ class LinkScanner implements Serializable
     /**
      * Imports scan results.
      *
+     * You can indicate a relative or absolute path.
      * ### Events
      * This method will trigger some events:
      *  - `LinkScanner.resultsImported`: will be triggered when the results have
@@ -251,6 +256,7 @@ class LinkScanner implements Serializable
     public static function import($filename)
     {
         try {
+            $filename = Folder::isAbsolute($filename) ? $filename : TMP . $filename;
             $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
             $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
