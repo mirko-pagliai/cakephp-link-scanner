@@ -54,7 +54,7 @@ class LinkScannerShell extends Shell
             //This method will trigger events provided by `LinkScannerShellEventListener`
             $this->LinkScanner->getEventManager()->on(new LinkScannerShellEventListener($this));
 
-            if ($this->param('force')) {
+            if (array_key_exists('force', $this->params)) {
                 safe_unlink(LINK_SCANNER_LOCK_FILE);
             }
             if ($this->param('fullBaseUrl')) {
