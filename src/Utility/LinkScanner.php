@@ -152,7 +152,7 @@ class LinkScanner implements Serializable
 
         //Resets the event list and the Client instance
         $this->getEventManager()->setEventList(new EventList);
-        $this->Client = new Client($properties['Client'] ?: []);
+        $this->Client = new Client($properties['Client']);
         unset($properties['Client']);
 
         foreach ($properties as $name => $value) {
