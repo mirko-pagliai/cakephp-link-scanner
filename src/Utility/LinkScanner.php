@@ -348,7 +348,7 @@ class LinkScanner implements Serializable
             }
 
             //Skips external links
-            if (is_external_url($link, $this->hostname)) {
+            if (is_external_url($link, $this->hostname) && !in_array($link, $this->externalLinks)) {
                 $this->externalLinks[] = $link;
 
                 continue;
