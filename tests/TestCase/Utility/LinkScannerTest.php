@@ -349,20 +349,6 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `scan()` method, with a response that doesn't contain html code
-     * @test
-     */
-    public function testScanResponseNotHtml()
-    {
-        $params = ['controller' => 'Pages', 'action' => 'display', 'nohtml'];
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
-        $EventManager = $this->getEventManager($LinkScanner);
-        $LinkScanner->scan();
-
-        $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotHtml', $EventManager);
-    }
-
-    /**
      * Test for `scan()` method, with a response that is not ok
      * @test
      */

@@ -159,8 +159,6 @@ class LinkScanner implements Serializable
      * This method will trigger some events:
      *  - `LinkScanner.foundLinkToBeScanned`: will be triggered if, after
      *      scanning a single url, an other link to be scanned are found;
-     *  - `LinkScanner.responseNotHtml`: will be triggered when a single url is
-     *      scanned and the response body does not contain html code;
      *  - `LinkScanner.responseNotOk`: will be triggered when a single url is
      *      scanned and the response is not ok.
      * @param string|array $url Url to scan
@@ -193,8 +191,6 @@ class LinkScanner implements Serializable
 
         //Returns, if the response body does not contain html code
         if (!$response->BodyParser->isHtml()) {
-            $this->dispatchEvent(LINK_SCANNER . '.responseNotHtml', [$url]);
-
             return;
         };
 
