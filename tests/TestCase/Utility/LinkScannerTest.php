@@ -80,15 +80,6 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `__get()` magic method
-     * @test
-     */
-    public function testMagicGet()
-    {
-        $this->assertEquals($this->fullBaseUrl, $this->LinkScanner->fullBaseUrl);
-    }
-
-    /**
      * Test for `_getResponse()` method
      * @test
      */
@@ -102,6 +93,15 @@ class LinkScannerTest extends IntegrationTestCase
         $getResponseFromCache = function ($url) {
             return Cache::read(sprintf('response_%s', md5(serialize($url))), LINK_SCANNER);
         };
+
+        $response = $getResponseMethod($this->fullBaseUrl);
+        $this->assertInstanceof(ScanResponse::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertStringStartsWith('text/html', $response->getContentType());
+
+        $responseFromCache = $getResponseFromCache($this->fullBaseUrl);
+        $this->assertNotEmpty($responseFromCache);
+        $this->assertInstanceof(ScanResponse::class, $responseFromCache);
 
         $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
 
@@ -125,16 +125,6 @@ class LinkScannerTest extends IntegrationTestCase
                 $this->assertEmpty($responseFromCache);
             }
         }
-
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
-        $response = $getResponseMethod($this->fullBaseUrl);
-        $this->assertInstanceof(ScanResponse::class, $response);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertStringStartsWith('text/html', $response->getContentType());
-
-        $responseFromCache = $getResponseFromCache($this->fullBaseUrl);
-        $this->assertNotEmpty($responseFromCache);
-        $this->assertInstanceof(ScanResponse::class, $responseFromCache);
     }
 
     /**
@@ -340,12 +330,10 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScanNoOtherLinks()
     {
-        $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
-        $EventManager = $this->getEventManager($LinkScanner);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
         $LinkScanner->scan();
 
-        $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $EventManager);
+        $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $this->getEventManager($LinkScanner));
     }
 
     /**
