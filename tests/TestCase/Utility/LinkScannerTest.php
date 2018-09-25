@@ -313,18 +313,6 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `scan()` method, with a no existing url
-     * @test
-     */
-    public function testScanNoExistingUrl()
-    {
-        $LinkScanner = new LinkScanner('http://noExisting');
-        $LinkScanner->Client->setConfig('timeout', 1);
-        $LinkScanner->scan();
-        $this->assertTrue($LinkScanner->ResultScan->isEmpty());
-    }
-
-    /**
      * Test for `scan()` method, with no other links to scan
      * @test
      */
