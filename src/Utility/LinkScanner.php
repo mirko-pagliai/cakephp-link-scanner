@@ -107,59 +107,11 @@ class LinkScanner implements Serializable
     }
 
     /**
-     * Magic method for reading data from inaccessible properties
-     * @param string $name Property name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->$name;
-    }
-
-    /**
-     * Returns the string representation of the object
-     * @return string
-     * @uses $Client
-     */
-    public function serialize()
-    {
-        $properties = get_object_vars($this);
-
-        //Unsets the event class and event manager. For the `Client` instance,
-        //  it takes only configuration and cookies
-        unset($properties['_eventClass'], $properties['_eventManager']);
-
-        $properties['Client'] = $this->Client->getConfig() + ['cookieJar' => $this->Client->cookies()];
-
-        return serialize($properties);
-    }
-
-    /**
-     * Called during unserialization of the object
-     * @param string $serialized The string representation of the object
-     * @return void
-     * @uses $Client
-     */
-    public function unserialize($serialized)
-    {
-        $properties = unserialize($serialized);
-
-        //Resets the event list and the Client instance
-        $this->getEventManager()->setEventList(new EventList);
-        $this->Client = new Client($properties['Client']);
-        unset($properties['Client']);
-
-        foreach ($properties as $name => $value) {
-            $this->$name = $value;
-        }
-    }
-
-    /**
      * Internal method to create a lock file
      * @return bool
      * @throws RuntimeException
      */
-    protected function createLockFile()
+    protected function _createLockFile()
     {
         if (LINK_SCANNER_LOCK_FILE && file_exists(LINK_SCANNER_LOCK_FILE)) {
             throw new RuntimeException(__d(
@@ -181,7 +133,7 @@ class LinkScanner implements Serializable
      * @uses $Client
      * @uses $fullBaseUrl
      */
-    protected function getResponse($url)
+    protected function _getResponse($url)
     {
         $cacheKey = sprintf('response_%s', md5(serialize($url)));
         $response = Cache::read($cacheKey, LINK_SCANNER);
@@ -195,71 +147,6 @@ class LinkScanner implements Serializable
         }
 
         return $response;
-    }
-
-    /**
-     * Exports scan results.
-     *
-     * The filename will be generated automatically, or you can indicate a
-     *  relative or absolute path.
-     * ### Events
-     * This method will trigger some events:
-     *  - `LinkScanner.resultsExported`: will be triggered when the results have
-     *  been exported.
-     * @param string|null $filename Filename where to export
-     * @return string
-     * @see serialize()
-     * @throws RuntimeException
-     * @uses $ResultScan
-     * @uses $hostname
-     * @uses $startTime
-     */
-    public function export($filename = null)
-    {
-        if ($this->ResultScan->isEmpty()) {
-            throw new RuntimeException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
-        }
-
-        try {
-            $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
-            $filename = Folder::isAbsolute($filename) ? $filename : LINK_SCANNER_TARGET . DS . $filename;
-            file_put_contents($filename, serialize($this));
-        } catch (Exception $e) {
-            $message = preg_replace('/^file_put_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
-            throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}` with message `{1}`', $filename, $message));
-        }
-
-        $this->dispatchEvent(LINK_SCANNER . '.resultsExported', [$filename]);
-
-        return $filename;
-    }
-
-    /**
-     * Imports scan results.
-     *
-     * You can indicate a relative or absolute path.
-     * ### Events
-     * This method will trigger some events:
-     *  - `LinkScanner.resultsImported`: will be triggered when the results have
-     *  been exported.
-     * @param string $filename Filename from which to import
-     * @return object
-     * @see unserialize()
-     * @throws RuntimeException
-     */
-    public static function import($filename)
-    {
-        try {
-            $filename = Folder::isAbsolute($filename) ? $filename : LINK_SCANNER_TARGET . DS . $filename;
-            $instance = unserialize(file_get_contents($filename));
-        } catch (Exception $e) {
-            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
-            throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}` with message `{1}`', $filename, $message));
-        }
-
-        $instance->dispatchEvent(LINK_SCANNER . '.resultsImported', [$filename]);
-
-        return $instance;
     }
 
     /**
@@ -341,7 +228,7 @@ class LinkScanner implements Serializable
      * @param string|array $url Url to scan
      * @param string|null $referer Referer of this url
      * @return ScanResponse|null
-     * @uses getResponse()
+     * @uses _getResponse()
      * @uses $ResultScan
      * @uses $hostname
      */
@@ -355,7 +242,7 @@ class LinkScanner implements Serializable
         $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
 
         try {
-            $response = $this->getResponse($url);
+            $response = $this->_getResponse($url);
         } catch (Exception $e) {
             return null;
         }
@@ -373,6 +260,119 @@ class LinkScanner implements Serializable
     }
 
     /**
+     * Magic method for reading data from inaccessible properties
+     * @param string $name Property name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->$name;
+    }
+
+    /**
+     * Returns the string representation of the object
+     * @return string
+     * @uses $Client
+     */
+    public function serialize()
+    {
+        $properties = get_object_vars($this);
+
+        //Unsets the event class and event manager. For the `Client` instance,
+        //  it takes only configuration and cookies
+        unset($properties['_eventClass'], $properties['_eventManager']);
+
+        $properties['Client'] = $this->Client->getConfig() + ['cookieJar' => $this->Client->cookies()];
+
+        return serialize($properties);
+    }
+
+    /**
+     * Called during unserialization of the object
+     * @param string $serialized The string representation of the object
+     * @return void
+     * @uses $Client
+     */
+    public function unserialize($serialized)
+    {
+        $properties = unserialize($serialized);
+
+        //Resets the event list and the Client instance
+        $this->getEventManager()->setEventList(new EventList);
+        $this->Client = new Client($properties['Client']);
+        unset($properties['Client']);
+
+        foreach ($properties as $name => $value) {
+            $this->$name = $value;
+        }
+    }
+
+    /**
+     * Exports scan results.
+     *
+     * The filename will be generated automatically, or you can indicate a
+     *  relative or absolute path.
+     * ### Events
+     * This method will trigger some events:
+     *  - `LinkScanner.resultsExported`: will be triggered when the results have
+     *  been exported.
+     * @param string|null $filename Filename where to export
+     * @return string
+     * @see serialize()
+     * @throws RuntimeException
+     * @uses $ResultScan
+     * @uses $hostname
+     * @uses $startTime
+     */
+    public function export($filename = null)
+    {
+        if ($this->ResultScan->isEmpty()) {
+            throw new RuntimeException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
+        }
+
+        try {
+            $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
+            $filename = Folder::isAbsolute($filename) ? $filename : LINK_SCANNER_TARGET . DS . $filename;
+            file_put_contents($filename, serialize($this));
+        } catch (Exception $e) {
+            $message = preg_replace('/^file_put_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
+            throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}` with message `{1}`', $filename, $message));
+        }
+
+        $this->dispatchEvent(LINK_SCANNER . '.resultsExported', [$filename]);
+
+        return $filename;
+    }
+
+    /**
+     * Imports scan results.
+     *
+     * You can indicate a relative or absolute path.
+     * ### Events
+     * This method will trigger some events:
+     *  - `LinkScanner.resultsImported`: will be triggered when the results have
+     *  been exported.
+     * @param string $filename Filename from which to import
+     * @return object
+     * @see unserialize()
+     * @throws RuntimeException
+     */
+    public static function import($filename)
+    {
+        try {
+            $filename = Folder::isAbsolute($filename) ? $filename : LINK_SCANNER_TARGET . DS . $filename;
+            $instance = unserialize(file_get_contents($filename));
+        } catch (Exception $e) {
+            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
+            throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}` with message `{1}`', $filename, $message));
+        }
+
+        $instance->dispatchEvent(LINK_SCANNER . '.resultsImported', [$filename]);
+
+        return $instance;
+    }
+
+    /**
      * Performs a complete scan.
      *
      * ### Events
@@ -384,8 +384,8 @@ class LinkScanner implements Serializable
      * Other events will be triggered by `_recursiveScan()` and `_singleScan()`
      *  methods.
      * @return $this
+     * @uses _createLockFile()
      * @uses _recursiveScan()
-     * @uses createLockFile()
      * @uses $ResultScan
      * @uses $endTime
      * @uses $fullBaseUrl
@@ -393,7 +393,7 @@ class LinkScanner implements Serializable
      */
     public function scan()
     {
-        $this->createLockFile();
+        $this->_createLockFile();
 
         $this->startTime = time();
 

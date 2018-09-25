@@ -176,7 +176,7 @@ trait TestCaseTrait
 
         return $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs([$fullBaseUrl, $ResultScan, $this->getClientReturnsFromTests()])
-            ->setMethods(['createLockFile'])
+            ->setMethods(['_createLockFile'])
             ->getMock();
     }
 

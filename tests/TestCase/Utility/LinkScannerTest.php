@@ -89,7 +89,7 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `getResponse()` method
+     * Test for `_getResponse()` method
      * @test
      */
     public function testGetResponse()
@@ -97,7 +97,7 @@ class LinkScannerTest extends IntegrationTestCase
         Cache::enable();
 
         $getResponseMethod = function ($url) {
-            return $this->invokeMethod($this->LinkScanner, 'getResponse', [$url]);
+            return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         };
         $getResponseFromCache = function ($url) {
             return Cache::read(sprintf('response_%s', md5(serialize($url))), LINK_SCANNER);
