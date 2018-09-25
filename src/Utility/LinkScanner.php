@@ -68,12 +68,6 @@ class LinkScanner implements Serializable
     protected $endTime;
 
     /**
-     * External links found during the scan
-     * @var array
-     */
-    protected $externalLinks = [];
-
-    /**
      * Full base url
      * @var string|array|null
      */
@@ -192,7 +186,7 @@ class LinkScanner implements Serializable
         $cacheKey = sprintf('response_%s', md5(serialize($url)));
         $response = Cache::read($cacheKey, LINK_SCANNER);
 
-        if (!$response) {
+        if (!$response instanceof ScanResponse) {
             $response = new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
 
             if ($response->isOk()) {
@@ -216,7 +210,7 @@ class LinkScanner implements Serializable
      * @return string
      * @see serialize()
      * @throws RuntimeException
-     * @uses getResults()
+     * @uses $ResultScan
      * @uses $hostname
      * @uses $startTime
      */
@@ -269,18 +263,13 @@ class LinkScanner implements Serializable
     }
 
     /**
-     * Internal method to scan.
+     * Internal method to perform a recursive scan.
      *
-     * This method takes an url as a parameter. It scans that URL and
-     *  recursively it repeats the scan for all the url found that have not
+     * It recursively repeats the scan for all the urls found that have not
      *  already been scanned.
      *
      * ### Events
      * This method will trigger some events:
-     *  - `LinkScanner.beforeScanUrl`: will be triggered before a single url is
-     *      scanned;
-     *  - `LinkScanner.afterScanUrl`: will be triggered after a single url is
-     *      scanned;
      *  - `LinkScanner.foundLinkToBeScanned`: will be triggered if, after
      *      scanning a single url, an other link to be scanned are found;
      *  - `LinkScanner.responseNotHtml`: will be triggered when a single url is
@@ -290,36 +279,21 @@ class LinkScanner implements Serializable
      * @param string|array $url Url to scan
      * @param string|null $referer Referer of this url
      * @return void
-     * @uses _scan()
-     * @uses getResponse()
-     * @uses getResults()
+     * @uses _singleScan()
+     * @uses $ResultScan
      * @uses $currentDepth
-     * @uses $externalLinks
      * @uses $hostname
      */
-    protected function _scan($url, $referer = null)
+    protected function _recursiveScan($url, $referer = null)
     {
-        $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
+        $response = $this->_singleScan($url, $referer);
 
-        try {
-            $response = $this->getResponse($url);
-        } catch (Exception $e) {
+        if (!$response) {
             return;
         }
 
-        //Appends result
-        $item = new ScanEntity(compact('referer', 'url'));
-        $item->code = $response->getStatusCode();
-        $item->external = is_external_url($url, $this->hostname);
-        $item->type = $response->getContentType();
-        $this->ResultScan->append($item);
-
-        $this->dispatchEvent(LINK_SCANNER . '.afterScanUrl', [$response]);
-
-        $this->currentDepth++;
-
         //Returns, if the maximum scanning depth has been reached
-        if ($this->getConfig('maxDepth') && $this->currentDepth >= $this->getConfig('maxDepth')) {
+        if ($this->getConfig('maxDepth') && ++$this->currentDepth >= $this->getConfig('maxDepth')) {
             return;
         }
 
@@ -342,22 +316,60 @@ class LinkScanner implements Serializable
         $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->ResultScan->getScannedUrl());
 
         foreach ($linksToScan as $link) {
-            //Checks that the link has not already been scanned
-            if (in_array($link, $this->ResultScan->getScannedUrl())) {
-                continue;
-            }
-
-            //Skips external links
-            if (is_external_url($link, $this->hostname) && !in_array($link, $this->externalLinks)) {
-                $this->externalLinks[] = $link;
+            //Performs a single scan for external links
+            if (is_external_url($link, $this->hostname)) {
+                $this->_singleScan($link, $referer);
 
                 continue;
             }
 
             $this->dispatchEvent(LINK_SCANNER . '.foundLinkToBeScanned', [$link]);
 
-            $this->_scan($link, $url);
+            call_user_func_array([$this, __METHOD__], [$link, $url]);
         }
+    }
+
+    /**
+     * Internal method to perform a single scan.
+     *
+     * ### Events
+     * This method will trigger some events:
+     *  - `LinkScanner.beforeScanUrl`: will be triggered before a single url is
+     *      scanned;
+     *  - `LinkScanner.afterScanUrl`: will be triggered after a single url is
+     *      scanned.
+     * @param string|array $url Url to scan
+     * @param string|null $referer Referer of this url
+     * @return ScanResponse|null
+     * @uses getResponse()
+     * @uses $ResultScan
+     * @uses $hostname
+     */
+    protected function _singleScan($url, $referer = null)
+    {
+        //Returns, if the url has already been scanned
+        if (in_array($url, $this->ResultScan->getScannedUrl())) {
+            return null;
+        }
+
+        $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
+
+        try {
+            $response = $this->getResponse($url);
+        } catch (Exception $e) {
+            return null;
+        }
+
+        //Appends result
+        $item = new ScanEntity(compact('referer', 'url'));
+        $item->code = $response->getStatusCode();
+        $item->external = is_external_url($url, $this->hostname);
+        $item->type = $response->getContentType();
+        $this->ResultScan->append($item);
+
+        $this->dispatchEvent(LINK_SCANNER . '.afterScanUrl', [$response]);
+
+        return $response;
     }
 
     /**
@@ -369,11 +381,12 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.scanCompleted`: will be triggered after the scan is
      *      finished.
      *
-     * Other events will be triggered by the `_scan()` method.
+     * Other events will be triggered by `_recursiveScan()` and `_singleScan()`
+     *  methods.
      * @return $this
-     * @uses _scan()
+     * @uses _recursiveScan()
      * @uses createLockFile()
-     * @uses getResults()
+     * @uses $ResultScan
      * @uses $endTime
      * @uses $fullBaseUrl
      * @uses $startTime
@@ -386,7 +399,7 @@ class LinkScanner implements Serializable
 
         $this->dispatchEvent(LINK_SCANNER . '.scanStarted', [$this->startTime, $this->fullBaseUrl]);
 
-        $this->_scan($this->fullBaseUrl);
+        $this->_recursiveScan($this->fullBaseUrl);
 
         $this->endTime = time();
 

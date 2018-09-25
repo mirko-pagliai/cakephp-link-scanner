@@ -254,21 +254,9 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
 
-        //Removes already checked lines
-        $messages = array_slice($messages, 5, -5);
-
-        //Checks intermediate lines. It chunks them into groups of three
-        $i = 0;
-        $chunkMessages = array_chunk($messages, 3);
-        foreach ($chunkMessages as $messages) {
-            $this->assertRegExp('/^Checking .+ \.{3}$/', $messages[0]);
-            $this->assertEquals('<success>OK</success>', $messages[1]);
-
-            //Not for last line
-            if ($i !== count($chunkMessages) - 1) {
-                $this->assertRegexp('/^Link found: .+/', $messages[2]);
-            }
-            $i++;
+        //Removes already checked lines and checks intermediate lines
+        foreach (array_slice($messages, 5, -5) as $message) {
+            $this->assertRegExp('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
         }
     }
 

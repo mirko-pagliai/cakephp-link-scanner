@@ -246,20 +246,21 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertGreaterThan(1, $this->LinkScanner->ResultScan->count());
 
         foreach ($this->LinkScanner->ResultScan as $item) {
-            $this->assertTextStartsWith($this->fullBaseUrl, $item->url);
-            $this->assertFalse($item->external);
+            if (!$item->external) {
+                $this->assertTextStartsWith($this->fullBaseUrl, $item->url);
+            } else {
+                $this->assertTextStartsNotWith($this->fullBaseUrl, $item->url);
+            }
             $this->assertContains($item->code, [200, 500]);
             $this->assertEquals($item->type, 'text/html');
         }
 
-        $this->assertGreaterThan(1, $this->getProperty($this->LinkScanner, 'externalLinks'));
-
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setMethods(['_scan'])
+            ->setMethods(['_recursiveScan'])
             ->getMock();
 
         $LinkScanner->expects($this->once())
-             ->method('_scan');
+             ->method('_recursiveScan');
 
         $LinkScanner->scan();
     }
@@ -282,6 +283,7 @@ class LinkScannerTest extends IntegrationTestCase
 
         $expectedResults = [
             'http://localhost',
+            'http://google.it',
             'http://localhost/pages/first_page',
             'http://localhost/favicon.ico',
             'http://localhost/css/default.css',
@@ -292,7 +294,6 @@ class LinkScannerTest extends IntegrationTestCase
         $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->scan();
-        $this->assertCount(6, $LinkScanner->ResultScan);
         $results = $LinkScanner->ResultScan->extract('url')->toArray();
         $this->assertEquals($expectedResults, $results);
         $this->assertNotEmpty($this->debug);
