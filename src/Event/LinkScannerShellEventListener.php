@@ -14,8 +14,8 @@ namespace LinkScanner\Event;
 
 use Cake\Cache\Cache;
 use Cake\Event\Event;
-use Cake\Event\EventListenerInterface;
 use Cake\I18n\Time;
+use LinkScanner\Event\LinkScannerEventListenerInterface;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\Shell\LinkScannerShell;
@@ -25,7 +25,7 @@ use LinkScanner\Shell\LinkScannerShell;
  *
  * This class provided methods to be performed as events by `LinkScannerShell`.
  */
-class LinkScannerShellEventListener implements EventListenerInterface
+class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
 {
     /**
      * @var \LinkScanner\Shell\LinkScannerShell
