@@ -233,7 +233,16 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertIsInt($this->LinkScanner->startTime);
         $this->assertIsInt($this->LinkScanner->endTime);
         $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
-        $this->assertGreaterThan(1, $this->LinkScanner->ResultScan->count());
+
+        //Results contain both internal and external urls
+        $internalResults = $this->LinkScanner->ResultScan->filter(function ($item) {
+            return !$item->external;
+        });
+        $externalResults = $this->LinkScanner->ResultScan->filter(function ($item) {
+            return $item->external;
+        });
+        $this->assertNotEmpty($internalResults);
+        $this->assertNotEmpty($externalResults);
 
         foreach ($this->LinkScanner->ResultScan as $item) {
             if (!$item->external) {
@@ -262,7 +271,6 @@ class LinkScannerTest extends IntegrationTestCase
     public function testScanFromTests()
     {
         $this->debug = [];
-
         $this->getEventManager()->instance()
             ->on(LINK_SCANNER . '.beforeScanUrl', function ($event, $url) {
                 $this->debug[] = sprintf('Scanning %s', $url);
@@ -271,22 +279,46 @@ class LinkScannerTest extends IntegrationTestCase
                 $this->debug[] = sprintf('Found link: %s', $link);
             });
 
-        $expectedResults = [
+        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
+        $LinkScanner->scan();
+
+        $expectedDebug = [
+            'Scanning http://localhost',
+            'Found link: http://google.it',
+            'Scanning http://google.it',
+            'Found link: http://localhost/pages/first_page',
+            'Scanning http://localhost/pages/first_page',
+            'Found link: http://localhost/favicon.ico',
+            'Scanning http://localhost/favicon.ico',
+            'Found link: http://localhost/css/default.css',
+            'Scanning http://localhost/css/default.css',
+            'Found link: http://localhost/js/default.js',
+            'Scanning http://localhost/js/default.js',
+            'Found link: http://localhost/pages/second_page',
+            'Scanning http://localhost/pages/second_page',
+            'Found link: http://localhost/favicon.ico',
+            'Found link: http://localhost/css/default.css',
+            'Found link: http://localhost/js/default.js',
+        ];
+        $this->assertEquals($expectedDebug, $this->debug);
+
+        //Results contain both internal and external urls
+        $internalResults = $LinkScanner->ResultScan->filter(function ($item) {
+            return !$item->external;
+        })->extract('url')->toList();
+        $externalResults = $LinkScanner->ResultScan->filter(function ($item) {
+            return $item->external;
+        })->extract('url')->toList();
+        $this->assertEquals([
             'http://localhost',
-            'http://google.it',
             'http://localhost/pages/first_page',
             'http://localhost/favicon.ico',
             'http://localhost/css/default.css',
             'http://localhost/js/default.js',
             'http://localhost/pages/second_page',
-
-        ];
-        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
-        $LinkScanner->scan();
-        $results = $LinkScanner->ResultScan->extract('url')->toArray();
-        $this->assertEquals($expectedResults, $results);
-        $this->assertNotEmpty($this->debug);
+        ], $internalResults);
+        $this->assertEquals(['http://google.it'], $externalResults);
 
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->setConfig('maxDepth', 1)->scan();
