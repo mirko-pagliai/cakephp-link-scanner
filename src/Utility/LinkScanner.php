@@ -199,16 +199,14 @@ class LinkScanner implements Serializable
         $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->ResultScan->getScannedUrl());
 
         foreach ($linksToScan as $link) {
-            //Performs a single scan for external links
-            if (is_external_url($link, $this->hostname)) {
-                $this->_singleScan($link, $referer);
-
-                continue;
-            }
-
             $this->dispatchEvent(LINK_SCANNER . '.foundLinkToBeScanned', [$link]);
 
-            call_user_func_array([$this, __METHOD__], [$link, $url]);
+            //Single scan for external links, recursive scan for internal links
+            if (is_external_url($link, $this->hostname)) {
+                $this->_singleScan($link, $referer);
+            } else {
+                call_user_func_array([$this, __METHOD__], [$link, $url]);
+            }
         }
     }
 
