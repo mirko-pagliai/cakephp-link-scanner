@@ -141,8 +141,13 @@ class LinkScanner implements Serializable
         $response = Cache::read($cacheKey, LINK_SCANNER);
 
         if (!$response instanceof ScanResponse) {
-            $response = new ScanResponse($this->Client->get($url), $this->fullBaseUrl);
+            try {
+                $clientResponse = $this->Client->get($url);
+            } catch (Exception $e) {
+                $clientResponse = (new Response)->withStatus(404);
+            }
 
+            $response = new ScanResponse($clientResponse, $this->fullBaseUrl);
             if ($response->isOk()) {
                 Cache::write($cacheKey, $response, LINK_SCANNER);
             }
@@ -244,11 +249,7 @@ class LinkScanner implements Serializable
     {
         $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
 
-        try {
-            $response = $this->_getResponse($url);
-        } catch (Exception $e) {
-            $response = new ScanResponse((new Response)->withStatus(404), $url);
-        }
+        $response = $this->_getResponse($url);
 
         //Appends result
         $item = new ScanEntity(compact('referer', 'url'));
