@@ -19,6 +19,7 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
 use Cake\Filesystem\Folder;
 use Cake\Http\Client;
+use Cake\Http\Client\Response;
 use Exception;
 use InvalidArgumentException;
 use LinkScanner\Http\Client\ScanResponse;
@@ -52,6 +53,7 @@ class LinkScanner implements Serializable
      * @var array
      */
     protected $_defaultConfig = [
+        'externalLinks' => true,
         'maxDepth' => 0,
     ];
 
@@ -198,14 +200,26 @@ class LinkScanner implements Serializable
         //  the body of the response and the already scanned links
         $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->ResultScan->getScannedUrl());
 
+        //Removes external links, if required
+        if (!$this->getConfig('externalLinks')) {
+            $linksToScan = array_filter($linksToScan, function ($link) {
+                return !is_external_url($link, $this->hostname);
+            });
+        }
+
         foreach ($linksToScan as $link) {
+            //Skips, if the link has already been scanned
+            if (in_array($link, $this->ResultScan->getScannedUrl())) {
+                continue;
+            }
+
             $this->dispatchEvent(LINK_SCANNER . '.foundLinkToBeScanned', [$link]);
 
             //Single scan for external links, recursive scan for internal links
             if (is_external_url($link, $this->hostname)) {
-                $this->_singleScan($link, $referer);
+                $this->_singleScan($link, $url);
             } else {
-                call_user_func_array([$this, __METHOD__], [$link, $url]);
+                $this->_recursiveScan($link, $url);
             }
         }
     }
@@ -228,17 +242,12 @@ class LinkScanner implements Serializable
      */
     protected function _singleScan($url, $referer = null)
     {
-        //Returns, if the url has already been scanned
-        if (in_array($url, $this->ResultScan->getScannedUrl())) {
-            return null;
-        }
-
         $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
 
         try {
             $response = $this->_getResponse($url);
         } catch (Exception $e) {
-            return null;
+            $response = new ScanResponse((new Response)->withStatus(404), $url);
         }
 
         //Appends result

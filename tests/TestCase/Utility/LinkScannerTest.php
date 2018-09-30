@@ -176,6 +176,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testImport()
     {
+        $this->LinkScanner->setConfig('externalLinks', false);
         $this->LinkScanner->setConfig('maxDepth', 1);
         $this->LinkScanner->Client->setConfig('timeout', 100);
         $this->LinkScanner->scan();
@@ -186,6 +187,11 @@ class LinkScannerTest extends IntegrationTestCase
 
         foreach ([$resultAsObject, $resultAsStatic] as $result) {
             $this->assertInstanceof(LinkScanner::class, $result);
+
+            //Checks configuration
+            $this->assertEquals(false, $result->getConfig('externalLinks'));
+            $this->assertEquals(1, $result->getConfig('maxDepth'));
+            $this->assertEquals(100, $result->Client->getConfig('timeout'));
 
             //Checks the event is fired only on the new object. Then, it unsets both
             //  event lists, so that the objects comparison will run
@@ -235,14 +241,27 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
 
         //Results contain both internal and external urls
-        $internalResults = $this->LinkScanner->ResultScan->filter(function ($item) {
+        $internalLinks = $this->LinkScanner->ResultScan->filter(function ($item) {
             return !$item->external;
         });
-        $externalResults = $this->LinkScanner->ResultScan->filter(function ($item) {
+        $externalLinks = $this->LinkScanner->ResultScan->filter(function ($item) {
             return $item->external;
         });
-        $this->assertNotEmpty($internalResults);
-        $this->assertNotEmpty($externalResults);
+        $this->assertNotEmpty($internalLinks->toList());
+        $this->assertNotEmpty($externalLinks->toList());
+        $this->assertEquals($this->LinkScanner->ResultScan->count(), $internalLinks->count() + $externalLinks->count());
+
+        //Disables external links and tries again
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $result = $this->LinkScanner->setConfig('maxDepth', 2)->setConfig('externalLinks', false)->scan();
+        $newInternalLinks = $this->LinkScanner->ResultScan->filter(function ($item) {
+            return !$item->external;
+        });
+        $newExternalLinks = $this->LinkScanner->ResultScan->filter(function ($item) {
+            return $item->external;
+        });
+        $this->assertEquals($newInternalLinks, $internalLinks);
+        $this->assertEmpty($newExternalLinks->toList());
 
         foreach ($this->LinkScanner->ResultScan as $item) {
             if (!$item->external) {
@@ -297,9 +316,6 @@ class LinkScannerTest extends IntegrationTestCase
             'Scanning http://localhost/js/default.js',
             'Found link: http://localhost/pages/second_page',
             'Scanning http://localhost/pages/second_page',
-            'Found link: http://localhost/favicon.ico',
-            'Found link: http://localhost/css/default.css',
-            'Found link: http://localhost/js/default.js',
         ];
         $this->assertEquals($expectedDebug, $this->debug);
 
