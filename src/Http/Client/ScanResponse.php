@@ -67,7 +67,7 @@ class ScanResponse implements Serializable
      */
     public function __call($name, $arguments)
     {
-        return call_user_func([$this->Response, $name], $arguments);
+        return call_user_func_array([$this->Response, $name], $arguments);
     }
 
     /**
