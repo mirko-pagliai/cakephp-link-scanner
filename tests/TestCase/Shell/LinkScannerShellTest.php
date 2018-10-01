@@ -270,7 +270,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan();
 
-        $this->assertEquals(['<warning>404</warning>'], $this->err->messages());
+        $this->assertEquals(['<error>404</error>'], $this->err->messages());
     }
 
     /**
