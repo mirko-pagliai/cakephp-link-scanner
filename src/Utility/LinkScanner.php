@@ -222,7 +222,7 @@ class LinkScanner implements Serializable
 
             //Single scan for external links, recursive scan for internal links
             $methodToCall = is_external_url($link, $this->hostname) ? '_singleScan' : '_recursiveScan';
-            call_user_func([$this, $methodToCall], $link, $url);
+            $this->$methodToCall($link, $url);
         }
     }
 
