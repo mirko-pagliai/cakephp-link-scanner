@@ -128,6 +128,36 @@ class LinkScanner implements Serializable
     }
 
     /**
+     * Internal method to filter the links to be scanned
+     * @param array $links Links to filter
+     * @return array
+     * @uses $ResultScan
+     * @uses $hostname
+     */
+    protected function _filterLinksToBeScanned($links)
+    {
+        //Removes the already scanned links
+        $links = array_diff($links, $this->ResultScan->getScannedUrl());
+
+        //Removes external links, if required
+        if (!$this->getConfig('externalLinks')) {
+            $links = array_filter($links, function ($link) {
+                return !is_external_url($link, $this->hostname);
+            });
+        }
+
+        //Excludes some links, if required
+        if ($this->getConfig('excludeLinks')) {
+            $regex = '/' . implode('|', (array)$this->getConfig('excludeLinks')) . '/';
+            $links = array_filter($links, function ($link) use ($regex) {
+                return !preg_match($regex, $link);
+            });
+        }
+
+        return $links;
+    }
+
+    /**
      * Performs a single GET request and returns the response as `ScanResponse`.
      *
      * The response will be cached, if that's ok and the cache is enabled.
@@ -172,6 +202,7 @@ class LinkScanner implements Serializable
      * @param string|array $url Url to scan
      * @param string|null $referer Referer of this url
      * @return void
+     * @uses _filterLinksToBeScanned()
      * @uses _singleScan()
      * @uses $ResultScan
      * @uses $currentDepth
@@ -202,25 +233,9 @@ class LinkScanner implements Serializable
             return;
         }
 
-        //The links to be scanned are the difference between the links found in
-        //  the body of the response and the already scanned links
-        $linksToScan = array_diff($response->BodyParser->extractLinks(), $this->ResultScan->getScannedUrl());
+        $linksToBeScanned = $this->_filterLinksToBeScanned($response->BodyParser->extractLinks());
 
-        //Removes external links, if required
-        if (!$this->getConfig('externalLinks')) {
-            $linksToScan = array_filter($linksToScan, function ($link) {
-                return !is_external_url($link, $this->hostname);
-            });
-        }
-
-        //Excludes some links, if required
-        if ($this->getConfig('excludeLinks')) {
-            $linksToScan = array_filter($linksToScan, function ($link) {
-                return !preg_match('/' . implode('|', (array)$this->getConfig('excludeLinks')) . '/', $link);
-            });
-        }
-
-        foreach ($linksToScan as $link) {
+        foreach ($linksToBeScanned as $link) {
             //Skips, if the link has already been scanned
             if (in_array($link, $this->ResultScan->getScannedUrl())) {
                 continue;
