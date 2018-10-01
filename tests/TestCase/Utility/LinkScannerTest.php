@@ -241,12 +241,8 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
 
         //Results contain both internal and external urls
-        $internalLinks = $this->LinkScanner->ResultScan->filter(function ($item) {
-            return !$item->external;
-        });
-        $externalLinks = $this->LinkScanner->ResultScan->filter(function ($item) {
-            return $item->external;
-        });
+        $internalLinks = $this->LinkScanner->ResultScan->match(['external' => false]);
+        $externalLinks = $this->LinkScanner->ResultScan->match(['external' => true]);
         $this->assertNotEmpty($internalLinks->toList());
         $this->assertNotEmpty($externalLinks->toList());
         $this->assertEquals($this->LinkScanner->ResultScan->count(), $internalLinks->count() + $externalLinks->count());
@@ -269,12 +265,8 @@ class LinkScannerTest extends IntegrationTestCase
         //Disables external links and tries again
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
         $result = $this->LinkScanner->setConfig('maxDepth', 2)->setConfig('externalLinks', false)->scan();
-        $newInternalLinks = $this->LinkScanner->ResultScan->filter(function ($item) {
-            return !$item->external;
-        });
-        $newExternalLinks = $this->LinkScanner->ResultScan->filter(function ($item) {
-            return $item->external;
-        });
+        $newInternalLinks = $this->LinkScanner->ResultScan->match(['external' => false]);
+        $newExternalLinks = $this->LinkScanner->ResultScan->match(['external' => true]);
         $this->assertEquals($newInternalLinks, $internalLinks);
         $this->assertEmpty($newExternalLinks->toList());
 
@@ -335,12 +327,8 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertEquals($expectedDebug, $this->debug);
 
         //Results contain both internal and external urls
-        $internalResults = $LinkScanner->ResultScan->filter(function ($item) {
-            return !$item->external;
-        })->extract('url')->toList();
-        $externalResults = $LinkScanner->ResultScan->filter(function ($item) {
-            return $item->external;
-        })->extract('url')->toList();
+        $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
+        $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
         $this->assertEquals([
             'http://localhost',
             'http://localhost/pages/first_page',
@@ -348,8 +336,8 @@ class LinkScannerTest extends IntegrationTestCase
             'http://localhost/css/default.css',
             'http://localhost/js/default.js',
             'http://localhost/pages/second_page',
-        ], $internalResults);
-        $this->assertEquals(['http://google.it'], $externalResults);
+        ], $internalLinks->toList());
+        $this->assertEquals(['http://google.it'], $externalLinks->toList());
 
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->setConfig('maxDepth', 1)->scan();
