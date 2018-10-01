@@ -255,6 +255,7 @@ class LinkScanner implements Serializable
         $item = new ScanEntity(compact('referer', 'url'));
         $item->code = $response->getStatusCode();
         $item->external = is_external_url($url, $this->hostname);
+        $item->location = $response->getHeaderLine('Location');
         $item->type = $response->getContentType();
         $this->ResultScan->append($item);
 
