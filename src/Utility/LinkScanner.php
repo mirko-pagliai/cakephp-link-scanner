@@ -200,7 +200,7 @@ class LinkScanner implements Serializable
         //Returns, if the response body does not contain html code
         if (!$response->BodyParser->isHtml()) {
             return;
-        };
+        }
 
         //The links to be scanned are the difference between the links found in
         //  the body of the response and the already scanned links
