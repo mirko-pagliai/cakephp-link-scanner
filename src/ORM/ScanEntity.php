@@ -23,13 +23,34 @@ use Cake\ORM\Entity;
 class ScanEntity extends Entity
 {
     /**
-     * Check if the response was OK
+     * Magic method, is triggered when invoking inaccessible methods. It calls
+     *  the same method name from the original `Response` class
+     * @param string $name Method name
+     * @param mixed $arguments Method arguments
+     * @return mixed
+     * @see Cake\Http\Client\Response
+     */
+    public function __call($name, $arguments)
+    {
+        if (method_exists(Response::class, $name)) {
+            $properties = $this->_properties + ['location' => null];
+
+            $response = new Response;
+            $response = $response->withHeader('location', $properties['location'])
+                ->withStatus($properties['code']);
+
+            $name = [$response, $name];
+        }
+
+        return call_user_func_array($name, $arguments);
+    }
+
+    /**
+     * Checks if the response is error
      * @return bool
      */
-    public function isOk()
+    public function isError()
     {
-        $response = (new Response)->withStatus($this->_properties['code']);
-
-        return $response->isOk();
+        return !$this->isOk() && !$this->isRedirect();
     }
 }

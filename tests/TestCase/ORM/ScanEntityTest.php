@@ -24,26 +24,56 @@ class ScanEntityTest extends TestCase
      * Test for `isOk()` method
      * @test
      */
+    public function isErrorTest()
+    {
+        $location = '/';
+        $statusCodes = [
+            200 => false,
+            301 => false,
+            404 => true,
+        ];
+
+        foreach ($statusCodes as $code => $expectedValue) {
+            $entity = new ScanEntity(compact('code', 'location'));
+            $this->assertEquals($expectedValue, $entity->isError());
+        }
+    }
+
+    /**
+     * Test for `isOk()` method (through the `__call()` method)
+     * @test
+     */
     public function isOkTest()
     {
-        //2xx Success
-        foreach (range(200, 204) as $code) {
-            $entity = new ScanEntity(compact('code'));
-            $this->assertTrue($entity->isOk());
+        $location = '/';
+        $statusCodes = [
+            200 => true,
+            301 => false,
+            404 => false,
+        ];
+
+        foreach ($statusCodes as $code => $expectedValue) {
+            $entity = new ScanEntity(compact('code', 'location'));
+            $this->assertEquals($expectedValue, $entity->isOk());
         }
+    }
 
-        $noOkCodes = array_merge(
-            range(205, 207),
-            range(300, 308),
-            range(400, 418),
-            [420, 422, 426, 449, 451],
-            range(500, 505),
-            [509]
-        );
+    /**
+     * Test for `isRedirect()` method (through the `__call()` method)
+     * @test
+     */
+    public function isRedirectTest()
+    {
+        $location = '/';
+        $statusCodes = [
+            200 => false,
+            301 => true,
+            404 => false,
+        ];
 
-        foreach ($noOkCodes as $code) {
-            $entity = new ScanEntity(compact('code'));
-            $this->assertFalse($entity->isOk());
+        foreach ($statusCodes as $code => $expectedValue) {
+            $entity = new ScanEntity(compact('code', 'location'));
+            $this->assertEquals($expectedValue, $entity->isRedirect());
         }
     }
 }
