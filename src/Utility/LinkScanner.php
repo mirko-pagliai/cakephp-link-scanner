@@ -221,11 +221,8 @@ class LinkScanner implements Serializable
             $this->dispatchEvent(LINK_SCANNER . '.foundLinkToBeScanned', [$link]);
 
             //Single scan for external links, recursive scan for internal links
-            if (is_external_url($link, $this->hostname)) {
-                $this->_singleScan($link, $url);
-            } else {
-                $this->_recursiveScan($link, $url);
-            }
+            $methodToCall = is_external_url($link, $this->hostname) ? '_singleScan' : '_recursiveScan';
+            call_user_func([$this, $methodToCall], $link, $url);
         }
     }
 
