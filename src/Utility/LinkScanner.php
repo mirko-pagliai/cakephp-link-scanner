@@ -53,6 +53,7 @@ class LinkScanner implements Serializable
      * @var array
      */
     protected $_defaultConfig = [
+        'excludeLinks' => ['\{.*\}', 'javascript:'],
         'externalLinks' => true,
         'maxDepth' => 0,
     ];
@@ -209,6 +210,13 @@ class LinkScanner implements Serializable
         if (!$this->getConfig('externalLinks')) {
             $linksToScan = array_filter($linksToScan, function ($link) {
                 return !is_external_url($link, $this->hostname);
+            });
+        }
+
+        //Excludes some links, if required
+        if ($this->getConfig('excludeLinks')) {
+            $linksToScan = array_filter($linksToScan, function ($link) {
+                return !preg_match('/' . implode('|', (array)$this->getConfig('excludeLinks')) . '/', $link);
             });
         }
 

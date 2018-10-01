@@ -251,6 +251,21 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertNotEmpty($externalLinks->toList());
         $this->assertEquals($this->LinkScanner->ResultScan->count(), $internalLinks->count() + $externalLinks->count());
 
+        //Takes a random url from the last scan and adds it to the url to
+        //  exclude on the next scan
+        $randomUrl = $this->LinkScanner->ResultScan->extract('url')->sample(1)->first();
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner->setConfig('excludeLinks', preg_quote($randomUrl, '/'))->scan();
+        $this->assertCount(0, $this->LinkScanner->ResultScan->match(['url' => $randomUrl]));
+
+        //Tries again with two urls to exclude on the next scan
+        $randomsUrls = $this->LinkScanner->ResultScan->extract('url')->sample(2)->toList();
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner->setConfig('excludeLinks', [preg_quote($randomsUrls[0], '/'), preg_quote($randomsUrls[1], '/')]);
+        $this->LinkScanner->scan();
+        $this->assertCount(0, $this->LinkScanner->ResultScan->match(['url' => $randomsUrls[0]]));
+        $this->assertCount(0, $this->LinkScanner->ResultScan->match(['url' => $randomsUrls[1]]));
+
         //Disables external links and tries again
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
         $result = $this->LinkScanner->setConfig('maxDepth', 2)->setConfig('externalLinks', false)->scan();
