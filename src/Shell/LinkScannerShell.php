@@ -59,11 +59,11 @@ class LinkScannerShell extends Shell
             if (array_key_exists('force', $this->params)) {
                 safe_unlink(LINK_SCANNER_LOCK_FILE);
             }
-            if ($this->param('fullBaseUrl')) {
-                $this->LinkScanner->setFullBaseUrl($this->param('fullBaseUrl'));
+            if ($this->param('full-base-url')) {
+                $this->LinkScanner->setFullBaseUrl($this->param('full-base-url'));
             }
-            if ($this->param('maxDepth')) {
-                $this->LinkScanner->setConfig('maxDepth', $this->param('maxDepth'));
+            if ($this->param('max-depth')) {
+                $this->LinkScanner->setConfig('maxDepth', $this->param('max-depth'));
             }
             if ($this->param('timeout')) {
                 $this->LinkScanner->Client->setConfig('timeout', $this->param('timeout'));
@@ -105,10 +105,10 @@ class LinkScannerShell extends Shell
                         'help' => __d('link-scanner', 'Force mode: removes the lock file and does not ask questions'),
                         'short' => 'f',
                     ],
-                    'fullBaseUrl' => [
+                    'full-base-url' => [
                         'help' => __d('link-scanner', 'Full base url. By default, the `{0}` value will be used', 'App.fullBaseUrl'),
                     ],
-                    'maxDepth' => [
+                    'max-depth' => [
                         'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->getConfig('maxDepth')),
                         'short' => 'd',
                     ],
