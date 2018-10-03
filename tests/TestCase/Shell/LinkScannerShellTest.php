@@ -64,7 +64,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     protected function getLinkScannerShell()
     {
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsFromTests());
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
         $this->EventManager = $this->getEventManager($this->LinkScanner);
 
         $this->out = new ConsoleOutput;
@@ -182,8 +182,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $params = [
             'export' => null,
             'force' => true,
-            'fullBaseUrl' => 'http://anotherFullBaseUrl',
-            'maxDepth' => 3,
+            'maxDepth' => 2,
             'timeout' => 15,
         ];
         $this->LinkScannerShell->params = $params;
@@ -191,20 +190,54 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertFileNotExists(LINK_SCANNER_LOCK_FILE);
 
         $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
-
         $expectedExportFile = LINK_SCANNER_TARGET . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
         $this->assertFileExists($expectedExportFile);
 
         $messages = $this->out->messages();
-        $this->assertTextContains(sprintf('Scan started for %s', $this->LinkScanner->fullBaseUrl), current($messages));
+        $this->assertTextContains(sprintf('Scan started for %s', $this->fullBaseUrl), current($messages));
         $this->assertRegexp('/at [\d\-:\s]+<\/info>$/', current($messages));
         $this->assertTextContains(sprintf('Results have been exported to', $expectedExportFile), end($messages));
 
-        $this->assertEmpty($this->err->messages());
-
-        $this->assertEquals($params['fullBaseUrl'], $this->LinkScanner->fullBaseUrl);
         $this->assertEquals($params['maxDepth'], $this->LinkScanner->getConfig('maxDepth'));
         $this->assertEquals($params['timeout'], $this->LinkScanner->Client->getConfig('timeout'));
+
+        $this->assertEmpty($this->err->messages());
+
+        //Changes the full base url
+        $params['fullBaseUrl'] = 'http://anotherFullBaseUrl';
+        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->LinkScannerShell->params = $params;
+        $this->LinkScannerShell->scan();
+
+        $messages = $this->out->messages();
+        $this->assertTextContains(sprintf('Scan started for %s', $this->LinkScanner->fullBaseUrl), current($messages));
+
+        $this->assertEquals($params['fullBaseUrl'], $this->LinkScanner->fullBaseUrl);
+
+        $this->assertEmpty($this->err->messages());
+
+        //Disables external links
+        $params['fullBaseUrl'] = $this->fullBaseUrl;
+        $params += ['disable-external-links' => true, 'verbose' => true];
+        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->LinkScannerShell->params = $params;
+        $this->LinkScannerShell->scan();
+
+        $lineDifferentFullBaseUrl = function ($line) {
+            $pattern = 'Checking ' . $this->fullBaseUrl;
+
+            return substr($line, 0, strlen('Checking')) === 'Checking' && substr($line, 0, strlen($pattern)) !== $pattern;
+        };
+
+        $this->assertEmpty(array_filter($this->out->messages(), $lineDifferentFullBaseUrl));
+
+        //Re-enables external links
+        unset($params['disable-external-links']);
+        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->LinkScannerShell->params = $params;
+        $this->LinkScannerShell->scan();
+
+        $this->assertNotEmpty(array_filter($this->out->messages(), $lineDifferentFullBaseUrl));
 
         foreach ([
             'example' => LINK_SCANNER_TARGET . DS . 'example',
@@ -220,6 +253,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
             $messages = $this->out->messages();
             $this->assertTextContains(sprintf('Results have been exported to', $expectedExportFile), end($messages));
+
+            $this->assertEmpty($this->err->messages());
         }
     }
 

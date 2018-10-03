@@ -53,6 +53,9 @@ class LinkScannerShell extends Shell
             //This method will trigger events provided by `LinkScannerShellEventListener`
             $this->LinkScanner->getEventManager()->on(new LinkScannerShellEventListener($this));
 
+            if (array_key_exists('disable-external-links', $this->params)) {
+                $this->LinkScanner->setConfig('externalLinks', false);
+            }
             if (array_key_exists('force', $this->params)) {
                 safe_unlink(LINK_SCANNER_LOCK_FILE);
             }
@@ -91,6 +94,9 @@ class LinkScannerShell extends Shell
             'help' => __d('link-scanner', 'Performs a complete scan'),
             'parser' => [
                 'options' => [
+                    'disable-external-links' => [
+                        'help' => __d('link-scanner', 'Disable the scanning of external links'),
+                    ],
                     'export' => [
                         'help' => __d('link-scanner', 'Export results. The filename will be generated automatically, or you can indicate a relative or absolute path'),
                         'short' => 'e',
