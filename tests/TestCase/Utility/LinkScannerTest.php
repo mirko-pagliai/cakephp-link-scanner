@@ -130,7 +130,7 @@ class LinkScannerTest extends IntegrationTestCase
         //`Client::get()` method throws an exception
         $this->LinkScanner->Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
-            ->getMock();;
+            ->getMock();
 
         $this->LinkScanner->Client->method('get')->will($this->throwException(new Exception));
 
