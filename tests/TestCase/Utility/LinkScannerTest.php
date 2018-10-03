@@ -296,7 +296,6 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScanFromTests()
     {
-        $this->debug = [];
         $this->getEventManager()->instance()
             ->on(LINK_SCANNER . '.beforeScanUrl', function ($event, $url) {
                 $this->debug[] = sprintf('Scanning %s', $url);

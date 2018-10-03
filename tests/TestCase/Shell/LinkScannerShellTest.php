@@ -64,7 +64,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     protected function getLinkScannerShell()
     {
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsFromTests());
         $this->EventManager = $this->getEventManager($this->LinkScanner);
 
         $this->out = new ConsoleOutput;
@@ -288,6 +288,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         //Tests options
         $this->assertArrayKeysEqual([
+            'disable-external-links',
             'export',
             'force',
             'fullBaseUrl',
