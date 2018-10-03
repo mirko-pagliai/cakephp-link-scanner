@@ -14,6 +14,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
 use Cake\TestSuite\IntegrationTestCase;
+use Exception;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\TestCaseTrait;
@@ -125,6 +126,17 @@ class LinkScannerTest extends IntegrationTestCase
                 $this->assertEmpty($responseFromCache);
             }
         }
+
+        //`Client::get()` method throws an exception
+        $this->LinkScanner->Client = $this->getMockBuilder(Client::class)
+            ->setMethods(['get'])
+            ->getMock();;
+
+        $this->LinkScanner->Client->method('get')->will($this->throwException(new Exception));
+
+        $response = $getResponseMethod('/noExisting');
+        $this->assertInstanceof(ScanResponse::class, $response);
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     /**
