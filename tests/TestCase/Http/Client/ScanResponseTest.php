@@ -50,18 +50,61 @@ class ScanResponseTest extends TestCase
     }
 
     /**
-     * Test for `isOk()` method
+     * Test for `isError()` method
+     * @test
+     */
+    public function testIsError()
+    {
+        foreach ([new Response, new StubResponse] as $response) {
+            $response = $response->withHeader('location', '/');
+
+            $ScanResponse = new ScanResponse($response->withStatus(200), Configure::read('App.fullBaseUrl'));
+            $this->assertFalse($ScanResponse->isError());
+
+            $ScanResponse = new ScanResponse($response->withStatus(301), Configure::read('App.fullBaseUrl'));
+            $this->assertFalse($ScanResponse->isError());
+
+            $ScanResponse = new ScanResponse($response->withStatus(400), Configure::read('App.fullBaseUrl'));
+            $this->assertTrue($ScanResponse->isError());
+        }
+    }
+
+    /**
+     * Test for `isRedirect()` method (through the `__call()` method)
+     * @test
+     */
+    public function testIsRedirect()
+    {
+        foreach ([new Response, new StubResponse] as $response) {
+            $response = $response->withHeader('location', '/');
+
+            $ScanResponse = new ScanResponse($response->withStatus(200), Configure::read('App.fullBaseUrl'));
+            $this->assertFalse($ScanResponse->isRedirect());
+
+            $ScanResponse = new ScanResponse($response->withStatus(301), Configure::read('App.fullBaseUrl'));
+            $this->assertTrue($ScanResponse->isRedirect());
+
+            $ScanResponse = new ScanResponse($response->withStatus(400), Configure::read('App.fullBaseUrl'));
+            $this->assertFalse($ScanResponse->isRedirect());
+        }
+    }
+
+    /**
+     * Test for `isOk()` method (through the `__call()` method)
      * @test
      */
     public function testIsOk()
     {
         foreach ([new Response, new StubResponse] as $response) {
-            $response = $response->withStatus(200);
-            $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
+            $response = $response->withHeader('location', '/');
+
+            $ScanResponse = new ScanResponse($response->withStatus(200), Configure::read('App.fullBaseUrl'));
             $this->assertTrue($ScanResponse->isOk());
 
-            $response = $response->withStatus(400);
-            $ScanResponse = new ScanResponse($response, Configure::read('App.fullBaseUrl'));
+            $ScanResponse = new ScanResponse($response->withStatus(301), Configure::read('App.fullBaseUrl'));
+            $this->assertFalse($ScanResponse->isOk());
+
+            $ScanResponse = new ScanResponse($response->withStatus(400), Configure::read('App.fullBaseUrl'));
             $this->assertFalse($ScanResponse->isOk());
         }
     }

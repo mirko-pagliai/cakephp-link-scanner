@@ -67,7 +67,17 @@ class ScanResponse implements Serializable
      */
     public function __call($name, $arguments)
     {
-        return call_user_func([$this->Response, $name], $arguments);
+        $response = $this->Response;
+
+        //This provides some method (for example, `isOk()` and `isRedirect()`),
+        //  if the original `Response` method does not provide them
+        if (!method_exists($response, $name)) {
+            $response = new Response;
+            $response = $response->withHeader('location', $this->Response->getHeaderLine('location'))
+                ->withStatus($this->Response->getStatusCode());
+        }
+
+        return call_user_func_array([$response, $name], $arguments);
     }
 
     /**
@@ -117,18 +127,11 @@ class ScanResponse implements Serializable
     }
 
     /**
-     * Checks if the response is ok
+     * Checks if the response is error
      * @return bool
-     * @uses $Response
      */
-    public function isOk()
+    public function isError()
     {
-        $response = $this->Response;
-
-        if (!method_exists($response, 'isOk')) {
-            $response = (new Response)->withStatus($response->getStatusCode());
-        }
-
-        return $response->isOk();
+        return !$this->isOk() && !$this->isRedirect();
     }
 }

@@ -14,6 +14,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
 use Cake\TestSuite\IntegrationTestCase;
+use Exception;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\TestCaseTrait;
@@ -80,15 +81,6 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `__get()` magic method
-     * @test
-     */
-    public function testMagicGet()
-    {
-        $this->assertEquals($this->fullBaseUrl, $this->LinkScanner->fullBaseUrl);
-    }
-
-    /**
      * Test for `_getResponse()` method
      * @test
      */
@@ -102,6 +94,15 @@ class LinkScannerTest extends IntegrationTestCase
         $getResponseFromCache = function ($url) {
             return Cache::read(sprintf('response_%s', md5(serialize($url))), LINK_SCANNER);
         };
+
+        $response = $getResponseMethod($this->fullBaseUrl);
+        $this->assertInstanceof(ScanResponse::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertStringStartsWith('text/html', $response->getContentType());
+
+        $responseFromCache = $getResponseFromCache($this->fullBaseUrl);
+        $this->assertNotEmpty($responseFromCache);
+        $this->assertInstanceof(ScanResponse::class, $responseFromCache);
 
         $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
 
@@ -126,15 +127,16 @@ class LinkScannerTest extends IntegrationTestCase
             }
         }
 
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
-        $response = $getResponseMethod($this->fullBaseUrl);
-        $this->assertInstanceof(ScanResponse::class, $response);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertStringStartsWith('text/html', $response->getContentType());
+        //`Client::get()` method throws an exception
+        $this->LinkScanner->Client = $this->getMockBuilder(Client::class)
+            ->setMethods(['get'])
+            ->getMock();
 
-        $responseFromCache = $getResponseFromCache($this->fullBaseUrl);
-        $this->assertNotEmpty($responseFromCache);
-        $this->assertInstanceof(ScanResponse::class, $responseFromCache);
+        $this->LinkScanner->Client->method('get')->will($this->throwException(new Exception));
+
+        $response = $getResponseMethod('/noExisting');
+        $this->assertInstanceof(ScanResponse::class, $response);
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
     /**
@@ -186,6 +188,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testImport()
     {
+        $this->LinkScanner->setConfig('externalLinks', false);
         $this->LinkScanner->setConfig('maxDepth', 1);
         $this->LinkScanner->Client->setConfig('timeout', 100);
         $this->LinkScanner->scan();
@@ -196,6 +199,11 @@ class LinkScannerTest extends IntegrationTestCase
 
         foreach ([$resultAsObject, $resultAsStatic] as $result) {
             $this->assertInstanceof(LinkScanner::class, $result);
+
+            //Checks configuration
+            $this->assertEquals(false, $result->getConfig('externalLinks'));
+            $this->assertEquals(1, $result->getConfig('maxDepth'));
+            $this->assertEquals(100, $result->Client->getConfig('timeout'));
 
             //Checks the event is fired only on the new object. Then, it unsets both
             //  event lists, so that the objects comparison will run
@@ -243,7 +251,36 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertIsInt($this->LinkScanner->startTime);
         $this->assertIsInt($this->LinkScanner->endTime);
         $this->assertInstanceof(ResultScan::class, $this->LinkScanner->ResultScan);
-        $this->assertGreaterThan(1, $this->LinkScanner->ResultScan->count());
+
+        //Results contain both internal and external urls
+        $internalLinks = $this->LinkScanner->ResultScan->match(['external' => false]);
+        $externalLinks = $this->LinkScanner->ResultScan->match(['external' => true]);
+        $this->assertNotEmpty($internalLinks->toList());
+        $this->assertNotEmpty($externalLinks->toList());
+        $this->assertEquals($this->LinkScanner->ResultScan->count(), $internalLinks->count() + $externalLinks->count());
+
+        //Takes the last url from the last scan and adds it to the url to
+        //  exclude on the next scan
+        $randomUrl = $this->LinkScanner->ResultScan->extract('url')->last();
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner->setConfig('excludeLinks', preg_quote($randomUrl, '/'))->scan();
+        $this->assertCount(0, $this->LinkScanner->ResultScan->match(['url' => $randomUrl]));
+
+        //Tries again with two urls to exclude on the next scan
+        $randomsUrls = $this->LinkScanner->ResultScan->extract('url')->take(2, 1)->toList();
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner->setConfig('excludeLinks', [preg_quote($randomsUrls[0], '/'), preg_quote($randomsUrls[1], '/')]);
+        $this->LinkScanner->scan();
+        $this->assertCount(0, $this->LinkScanner->ResultScan->match(['url' => $randomsUrls[0]]));
+        $this->assertCount(0, $this->LinkScanner->ResultScan->match(['url' => $randomsUrls[1]]));
+
+        //Disables external links and tries again
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $result = $this->LinkScanner->setConfig('maxDepth', 2)->setConfig('externalLinks', false)->scan();
+        $newInternalLinks = $this->LinkScanner->ResultScan->match(['external' => false]);
+        $newExternalLinks = $this->LinkScanner->ResultScan->match(['external' => true]);
+        $this->assertEquals($newInternalLinks, $internalLinks);
+        $this->assertEmpty($newExternalLinks->toList());
 
         foreach ($this->LinkScanner->ResultScan as $item) {
             if (!$item->external) {
@@ -271,8 +308,6 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScanFromTests()
     {
-        $this->debug = [];
-
         $this->getEventManager()->instance()
             ->on(LINK_SCANNER . '.beforeScanUrl', function ($event, $url) {
                 $this->debug[] = sprintf('Scanning %s', $url);
@@ -281,22 +316,39 @@ class LinkScannerTest extends IntegrationTestCase
                 $this->debug[] = sprintf('Found link: %s', $link);
             });
 
-        $expectedResults = [
+        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
+        $LinkScanner->scan();
+
+        $expectedDebug = [
+            'Scanning http://localhost',
+            'Found link: http://google.it',
+            'Scanning http://google.it',
+            'Found link: http://localhost/pages/first_page',
+            'Scanning http://localhost/pages/first_page',
+            'Found link: http://localhost/favicon.ico',
+            'Scanning http://localhost/favicon.ico',
+            'Found link: http://localhost/css/default.css',
+            'Scanning http://localhost/css/default.css',
+            'Found link: http://localhost/js/default.js',
+            'Scanning http://localhost/js/default.js',
+            'Found link: http://localhost/pages/second_page',
+            'Scanning http://localhost/pages/second_page',
+        ];
+        $this->assertEquals($expectedDebug, $this->debug);
+
+        //Results contain both internal and external urls
+        $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
+        $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
+        $this->assertEquals([
             'http://localhost',
-            'http://google.it',
             'http://localhost/pages/first_page',
             'http://localhost/favicon.ico',
             'http://localhost/css/default.css',
             'http://localhost/js/default.js',
             'http://localhost/pages/second_page',
-
-        ];
-        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
-        $LinkScanner->scan();
-        $results = $LinkScanner->ResultScan->extract('url')->toArray();
-        $this->assertEquals($expectedResults, $results);
-        $this->assertNotEmpty($this->debug);
+        ], $internalLinks->toList());
+        $this->assertEquals(['http://google.it'], $externalLinks->toList());
 
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->setConfig('maxDepth', 1)->scan();
@@ -323,29 +375,15 @@ class LinkScannerTest extends IntegrationTestCase
     }
 
     /**
-     * Test for `scan()` method, with a no existing url
-     * @test
-     */
-    public function testScanNoExistingUrl()
-    {
-        $LinkScanner = new LinkScanner('http://noExisting');
-        $LinkScanner->Client->setConfig('timeout', 1);
-        $LinkScanner->scan();
-        $this->assertTrue($LinkScanner->ResultScan->isEmpty());
-    }
-
-    /**
      * Test for `scan()` method, with no other links to scan
      * @test
      */
     public function testScanNoOtherLinks()
     {
-        $params = ['controller' => 'Pages', 'action' => 'display', 'nolinks'];
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
-        $EventManager = $this->getEventManager($LinkScanner);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
         $LinkScanner->scan();
 
-        $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $EventManager);
+        $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $this->getEventManager($LinkScanner));
     }
 
     /**

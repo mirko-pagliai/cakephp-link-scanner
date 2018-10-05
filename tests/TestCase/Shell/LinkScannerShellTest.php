@@ -119,7 +119,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScan()
     {
-        $this->LinkScannerShell->params['maxDepth'] = 1;
+        $this->LinkScannerShell->params['max-depth'] = 1;
         $this->LinkScannerShell->scan();
 
         $messages = $this->out->messages();
@@ -168,7 +168,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanInvalidUrl()
     {
-        $this->LinkScannerShell->params['fullBaseUrl'] = 'invalid';
+        $this->LinkScannerShell->params['full-base-url'] = 'invalid';
         $this->LinkScannerShell->scan();
     }
 
@@ -182,8 +182,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $params = [
             'export' => null,
             'force' => true,
-            'fullBaseUrl' => 'http://anotherFullBaseUrl',
-            'maxDepth' => 3,
+            'max-depth' => 2,
             'timeout' => 15,
         ];
         $this->LinkScannerShell->params = $params;
@@ -191,20 +190,54 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertFileNotExists(LINK_SCANNER_LOCK_FILE);
 
         $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
-
         $expectedExportFile = LINK_SCANNER_TARGET . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
         $this->assertFileExists($expectedExportFile);
 
         $messages = $this->out->messages();
-        $this->assertTextContains(sprintf('Scan started for %s', $this->LinkScanner->fullBaseUrl), current($messages));
+        $this->assertTextContains(sprintf('Scan started for %s', $this->fullBaseUrl), current($messages));
         $this->assertRegexp('/at [\d\-:\s]+<\/info>$/', current($messages));
         $this->assertTextContains(sprintf('Results have been exported to', $expectedExportFile), end($messages));
 
+        $this->assertEquals($params['max-depth'], $this->LinkScanner->getConfig('maxDepth'));
+        $this->assertEquals($params['timeout'], $this->LinkScanner->Client->getConfig('timeout'));
+
         $this->assertEmpty($this->err->messages());
 
-        $this->assertEquals($params['fullBaseUrl'], $this->LinkScanner->fullBaseUrl);
-        $this->assertEquals($params['maxDepth'], $this->LinkScanner->getConfig('maxDepth'));
-        $this->assertEquals($params['timeout'], $this->LinkScanner->Client->getConfig('timeout'));
+        //Changes the full base url
+        $params['full-base-url'] = 'http://anotherFullBaseUrl';
+        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->LinkScannerShell->params = $params;
+        $this->LinkScannerShell->scan();
+
+        $messages = $this->out->messages();
+        $this->assertTextContains(sprintf('Scan started for %s', $this->LinkScanner->fullBaseUrl), current($messages));
+
+        $this->assertEquals($params['full-base-url'], $this->LinkScanner->fullBaseUrl);
+
+        $this->assertEmpty($this->err->messages());
+
+        //Disables external links
+        $params['full-base-url'] = $this->fullBaseUrl;
+        $params += ['disable-external-links' => true, 'verbose' => true];
+        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->LinkScannerShell->params = $params;
+        $this->LinkScannerShell->scan();
+
+        $lineDifferentFullBaseUrl = function ($line) {
+            $pattern = 'Checking ' . $this->fullBaseUrl;
+
+            return substr($line, 0, strlen('Checking')) === 'Checking' && substr($line, 0, strlen($pattern)) !== $pattern;
+        };
+
+        $this->assertEmpty(array_filter($this->out->messages(), $lineDifferentFullBaseUrl));
+
+        //Re-enables external links
+        unset($params['disable-external-links']);
+        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->LinkScannerShell->params = $params;
+        $this->LinkScannerShell->scan();
+
+        $this->assertNotEmpty(array_filter($this->out->messages(), $lineDifferentFullBaseUrl));
 
         foreach ([
             'example' => LINK_SCANNER_TARGET . DS . 'example',
@@ -220,6 +253,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
             $messages = $this->out->messages();
             $this->assertTextContains(sprintf('Results have been exported to', $expectedExportFile), end($messages));
+
+            $this->assertEmpty($this->err->messages());
         }
     }
 
@@ -270,7 +305,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan();
 
-        $this->assertEquals(['<warning>404</warning>'], $this->err->messages());
+        $this->assertEquals(['<error>404</error>'], $this->err->messages());
     }
 
     /**
@@ -288,11 +323,12 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         //Tests options
         $this->assertArrayKeysEqual([
+            'disable-external-links',
             'export',
             'force',
-            'fullBaseUrl',
+            'full-base-url',
             'help',
-            'maxDepth',
+            'max-depth',
             'quiet',
             'timeout',
             'verbose',
