@@ -13,10 +13,10 @@
 namespace LinkScanner\Shell;
 
 use Cake\Console\ConsoleIo;
-use Cake\Console\Shell;
 use Exception;
 use LinkScanner\Event\LinkScannerShellEventListener;
 use LinkScanner\Utility\LinkScanner;
+use MeTools\Console\Shell;
 
 /**
  * A link scanner shell
@@ -53,10 +53,10 @@ class LinkScannerShell extends Shell
             //This method will trigger events provided by `LinkScannerShellEventListener`
             $this->LinkScanner->getEventManager()->on(new LinkScannerShellEventListener($this));
 
-            if (array_key_exists('disable-external-links', $this->params)) {
+            if ($this->hasParam('disable-external-links')) {
                 $this->LinkScanner->setConfig('externalLinks', false);
             }
-            if (array_key_exists('force', $this->params)) {
+            if ($this->hasParam('force')) {
                 safe_unlink(LINK_SCANNER_LOCK_FILE);
             }
             if ($this->param('full-base-url')) {
@@ -71,7 +71,7 @@ class LinkScannerShell extends Shell
 
             $this->LinkScanner->scan();
 
-            if (array_key_exists('export', $this->params)) {
+            if ($this->hasParam('export')) {
                 $this->LinkScanner->export($this->param('export'));
             }
         } catch (Exception $e) {

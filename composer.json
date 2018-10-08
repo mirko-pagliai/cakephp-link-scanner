@@ -11,6 +11,7 @@
     "require": {
         "php": ">=5.5.9",
         "cakephp/cakephp": "^3.6",
+        "mirko-pagliai/me-tools": "^2.17.2",
         "mirko-pagliai/php-tools": "^1.1.4"
     },
     "require-dev": {
