@@ -138,7 +138,7 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
      */
     public function scanCompleted(Event $event, $startTime, $endTime, ResultScan $ResultScan)
     {
-        if ($this->LinkScannerShell->param('verbose')) {
+        if ($this->LinkScannerShell->hasParam('verbose')) {
             $this->LinkScannerShell->hr();
         }
 
@@ -149,7 +149,7 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
         $this->LinkScannerShell->out(__d('link-scanner', 'Elapsed time: {0}', $elapsedTime));
         $this->LinkScannerShell->out(__d('link-scanner', 'Total scanned links: {0}', $ResultScan->count()));
 
-        if ($this->LinkScannerShell->param('verbose')) {
+        if ($this->LinkScannerShell->hasParam('verbose')) {
             $this->LinkScannerShell->hr();
         }
 
@@ -166,14 +166,14 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
      */
     public function scanStarted(Event $event, $startTime, $fullBaseUrl)
     {
-        if ($this->LinkScannerShell->param('verbose')) {
+        if ($this->LinkScannerShell->hasParam('verbose')) {
             $this->LinkScannerShell->hr();
         }
 
         $startTime = (new Time($startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
         $this->LinkScannerShell->info(__d('link-scanner', 'Scan started for {0} at {1}', $fullBaseUrl, $startTime));
 
-        if ($this->LinkScannerShell->param('verbose')) {
+        if ($this->LinkScannerShell->hasParam('verbose')) {
             $this->LinkScannerShell->hr();
 
             $cache = Cache::getConfig(LINK_SCANNER);
