@@ -184,6 +184,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             'force' => true,
             'max-depth' => 2,
             'timeout' => 15,
+            'verbose' => true,
         ];
         $this->LinkScannerShell->params = $params;
         $this->LinkScannerShell->scan();
@@ -194,8 +195,17 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertFileExists($expectedExportFile);
 
         $messages = $this->out->messages();
-        $this->assertTextContains(sprintf('Scan started for %s', $this->fullBaseUrl), current($messages));
+        $this->assertRegexp('/^\-{63}$/', current($messages));
+        $this->assertTextContains(sprintf('Scan started for %s', $this->fullBaseUrl), next($messages));
         $this->assertRegexp('/at [\d\-:\s]+<\/info>$/', current($messages));
+        $this->assertRegexp('/^\-{63}$/', next($messages));
+        $this->assertTextContains('The cache is disabled', next($messages));
+        $this->assertTextContains('Force mode is enabled', next($messages));
+        $this->assertTextContains('Scanning of external links is enabled', next($messages));
+        $this->assertTextContains('Maximum depth of the scan: 2', next($messages));
+        $this->assertTextContains('Timeout in seconds for GET requests: 15', next($messages));
+        $this->assertRegexp('/^\-{63}$/', next($messages));
+
         $this->assertTextContains(sprintf('Results have been exported to', $expectedExportFile), end($messages));
 
         $this->assertEquals($params['max-depth'], $this->LinkScanner->getConfig('maxDepth'));
@@ -210,7 +220,9 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->scan();
 
         $messages = $this->out->messages();
-        $this->assertTextContains(sprintf('Scan started for %s', $this->LinkScanner->fullBaseUrl), current($messages));
+        $this->assertRegexp('/^\-{63}$/', current($messages));
+        $this->assertTextContains(sprintf('Scan started for %s', $this->LinkScanner->fullBaseUrl), next($messages));
+        $this->assertRegexp('/^\-{63}$/', next($messages));
 
         $this->assertEquals($params['full-base-url'], $this->LinkScanner->fullBaseUrl);
 
@@ -270,15 +282,18 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $messages = $this->out->messages();
         $count = count($messages);
 
-        //First five lines
+        //Initial lines
         $this->assertRegexp('/^\-{63}$/', current($messages));
         $this->assertTextStartsWith(sprintf('<info>Scan started for %s', $this->fullBaseUrl), next($messages));
         $this->assertRegexp(sprintf('/t [\d\-]+\s[\d\:]+<\/info>$/'), current($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
         $this->assertTextContains('The cache is disabled', next($messages));
+        $this->assertTextContains('Force mode is not enabled', next($messages));
+        $this->assertTextContains('Scanning of external links is enabled', next($messages));
+        $this->assertRegexp('/Timeout in seconds for GET requests: \d+/', next($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
 
-        //Last lines
+        //Final lines
         while (key($messages) !== $count - 5) {
             next($messages);
         };
@@ -290,7 +305,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertRegexp('/^\-{63}$/', next($messages));
 
         //Removes already checked lines and checks intermediate lines
-        foreach (array_slice($messages, 5, -5) as $message) {
+        foreach (array_slice($messages, 8, -5) as $message) {
             $this->assertRegExp('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
         }
     }

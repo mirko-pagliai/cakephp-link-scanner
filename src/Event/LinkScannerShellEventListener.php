@@ -28,6 +28,11 @@ use LinkScanner\Shell\LinkScannerShell;
 class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
 {
     /**
+     * @var \LinkScanner\Utility\LinkScanner
+     */
+    protected $LinkScanner;
+
+    /**
      * @var \LinkScanner\Shell\LinkScannerShell
      */
     protected $LinkScannerShell;
@@ -35,11 +40,13 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
     /**
      * Construct
      * @param LinkScannerShell $shell A `LinkScannerShell` instance
+     * @uses $LinkScanner
      * @uses $LinkScannerShell
      */
     public function __construct(LinkScannerShell $shell)
     {
         $this->LinkScannerShell = $shell;
+        $this->LinkScanner = $shell->LinkScanner;
     }
 
     /**
@@ -162,6 +169,7 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
      * @param int $startTime Start time
      * @param string $fullBaseUrl Full base url
      * @return bool
+     * @uses $LinkScanner
      * @uses $LinkScannerShell
      */
     public function scanStarted(Event $event, $startTime, $fullBaseUrl)
@@ -173,18 +181,42 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
         $startTime = (new Time($startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
         $this->LinkScannerShell->info(__d('link-scanner', 'Scan started for {0} at {1}', $fullBaseUrl, $startTime));
 
-        if ($this->LinkScannerShell->hasParam('verbose')) {
-            $this->LinkScannerShell->hr();
-
-            $cache = Cache::getConfig(LINK_SCANNER);
-            if (Cache::enabled() && !empty($cache['duration'])) {
-                $this->LinkScannerShell->success(__d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']));
-            } else {
-                $this->LinkScannerShell->info(__d('link-scanner', 'The cache is disabled'));
-            }
-
-            $this->LinkScannerShell->hr();
+        if (!$this->LinkScannerShell->hasParam('verbose')) {
+            return true;
         }
+
+        $this->LinkScannerShell->hr();
+
+        $cache = Cache::getConfig(LINK_SCANNER);
+        if (Cache::enabled() && !empty($cache['duration'])) {
+            $this->LinkScannerShell->success(__d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']));
+        } else {
+            $this->LinkScannerShell->info(__d('link-scanner', 'The cache is disabled'));
+        }
+
+        if ($this->LinkScannerShell->hasParam('force')) {
+            $this->LinkScannerShell->info(__d('link-scanner', 'Force mode is enabled'));
+        } else {
+            $this->LinkScannerShell->info(__d('link-scanner', 'Force mode is not enabled'));
+        }
+
+        if ($this->LinkScanner->getConfig('externalLinks')) {
+            $this->LinkScannerShell->info(__d('link-scanner', 'Scanning of external links is enabled'));
+        } else {
+            $this->LinkScannerShell->info(__d('link-scanner', 'Scanning of external links is not enabled'));
+        }
+
+        $maxDepth = $this->LinkScanner->getConfig('maxDepth');
+        if (is_positive($maxDepth)) {
+            $this->LinkScannerShell->info(__d('link-scanner', 'Maximum depth of the scan: {0}', $maxDepth));
+        }
+
+        $timeout = $this->LinkScanner->Client->getConfig('timeout');
+        if (is_positive($timeout)) {
+            $this->LinkScannerShell->info(__d('link-scanner', 'Timeout in seconds for GET requests: {0}', $timeout));
+        }
+
+        $this->LinkScannerShell->hr();
 
         return true;
     }
