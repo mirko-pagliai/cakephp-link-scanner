@@ -64,7 +64,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     protected function getLinkScannerShell()
     {
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, null, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl);
+        $this->LinkScanner->Client = $this->getClientReturnsSampleResponse();
         $this->EventManager = $this->getEventManager($this->LinkScanner);
 
         $this->out = new ConsoleOutput;
@@ -316,7 +317,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanWithErrorResponse()
     {
-        $this->LinkScannerShell->LinkScanner = new LinkScanner(null, null, $this->getClientReturnsErrorResponse());
+        $this->LinkScannerShell->LinkScanner = new LinkScanner;
+        $this->LinkScannerShell->LinkScanner->Client = $this->getClientReturnsErrorResponse();
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan();
 

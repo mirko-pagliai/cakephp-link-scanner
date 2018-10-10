@@ -46,7 +46,7 @@ class LinkScanner implements Serializable
      * Instance of `ResultScan`. This contains the results of the scan
      * @var \LinkScanner\ResultScan
      */
-    protected $ResultScan;
+    public $ResultScan;
 
     /**
      * Default configuration
@@ -95,16 +95,14 @@ class LinkScanner implements Serializable
      *  `Router::url()` method.
      * If `null` the `App.fullBaseUrl` value will be used.
      * @param string|array|null $fullBaseUrl Full base url
-     * @param ResultScan $ResultScan Optional `ResultScan` instance
-     * @param Client $Client Optional `Client` instance
      * @uses $Client
      * @uses $ResultScan
      * @uses setFullBaseUrl()
      */
-    public function __construct($fullBaseUrl = null, ResultScan $ResultScan = null, Client $Client = null)
+    public function __construct($fullBaseUrl = null)
     {
-        $this->Client = $Client ?: new Client(['redirect' => true]);
-        $this->ResultScan = $ResultScan ?: new ResultScan;
+        $this->Client = new Client(['redirect' => true]);
+        $this->ResultScan = new ResultScan;
 
         $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
     }

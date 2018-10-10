@@ -163,21 +163,26 @@ trait TestCaseTrait
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
         $fullBaseUrl = clean_url($fullBaseUrl, true);
 
-        $ResultScan = $this->getMockBuilder(ResultScan::class)
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([$fullBaseUrl])
+            ->setMethods(['_createLockFile'])
+            ->getMock();
+
+        $LinkScanner->Client = $this->getClientReturnsFromTests();
+
+        $LinkScanner->ResultScan = $this->getMockBuilder(ResultScan::class)
             ->setMethods(['getScannedUrl'])
             ->getMock();
 
         //This ensures the `getScannedUrl()` method returns all the urls as strings
-        $ResultScan->method('getScannedUrl')->will($this->returnCallback(function () use ($ResultScan) {
-            return $ResultScan->getIterator()->extract('url')->map(function ($url) {
-                return is_string($url) ? $url : Router::url($url, true);
-            })->toArray();
-        }));
+        $LinkScanner->ResultScan->method('getScannedUrl')
+            ->will($this->returnCallback(function () use ($LinkScanner) {
+                return $LinkScanner->ResultScan->getIterator()->extract('url')->map(function ($url) {
+                    return is_string($url) ? $url : Router::url($url, true);
+                })->toArray();
+            }));
 
-        return $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs([$fullBaseUrl, $ResultScan, $this->getClientReturnsFromTests()])
-            ->setMethods(['_createLockFile'])
-            ->getMock();
+        return $LinkScanner;
     }
 
     /**
