@@ -58,11 +58,10 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     protected $out;
 
     /**
-     * Internal method to set and get the `LinkScannerShell` object and all
+     * Internal method to set and get the `LinkScannerShell` instance and all
      *  properties of this test class
-     * @return LinkScannerShell
      */
-    protected function getLinkScannerShell()
+    protected function setLinkScannerShell()
     {
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl);
         $this->LinkScanner->Client = $this->getClientReturnsSampleResponse();
@@ -79,8 +78,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             ->getMock();
 
         $this->LinkScannerShell->LinkScanner = $this->LinkScanner;
-
-        return $this->LinkScannerShell;
     }
 
     /**
@@ -96,8 +93,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         safe_unlink(LINK_SCANNER);
 
         $this->fullBaseUrl = 'http://google.com';
-
-        $this->getLinkScannerShell();
+        $this->setLinkScannerShell();
     }
 
     /**
@@ -216,7 +212,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         //Changes the full base url
         $params['full-base-url'] = 'http://anotherFullBaseUrl';
-        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->setLinkScannerShell();
         $this->LinkScannerShell->params = $params;
         $this->LinkScannerShell->scan();
 
@@ -232,7 +228,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         //Disables external links
         $params['full-base-url'] = $this->fullBaseUrl;
         $params += ['disable-external-links' => true, 'verbose' => true];
-        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->setLinkScannerShell();
         $this->LinkScannerShell->params = $params;
         $this->LinkScannerShell->scan();
 
@@ -246,7 +242,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         //Re-enables external links
         unset($params['disable-external-links']);
-        $this->LinkScannerShell = $this->getLinkScannerShell();
+        $this->setLinkScannerShell();
         $this->LinkScannerShell->params = $params;
         $this->LinkScannerShell->scan();
 
@@ -256,7 +252,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             'example' => LINK_SCANNER_TARGET . DS . 'example',
             TMP . 'example' => TMP . 'example',
         ] as $filename => $expectedExportFile) {
-            $this->LinkScannerShell = $this->getLinkScannerShell();
+            $this->setLinkScannerShell();
             $this->LinkScannerShell->params = ['export' => $filename] + $params;
             $this->LinkScannerShell->scan();
 
