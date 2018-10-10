@@ -313,7 +313,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanWithErrorResponse()
     {
-        $this->LinkScannerShell->LinkScanner = new LinkScanner;
         $this->LinkScannerShell->LinkScanner->Client = $this->getClientReturnsErrorResponse();
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan();
