@@ -82,7 +82,7 @@ trait TestCaseTrait
             $args = func_get_args();
 
             if (is_string($args[0])) {
-                if ($args[0] === 'http://localhost') {
+                if (preg_match('/^https?:\/\/localhost\/?$/', $args[0])) {
                     $args[0] = ['controller' => 'Pages', 'action' => 'display', 'home'];
                 } elseif (preg_match('/^http:\/\/localhost\/pages\/(.+)/', $args[0], $matches)) {
                     $args[0] = ['controller' => 'Pages', 'action' => 'display', $matches[1]];

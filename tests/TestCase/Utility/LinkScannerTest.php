@@ -325,7 +325,7 @@ class LinkScannerTest extends IntegrationTestCase
         $LinkScanner->scan();
 
         $expectedDebug = [
-            'Scanning http://localhost',
+            'Scanning http://localhost/',
             'Found link: http://google.it',
             'Scanning http://google.it',
             'Found link: http://localhost/pages/first_page',
@@ -345,7 +345,7 @@ class LinkScannerTest extends IntegrationTestCase
         $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
         $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
         $this->assertEquals([
-            'http://localhost',
+            'http://localhost/',
             'http://localhost/pages/first_page',
             'http://localhost/favicon.ico',
             'http://localhost/css/default.css',
@@ -362,7 +362,7 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertFalse($item->external);
         $this->assertNull($item->referer);
         $this->assertEquals($item->type, 'text/html');
-        $this->assertEquals($item->url, 'http://localhost');
+        $this->assertEquals($item->url, 'http://localhost/');
     }
 
     /**
@@ -411,9 +411,7 @@ class LinkScannerTest extends IntegrationTestCase
     {
         foreach ([
             'http://fullBaseUrl.com' => 'http://fullBaseUrl.com',
-            'http://fullBaseUrl.com/' => 'http://fullBaseUrl.com',
             'http://fullBaseUrl.com/site' => 'http://fullBaseUrl.com/site',
-            'http://fullBaseUrl.com/site/' => 'http://fullBaseUrl.com/site',
             'http://www.fullBaseUrl.com/site' => 'http://fullBaseUrl.com/site',
             'https://fullBaseUrl.com' => 'https://fullBaseUrl.com',
             'https://www.fullBaseUrl.com' => 'https://fullBaseUrl.com',
