@@ -61,6 +61,7 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
             'afterScanUrl',
             'beforeScanUrl',
             'foundLinkToBeScanned',
+            'foundRedirect',
             'resultsExported',
             'scanCompleted',
             'scanStarted',
@@ -116,6 +117,19 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
     public function foundLinkToBeScanned(Event $event, $link)
     {
         $this->LinkScannerShell->verbose(__d('link-scanner', 'Link found: {0}', $link));
+
+        return true;
+    }
+
+    /**
+     * `LinkScanner.foundRedirect` event
+     * @param Event $event An `Event` instance
+     * @param string $url Redirect
+     * @return bool
+     */
+    public function foundRedirect(Event $event, $url)
+    {
+        $this->LinkScannerShell->verbose(__d('link-scanner', 'Redirect found: {0}', $url));
 
         return true;
     }

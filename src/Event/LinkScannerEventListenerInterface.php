@@ -47,6 +47,14 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
     public function foundLinkToBeScanned(Event $event, $link);
 
     /**
+     * `LinkScanner.foundRedirect` event
+     * @param Event $event An `Event` instance
+     * @param string $redirect Redirect
+     * @return bool
+     */
+    public function foundRedirect(Event $event, $redirect);
+
+    /**
      * `LinkScanner.resultsExported` event
      * @param Event $event An `Event` instance
      * @param string $filename End time Filename
