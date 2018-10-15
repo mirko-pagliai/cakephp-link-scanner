@@ -55,6 +55,7 @@ class LinkScanner implements Serializable
     protected $_defaultConfig = [
         'excludeLinks' => ['\{.*\}', 'javascript:'],
         'externalLinks' => true,
+        'followRedirects' => false,
         'maxDepth' => 0,
     ];
 
@@ -251,19 +252,22 @@ class LinkScanner implements Serializable
         $response = $this->_getResponse($url);
         $this->dispatchEvent(LINK_SCANNER . '.afterScanUrl', [$response]);
 
-        $location = $response->getHeaderLine('location');
-        if ($response->isRedirect() && $location) {
-            if ($this->canBeScanned($location)) {
-                return null;
+        //Recursive scan for redirects
+        if ($this->getConfig('followRedirects')) {
+            $location = $response->getHeaderLine('location');
+            if ($response->isRedirect() && $location) {
+                if (!$this->canBeScanned($location)) {
+                    return null;
+                }
+
+                $this->dispatchEvent(LINK_SCANNER . '.foundRedirect', [$location]);
+
+                return $this->_singleScan($location);
             }
-
-            $this->dispatchEvent(LINK_SCANNER . '.foundRedirect', [$location]);
-
-            return $this->_singleScan($location);
         }
 
         //Appends result
-        $item = new ScanEntity(compact('referer', 'url'));
+        $item = new ScanEntity(compact('url', 'referer'));
         $item->code = $response->getStatusCode();
         $item->external = is_external_url($url, $this->hostname);
         $item->location = $response->getHeaderLine('Location');

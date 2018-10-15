@@ -312,12 +312,16 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testScanFromTests()
     {
+        //Sets events. They will add some output to the `$this->debug` property
         $this->getEventManager()->instance()
-            ->on(LINK_SCANNER . '.beforeScanUrl', function ($event, $url) {
-                $this->debug[] = sprintf('Scanning %s', $url);
+            ->on(LINK_SCANNER . '.beforeScanUrl', function () {
+                $this->debug[] = sprintf('Scanning %s', func_get_arg(1));
             })
-            ->on(LINK_SCANNER . '.foundLinkToBeScanned', function ($event, $link) {
-                $this->debug[] = sprintf('Found link: %s', $link);
+            ->on(LINK_SCANNER . '.foundLinkToBeScanned', function () {
+                $this->debug[] = sprintf('Found link: %s', func_get_arg(1));
+            })
+            ->on(LINK_SCANNER . '.foundRedirect', function() {
+                $this->debug[] = sprintf('Found redirect: %s', func_get_arg(1));
             });
 
         $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
@@ -338,21 +342,42 @@ class LinkScannerTest extends IntegrationTestCase
             'Scanning http://localhost/js/default.js',
             'Found link: http://localhost/pages/second_page',
             'Scanning http://localhost/pages/second_page',
+            'Found link: http://localhost/pages/redirect',
+            'Scanning http://localhost/pages/redirect',
         ];
         $this->assertEquals($expectedDebug, $this->debug);
 
         //Results contain both internal and external urls
-        $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
-        $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
-        $this->assertEquals([
+        $expectedInternaLinks = [
             'http://localhost/',
             'http://localhost/pages/first_page',
             'http://localhost/favicon.ico',
             'http://localhost/css/default.css',
             'http://localhost/js/default.js',
             'http://localhost/pages/second_page',
-        ], $internalLinks->toList());
-        $this->assertEquals(['http://google.it'], $externalLinks->toList());
+            'http://localhost/pages/redirect',
+        ];
+        $expectedExternalLinks = ['http://google.it'];
+        $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
+        $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
+        $this->assertEquals($expectedInternaLinks, $internalLinks->toList());
+        $this->assertEquals($expectedExternalLinks, $externalLinks->toList());
+
+        $this->debug = [];
+
+        $expectedDebug = array_merge($expectedDebug, [
+            'Found redirect: http://localhost/pages/third_page',
+            'Scanning http://localhost/pages/third_page',
+        ]);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
+        $LinkScanner->setConfig('followRedirects', true)->scan();
+        $this->assertEquals($expectedDebug, $this->debug);
+
+        $expectedInternaLinks[array_search('http://localhost/pages/redirect', $expectedInternaLinks)] = 'http://localhost/pages/third_page';
+        $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
+        $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
+        $this->assertEquals($expectedInternaLinks, $internalLinks->toList());
+        $this->assertEquals($expectedExternalLinks, $externalLinks->toList());
 
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->setConfig('maxDepth', 1)->scan();
