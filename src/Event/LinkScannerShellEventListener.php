@@ -137,7 +137,7 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
     /**
      * `LinkScanner.resultsExported` event
      * @param Event $event An `Event` instance
-     * @param string $filename End time Filename
+     * @param string $filename Filename
      * @return bool
      * @uses $LinkScannerShell
      */
@@ -145,6 +145,17 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
     {
         $this->LinkScannerShell->success(__d('link-scanner', 'Results have been exported to {0}', $filename));
 
+        return true;
+    }
+
+    /**
+     * `LinkScanner.resultsImported` event
+     * @param Event $event An `Event` instance
+     * @param string $filename Filename
+     * @return bool
+     */
+    public function resultsImported(Event $event, $filename)
+    {
         return true;
     }
 

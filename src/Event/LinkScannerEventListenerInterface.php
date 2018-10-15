@@ -57,10 +57,18 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
     /**
      * `LinkScanner.resultsExported` event
      * @param Event $event An `Event` instance
-     * @param string $filename End time Filename
+     * @param string $filename Filename
      * @return bool
      */
     public function resultsExported(Event $event, $filename);
+
+    /**
+     * `LinkScanner.resultsImported` event
+     * @param Event $event An `Event` instance
+     * @param string $filename Filename
+     * @return bool
+     */
+    public function resultsImported(Event $event, $filename);
 
     /**
      * `LinkScanner.scanCompleted` event
