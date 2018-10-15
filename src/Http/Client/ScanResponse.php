@@ -51,7 +51,7 @@ class ScanResponse implements Serializable
      */
     public function __construct($response, $fullBaseUrl)
     {
-        $this->fullBaseUrl = clean_url($fullBaseUrl, true);
+        $this->fullBaseUrl = clean_url($fullBaseUrl);
         $this->BodyParser = new BodyParser($response->getBody(), $this->fullBaseUrl);
         $this->Response = $response;
     }

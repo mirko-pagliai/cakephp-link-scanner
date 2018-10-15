@@ -161,7 +161,6 @@ trait TestCaseTrait
     {
         $fullBaseUrl = $fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
-        $fullBaseUrl = clean_url($fullBaseUrl, true);
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs([$fullBaseUrl])
