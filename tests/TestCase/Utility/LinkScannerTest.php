@@ -410,18 +410,15 @@ class LinkScannerTest extends IntegrationTestCase
     public function testSetFullBaseUrl()
     {
         foreach ([
-            'http://fullBaseUrl.com' => 'http://fullBaseUrl.com',
-            'http://fullBaseUrl.com/site' => 'http://fullBaseUrl.com/site',
-            'http://www.fullBaseUrl.com/site' => 'http://fullBaseUrl.com/site',
-            'https://fullBaseUrl.com' => 'https://fullBaseUrl.com',
-            'https://www.fullBaseUrl.com' => 'https://fullBaseUrl.com',
-            'ftp://fullBaseUrl.com' => 'ftp://fullBaseUrl.com',
-            'ftp://www.fullBaseUrl.com' => 'ftp://fullBaseUrl.com',
-        ] as $fullBaseUrl => $expectedFullBaseUrl) {
+            'http://fullBaseUrl.com',
+            'http://fullBaseUrl.com/site',
+            'https://fullBaseUrl.com',
+            'ftp://fullBaseUrl.com',
+        ] as $fullBaseUrl) {
             $result = $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
             $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertEquals($expectedFullBaseUrl, $this->getProperty($this->LinkScanner, 'fullBaseUrl'));
-            $this->assertEquals('fullBaseUrl.com', $this->getProperty($this->LinkScanner, 'hostname'));
+            $this->assertEquals($fullBaseUrl, $this->LinkScanner->fullBaseUrl);
+            $this->assertEquals('fullBaseUrl.com', $this->LinkScanner->hostname);
         }
     }
 
