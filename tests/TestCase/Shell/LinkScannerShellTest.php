@@ -218,6 +218,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertTextContains('The cache is disabled', next($messages));
         $this->assertTextContains('Force mode is enabled', next($messages));
         $this->assertTextContains('Scanning of external links is enabled', next($messages));
+        $this->assertTextContains('Redirects will not be followed', next($messages));
         $this->assertTextContains('Maximum depth of the scan: 2', next($messages));
         $this->assertTextContains('Timeout in seconds for GET requests: 15', next($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
@@ -235,11 +236,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals($params['full-base-url'], $this->LinkScanner->fullBaseUrl);
 
-        $messages = $this->out->messages();
-        $this->assertRegexp('/^\-{63}$/', current($messages));
-        $this->assertTextContains(sprintf('Scan started for %s', $this->LinkScanner->fullBaseUrl), next($messages));
-        $this->assertRegexp('/^\-{63}$/', next($messages));
-
+        $this->assertNotEmpty(preg_grep(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->fullBaseUrl, '/')), $this->out->messages()));
         $this->assertEmpty($this->err->messages());
 
         //Disables external links
@@ -249,16 +246,15 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->params = $params;
         $this->LinkScannerShell->scan();
 
-        $expectedConfig['externalLinks'] = false;
-        $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
+        $this->assertEquals(['externalLinks' => false] + $expectedConfig, $this->LinkScanner->getConfig());
 
         $lineDifferentFullBaseUrl = function ($line) {
             $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl)));
 
             return substr($line, 0, strlen('Checking')) === 'Checking' && !preg_match($pattern, $line);
         };
-
         $this->assertEmpty(array_filter($this->out->messages(), $lineDifferentFullBaseUrl));
+        $this->assertNotEmpty(preg_grep('/Scanning of external links is not enabled/', $this->out->messages()));
 
         //Re-enables external links
         unset($params['disable-external-links']);
@@ -298,6 +294,8 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         $expectedConfig = ['followRedirects' => true, 'maxDepth' => 1] + $expectedConfig;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
+
+        $this->assertNotEmpty(preg_grep('/Redirects will be followed/', $this->out->messages()));
     }
 
     /**
@@ -320,6 +318,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertTextContains('The cache is disabled', next($messages));
         $this->assertTextContains('Force mode is not enabled', next($messages));
         $this->assertTextContains('Scanning of external links is enabled', next($messages));
+        $this->assertTextContains('Redirects will not be followed', next($messages));
         $this->assertRegexp('/Timeout in seconds for GET requests: \d+/', next($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
 
@@ -335,7 +334,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertRegexp('/^\-{63}$/', next($messages));
 
         //Removes already checked lines and checks intermediate lines
-        foreach (array_slice($messages, 8, -5) as $message) {
+        foreach (array_slice($messages, 9, -5) as $message) {
             $this->assertRegExp('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
         }
     }

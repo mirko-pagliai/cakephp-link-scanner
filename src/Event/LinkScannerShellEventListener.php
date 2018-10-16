@@ -231,6 +231,12 @@ class LinkScannerShellEventListener implements LinkScannerEventListenerInterface
             $this->LinkScannerShell->info(__d('link-scanner', 'Scanning of external links is not enabled'));
         }
 
+        if ($this->LinkScanner->getConfig('followRedirects')) {
+            $this->LinkScannerShell->info(__d('link-scanner', 'Redirects will be followed'));
+        } else {
+            $this->LinkScannerShell->info(__d('link-scanner', 'Redirects will not be followed'));
+        }
+
         $maxDepth = $this->LinkScanner->getConfig('maxDepth');
         if (is_positive($maxDepth)) {
             $this->LinkScannerShell->info(__d('link-scanner', 'Maximum depth of the scan: {0}', $maxDepth));
