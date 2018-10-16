@@ -255,7 +255,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $lineDifferentFullBaseUrl = function ($line) {
             $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl)));
 
-            return substr($line, 0, strlen('Checking')) === 'Checking' &&  !preg_match($pattern, $line);
+            return substr($line, 0, strlen('Checking')) === 'Checking' && !preg_match($pattern, $line);
         };
 
         $this->assertEmpty(array_filter($this->out->messages(), $lineDifferentFullBaseUrl));
