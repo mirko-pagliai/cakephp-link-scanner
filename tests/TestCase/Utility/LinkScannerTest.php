@@ -243,9 +243,21 @@ class LinkScannerTest extends IntegrationTestCase
     {
         $result = $this->LinkScanner->setConfig('maxDepth', 2)->scan();
 
-        $expectedEvents = ['scanStarted', 'scanCompleted', 'beforeScanUrl', 'afterScanUrl', 'foundLinkToBeScanned'];
-        foreach ($expectedEvents as $eventName) {
+        foreach ([
+            'afterScanUrl',
+            'beforeScanUrl',
+            'foundLinkToBeScanned',
+            'scanStarted',
+            'scanCompleted',
+        ] as $eventName) {
             $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
+        }
+
+        foreach ([
+            'foundRedirect',
+            'resultsExported',
+        ] as $eventName) {
+            $this->assertEventNotFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
         }
 
         $this->assertInstanceof(LinkScanner::class, $result);
@@ -320,7 +332,7 @@ class LinkScannerTest extends IntegrationTestCase
             ->on(LINK_SCANNER . '.foundLinkToBeScanned', function () {
                 $this->debug[] = sprintf('Found link: %s', func_get_arg(1));
             })
-            ->on(LINK_SCANNER . '.foundRedirect', function() {
+            ->on(LINK_SCANNER . '.foundRedirect', function () {
                 $this->debug[] = sprintf('Found redirect: %s', func_get_arg(1));
             });
 
