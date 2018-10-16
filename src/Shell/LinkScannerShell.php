@@ -56,6 +56,9 @@ class LinkScannerShell extends Shell
             if ($this->hasParam('disable-external-links')) {
                 $this->LinkScanner->setConfig('externalLinks', false);
             }
+            if ($this->hasParam('follow-redirects')) {
+                $this->LinkScanner->setConfig('followRedirects', true);
+            }
             if ($this->hasParam('force')) {
                 safe_unlink(LINK_SCANNER_LOCK_FILE);
             }
@@ -100,6 +103,9 @@ class LinkScannerShell extends Shell
                     'export' => [
                         'help' => __d('link-scanner', 'Export results. The filename will be generated automatically, or you can indicate a relative or absolute path'),
                         'short' => 'e',
+                    ],
+                    'follow-redirects' => [
+                        'help' => __d('link-scanner', 'Follows redirect'),
                     ],
                     'force' => [
                         'help' => __d('link-scanner', 'Force mode: removes the lock file and does not ask questions'),
