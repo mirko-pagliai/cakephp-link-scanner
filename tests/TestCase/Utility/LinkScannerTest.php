@@ -298,11 +298,14 @@ class LinkScannerTest extends IntegrationTestCase
         $this->assertEquals($newInternalLinks, $internalLinks);
         $this->assertEmpty($newExternalLinks->toList());
 
+        $hostname = get_hostname_from_url($this->fullBaseUrl);
+
         foreach ($LinkScanner->ResultScan as $item) {
             if (!$item->external) {
-                $this->assertTextStartsWith($this->fullBaseUrl, $item->url);
+                $this->assertRegexp(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->url);
             } else {
-                $this->assertTextStartsNotWith($this->fullBaseUrl, $item->url);
+                $this->assertTextStartsNotWith('http://' . $hostname, $item->url);
+                $this->assertTextStartsNotWith('https://' . $hostname, $item->url);
             }
             $this->assertContains($item->code, [200, 500]);
             $this->assertEquals($item->type, 'text/html');
