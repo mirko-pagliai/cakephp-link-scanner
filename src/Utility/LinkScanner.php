@@ -156,7 +156,7 @@ class LinkScanner implements Serializable
             }
 
             $response = new ScanResponse($clientResponse, $this->fullBaseUrl);
-            if ($response->isOk()) {
+            if (!$response->isError()) {
                 Cache::write($cacheKey, $response, LINK_SCANNER);
             }
         }
