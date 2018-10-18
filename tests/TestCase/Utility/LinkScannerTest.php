@@ -158,6 +158,8 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertFileExists($result);
             $this->assertEquals($expectedFilename, $result);
             $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
+
+            $this->EventManager->getEventList()->flush();
         }
     }
 
@@ -189,8 +191,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testImport()
     {
-        $this->LinkScanner->setConfig('externalLinks', false);
-        $this->LinkScanner->setConfig('maxDepth', 1);
+        $this->LinkScanner->setConfig('externalLinks', false)->setConfig('maxDepth', 1);
         $this->LinkScanner->Client->setConfig('timeout', 100);
         $this->LinkScanner->scan();
         $filename = $this->LinkScanner->export();
@@ -202,16 +203,20 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertInstanceof(LinkScanner::class, $result);
 
             //Checks configuration
-            $this->assertEquals(false, $result->getConfig('externalLinks'));
-            $this->assertEquals(1, $result->getConfig('maxDepth'));
+            $this->assertEquals([
+                'excludeLinks' => ['\{.*\}', 'javascript:'],
+                'externalLinks' => false,
+                'followRedirects' => false,
+                'maxDepth' => 1,
+            ], $result->getConfig());
             $this->assertEquals(100, $result->Client->getConfig('timeout'));
 
-            //Checks the event is fired only on the new object. Then, it unsets both
-            //  event lists, so that the objects comparison will run
-            $this->assertEventNotFired(LINK_SCANNER . '.resultsImported', $this->getEventManager());
+            //Checks the event is fired only on the new object. Then, it flushes
+            //  both event lists, so that the objects comparison will run
+            $this->assertEventNotFired(LINK_SCANNER . '.resultsImported', $this->EventManager);
             $this->assertEventFired(LINK_SCANNER . '.resultsImported', $this->getEventManager($result));
-            $this->getEventManager()->unsetEventList();
-            $this->getEventManager($result)->unsetEventList();
+            $this->EventManager->getEventList()->flush();
+            $this->getEventManager($result)->getEventList()->flush();
 
             //Gets properties from both client, fixes properties of the `Client`
             //  instances and performs the comparison
@@ -253,10 +258,7 @@ class LinkScannerTest extends IntegrationTestCase
             $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
         }
 
-        foreach ([
-            'foundRedirect',
-            'resultsExported',
-        ] as $eventName) {
+        foreach (['foundRedirect', 'resultsExported'] as $eventName) {
             $this->assertEventNotFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
         }
 

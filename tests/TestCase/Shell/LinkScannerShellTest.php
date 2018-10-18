@@ -65,7 +65,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     {
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl);
         $this->LinkScanner->Client = $this->getClientReturnsSampleResponse();
-        $this->EventManager = $this->getEventManager($this->LinkScanner);
+        $this->EventManager = $this->getEventManager();
 
         $this->out = new ConsoleOutput;
         $this->err = new ConsoleOutput;
@@ -127,8 +127,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         ], $this->LinkScanner->getConfig());
 
         $messages = $this->out->messages();
-        $this->assertCount(5, $messages);
-
         $this->assertTextStartsWith(sprintf('<info>Scan started for %s', $this->fullBaseUrl), current($messages));
         $this->assertRegexp('/at [\d\-]+\s[\d\:]+<\/info>$/', current($messages));
         $this->assertEquals(sprintf('Checking %s ...', $this->fullBaseUrl), next($messages));
@@ -139,13 +137,22 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
 
         $this->assertEmpty($this->err->messages());
 
-        $this->assertEventFired(LINK_SCANNER . '.' . 'scanStarted', $this->EventManager);
-        $this->assertEventFired(LINK_SCANNER . '.' . 'scanCompleted', $this->EventManager);
-        $this->assertEventFired(LINK_SCANNER . '.' . 'beforeScanUrl', $this->EventManager);
-        $this->assertEventFired(LINK_SCANNER . '.' . 'afterScanUrl', $this->EventManager);
-        $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $this->EventManager);
-        $this->assertEventNotFired(LINK_SCANNER . '.foundRedirect', $this->EventManager);
-        $this->assertEventNotFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
+        foreach ([
+            'afterScanUrl',
+            'beforeScanUrl',
+            'scanStarted',
+            'scanCompleted',
+        ] as $eventName) {
+            $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
+        }
+
+        foreach ([
+            'foundLinkToBeScanned',
+            'foundRedirect',
+            'resultsExported',
+        ] as $eventName) {
+            $this->assertEventNotFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
+        }
     }
 
     /**
@@ -183,14 +190,13 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanParams()
     {
+        touch(LINK_SCANNER_LOCK_FILE);
         $expectedConfig = [
             'excludeLinks' => ['\{.*\}', 'javascript:'],
             'externalLinks' => true,
             'followRedirects' => false,
             'maxDepth' => 2,
         ];
-
-        touch(LINK_SCANNER_LOCK_FILE);
         $params = [
             'export' => null,
             'force' => true,
@@ -201,13 +207,13 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->LinkScannerShell->params = $params;
         $this->LinkScannerShell->scan();
 
-        $expectedExportFile = LINK_SCANNER_TARGET . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
+        $expectedFilename = LINK_SCANNER_TARGET . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals($params['timeout'], $this->LinkScanner->Client->getConfig('timeout'));
 
         $this->assertFileNotExists(LINK_SCANNER_LOCK_FILE);
-        $this->assertFileExists($expectedExportFile);
+        $this->assertFileExists($expectedFilename);
         $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
 
         $messages = $this->out->messages();
@@ -222,8 +228,7 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
         $this->assertTextContains('Maximum depth of the scan: 2', next($messages));
         $this->assertTextContains('Timeout in seconds for GET requests: 15', next($messages));
         $this->assertRegexp('/^\-{63}$/', next($messages));
-
-        $this->assertTextContains(sprintf('Results have been exported to', $expectedExportFile), end($messages));
+        $this->assertTextContains(sprintf('Results have been exported to', $expectedFilename), end($messages));
 
         $this->assertEmpty($this->err->messages());
 
