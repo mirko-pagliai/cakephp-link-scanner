@@ -75,9 +75,6 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::tearDown();
 
-        Cache::clearAll();
-        Cache::disable();
-
         safe_unlink_recursive(TMP);
     }
 
@@ -87,7 +84,12 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testGetResponse()
     {
-        Cache::enable();
+        Cache::setConfig(LINK_SCANNER, [
+            'className' => 'File',
+            'duration' => '+1 day',
+            'path' => CACHE,
+            'prefix' => 'link_scanner_',
+        ]);
 
         $getResponseMethod = function ($url) {
             return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
@@ -127,6 +129,9 @@ class LinkScannerTest extends IntegrationTestCase
                 $this->assertEmpty($responseFromCache);
             }
         }
+
+        Cache::clearAll();
+        Cache::drop(LINK_SCANNER);
 
         //`Client::get()` method throws an exception
         $this->LinkScanner->Client = $this->getMockBuilder(Client::class)

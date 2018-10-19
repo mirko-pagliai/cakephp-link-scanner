@@ -11,6 +11,7 @@
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
 use Cake\Cache\Cache;
+use Cake\Core\Configure;
 
 //Sets the default LinkScanner name
 if (!defined('LINK_SCANNER')) {
@@ -33,13 +34,4 @@ if (!file_exists(LINK_SCANNER_TARGET)) {
 
 if (!is_writeable(LINK_SCANNER_TARGET)) {
     trigger_error(sprintf('Directory %s not writeable', LINK_SCANNER_TARGET), E_USER_ERROR);
-}
-
-if (!Cache::getConfig(LINK_SCANNER)) {
-    Cache::setConfig(LINK_SCANNER, [
-        'className' => 'File',
-        'duration' => '+1 day',
-        'path' => CACHE,
-        'prefix' => 'link_scanner_',
-    ]);
 }

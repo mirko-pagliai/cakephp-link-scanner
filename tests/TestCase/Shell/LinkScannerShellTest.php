@@ -104,9 +104,6 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
     {
         parent::tearDown();
 
-        Cache::clearAll();
-        Cache::disable();
-
         safe_unlink_recursive(TMP);
     }
 
@@ -161,7 +158,12 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
      */
     public function testScanCacheEnabled()
     {
-        Cache::enable();
+        Cache::setConfig(LINK_SCANNER, [
+            'className' => 'File',
+            'duration' => '+1 day',
+            'path' => CACHE,
+            'prefix' => 'link_scanner_',
+        ]);
 
         $this->LinkScannerShell->params['verbose'] = true;
         $this->LinkScannerShell->scan();
@@ -170,6 +172,9 @@ class LinkScannerShellTest extends ConsoleIntegrationTestCase
             '<success>The cache is enabled and its duration is `%s`</success>',
             Cache::getConfig(LINK_SCANNER)['duration']
         ), $this->out->messages());
+
+        Cache::clearAll();
+        Cache::drop(LINK_SCANNER);
     }
 
     /**

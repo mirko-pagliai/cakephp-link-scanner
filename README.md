@@ -19,6 +19,25 @@ Then you have to edit `APP/config/bootstrap.php` to load the plugin:
 For more information on how to load the plugin, please refer to the 
 [Cookbook](http://book.cakephp.org/3.0/en/plugins.html#loading-a-plugin).
 
+## Use the cache for requests
+*cakephp-link-scanner* uses the [HTTP Client](https://book.cakephp.org/3.0/en/core-libraries/httpclient.html)
+to make requests and get responses, which are inspected and processed.
+
+You can cache responses (except for error responses) by configuring the
+`LinkScanner` cache engine **before** loading the plugin.
+
+Example:
+
+    Cache::setConfig('LinkScanner, [
+        'className' => 'File',
+        'duration' => '+1 day',
+        'path' => CACHE,
+        'prefix' => 'link_scanner_',
+    ]);
+
+For more information on how to configure a cache engine, please refer to the 
+[Cookbook](https://book.cakephp.org/3.0/en/core-libraries/caching.html).
+
 ## To do list
 * allow the use of a configuration file for the shell;
 

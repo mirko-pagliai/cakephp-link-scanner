@@ -87,9 +87,6 @@ Cache::setConfig([
     ],
 ]);
 
-//Cache is disabled by default
-Cache::disable();
-
 Configure::write('Session', ['defaults' => 'php']);
 
 /**

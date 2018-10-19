@@ -145,8 +145,10 @@ class LinkScanner implements Serializable
     protected function _getResponse($url)
     {
         $this->alreadyScanned[] = $url;
+        $cacheExists = Cache::getConfig(LINK_SCANNER);
         $cacheKey = sprintf('response_%s', md5(serialize($url)));
-        $response = Cache::read($cacheKey, LINK_SCANNER);
+
+        $response = $cacheExists ? Cache::read($cacheKey, LINK_SCANNER) : null;
 
         if (!$response instanceof ScanResponse) {
             try {
@@ -156,7 +158,7 @@ class LinkScanner implements Serializable
             }
 
             $response = new ScanResponse($clientResponse, $this->fullBaseUrl);
-            if (!$response->isError()) {
+            if ($cacheExists && !$response->isError()) {
                 Cache::write($cacheKey, $response, LINK_SCANNER);
             }
         }
