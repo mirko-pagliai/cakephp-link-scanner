@@ -15,9 +15,8 @@ namespace LinkScanner\Test\TestCase\Http\Client;
 use Cake\Core\Configure;
 use Cake\Http\Client\Response;
 use Cake\TestSuite\Stub\Response as StubResponse;
-use Cake\TestSuite\TestCase;
 use LinkScanner\Http\Client\ScanResponse;
-use LinkScanner\TestSuite\TestCaseTrait;
+use LinkScanner\TestSuite\TestCase;
 use Tools\BodyParser;
 
 /**
@@ -25,8 +24,6 @@ use Tools\BodyParser;
  */
 class ScanResponseTest extends TestCase
 {
-    use TestCaseTrait;
-
     /**
      * Test for `getContentType()` method
      * @test

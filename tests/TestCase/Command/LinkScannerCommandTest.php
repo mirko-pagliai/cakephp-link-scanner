@@ -18,9 +18,8 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
-use LinkScanner\TestSuite\TestCaseTrait;
+use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\TestSuite\TestCase;
 
 /**
  * LinkScannerCommandTest class
@@ -28,7 +27,6 @@ use MeTools\TestSuite\TestCase;
 class LinkScannerCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
-    use TestCaseTrait;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner

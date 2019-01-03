@@ -12,8 +12,8 @@
  */
 namespace LinkScanner\Test\ORM;
 
-use Cake\TestSuite\TestCase;
 use LinkScanner\ORM\ScanEntity;
+use LinkScanner\TestSuite\TestCase;
 
 /**
  * ScanEntityTest class
