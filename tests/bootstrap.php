@@ -12,7 +12,6 @@
  */
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 
 ini_set('intl.default_locale', 'en_US');
 date_default_timezone_set('UTC');
@@ -68,6 +67,7 @@ Configure::write('App', [
         'templates' => [APP . 'Template' . DS],
     ]
 ]);
+Configure::write('Session', ['defaults' => 'php']);
 
 Cache::setConfig([
     '_cake_core_' => [
@@ -87,11 +87,6 @@ Cache::setConfig([
     ],
 ]);
 
-Configure::write('Session', ['defaults' => 'php']);
-
-/**
- * Loads plugins
- */
-Plugin::load('LinkScanner', ['bootstrap' => true, 'path' => ROOT]);
+Configure::write('pluginsToLoad', ['LinkScanner']);
 
 $_SERVER['PHP_SELF'] = '/';
