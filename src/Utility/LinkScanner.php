@@ -145,10 +145,10 @@ class LinkScanner implements Serializable
     protected function _getResponse($url)
     {
         $this->alreadyScanned[] = $url;
-        $cacheExists = Cache::getConfig(LINK_SCANNER);
+        $cacheExists = Cache::getConfig('LinkScanner');
         $cacheKey = sprintf('response_%s', md5(serialize($url)));
 
-        $response = $cacheExists ? Cache::read($cacheKey, LINK_SCANNER) : null;
+        $response = $cacheExists ? Cache::read($cacheKey, 'LinkScanner') : null;
 
         if (!$response instanceof ScanResponse) {
             try {
@@ -159,7 +159,7 @@ class LinkScanner implements Serializable
 
             $response = new ScanResponse($clientResponse, $this->fullBaseUrl);
             if ($cacheExists && !$response->isError()) {
-                Cache::write($cacheKey, $response, LINK_SCANNER);
+                Cache::write($cacheKey, $response, 'LinkScanner');
             }
         }
 
@@ -202,7 +202,7 @@ class LinkScanner implements Serializable
 
         //Returns, if the response is not ok
         if (!$response->isOk()) {
-            $this->dispatchEvent(LINK_SCANNER . '.responseNotOk', [$url]);
+            $this->dispatchEvent('LinkScanner.responseNotOk', [$url]);
 
             return;
         }
@@ -220,7 +220,7 @@ class LinkScanner implements Serializable
                 continue;
             }
 
-            $this->dispatchEvent(LINK_SCANNER . '.foundLinkToBeScanned', [$link]);
+            $this->dispatchEvent('LinkScanner.foundLinkToBeScanned', [$link]);
 
             //Single scan for external links, recursive scan for internal links
             $methodToCall = is_external_url($link, $this->hostname) ? '_singleScan' : '_recursiveScan';
@@ -250,9 +250,9 @@ class LinkScanner implements Serializable
             return null;
         }
 
-        $this->dispatchEvent(LINK_SCANNER . '.beforeScanUrl', [$url]);
+        $this->dispatchEvent('LinkScanner.beforeScanUrl', [$url]);
         $response = $this->_getResponse($url);
-        $this->dispatchEvent(LINK_SCANNER . '.afterScanUrl', [$response]);
+        $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
 
         //Recursive scan for redirects
         if ($this->getConfig('followRedirects')) {
@@ -262,7 +262,7 @@ class LinkScanner implements Serializable
                     return null;
                 }
 
-                $this->dispatchEvent(LINK_SCANNER . '.foundRedirect', [$location]);
+                $this->dispatchEvent('LinkScanner.foundRedirect', [$location]);
 
                 return $this->_singleScan($location);
             }
@@ -389,7 +389,7 @@ class LinkScanner implements Serializable
             throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}` with message `{1}`', $filename, $message));
         }
 
-        $this->dispatchEvent(LINK_SCANNER . '.resultsExported', [$filename]);
+        $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
 
         return $filename;
     }
@@ -417,7 +417,7 @@ class LinkScanner implements Serializable
             throw new RuntimeException(__d('link-scanner', 'Failed to import results from file `{0}` with message `{1}`', $filename, $message));
         }
 
-        $instance->dispatchEvent(LINK_SCANNER . '.resultsImported', [$filename]);
+        $instance->dispatchEvent('LinkScanner.resultsImported', [$filename]);
 
         return $instance;
     }
@@ -447,7 +447,7 @@ class LinkScanner implements Serializable
 
         $this->startTime = time();
 
-        $this->dispatchEvent(LINK_SCANNER . '.scanStarted', [$this->startTime, $this->fullBaseUrl]);
+        $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $this->fullBaseUrl]);
 
         $this->_recursiveScan($this->fullBaseUrl);
 
@@ -455,7 +455,7 @@ class LinkScanner implements Serializable
 
         safe_unlink(LINK_SCANNER_LOCK_FILE);
 
-        $this->dispatchEvent(LINK_SCANNER . '.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
+        $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
 
         return $this;
     }

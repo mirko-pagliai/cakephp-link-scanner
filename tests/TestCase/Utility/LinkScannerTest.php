@@ -58,7 +58,7 @@ class LinkScannerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        safe_unlink(LINK_SCANNER);
+        safe_unlink('LinkScanner');
 
         $this->debug = [];
         $this->fullBaseUrl = 'http://google.com';
@@ -84,7 +84,7 @@ class LinkScannerTest extends IntegrationTestCase
      */
     public function testGetResponse()
     {
-        Cache::setConfig(LINK_SCANNER, [
+        Cache::setConfig('LinkScanner', [
             'className' => 'File',
             'duration' => '+1 day',
             'path' => CACHE,
@@ -95,7 +95,7 @@ class LinkScannerTest extends IntegrationTestCase
             return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         };
         $getResponseFromCache = function ($url) {
-            return Cache::read(sprintf('response_%s', md5(serialize($url))), LINK_SCANNER);
+            return Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
         };
 
         $response = $getResponseMethod($this->fullBaseUrl);
@@ -131,7 +131,7 @@ class LinkScannerTest extends IntegrationTestCase
         }
 
         Cache::clearAll();
-        Cache::drop(LINK_SCANNER);
+        Cache::drop('LinkScanner');
 
         //`Client::get()` method throws an exception
         $this->LinkScanner->Client = $this->getMockBuilder(Client::class)
@@ -162,7 +162,7 @@ class LinkScannerTest extends IntegrationTestCase
             $result = $this->LinkScanner->export($filenameWhereToExport);
             $this->assertFileExists($result);
             $this->assertEquals($expectedFilename, $result);
-            $this->assertEventFired(LINK_SCANNER . '.resultsExported', $this->EventManager);
+            $this->assertEventFired('LinkScanner.resultsExported', $this->EventManager);
 
             $this->EventManager->getEventList()->flush();
         }
@@ -218,8 +218,8 @@ class LinkScannerTest extends IntegrationTestCase
 
             //Checks the event is fired only on the new object. Then, it flushes
             //  both event lists, so that the objects comparison will run
-            $this->assertEventNotFired(LINK_SCANNER . '.resultsImported', $this->EventManager);
-            $this->assertEventFired(LINK_SCANNER . '.resultsImported', $this->getEventManager($result));
+            $this->assertEventNotFired('LinkScanner.resultsImported', $this->EventManager);
+            $this->assertEventFired('LinkScanner.resultsImported', $this->getEventManager($result));
             $this->EventManager->getEventList()->flush();
             $this->getEventManager($result)->getEventList()->flush();
 
@@ -260,11 +260,11 @@ class LinkScannerTest extends IntegrationTestCase
             'scanStarted',
             'scanCompleted',
         ] as $eventName) {
-            $this->assertEventFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
+            $this->assertEventFired('LinkScanner.' . $eventName, $this->EventManager);
         }
 
         foreach (['foundRedirect', 'resultsExported'] as $eventName) {
-            $this->assertEventNotFired(LINK_SCANNER . '.' . $eventName, $this->EventManager);
+            $this->assertEventNotFired('LinkScanner.' . $eventName, $this->EventManager);
         }
 
         $this->assertInstanceof(LinkScanner::class, $result);
@@ -336,13 +336,13 @@ class LinkScannerTest extends IntegrationTestCase
     {
         //Sets events. They will add some output to the `$this->debug` property
         $this->getEventManager()->instance()
-            ->on(LINK_SCANNER . '.beforeScanUrl', function () {
+            ->on('LinkScanner.beforeScanUrl', function () {
                 $this->debug[] = sprintf('Scanning %s', func_get_arg(1));
             })
-            ->on(LINK_SCANNER . '.foundLinkToBeScanned', function () {
+            ->on('LinkScanner.foundLinkToBeScanned', function () {
                 $this->debug[] = sprintf('Found link: %s', func_get_arg(1));
             })
-            ->on(LINK_SCANNER . '.foundRedirect', function () {
+            ->on('LinkScanner.foundRedirect', function () {
                 $this->debug[] = sprintf('Found redirect: %s', func_get_arg(1));
             });
 
@@ -434,7 +434,7 @@ class LinkScannerTest extends IntegrationTestCase
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
         $LinkScanner->scan();
 
-        $this->assertEventNotFired(LINK_SCANNER . '.foundLinkToBeScanned', $this->getEventManager($LinkScanner));
+        $this->assertEventNotFired('LinkScanner.foundLinkToBeScanned', $this->getEventManager($LinkScanner));
     }
 
     /**
@@ -447,7 +447,7 @@ class LinkScannerTest extends IntegrationTestCase
         $EventManager = $this->getEventManager($LinkScanner);
         $LinkScanner->scan();
 
-        $this->assertEventFired(LINK_SCANNER . '.' . 'responseNotOk', $EventManager);
+        $this->assertEventFired('LinkScanner.' . 'responseNotOk', $EventManager);
     }
 
     /**
