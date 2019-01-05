@@ -20,7 +20,6 @@ use Cake\I18n\Time;
 use LinkScanner\Event\LinkScannerEventListenerInterface;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
-use LinkScanner\Command\LinkScannerCommand;
 
 /**
  * Event listener for the `LinkScannerCommand` class.
