@@ -15,6 +15,7 @@ namespace LinkScanner\TestSuite;
 use Cake\Event\EventList;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
+use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\TestCase as BaseTestCase;
 use Zend\Diactoros\Stream;
 
@@ -90,7 +91,7 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Sets the event list and returns the `EventManager` instance
-     * @param LinkScanner|null $LinkScanner `LinkScanner` instance or `null`
+     * @param \LinkScanner\Utility\LinkScanner|null $LinkScanner `LinkScanner` instance or `null`
      * @return \Cake\Event\EventManager
      */
     protected function getEventManager(LinkScanner $LinkScanner = null)

@@ -13,19 +13,19 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
-use Cake\TestSuite\IntegrationTestCase;
 use Exception;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
-use LinkScanner\TestSuite\TestCaseTrait;
+use LinkScanner\TestSuite\IntegrationTestTrait;
+use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 
 /**
  * LinkScannerTest class
  */
-class LinkScannerTest extends IntegrationTestCase
+class LinkScannerTest extends TestCase
 {
-    use TestCaseTrait;
+    use IntegrationTestTrait;
 
     /**
      * @var \Cake\Event\EventManager
