@@ -70,7 +70,7 @@ class LinkScannerCommandEventListener implements LinkScannerEventListenerInterfa
         ];
 
         return array_combine(array_map(function ($event) {
-            return LINK_SCANNER . '.' . $event;
+            return'LinkScanner.' . $event;
         }, $events), $events);
     }
 
@@ -218,7 +218,7 @@ class LinkScannerCommandEventListener implements LinkScannerEventListenerInterfa
 
         $this->io->hr();
 
-        $cache = Cache::getConfig(LINK_SCANNER);
+        $cache = Cache::getConfig('LinkScanner');
         if (Cache::enabled() && !empty($cache['duration'])) {
             $this->io->success(__d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']));
         } else {

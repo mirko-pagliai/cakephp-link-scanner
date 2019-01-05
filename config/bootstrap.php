@@ -11,11 +11,6 @@
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
 
-//Sets the default LinkScanner name
-if (!defined('LINK_SCANNER')) {
-    define('LINK_SCANNER', 'LinkScanner');
-}
-
 //Sets the path of the lock file. Use `false` if you don't want to use a lock file
 if (!defined('LINK_SCANNER_LOCK_FILE')) {
     define('LINK_SCANNER_LOCK_FILE', TMP . 'link_scanner_lock_file');
