@@ -70,7 +70,7 @@ class LinkScannerCommandEventListener implements LinkScannerEventListenerInterfa
         ];
 
         return array_combine(array_map(function ($event) {
-            return'LinkScanner.' . $event;
+            return 'LinkScanner.' . $event;
         }, $events), $events);
     }
 
