@@ -16,11 +16,11 @@ use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
+use MeTools\TestSuite\ConsoleIntegrationTestTrait;
 
 /**
  * LinkScannerCommandTest class
@@ -35,24 +35,9 @@ class LinkScannerCommandTest extends TestCase
     protected $LinkScanner;
 
     /**
-     * @var \LinkScanner\Command\LinkScannerCommand;
+     * @var string
      */
-    protected $LinkScannerCommand;
-
-    /**
-     * @var \Cake\TestSuite\Stub\ConsoleOutput
-     */
-    protected $_err;
-
-    /**
-     * @var \Cake\TestSuite\Stub\ConsoleOutput
-     */
-    protected $_out;
-
-    /**
-     * @var string|array|null
-     */
-    protected $fullBaseUrl;
+    protected $fullBaseUrl = 'http://google.com';
 
     /**
      * Internal method to set and get the `LinkScannerCommand` instance and all
@@ -70,8 +55,8 @@ class LinkScannerCommandTest extends TestCase
         $this->io = new ConsoleIo($this->_out, $this->_err);
         $this->io->level(2);
 
-        $this->LinkScannerCommand = new LinkScannerCommand;
-        $this->LinkScannerCommand->LinkScanner = $this->LinkScanner;
+        $this->Command = new LinkScannerCommand;
+        $this->Command->LinkScanner = $this->LinkScanner;
     }
 
     /**
@@ -82,12 +67,9 @@ class LinkScannerCommandTest extends TestCase
      */
     public function setUp()
     {
-        parent::setUp();
-
-        safe_unlink('LinkScanner');
-
-        $this->fullBaseUrl = 'http://google.com';
         $this->setLinkScannerCommand();
+
+        parent::setUp();
     }
 
     /**
@@ -107,7 +89,7 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testScan()
     {
-        $this->LinkScannerCommand->run(['--max-depth=1'], $this->io);
+        $this->Command->run(['--max-depth=1'], $this->io);
 
         $this->assertEquals([
             'excludeLinks' => ['\{.*\}', 'javascript:'],
@@ -142,8 +124,8 @@ class LinkScannerCommandTest extends TestCase
 
         //With an error response (404 status code)
         $this->setLinkScannerCommand();
-        $this->LinkScannerCommand->LinkScanner->Client = $this->getClientReturnsErrorResponse();
-        $this->LinkScannerCommand->run(['--verbose'], $this->io);
+        $this->Command->LinkScanner->Client = $this->getClientReturnsErrorResponse();
+        $this->Command->run(['--verbose'], $this->io);
         $this->assertErrorContains('404');
     }
     /**
@@ -159,7 +141,7 @@ class LinkScannerCommandTest extends TestCase
             'prefix' => 'link_scanner_',
         ]);
 
-        $this->LinkScannerCommand->run(['--verbose'], $this->io);
+        $this->Command->run(['--verbose'], $this->io);
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
         $this->assertOutputContains(sprintf('The cache is enabled and its duration is `%s`', $expectedDuration));
 
@@ -181,7 +163,7 @@ class LinkScannerCommandTest extends TestCase
             '--timeout=15',
             '--verbose',
         ];
-        $this->LinkScannerCommand->run($params, $this->io);
+        $this->Command->run($params, $this->io);
 
         $expectedConfig = [
             'excludeLinks' => ['\{.*\}', 'javascript:'],
@@ -209,7 +191,7 @@ class LinkScannerCommandTest extends TestCase
         //Changes the full base url
         $params[] = '--full-base-url=http://anotherFullBaseUrl';
         $this->setLinkScannerCommand();
-        $this->LinkScannerCommand->run($params, $this->io);
+        $this->Command->run($params, $this->io);
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals('http://anotherFullBaseUrl', $this->LinkScanner->fullBaseUrl);
@@ -221,7 +203,7 @@ class LinkScannerCommandTest extends TestCase
         $params = array_merge($params, ['--full-base-url=' . $this->fullBaseUrl, '--disable-external-links']);
 
         $this->setLinkScannerCommand();
-        $this->LinkScannerCommand->run($params, $this->io);
+        $this->Command->run($params, $this->io);
         $this->assertEquals(['externalLinks' => false] + $expectedConfig, $this->LinkScanner->getConfig());
 
         $lineDifferentFullBaseUrl = function ($line) {
@@ -235,7 +217,7 @@ class LinkScannerCommandTest extends TestCase
         //Re-enables external links
         array_pop($params);
         $this->setLinkScannerCommand();
-        $this->LinkScannerCommand->run($params, $this->io);
+        $this->Command->run($params, $this->io);
 
         $expectedConfig['externalLinks'] = true;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
@@ -249,7 +231,7 @@ class LinkScannerCommandTest extends TestCase
             array_shift($params);
             array_unshift($params, '--export-with-filename=' . $filename);
 
-            $this->LinkScannerCommand->run($params, $this->io);
+            $this->Command->run($params, $this->io);
             $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
             $this->assertFileExists($expectedExportFile);
             $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
@@ -259,13 +241,13 @@ class LinkScannerCommandTest extends TestCase
 
         //Enables follow redirects
         $this->setLinkScannerCommand();
-        $this->LinkScannerCommand->run(array_merge($params, ['--follow-redirects']), $this->io);
+        $this->Command->run(array_merge($params, ['--follow-redirects']), $this->io);
         $this->assertEquals(['followRedirects' => true] + $expectedConfig, $this->LinkScanner->getConfig());
         $this->assertOutputContains('Redirects will be followed');
 
         //With an invalid full base url
         $this->expectException(StopException::class);
-        $this->LinkScannerCommand->run(['--full-base-url=invalid'], $this->io);
+        $this->Command->run(['--full-base-url=invalid'], $this->io);
     }
 
     /**
@@ -274,7 +256,7 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testScanVerbose()
     {
-        $this->LinkScannerCommand->run(['--verbose'], $this->io);
+        $this->Command->run(['--verbose'], $this->io);
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
         $this->assertOutputContains('The cache is disabled');
         $this->assertOutputContains('Force mode is not enabled');
@@ -307,7 +289,7 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testBuildOptionParser()
     {
-        $parser = $this->invokeMethod($this->LinkScannerCommand, 'buildOptionParser', [new ConsoleOptionParser]);
+        $parser = $this->invokeMethod($this->Command, 'buildOptionParser', [new ConsoleOptionParser]);
         $this->assertInstanceOf(ConsoleOptionParser::class, $parser);
         $this->assertEquals('Performs a complete scan', $parser->getDescription());
         $this->assertEmpty($parser->arguments());
