@@ -12,10 +12,12 @@
  */
 namespace LinkScanner\Test\TestCase;
 
+use Cake\Collection\Collection;
 use Cake\Collection\CollectionInterface;
 use Cake\TestSuite\TestCase;
 use LinkScanner\ORM\ScanEntity;
 use LinkScanner\ResultScan;
+use LogicException;
 
 /**
  * ResultScanTest class
@@ -68,17 +70,10 @@ class ResultScanTest extends TestCase
 
         $this->ResultScan = new ResultScan($expected);
         $this->assertEquals($expected, $this->ResultScan->toArray());
-    }
 
-    /**
-     * Test for `__construct()` method
-     * @expectedException LogicException
-     * @expectedExceptionMessage Missing data in the item to be appended
-     * @test
-     */
-    public function testConstructMissingData()
-    {
         //Missing `code` key
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Missing data in the item to be appended');
         new ResultScan([[
             'external' => true,
             'type' => 'text/html; charset=UTF-8',
@@ -149,17 +144,10 @@ class ResultScanTest extends TestCase
                 'url' => 'http://example.com/',
             ]),
         ], $this->ResultScan->toArray());
-    }
 
-    /**
-     * Test for `append()` method, with missing data
-     * @expectedException LogicException
-     * @expectedExceptionMessage Missing data in the item to be appended
-     * @test
-     */
-    public function testAppendMissingData()
-    {
         //Missing `code` key
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Missing data in the item to be appended');
         $this->ResultScan->append([
             'external' => false,
             'type' => 'text/html;charset=UTF-8',
@@ -193,7 +181,7 @@ class ResultScanTest extends TestCase
      */
     public function testGetIterator()
     {
-        $this->assertInstanceof('Cake\Collection\Collection', $this->ResultScan->getIterator());
+        $this->assertInstanceof(Collection::class, $this->ResultScan->getIterator());
     }
 
     /**
@@ -206,7 +194,6 @@ class ResultScanTest extends TestCase
         $this->assertTrue(is_string($serialized));
 
         $result = safe_unserialize($serialized);
-
         $this->assertInstanceof(ResultScan::class, $result);
         $this->assertEquals($result, $this->ResultScan);
         $this->assertEquals($result->toArray(), $this->ResultScan->toArray());

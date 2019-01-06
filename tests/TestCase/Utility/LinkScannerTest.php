@@ -14,11 +14,13 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
 use Exception;
+use InvalidArgumentException;
 use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
+use RuntimeException;
 
 /**
  * LinkScannerTest class
@@ -166,28 +168,17 @@ class LinkScannerTest extends TestCase
 
             $this->EventManager->getEventList()->flush();
         }
-    }
 
-    /**
-     * Test for `export()` method, with a no existing file
-     * @expectedException RuntimeException
-     * @expectedExceptionMessageRegExp /^Failed to export results to file `[\\\/\w\d:\-]+` with message `failed to open stream: No such file or directory`$/
-     * @test
-     */
-    public function testExportNoExistingFile()
-    {
-        $this->LinkScanner->scan()->export(TMP . 'noExistingDir' . DS . 'result');
-    }
+        //Without the scan being performed
+        $this->assertException(RuntimeException::class, function () {
+            (new LinkScanner)->export();
+        }, 'There is no result to export. Perhaps the scan was not performed?');
 
-    /**
-     * Test for `export()` method, without the scan being performed
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage There is no result to export. Perhaps the scan was not performed?
-     * @test
-     */
-    public function testExportNoScan()
-    {
-        $this->LinkScanner->export();
+        //With a no existing file
+        $noExistingFile = TMP . 'noExistingDir' . DS . 'result';
+        $this->assertException(RuntimeException::class, function () use ($noExistingFile) {
+            $this->LinkScanner->scan()->export($noExistingFile);
+        }, 'Failed to export results to file `' . $noExistingFile . '` with message `failed to open stream: No such file or directory`');
     }
 
     /**
@@ -232,16 +223,10 @@ class LinkScannerTest extends TestCase
             unset($originalProperties['Client']['_adapter'], $resultProperties['Client']['_adapter']);
             $this->assertEquals($resultProperties, $originalProperties);
         }
-    }
 
-    /**
-     * Test for `import()` method, with a no existing file
-     * @expectedException RuntimeException
-     * @expectedExceptionMessageRegExp /^Failed to import results from file `[\\\/\w\d:\-]+` with message `failed to open stream: No such file or directory`$/
-     * @test
-     */
-    public function testImportNoExistingFile()
-    {
+        //With a no existing file
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Failed to import results from file `' . TMP . 'noExistingDir' . DS . 'result` with message `failed to open stream: No such file or directory`');
         LinkScanner::import(TMP . 'noExistingDir' . DS . 'result');
     }
 
@@ -326,6 +311,12 @@ class LinkScannerTest extends TestCase
              ->method('_recursiveScan');
 
         $LinkScanner->scan();
+
+        //The lock file alread exists
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The lock file `' . LINK_SCANNER_LOCK_FILE . '` already exists. This means that a scan is already in progress. If not, remove it manually');
+        file_put_contents(LINK_SCANNER_LOCK_FILE, null);
+        (new LinkScanner)->scan();
     }
 
     /**
@@ -413,19 +404,6 @@ class LinkScannerTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method, with an invalid url
-     * @expectedException RuntimeException
-     * @expectedExceptionMessageRegExp /^The lock file `[\\\/\w\d_:\-]+` already exists\. This means that a scan is already in progress\. If not, remove it manually$/
-     * @test
-     */
-    public function testScanLockFileAlreadyExists()
-    {
-        file_put_contents(LINK_SCANNER_LOCK_FILE, null);
-
-        (new LinkScanner)->scan();
-    }
-
-    /**
      * Test for `scan()` method, with no other links to scan
      * @test
      */
@@ -467,27 +445,12 @@ class LinkScannerTest extends TestCase
             $this->assertEquals($fullBaseUrl, $this->LinkScanner->fullBaseUrl);
             $this->assertEquals('fullBaseUrl.com', $this->LinkScanner->hostname);
         }
-    }
 
-    /**
-     * Test for `setFullBaseUrl()` method, with an invalid string
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid url `invalid`
-     * @test
-     */
-    public function testSetFullBaseUrlInvalidString()
-    {
-        $this->LinkScanner->setFullBaseUrl('invalid');
-    }
-
-    /**
-     * Test for `setFullBaseUrl()` method, with an array
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid url `invalid`
-     * @test
-     */
-    public function testSetFullBaseUrlArray()
-    {
-        $this->LinkScanner->setFullBaseUrl(['invalid']);
+        //With a no-string or an invalid string
+        foreach (['invalid', ['invalid']] as $fullBaseUrl) {
+            $this->assertException(InvalidArgumentException::class, function () use ($fullBaseUrl) {
+                $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
+            }, 'Invalid url `invalid`');
+        }
     }
 }

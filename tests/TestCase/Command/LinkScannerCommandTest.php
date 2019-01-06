@@ -15,6 +15,7 @@ namespace LinkScanner\Test\TestCase\Command;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Console\Exception\StopException;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
@@ -138,8 +139,13 @@ class LinkScannerCommandTest extends TestCase
         ] as $eventName) {
             $this->assertEventNotFired('LinkScanner.' . $eventName, $this->LinkScanner->getEventManager());
         }
-    }
 
+        //With an error response (404 status code)
+        $this->setLinkScannerCommand();
+        $this->LinkScannerCommand->LinkScanner->Client = $this->getClientReturnsErrorResponse();
+        $this->LinkScannerCommand->run(['--verbose'], $this->io);
+        $this->assertErrorContains('404');
+    }
     /**
      * Test for `scan()` method, with cache enabled
      * @test
@@ -162,28 +168,12 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method, with an invalid url
-     * @expectedException Cake\Console\Exception\StopException
-     * @test
-     */
-    public function testScanInvalidUrl()
-    {
-        $this->LinkScannerCommand->run(['--full-base-url=invalid'], $this->io);
-    }
-
-    /**
      * Test for `scan()` method, with some parameters
      * @test
      */
     public function testScanParams()
     {
         touch(LINK_SCANNER_LOCK_FILE);
-        $expectedConfig = [
-            'excludeLinks' => ['\{.*\}', 'javascript:'],
-            'externalLinks' => true,
-            'followRedirects' => false,
-            'maxDepth' => 2,
-        ];
         $params = [
             '--export',
             '--force',
@@ -193,6 +183,12 @@ class LinkScannerCommandTest extends TestCase
         ];
         $this->LinkScannerCommand->run($params, $this->io);
 
+        $expectedConfig = [
+            'excludeLinks' => ['\{.*\}', 'javascript:'],
+            'externalLinks' => true,
+            'followRedirects' => false,
+            'maxDepth' => 2,
+        ];
         $expectedFilename = LINK_SCANNER_TARGET . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
@@ -266,6 +262,10 @@ class LinkScannerCommandTest extends TestCase
         $this->LinkScannerCommand->run(array_merge($params, ['--follow-redirects']), $this->io);
         $this->assertEquals(['followRedirects' => true] + $expectedConfig, $this->LinkScanner->getConfig());
         $this->assertOutputContains('Redirects will be followed');
+
+        //With an invalid full base url
+        $this->expectException(StopException::class);
+        $this->LinkScannerCommand->run(['--full-base-url=invalid'], $this->io);
     }
 
     /**
@@ -299,17 +299,6 @@ class LinkScannerCommandTest extends TestCase
         foreach (array_slice($messages, 9, -5) as $message) {
             $this->assertRegExp('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
         }
-    }
-
-    /**
-     * Test for `scan()` method, with an error response (404 status code)
-     * @test
-     */
-    public function testScanWithErrorResponse()
-    {
-        $this->LinkScannerCommand->LinkScanner->Client = $this->getClientReturnsErrorResponse();
-        $this->LinkScannerCommand->run(['--verbose'], $this->io);
-        $this->assertErrorContains('404');
     }
 
     /**

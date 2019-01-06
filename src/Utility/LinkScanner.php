@@ -470,7 +470,7 @@ class LinkScanner implements Serializable
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
-        if (!is_string($fullBaseUrl) || !is_url($fullBaseUrl)) {
+        if (!is_url($fullBaseUrl)) {
             throw new InvalidArgumentException(__d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl));
         }
 

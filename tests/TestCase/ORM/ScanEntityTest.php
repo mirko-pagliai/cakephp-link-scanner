@@ -26,7 +26,6 @@ class ScanEntityTest extends TestCase
      */
     public function isErrorTest()
     {
-        $location = '/';
         $statusCodes = [
             200 => false,
             301 => false,
@@ -34,7 +33,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code', 'location'));
+            $entity = new ScanEntity(compact('code') + ['location' => '/']);
             $this->assertEquals($expectedValue, $entity->isError());
         }
     }
@@ -45,7 +44,6 @@ class ScanEntityTest extends TestCase
      */
     public function isOkTest()
     {
-        $location = '/';
         $statusCodes = [
             200 => true,
             301 => false,
@@ -53,7 +51,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code', 'location'));
+            $entity = new ScanEntity(compact('code') + ['location' => '/']);
             $this->assertEquals($expectedValue, $entity->isOk());
         }
     }
@@ -64,7 +62,6 @@ class ScanEntityTest extends TestCase
      */
     public function isRedirectTest()
     {
-        $location = '/';
         $statusCodes = [
             200 => false,
             301 => true,
@@ -72,7 +69,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code', 'location'));
+            $entity = new ScanEntity(compact('code') + ['location' => '/']);
             $this->assertEquals($expectedValue, $entity->isRedirect());
         }
     }
