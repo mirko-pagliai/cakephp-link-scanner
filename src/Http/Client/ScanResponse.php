@@ -72,8 +72,7 @@ class ScanResponse implements Serializable
         //This provides some method (for example, `isOk()` and `isRedirect()`),
         //  if the original `Response` method does not provide them
         if (!method_exists($response, $name)) {
-            $response = new Response;
-            $response = $response->withHeader('location', $this->Response->getHeaderLine('location'))
+            $response = (new Response)->withHeader('location', $this->Response->getHeaderLine('location'))
                 ->withStatus($this->Response->getStatusCode());
         }
 
@@ -89,9 +88,7 @@ class ScanResponse implements Serializable
      */
     public function serialize()
     {
-        $body = (string)$this->Response->getBody();
-
-        return serialize([$this->BodyParser, $this->Response, $body, $this->fullBaseUrl]);
+        return serialize([$this->BodyParser, $this->Response, (string)$this->Response->getBody(), $this->fullBaseUrl]);
     }
 
     /**
@@ -109,7 +106,6 @@ class ScanResponse implements Serializable
         $stream = new Stream('php://memory', 'wb+');
         $stream->write($body);
         $stream->rewind();
-
         $this->Response = $this->Response->withBody($stream);
     }
 
@@ -120,10 +116,8 @@ class ScanResponse implements Serializable
      */
     public function getContentType()
     {
-        $contentType = $this->Response->getHeaderLine('content-type');
-
         //This removes an eventual charset
-        return trim(first_value(explode(';', $contentType)));
+        return trim(first_value(explode(';', $this->Response->getHeaderLine('content-type'))));
     }
 
     /**

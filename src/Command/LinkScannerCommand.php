@@ -31,17 +31,6 @@ class LinkScannerCommand extends Command
     public $LinkScanner;
 
     /**
-     * Construct
-     * @uses $LinkScanner
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->LinkScanner = new LinkScanner;
-    }
-
-    /**
      * Performs a complete scan
      * @param Arguments $args The command arguments
      * @param ConsoleIo $io The console io
@@ -51,6 +40,8 @@ class LinkScannerCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
+        $this->LinkScanner = $this->LinkScanner ?: new LinkScanner;
+
         try {
             //Will trigger events provided by `LinkScannerCommandEventListener`
             $this->LinkScanner->getEventManager()->on(new LinkScannerCommandEventListener($args, $io));

@@ -121,13 +121,11 @@ class LinkScanner implements Serializable
      */
     protected function _createLockFile()
     {
-        if (LINK_SCANNER_LOCK_FILE && file_exists(LINK_SCANNER_LOCK_FILE)) {
-            throw new RuntimeException(__d(
-                'link-scanner',
-                'The lock file `{0}` already exists. This means that a scan is already in progress. If not, remove it manually',
-                LINK_SCANNER_LOCK_FILE
-            ));
-        }
+        is_true_or_fail(!LINK_SCANNER_LOCK_FILE || !file_exists(LINK_SCANNER_LOCK_FILE), __d(
+            'link-scanner',
+            'The lock file `{0}` already exists. This means that a scan is already in progress. If not, remove it manually',
+            LINK_SCANNER_LOCK_FILE
+        ), RuntimeException::class);
 
         return LINK_SCANNER_LOCK_FILE ? touch(LINK_SCANNER_LOCK_FILE) !== false : true;
     }
@@ -269,12 +267,12 @@ class LinkScanner implements Serializable
         }
 
         //Appends result
-        $item = new ScanEntity(compact('url', 'referer'));
-        $item->code = $response->getStatusCode();
-        $item->external = is_external_url($url, $this->hostname);
-        $item->location = $response->getHeaderLine('Location');
-        $item->type = $response->getContentType();
-        $this->ResultScan->append($item);
+        $this->ResultScan->append(new ScanEntity([
+            'code' => $response->getStatusCode(),
+            'external' => is_external_url($url, $this->hostname),
+            'location' => $response->getHeaderLine('Location'),
+            'type' => $response->getContentType(),
+        ] + compact('url', 'referer')));
 
         return $response;
     }
@@ -303,11 +301,8 @@ class LinkScanner implements Serializable
      */
     protected function canBeScanned($url)
     {
-        if (in_array($url, $this->alreadyScanned)) {
-            return false;
-        }
-
-        if (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname)) {
+        if (in_array($url, $this->alreadyScanned) ||
+            (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
             return false;
         }
 
@@ -326,12 +321,10 @@ class LinkScanner implements Serializable
      */
     public function serialize()
     {
-        $properties = get_object_vars($this);
-
         //Unsets the event class and event manager. For the `Client` instance,
         //  it takes only configuration and cookies
+        $properties = get_object_vars($this);
         unset($properties['_eventClass'], $properties['_eventManager']);
-
         $properties['Client'] = $this->Client->getConfig() + ['cookieJar' => $this->Client->cookies()];
 
         return serialize($properties);
@@ -345,9 +338,8 @@ class LinkScanner implements Serializable
      */
     public function unserialize($serialized)
     {
-        $properties = unserialize($serialized);
-
         //Resets the event list and the Client instance
+        $properties = unserialize($serialized);
         $this->getEventManager()->setEventList(new EventList);
         $this->Client = new Client($properties['Client']);
         unset($properties['Client']);
@@ -376,9 +368,7 @@ class LinkScanner implements Serializable
      */
     public function export($filename = null)
     {
-        if ($this->ResultScan->isEmpty()) {
-            throw new RuntimeException(__d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'));
-        }
+        is_true_or_fail(!$this->ResultScan->isEmpty(), __d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'), RuntimeException::class);
 
         try {
             $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
@@ -470,10 +460,7 @@ class LinkScanner implements Serializable
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
-        if (!is_url($fullBaseUrl)) {
-            throw new InvalidArgumentException(__d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl));
-        }
-
+        is_true_or_fail(is_url($fullBaseUrl), __d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl), InvalidArgumentException::class);
         $this->fullBaseUrl = clean_url($fullBaseUrl);
         $this->hostname = get_hostname_from_url($fullBaseUrl);
 

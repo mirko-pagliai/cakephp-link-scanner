@@ -34,9 +34,7 @@ class ScanEntity extends Entity
     {
         if (method_exists(Response::class, $name)) {
             $properties = $this->_properties + ['location' => null];
-
-            $response = new Response;
-            $response = $response->withHeader('location', $properties['location'])
+            $response = (new Response)->withHeader('location', $properties['location'])
                 ->withStatus($properties['code']);
 
             $name = [$response, $name];
