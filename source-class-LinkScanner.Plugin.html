@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="robots" content="noindex">
+
+	<title>File Plugin.php | cakephp-link-scanner</title>
+
+	<link rel="stylesheet" href="resources/style.css?c2f33731c1948fbed7c333554678bfa68d4817da">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+				<h3>Namespaces</h3>
+			<ul>
+				<li class="main">
+					<a href="namespace-LinkScanner.html">
+						LinkScanner<span></span>
+					</a>
+
+						<ul>
+				<li class="main">
+					<a href="namespace-LinkScanner.Command.html">
+						Command					</a>
+
+						</li>
+				<li class="main">
+					<a href="namespace-LinkScanner.Event.html">
+						Event					</a>
+
+						</li>
+				<li class="main">
+					<a href="namespace-LinkScanner.Http.html">
+						Http<span></span>
+					</a>
+
+						<ul>
+				<li class="main">
+					<a href="namespace-LinkScanner.Http.Client.html">
+						Client					</a>
+
+						</li>
+							</ul></li>
+				<li class="main">
+					<a href="namespace-LinkScanner.ORM.html">
+						ORM					</a>
+
+						</li>
+				<li class="main">
+					<a href="namespace-LinkScanner.TestSuite.html">
+						TestSuite					</a>
+
+						</li>
+				<li class="main">
+					<a href="namespace-LinkScanner.Utility.html">
+						Utility					</a>
+
+						</li>
+							</ul></li>
+			</ul>
+		</div>
+
+		<hr>
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-LinkScanner.Command.LinkScannerCommand.html">LinkScanner\Command\LinkScannerCommand</a></li>
+				<li><a href="class-LinkScanner.Event.LinkScannerCommandEventListener.html">LinkScanner\Event\LinkScannerCommandEventListener</a></li>
+				<li><a href="class-LinkScanner.Http.Client.ScanResponse.html">LinkScanner\Http\Client\ScanResponse</a></li>
+				<li><a href="class-LinkScanner.ORM.ScanEntity.html">LinkScanner\ORM\ScanEntity</a></li>
+				<li><a href="class-LinkScanner.Plugin.html">LinkScanner\Plugin</a></li>
+				<li><a href="class-LinkScanner.ResultScan.html">LinkScanner\ResultScan</a></li>
+				<li><a href="class-LinkScanner.TestSuite.TestCase.html">LinkScanner\TestSuite\TestCase</a></li>
+				<li><a href="class-LinkScanner.Utility.LinkScanner.html">LinkScanner\Utility\LinkScanner</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-LinkScanner.Event.LinkScannerEventListenerInterface.html">LinkScanner\Event\LinkScannerEventListenerInterface</a></li>
+			</ul>
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-LinkScanner.TestSuite.IntegrationTestTrait.html">LinkScanner\TestSuite\IntegrationTestTrait</a></li>
+			</ul>
+
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+<span>Namespace</span>			</li>
+			<li>
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+				<li>
+					<a href="annotation-group-deprecated.html" title="List of elements with deprecated annotation">
+						<span>Deprecated</span>
+					</a>
+				</li>
+				<li>
+					<a href="annotation-group-todo.html" title="List of elements with todo annotation">
+						<span>Todo</span>
+					</a>
+				</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<pre class="numbers"><code><span class="l"><a href="#1"> 1: </a></span><span class="l"><a href="#2"> 2: </a></span></span><span class="l"><a href="#3"> 3: </a></span></span><span class="l"><a href="#4"> 4: </a></span></span><span class="l"><a href="#5"> 5: </a></span></span><span class="l"><a href="#6"> 6: </a></span></span><span class="l"><a href="#7"> 7: </a></span></span><span class="l"><a href="#8"> 8: </a></span></span><span class="l"><a href="#9"> 9: </a></span></span><span class="l"><a href="#10">10: </a></span></span><span class="l"><a href="#11">11: </a></span></span><span class="l"><a href="#12">12: </a></span><span class="l"><a href="#13">13: </a></span><span class="l"><a href="#14">14: </a></span><span class="l"><a href="#15">15: </a></span><span class="l"><a href="#16">16: </a></span><span class="l"><a href="#17">17: </a></span></span><span class="l"><a href="#18">18: </a></span></span><span class="l"><a href="#19">19: </a></span><span class="l"><a href="#20">20: </a></span><span class="l"><a href="#21">21: </a></span><span class="l"><a href="#22">22: </a></span><span class="l"><a href="#23">23: </a></span></code></pre>
+<pre class="code"><code><span id="1" class="l"><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><span class="php-comment">/**
+</span></span><span id="3" class="l"><span class="php-comment"> * This file is part of cakephp-link-scanner.
+</span></span><span id="4" class="l"><span class="php-comment"> *
+</span></span><span id="5" class="l"><span class="php-comment"> * Licensed under The MIT License
+</span></span><span id="6" class="l"><span class="php-comment"> * For full copyright and license information, please see the LICENSE.txt
+</span></span><span id="7" class="l"><span class="php-comment"> * Redistributions of files must retain the above copyright notice.
+</span></span><span id="8" class="l"><span class="php-comment"> *
+</span></span><span id="9" class="l"><span class="php-comment"> * @copyright   Copyright (c) Mirko Pagliai
+</span></span><span id="10" class="l"><span class="php-comment"> * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
+</span></span><span id="11" class="l"><span class="php-comment"> * @license     https://opensource.org/licenses/mit-license.php MIT License
+</span></span><span id="12" class="l"><span class="php-comment"> */</span>
+</span><span id="13" class="l"><span class="php-keyword1">namespace</span> LinkScanner;
+</span><span id="14" class="l">
+</span><span id="15" class="l"><span class="php-keyword1">use</span> Cake\Core\BasePlugin;
+</span><span id="16" class="l">
+</span><span id="17" class="l"><span class="php-comment">/**
+</span></span><span id="18" class="l"><span class="php-comment"> * Plugin class
+</span></span><span id="19" class="l"><span class="php-comment"> */</span>
+</span><span id="20" class="l"><span class="php-keyword1">class</span> Plugin <span class="php-keyword1">extends</span> BasePlugin
+</span><span id="21" class="l">{
+</span><span id="22" class="l">}
+</span><span id="23" class="l"></span></code></pre>
+
+	<div id="footer">
+		cakephp-link-scanner API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js?dbb5e1beab6852c5c079a04e11ff61ac6b499af9"></script>
+<script src="elementlist.js?5883b70dcfd3ae11f61c8814ab671f5db951ae3c"></script>
+</body>
+</html>

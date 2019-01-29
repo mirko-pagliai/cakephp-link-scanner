@@ -1,7 +1,0 @@
-.directory
-*_old
-*.old.*
-composer.lock
-coverage/
-vendor/
-
