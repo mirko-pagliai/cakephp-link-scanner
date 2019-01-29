@@ -89,4 +89,6 @@ Cache::setConfig([
 
 Configure::write('pluginsToLoad', ['LinkScanner']);
 
+loadPHPUnitAliases();
+
 $_SERVER['PHP_SELF'] = '/';

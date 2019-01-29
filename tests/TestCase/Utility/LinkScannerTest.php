@@ -60,24 +60,11 @@ class LinkScannerTest extends TestCase
     {
         parent::setUp();
 
-        @unlink('LinkScanner');
-
         $this->debug = [];
         $this->fullBaseUrl = 'http://google.com';
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl);
         $this->LinkScanner->Client = $this->getClientReturnsSampleResponse();
         $this->EventManager = $this->getEventManager();
-    }
-
-    /**
-     * Teardown any static object changes and restore them
-     * @return void
-     */
-    public function tearDown()
-    {
-        parent::tearDown();
-
-        @unlink_recursive(TMP);
     }
 
     /**
@@ -216,12 +203,14 @@ class LinkScannerTest extends TestCase
 
             //Gets properties from both client, fixes properties of the `Client`
             //  instances and performs the comparison
-            $originalProperties = $this->getProperties($this->LinkScanner);
-            $resultProperties = $this->getProperties($result);
-            $originalProperties['Client'] = $this->getProperties($this->LinkScanner->Client);
-            $resultProperties['Client'] = $this->getProperties($result->Client);
-            unset($originalProperties['Client']['_adapter'], $resultProperties['Client']['_adapter']);
-            $this->assertEquals($resultProperties, $originalProperties);
+            $expectedClientProperties = $this->getProperties($this->LinkScanner->Client);
+            $resultClientProperties = $this->getProperties($result->Client);
+            foreach (['_adapter', '__phpunit_invocationMocker', '__phpunit_originalObject', '__phpunit_configurable'] as $key) {
+                unset($expectedClientProperties[$key], $resultClientProperties[$key]);
+            }
+            $expectedProperties = ['Client' => $expectedClientProperties] + $this->getProperties($this->LinkScanner);
+            $resultProperties = ['Client' => $resultClientProperties] + $this->getProperties($result);
+            $this->assertEquals($expectedProperties, $resultProperties);
         }
 
         //With a no existing file
