@@ -1,4 +1,8 @@
 # 1.x branch
+### 1.0.2-beta
+* updated for `php-tools` 1.1.12;
+* added [API](//mirko-pagliai.github.io/cakephp-link-scanner).
+
 ### 1.0.1-beta
 * second release.
 

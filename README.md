@@ -7,6 +7,12 @@
 
 *Link scanner* is a CakePHP plugin to scan links.
 
+Did you like this plugin? Its development requires a lot of time for me.
+Please consider the possibility of making [a donation](//paypal.me/mirkopagliai):  
+even a coffee is enough! Thank you.
+
+[![Make a donation](https://www.paypalobjects.com/webstatic/mktg/logo-center/logo_paypal_carte.jpg)](//paypal.me/mirkopagliai)
+
 ## Installation
 You can install the plugin via composer:
 
@@ -19,11 +25,12 @@ Then you have to edit `APP/config/bootstrap.php` to load the plugin:
 For more information on how to load the plugin, please refer to the 
 [Cookbook](http://book.cakephp.org/3.0/en/plugins.html#loading-a-plugin).
 
-## Use the cache for requests
+## Configuration
+### Use cache for requests
 *cakephp-link-scanner* uses the [HTTP Client](https://book.cakephp.org/3.0/en/core-libraries/httpclient.html)
-to make requests and get responses, which are inspected and processed.
-
-You can cache responses (except for error responses) by configuring the
+to make requests and get responses, which are inspected and processed one by one.  
+This can take a lot of resources and generate a lot of network traffic. For this
+reason, You can cache responses (except for error responses) by configuring the
 `LinkScanner` cache engine **before** loading the plugin.
 
 Example:
@@ -37,6 +44,9 @@ Example:
 
 For more information on how to configure a cache engine, please refer to the 
 [Cookbook](https://book.cakephp.org/3.0/en/core-libraries/caching.html).
+
+## How to use
+Refer to our [API](//mirko-pagliai.github.io/cakephp-link-scanner).
 
 ## To do list
 * allow the use of a configuration file for the shell;
