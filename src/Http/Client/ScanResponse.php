@@ -30,7 +30,7 @@ class ScanResponse implements Serializable
     public $BodyParser;
 
     /**
-     * @var \Cake\Http\Client\Response
+     * @var \Cake\Http\Client\Response|\Cake\TestSuite\Stub\Response
      */
     protected $Response;
 
@@ -71,8 +71,9 @@ class ScanResponse implements Serializable
 
         //This provides some method (for example, `isOk()` and `isRedirect()`),
         //  if the original `Response` method does not provide them
-        if (!method_exists($response, $name)) {
-            $response = (new Response)->withHeader('location', $this->Response->getHeaderLine('location'))
+        if (!method_exists($response, $name) && !$response instanceof Response) {
+            $response = (new Response)
+                ->withHeader('location', $this->Response->getHeaderLine('location'))
                 ->withStatus($this->Response->getStatusCode());
         }
 

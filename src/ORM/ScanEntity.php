@@ -18,25 +18,26 @@ use Cake\ORM\Entity;
 /**
  * An `ScanEntity` represents a single result of a scan.
  *
- * This class simulates the `Entity` class.
+ * This class extends the `Entity` class.
  */
 class ScanEntity extends Entity
 {
     /**
-     * Magic method, is triggered when invoking inaccessible methods. It calls
-     *  the same method name from the original `Response` class
+     * Magic method, is triggered when invoking inaccessible methods.
+     *
+     * It calls the same method name from the original `Response` class
      * @param string $name Method name
      * @param mixed $arguments Method arguments
      * @return mixed
-     * @see Cake\Http\Client\Response
+     * @see \Cake\Http\Client\Response
      */
     public function __call($name, $arguments)
     {
         if (method_exists(Response::class, $name)) {
             $properties = $this->_properties + ['location' => null];
-            $response = (new Response)->withHeader('location', $properties['location'])
+            $response = (new Response)
+                ->withHeader('location', $properties['location'])
                 ->withStatus($properties['code']);
-
             $name = [$response, $name];
         }
 
