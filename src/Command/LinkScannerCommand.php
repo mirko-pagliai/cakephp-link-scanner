@@ -53,7 +53,7 @@ class LinkScannerCommand extends Command
                 $this->LinkScanner->setConfig('followRedirects', true);
             }
             if ($args->getOption('force')) {
-                safe_unlink(LINK_SCANNER_LOCK_FILE);
+                @unlink(LINK_SCANNER_LOCK_FILE);
             }
             if ($args->hasOption('full-base-url')) {
                 $this->LinkScanner->setFullBaseUrl($args->getOption('full-base-url'));

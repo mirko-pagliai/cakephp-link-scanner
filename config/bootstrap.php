@@ -21,7 +21,7 @@ if (!defined('LINK_SCANNER_TARGET')) {
     define('LINK_SCANNER_TARGET', TMP . 'link-scanner');
 }
 
-safe_mkdir(LINK_SCANNER_TARGET);
+@mkdir(LINK_SCANNER_TARGET);
 if (!is_writeable(LINK_SCANNER_TARGET)) {
     trigger_error(sprintf('Directory %s not writeable', LINK_SCANNER_TARGET), E_USER_ERROR);
 }

@@ -443,7 +443,7 @@ class LinkScanner implements Serializable
 
         $this->endTime = time();
 
-        safe_unlink(LINK_SCANNER_LOCK_FILE);
+        @unlink(LINK_SCANNER_LOCK_FILE);
 
         $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
 

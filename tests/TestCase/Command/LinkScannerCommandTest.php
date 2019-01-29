@@ -80,7 +80,7 @@ class LinkScannerCommandTest extends TestCase
     {
         parent::tearDown();
 
-        safe_unlink_recursive(TMP);
+        @unlink_recursive(TMP);
     }
 
     /**

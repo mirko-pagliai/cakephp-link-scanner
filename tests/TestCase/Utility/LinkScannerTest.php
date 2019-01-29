@@ -60,7 +60,7 @@ class LinkScannerTest extends TestCase
     {
         parent::setUp();
 
-        safe_unlink('LinkScanner');
+        @unlink('LinkScanner');
 
         $this->debug = [];
         $this->fullBaseUrl = 'http://google.com';
@@ -77,7 +77,7 @@ class LinkScannerTest extends TestCase
     {
         parent::tearDown();
 
-        safe_unlink_recursive(TMP);
+        @unlink_recursive(TMP);
     }
 
     /**

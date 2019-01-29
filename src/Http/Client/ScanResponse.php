@@ -117,7 +117,7 @@ class ScanResponse implements Serializable
     public function getContentType()
     {
         //This removes an eventual charset
-        return trim(first_value(explode(';', $this->Response->getHeaderLine('content-type'))));
+        return trim(array_value_first(explode(';', $this->Response->getHeaderLine('content-type'))));
     }
 
     /**

@@ -193,7 +193,7 @@ class ResultScanTest extends TestCase
         $serialized = serialize($this->ResultScan);
         $this->assertTrue(is_string($serialized));
 
-        $result = safe_unserialize($serialized);
+        $result = @unserialize($serialized);
         $this->assertInstanceof(ResultScan::class, $result);
         $this->assertEquals($result, $this->ResultScan);
         $this->assertEquals($result->toArray(), $this->ResultScan->toArray());

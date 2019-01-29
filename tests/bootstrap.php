@@ -36,15 +36,15 @@ define('WWW_ROOT', APP . 'webroot' . DS);
 define('TMP', sys_get_temp_dir() . DS . 'cakephp-link-scanner' . DS);
 define('CACHE', TMP . 'cache' . DS);
 define('CONFIG', APP . 'config' . DS);
-define('LOGS', TMP);
+define('LOGS', TMP . 'logs' . DS);
 define('SESSIONS', TMP . 'sessions' . DS);
 
-safe_mkdir(TMP);
-safe_mkdir(LOGS);
-safe_mkdir(SESSIONS);
-safe_mkdir(CACHE);
-safe_mkdir(CACHE . 'views');
-safe_mkdir(CACHE . 'models');
+@mkdir(TMP);
+@mkdir(LOGS);
+@mkdir(SESSIONS);
+@mkdir(CACHE);
+@mkdir(CACHE . 'views');
+@mkdir(CACHE . 'models');
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
