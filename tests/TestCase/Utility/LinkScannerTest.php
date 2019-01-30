@@ -431,8 +431,8 @@ class LinkScannerTest extends TestCase
         ] as $fullBaseUrl) {
             $result = $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
             $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertEquals($fullBaseUrl, $this->LinkScanner->fullBaseUrl);
-            $this->assertEquals('fullBaseUrl.com', $this->LinkScanner->hostname);
+            $this->assertEquals($fullBaseUrl, $result->fullBaseUrl);
+            $this->assertEquals('fullBaseUrl.com', $result->hostname);
         }
 
         //With a no-string or an invalid string
