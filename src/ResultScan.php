@@ -22,8 +22,7 @@ use Serializable;
 /**
  * This class contains the results of the scan.
  *
- * Summarily, it works like the `Collection` class, simulating all its methods
- *  and adding the `append()` method.
+ * Summarily, it works like the `Collection` class, simulating all its methods.
  */
 class ResultScan implements Countable, IteratorAggregate, Serializable
 {
@@ -51,17 +50,17 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
     /**
      * Constructor
      * @param array $items Items
-     * @uses append()
+     * @uses appendItem()
      * @uses $Collection
      */
     public function __construct(array $items = [])
     {
         //The collection is not created directly with `$items`, but by calling
-        //  the `append()` method for each item.
+        //  the `appendItem()` method for each item.
         //  This allows checking their validity.
         $this->Collection = new Collection([]);
 
-        array_map([$this, 'append'], $items);
+        array_map([$this, 'appendItem'], $items);
     }
 
     /**
@@ -72,7 +71,7 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
      * @throws LogicException
      * @uses $Collection
      */
-    public function append($item)
+    public function appendItem($item)
     {
         $item = $item instanceof ScanEntity ? $item : new ScanEntity($item);
         is_true_or_fail($item->has(['code', 'external', 'type', 'url']), __d('link-scanner', 'Missing data in the item to be appended'), LogicException::class);
