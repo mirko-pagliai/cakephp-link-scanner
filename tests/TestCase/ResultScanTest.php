@@ -117,42 +117,75 @@ class ResultScanTest extends TestCase
     }
 
     /**
+     * Test for `append()` method
+     * @test
+     */
+    public function testAppend()
+    {
+        $expected = [
+            new ScanEntity([
+                'code' => 200,
+                'external' => true,
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/',
+            ]),
+            new ScanEntity([
+                'code' => 200,
+                'external' => false,
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/page.html',
+            ]),
+        ];
+        $existing = $this->ResultScan->toArray();
+        $result = $this->ResultScan->append($expected);
+        $this->assertInstanceof(ResultScan::class, $result);
+        $this->assertEquals(array_merge($existing, $expected), $this->ResultScan->toArray());
+
+        //Missing `code` key
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Missing data in the item to be appended');
+        $this->ResultScan->append([
+            new ScanEntity([
+                'external' => true,
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/anotherpage.html',
+            ]),
+        ]);
+    }
+
+    /**
      * Test for `appendItem()` method
      * @test
      */
     public function testAppendItem()
     {
-        $result = $this->ResultScan->appendItem([
-            'code' => 200,
-            'external' => false,
-            'type' => 'text/html;charset=UTF-8',
-            'url' => 'http://example.com/',
-        ]);
-
-        $this->assertInstanceof(ResultScan::class, $result);
-        $this->assertEquals([
+        $expected = [
             new ScanEntity([
                 'code' => 200,
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://google.com',
+                'url' => 'http://example.com/',
             ]),
             new ScanEntity([
                 'code' => 200,
                 'external' => false,
-                'type' => 'text/html;charset=UTF-8',
-                'url' => 'http://example.com/',
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/page.html',
             ]),
-        ], $this->ResultScan->toArray());
+        ];
+        $existing = $this->ResultScan->toArray();
+        $result = $this->ResultScan->appendItem($expected[0])->appendItem($expected[1]);
+        $this->assertInstanceof(ResultScan::class, $result);
+        $this->assertEquals(array_merge($existing, $expected), $this->ResultScan->toArray());
 
         //Missing `code` key
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Missing data in the item to be appended');
-        $this->ResultScan->appendItem([
-            'external' => false,
-            'type' => 'text/html;charset=UTF-8',
-            'url' => 'http://example.com/',
-        ]);
+        $this->ResultScan->appendItem(new ScanEntity([
+            'external' => true,
+            'type' => 'text/html; charset=UTF-8',
+            'url' => 'http://example.com/anotherpage.html',
+        ]));
     }
 
     /**

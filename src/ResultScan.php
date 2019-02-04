@@ -33,6 +33,19 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
     protected $Collection;
 
     /**
+     * Constructor.
+     *
+     * The `Collection` instance is not created directly with `$items`, but by
+     *  calling the `append()` method. This allows checking their validity
+     * @param array $items Array of items
+     * @uses append()
+     */
+    public function __construct(array $items = [])
+    {
+        $this->append($items);
+    }
+
+    /**
      * Magic method, triggered when invoking inaccessible methods in an object
      *  context.
      *
@@ -48,43 +61,38 @@ class ResultScan implements Countable, IteratorAggregate, Serializable
     }
 
     /**
-     * Constructor
-     * @param array $items Items
-     * @uses appendItem()
-     * @uses $Collection
-     */
-    public function __construct(array $items = [])
-    {
-        //The collection is not created directly with `$items`, but by calling
-        //  the `appendItem()` method for each item.
-        //  This allows checking their validity.
-        $this->Collection = new Collection([]);
-
-        array_map([$this, 'appendItem'], $items);
-    }
-
-    /**
-     * Appends an item
-     * @param array|Entity $item Item to append as `ScanEntity` or as array that
-     *  will be transformed into a `ScanEntity`
+     * Appends an array of items
+     * @param array $items Array of items
      * @return $this
      * @throws LogicException
      * @uses $Collection
      */
-    public function appendItem($item)
+    public function append(array $items)
     {
-        $item = $item instanceof ScanEntity ? $item : new ScanEntity($item);
-        is_true_or_fail($item->has(['code', 'external', 'type', 'url']), __d('link-scanner', 'Missing data in the item to be appended'), LogicException::class);
+        foreach ($items as $k => $item) {
+            if (!$item instanceof ScanEntity) {
+                $items[$k] = new ScanEntity($item);
+            }
 
-        $items = [$item];
-
-        if (!$this->Collection->isEmpty()) {
-            $items = array_merge($this->Collection->toArray(), $items);
+            is_true_or_fail($items[$k]->has(['code', 'external', 'type', 'url']), __d('link-scanner', 'Missing data in the item to be appended'), LogicException::class);
         }
 
+        $items = $this->Collection && !$this->Collection->isEmpty() ? array_merge($this->Collection->toArray(), $items) : $items;
         $this->Collection = new Collection($items);
 
         return $this;
+    }
+
+    /**
+     * Appends a single item
+     * @param array|Entity $item Item to append as `ScanEntity` or as array that
+     *  will be transformed into a `ScanEntity`
+     * @return $this
+     * @uses append()
+     */
+    public function appendItem($item)
+    {
+        return $this->append([$item]);
     }
 
     /**
