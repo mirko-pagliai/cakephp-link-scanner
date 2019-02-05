@@ -63,8 +63,20 @@ class ResultScan extends Collection
      */
     public function append($items)
     {
-        $items = $this->parseItems($items);
+        return new ResultScan(array_merge($this->buffered()->toArray(), $this->parseItems($items)));
+    }
 
-        return new ResultScan($this->isEmpty() ? $items : array_merge($this->buffered()->toArray(), $items));
+    /**
+     * Prepends items.
+     *
+     * Returns a new `ResultScan` instance as the result of concatenating the
+     *  passed list of elements with the list of elements in this collection
+     * @param array|Traversable $items Items
+     * @return \LinkScanner\ResultScan
+     * @uses parseItems()
+     */
+    public function prepend($items)
+    {
+        return new ResultScan(array_merge($this->parseItems($items), $this->buffered()->toArray()));
     }
 }

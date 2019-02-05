@@ -85,7 +85,7 @@ class ResultScanTest extends TestCase
      */
     public function testAppend()
     {
-        $expected = [
+        $appended = [
             new ScanEntity([
                 'code' => 200,
                 'external' => true,
@@ -100,14 +100,57 @@ class ResultScanTest extends TestCase
             ]),
         ];
         $existing = $this->ResultScan->toArray();
-        $result = $this->ResultScan->append($expected);
+        $result = $this->ResultScan->append($appended);
         $this->assertInstanceof(ResultScan::class, $result);
-        $this->assertEquals(array_merge($existing, $expected), $result->toArray());
+        $this->assertEquals(array_merge($existing, $appended), $result->toArray());
+        $this->assertCount(3, $result);
+
+        //With a new `ResultScan`
+        $result = (new ResultScan)->append($appended);
+        $this->assertEquals($appended, $result->toArray());
+        $this->assertCount(2, $result);
 
         //Missing `code` key
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Missing data in the item to be appended');
         $this->ResultScan->append([
+            new ScanEntity([
+                'external' => true,
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/anotherpage.html',
+            ]),
+        ]);
+    }
+
+    /**
+     * Test for `prepend()` method
+     * @test
+     */
+    public function testPrepend()
+    {
+        $prepended = [
+            new ScanEntity([
+                'code' => 200,
+                'external' => true,
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/',
+            ]),
+        ];
+        $existing = $this->ResultScan->toArray();
+        $result = $this->ResultScan->prepend($prepended);
+        $this->assertInstanceof(ResultScan::class, $result);
+        $this->assertEquals(array_merge($prepended, $existing), $result->toArray());
+        $this->assertCount(2, $result);
+
+        //With a new `ResultScan`
+        $result = (new ResultScan)->prepend($prepended);
+        $this->assertEquals($prepended, $result->toArray());
+        $this->assertCount(1, $result);
+
+        //Missing `code` key
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Missing data in the item to be appended');
+        $this->ResultScan->prepend([
             new ScanEntity([
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
