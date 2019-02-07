@@ -12,12 +12,11 @@
  */
 namespace LinkScanner\Test\TestCase;
 
-use Cake\Collection\Collection;
-use Cake\Collection\CollectionInterface;
 use Cake\TestSuite\TestCase;
 use LinkScanner\ORM\ScanEntity;
 use LinkScanner\ResultScan;
 use LogicException;
+use Tools\Exception\PropertyNotExistsException;
 
 /**
  * ResultScanTest class
@@ -70,8 +69,8 @@ class ResultScanTest extends TestCase
         $this->assertEquals($expected, (new ResultScan($expected))->toArray());
 
         //Missing `code` key
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Missing data in the item to be appended');
+        $this->expectException(PropertyNotExistsException::class);
+        $this->expectExceptionMessage('Object does not have `code` property');
         new ResultScan([[
             'external' => true,
             'type' => 'text/html; charset=UTF-8',
@@ -111,8 +110,8 @@ class ResultScanTest extends TestCase
         $this->assertCount(2, $result);
 
         //Missing `code` key
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Missing data in the item to be appended');
+        $this->expectException(PropertyNotExistsException::class);
+        $this->expectExceptionMessage('Object does not have `code` property');
         $this->ResultScan->append([
             new ScanEntity([
                 'external' => true,
@@ -148,8 +147,8 @@ class ResultScanTest extends TestCase
         $this->assertCount(1, $result);
 
         //Missing `code` key
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Missing data in the item to be appended');
+        $this->expectException(PropertyNotExistsException::class);
+        $this->expectExceptionMessage('Object does not have `code` property');
         $this->ResultScan->prepend([
             new ScanEntity([
                 'external' => true,

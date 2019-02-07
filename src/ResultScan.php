@@ -14,7 +14,6 @@ namespace LinkScanner;
 
 use Cake\Collection\Collection;
 use LinkScanner\ORM\ScanEntity;
-use LogicException;
 use Traversable;
 
 /**
@@ -28,7 +27,7 @@ class ResultScan extends Collection
      * Ensures that each item is a `ScanEntity` and has all the properties it needs
      * @param array|Traversable $items Array of items
      * @return array Parsed items
-     * @throws LogicException
+     * @throws PropertyNotExistsException
      */
     protected function parseItems($items)
     {
@@ -36,7 +35,7 @@ class ResultScan extends Collection
 
         return array_map(function ($item) {
             $item = $item instanceof ScanEntity ? $item : new ScanEntity($item);
-            is_true_or_fail($item->has(['code', 'external', 'type', 'url']), __d('link-scanner', 'Missing data in the item to be appended'), LogicException::class);
+            property_exists_or_fail($item, ['code', 'external', 'type', 'url']);
 
             return $item;
         }, $items);
