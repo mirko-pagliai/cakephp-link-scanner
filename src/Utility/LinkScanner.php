@@ -58,6 +58,7 @@ class LinkScanner implements Serializable
         'followRedirects' => false,
         'maxDepth' => 0,
         'lockFile' => true,
+        'target' => TMP . 'link-scanner',
     ];
 
     /**
@@ -384,7 +385,7 @@ class LinkScanner implements Serializable
 
         try {
             $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
-            $filename = Folder::isAbsolute($filename) ? $filename : LINK_SCANNER_TARGET . DS . $filename;
+            $filename = Folder::isAbsolute($filename) ? $filename : $this->getConfig('target') . DS . $filename;
             file_put_contents($filename, serialize($this));
         } catch (Exception $e) {
             $message = preg_replace('/^file_put_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
@@ -412,7 +413,7 @@ class LinkScanner implements Serializable
     public static function import($filename)
     {
         try {
-            $filename = Folder::isAbsolute($filename) ? $filename : LINK_SCANNER_TARGET . DS . $filename;
+            $filename = Folder::isAbsolute($filename) ? $filename : self::getConfig('target') . DS . $filename;
             $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
             $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());

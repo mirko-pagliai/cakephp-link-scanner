@@ -97,6 +97,7 @@ class LinkScannerCommandTest extends TestCase
             'followRedirects' => false,
             'maxDepth' => 1,
             'lockFile' => true,
+            'target' => TMP . 'link-scanner',
         ], $this->LinkScanner->getConfig());
 
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
@@ -172,8 +173,9 @@ class LinkScannerCommandTest extends TestCase
             'followRedirects' => false,
             'maxDepth' => 2,
             'lockFile' => false,
+            'target' => TMP . 'link-scanner',
         ];
-        $expectedFilename = LINK_SCANNER_TARGET . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
+        $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals(15, $this->LinkScanner->Client->getConfig('timeout'));
@@ -226,7 +228,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertNotEmpty(array_filter($this->_out->messages(), $lineDifferentFullBaseUrl));
 
         foreach ([
-            'example' => LINK_SCANNER_TARGET . DS . 'example',
+            'example' => $this->LinkScanner->getConfig('target') . DS . 'example',
             TMP . 'example' => TMP . 'example',
         ] as $filename => $expectedExportFile) {
             $this->setLinkScannerCommand();
