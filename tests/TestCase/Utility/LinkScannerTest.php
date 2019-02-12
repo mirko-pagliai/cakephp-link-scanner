@@ -191,6 +191,7 @@ class LinkScannerTest extends TestCase
                 'externalLinks' => false,
                 'followRedirects' => false,
                 'maxDepth' => 1,
+                'lockFile' => true,
             ], $result->getConfig());
             $this->assertEquals(100, $result->Client->getConfig('timeout'));
 
@@ -303,7 +304,7 @@ class LinkScannerTest extends TestCase
 
         //The lock file alread exists
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('The lock file `' . LINK_SCANNER_LOCK_FILE . '` already exists. This means that a scan is already in progress. If not, remove it manually');
+        $this->expectExceptionMessage('Lock file `' . LINK_SCANNER_LOCK_FILE . '` already exists. This means that a scan is already in progress. If not, remove it manually');
         file_put_contents(LINK_SCANNER_LOCK_FILE, null);
         (new LinkScanner)->scan();
     }

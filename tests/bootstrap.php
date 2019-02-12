@@ -87,6 +87,7 @@ Cache::setConfig([
     ],
 ]);
 
+define('LINK_SCANNER_LOCK_FILE', TMP . 'link_scanner_lock_file');
 Configure::write('pluginsToLoad', ['LinkScanner']);
 
 loadPHPUnitAliases();

@@ -57,6 +57,7 @@ class LinkScanner implements Serializable
         'externalLinks' => true,
         'followRedirects' => false,
         'maxDepth' => 0,
+        'lockFile' => true,
     ];
 
     /**
@@ -90,6 +91,12 @@ class LinkScanner implements Serializable
     protected $hostname = null;
 
     /**
+     * Lock file path
+     * @var string
+     */
+    protected $lockFile = TMP . 'link_scanner_lock_file';
+
+    /**
      * Start time
      * @var int
      */
@@ -118,16 +125,21 @@ class LinkScanner implements Serializable
      * Internal method to create a lock file
      * @return bool
      * @throws RuntimeException
+     * @uses $lockFile
      */
     protected function _createLockFile()
     {
-        is_true_or_fail(!LINK_SCANNER_LOCK_FILE || !file_exists(LINK_SCANNER_LOCK_FILE), __d(
+        if (!$this->getConfig('lockFile')) {
+            return true;
+        }
+
+        is_true_or_fail(!file_exists($this->lockFile), __d(
             'link-scanner',
-            'The lock file `{0}` already exists. This means that a scan is already in progress. If not, remove it manually',
-            LINK_SCANNER_LOCK_FILE
+            'Lock file `{0}` already exists, maybe a scan is already in progress. If not, remove it manually',
+            $this->lockFile
         ), RuntimeException::class);
 
-        return LINK_SCANNER_LOCK_FILE ? touch(LINK_SCANNER_LOCK_FILE) !== false : true;
+        return touch($this->lockFile) !== false;
     }
 
     /**
@@ -429,6 +441,7 @@ class LinkScanner implements Serializable
      * @uses $ResultScan
      * @uses $endTime
      * @uses $fullBaseUrl
+     * @uses $lockFile
      * @uses $startTime
      */
     public function scan()
@@ -443,7 +456,7 @@ class LinkScanner implements Serializable
 
         $this->endTime = time();
 
-        @unlink(LINK_SCANNER_LOCK_FILE);
+        @unlink($this->lockFile);
 
         $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
 

@@ -11,11 +11,6 @@
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
 
-//Sets the path of the lock file. Use `false` if you don't want to use a lock file
-if (!defined('LINK_SCANNER_LOCK_FILE')) {
-    define('LINK_SCANNER_LOCK_FILE', TMP . 'link_scanner_lock_file');
-}
-
 //Sets the path where to export results
 if (!defined('LINK_SCANNER_TARGET')) {
     define('LINK_SCANNER_TARGET', TMP . 'link-scanner');

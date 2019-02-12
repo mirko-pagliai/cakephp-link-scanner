@@ -96,6 +96,7 @@ class LinkScannerCommandTest extends TestCase
             'externalLinks' => true,
             'followRedirects' => false,
             'maxDepth' => 1,
+            'lockFile' => true,
         ], $this->LinkScanner->getConfig());
 
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
@@ -170,6 +171,7 @@ class LinkScannerCommandTest extends TestCase
             'externalLinks' => true,
             'followRedirects' => false,
             'maxDepth' => 2,
+            'lockFile' => false,
         ];
         $expectedFilename = LINK_SCANNER_TARGET . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
 
