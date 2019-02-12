@@ -130,17 +130,13 @@ class LinkScanner implements Serializable
      */
     protected function _createLockFile()
     {
-        if (!$this->getConfig('lockFile')) {
-            return true;
-        }
-
-        is_true_or_fail(!file_exists($this->lockFile), __d(
+        is_true_or_fail(!$this->getConfig('lockFile') || !file_exists($this->lockFile), __d(
             'link-scanner',
             'Lock file `{0}` already exists, maybe a scan is already in progress. If not, remove it manually',
             $this->lockFile
         ), RuntimeException::class);
 
-        return touch($this->lockFile) !== false;
+        return $this->getConfig('lockFile') ? touch($this->lockFile) !== false : true;
     }
 
     /**
