@@ -54,13 +54,15 @@ class LinkScannerCommand extends Command
             }
             if ($args->getOption('force')) {
                 $this->LinkScanner->setConfig('lockFile', false);
-//                @unlink(LINK_SCANNER_LOCK_FILE);
             }
             if ($args->hasOption('full-base-url')) {
                 $this->LinkScanner->setFullBaseUrl($args->getOption('full-base-url'));
             }
             if ($args->hasOption('max-depth')) {
                 $this->LinkScanner->setConfig('maxDepth', $args->getOption('max-depth'));
+            }
+            if ($args->getOption('no-cache')) {
+                $this->LinkScanner->setConfig('cache', false);
             }
             if ($args->hasOption('timeout')) {
                 $this->LinkScanner->Client->setConfig('timeout', $args->getOption('timeout'));
@@ -123,6 +125,11 @@ class LinkScannerCommand extends Command
             'max-depth' => [
                 'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->getConfig('maxDepth')),
                 'short' => 'd',
+            ],
+            'no-cache' => [
+                'boolean' => true,
+                'default' => false,
+                'help' => __d('link-scanner', 'Disables the cache'),
             ],
             'timeout' => [
                 'help' => __d('link-scanner', 'Timeout in seconds for GET requests. Default: {0}', $this->LinkScanner->Client->getConfig('timeout')),

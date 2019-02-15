@@ -73,13 +73,6 @@ class LinkScannerTest extends TestCase
      */
     public function testGetResponse()
     {
-        Cache::setConfig('LinkScanner', [
-            'className' => 'File',
-            'duration' => '+1 day',
-            'path' => CACHE,
-            'prefix' => 'link_scanner_',
-        ]);
-
         $getResponseMethod = function ($url) {
             return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         };
@@ -91,12 +84,18 @@ class LinkScannerTest extends TestCase
         $this->assertInstanceof(ScanResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertStringStartsWith('text/html', $response->getContentType());
-
         $responseFromCache = $getResponseFromCache($this->fullBaseUrl);
         $this->assertNotEmpty($responseFromCache);
         $this->assertInstanceof(ScanResponse::class, $responseFromCache);
 
+        //With disabled cache
+        Cache::clearAll();
+        $this->LinkScanner->setConfig('cache', false);
+        $getResponseMethod($this->fullBaseUrl);
+        $this->assertEmpty($getResponseFromCache($this->fullBaseUrl));
+
         $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
+        $this->LinkScanner->setConfig('cache', true);
 
         foreach ([
             'nolinks' => 200,
@@ -118,9 +117,6 @@ class LinkScannerTest extends TestCase
                 $this->assertEmpty($responseFromCache);
             }
         }
-
-        Cache::clearAll();
-        Cache::drop('LinkScanner');
 
         //`Client::get()` method throws an exception
         $this->LinkScanner->Client = $this->getMockBuilder(Client::class)
@@ -185,14 +181,14 @@ class LinkScannerTest extends TestCase
         foreach ([$resultAsObject, $resultAsStatic] as $result) {
             $this->assertInstanceof(LinkScanner::class, $result);
 
-            //Checks configuration
             $this->assertEquals([
+                'cache' => true,
                 'excludeLinks' => ['\{.*\}', 'javascript:'],
                 'externalLinks' => false,
                 'followRedirects' => false,
                 'maxDepth' => 1,
                 'lockFile' => true,
-                'target' => TMP . 'link-scanner',
+                'target' => TMP,
             ], $result->getConfig());
             $this->assertEquals(100, $result->Client->getConfig('timeout'));
 

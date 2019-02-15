@@ -53,12 +53,13 @@ class LinkScanner implements Serializable
      * @var array
      */
     protected $_defaultConfig = [
+        'cache' => true,
         'excludeLinks' => ['\{.*\}', 'javascript:'],
         'externalLinks' => true,
         'followRedirects' => false,
         'maxDepth' => 0,
         'lockFile' => true,
-        'target' => TMP . 'link-scanner',
+        'target' => TMP,
     ];
 
     /**
@@ -140,7 +141,7 @@ class LinkScanner implements Serializable
     }
 
     /**
-     * Performs a single GET request and returns the response as `ScanResponse`.
+     * Performs a single GET request and returns a `ScanResponse` instance.
      *
      * The response will be cached, if that's ok and the cache is enabled.
      * @param string $url The url or path you want to request
@@ -152,10 +153,8 @@ class LinkScanner implements Serializable
     protected function _getResponse($url)
     {
         $this->alreadyScanned[] = $url;
-        $cacheExists = Cache::getConfig('LinkScanner');
         $cacheKey = sprintf('response_%s', md5(serialize($url)));
-
-        $response = $cacheExists ? Cache::read($cacheKey, 'LinkScanner') : null;
+        $response = $this->getConfig('cache') ? Cache::read($cacheKey, 'LinkScanner') : null;
 
         if (!$response instanceof ScanResponse) {
             try {
@@ -165,7 +164,7 @@ class LinkScanner implements Serializable
             }
 
             $response = new ScanResponse($clientResponse, $this->fullBaseUrl);
-            if ($cacheExists && !$response->isError()) {
+            if ($this->getConfig('cache') && !$response->isError()) {
                 Cache::write($cacheKey, $response, 'LinkScanner');
             }
         }
@@ -176,7 +175,7 @@ class LinkScanner implements Serializable
     /**
      * Internal method to perform a recursive scan.
      *
-     * It recursively repeats the scan for all the urls found that have not
+     * It recursively repeats the scan for all urls found that have not
      *  already been scanned.
      *
      * ### Events

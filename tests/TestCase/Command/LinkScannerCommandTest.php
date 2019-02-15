@@ -73,17 +73,6 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Teardown any static object changes and restore them
-     * @return void
-     */
-    public function tearDown()
-    {
-        parent::tearDown();
-
-        @unlink_recursive(TMP);
-    }
-
-    /**
      * Test for `scan()` method
      * @test
      */
@@ -92,12 +81,13 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->run(['--max-depth=1'], $this->io);
 
         $this->assertEquals([
+            'cache' => true,
             'excludeLinks' => ['\{.*\}', 'javascript:'],
             'externalLinks' => true,
             'followRedirects' => false,
             'maxDepth' => 1,
             'lockFile' => true,
-            'target' => TMP . 'link-scanner',
+            'target' => TMP,
         ], $this->LinkScanner->getConfig());
 
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
@@ -136,19 +126,9 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testScanCacheEnabled()
     {
-        Cache::setConfig('LinkScanner', [
-            'className' => 'File',
-            'duration' => '+1 day',
-            'path' => CACHE,
-            'prefix' => 'link_scanner_',
-        ]);
-
         $this->Command->run(['--verbose'], $this->io);
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
         $this->assertOutputContains(sprintf('The cache is enabled and its duration is `%s`', $expectedDuration));
-
-        Cache::clearAll();
-        Cache::drop('LinkScanner');
     }
 
     /**
@@ -162,19 +142,22 @@ class LinkScannerCommandTest extends TestCase
             '--export',
             '--force',
             '--max-depth=2',
+//            '--no-cache',
             '--timeout=15',
             '--verbose',
         ];
         $this->Command->run($params, $this->io);
 
         $expectedConfig = [
+            'cache' => true,
             'excludeLinks' => ['\{.*\}', 'javascript:'],
             'externalLinks' => true,
             'followRedirects' => false,
             'maxDepth' => 2,
             'lockFile' => false,
-            'target' => TMP . 'link-scanner',
+            'target' => TMP,
         ];
+        $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
         $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
@@ -183,7 +166,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertFileExists($expectedFilename);
         $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->fullBaseUrl, '/')));
-        $this->assertOutputContains('The cache is disabled');
+        $this->assertOutputContains(sprintf('The cache is enabled and its duration is `%s`', $expectedDuration));
         $this->assertOutputContains('Force mode is enabled');
         $this->assertOutputContains('Scanning of external links is enabled');
         $this->assertOutputContains('Redirects will not be followed');
@@ -192,11 +175,17 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputContains(sprintf('Results have been exported to', $expectedFilename));
         $this->assertErrorEmpty();
 
-        //Changes the full base url
+        //With disabled cache
+        $params[] = '--no-cache';
+        $this->Command->run($params, $this->io);
+        $this->assertOutputContains('The cache is disabled');
+        $this->assertEquals(['cache' => false] + $expectedConfig, $this->LinkScanner->getConfig());
+
+        //With a different full base url
+        array_pop($params);
         $params[] = '--full-base-url=http://anotherFullBaseUrl';
         $this->setLinkScannerCommand();
         $this->Command->run($params, $this->io);
-
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals('http://anotherFullBaseUrl', $this->LinkScanner->fullBaseUrl);
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->fullBaseUrl, '/')));
@@ -222,7 +211,6 @@ class LinkScannerCommandTest extends TestCase
         array_pop($params);
         $this->setLinkScannerCommand();
         $this->Command->run($params, $this->io);
-
         $expectedConfig['externalLinks'] = true;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertNotEmpty(array_filter($this->_out->messages(), $lineDifferentFullBaseUrl));
@@ -260,7 +248,7 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testScanVerbose()
     {
-        $this->Command->run(['--verbose'], $this->io);
+        $this->Command->run(['--no-cache', '--verbose'], $this->io);
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
         $this->assertOutputContains('The cache is disabled');
         $this->assertOutputContains('Force mode is not enabled');
@@ -306,6 +294,7 @@ class LinkScannerCommandTest extends TestCase
             'full-base-url',
             'help',
             'max-depth',
+            'no-cache',
             'quiet',
             'timeout',
             'verbose',

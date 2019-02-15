@@ -12,6 +12,7 @@
  */
 namespace LinkScanner\TestSuite;
 
+use Cake\Cache\Cache;
 use Cake\Event\EventList;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
@@ -24,6 +25,17 @@ use Zend\Diactoros\Stream;
  */
 abstract class TestCase extends BaseTestCase
 {
+    /**
+     * Called after every test method
+     * @return void
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        Cache::clearAll();
+    }
+
     /**
      * Asserts that a global event was not fired. You must track events in your
      *  event manager for this assertion to work
