@@ -18,6 +18,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
+use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\ConsoleIntegrationTestTrait;
@@ -28,6 +29,7 @@ use MeTools\TestSuite\ConsoleIntegrationTestTrait;
 class LinkScannerCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
+    use IntegrationTestTrait;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner
@@ -46,7 +48,6 @@ class LinkScannerCommandTest extends TestCase
     protected function setLinkScannerCommand()
     {
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsSampleResponse());
-
         $this->getEventManager();
 
         $this->_out = new ConsoleOutput;
@@ -140,7 +141,6 @@ class LinkScannerCommandTest extends TestCase
             '--export',
             '--force',
             '--max-depth=2',
-//            '--no-cache',
             '--timeout=15',
             '--verbose',
         ];
@@ -230,10 +230,16 @@ class LinkScannerCommandTest extends TestCase
         }
 
         //Enables follow redirects
-        $this->setLinkScannerCommand();
+        $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
+        $this->Command->LinkScanner = $this->LinkScanner;
+        $this->getEventManager()->setEventList(new \Cake\Event\EventList());
+        array_pop($params);
         $this->Command->run(array_merge($params, ['--follow-redirects']), $this->io);
-        $this->assertEquals(['followRedirects' => true] + $expectedConfig, $this->LinkScanner->getConfig());
+        $this->assertEventFired('LinkScanner.foundRedirect', $this->LinkScanner->getEventManager());
+        $this->assertContains(['followRedirects' => true], $this->LinkScanner->getConfig());
         $this->assertOutputContains('Redirects will be followed');
+        $this->assertOutputContains('Redirect found: http://localhost/pages/third_page');
+
 
         //With an invalid full base url
         $this->expectException(StopException::class);
