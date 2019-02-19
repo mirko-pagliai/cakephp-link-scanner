@@ -40,7 +40,7 @@ class LinkScanner implements Serializable
      * Instance of `Client`
      * @var \Cake\Http\Client
      */
-    public $Client;
+    protected $Client;
 
     /**
      * Instance of `ResultScan`. This contains the results of the scan
@@ -111,14 +111,16 @@ class LinkScanner implements Serializable
      *  `Router::url()` method.
      * If `null` the `App.fullBaseUrl` value will be used.
      * @param string|array|null $fullBaseUrl Full base url
+     * @param \Cake\Http\Client|null $Client A Client instance or null
+     * @param \LinkScanner\ResultScan|null $ResultScan A Client instance or null
      * @uses $Client
      * @uses $ResultScan
      * @uses setFullBaseUrl()
      */
-    public function __construct($fullBaseUrl = null)
+    public function __construct($fullBaseUrl = null, $Client = null, $ResultScan = null)
     {
-        $this->Client = new Client(['redirect' => true]);
-        $this->ResultScan = new ResultScan;
+        $this->Client = $Client ?: new Client(['redirect' => true]);
+        $this->ResultScan = $ResultScan ?: new ResultScan;
 
         $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
     }

@@ -72,21 +72,19 @@ trait IntegrationTestTrait
         $fullBaseUrl = $fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
 
-        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs([$fullBaseUrl])
-            ->setMethods(['_createLockFile'])
+        $ResultScan = $this->getMockBuilder(ResultScan::class)
+            ->setMethods(['getScannedUrl'])
             ->getMock();
 
-        $LinkScanner->Client = $this->getClientReturnsFromTests();
-
-        $LinkScanner->ResultScan = $this->getMockBuilder(ResultScan::class)
-            ->setMethods(['getScannedUrl'])
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([$fullBaseUrl, $this->getClientReturnsFromTests(), $ResultScan])
+            ->setMethods(['_createLockFile'])
             ->getMock();
 
         //This ensures the `getScannedUrl()` method returns all the urls as strings
         $LinkScanner->ResultScan->method('getScannedUrl')
-            ->will($this->returnCallback(function () use ($LinkScanner) {
-                return $LinkScanner->ResultScan->getIterator()->extract('url')->map(function ($url) {
+            ->will($this->returnCallback(function () use ($ResultScan) {
+                return $ResultScan->getIterator()->extract('url')->map(function ($url) {
                     return is_string($url) ? $url : Router::url($url, true);
                 })->toArray();
             }));

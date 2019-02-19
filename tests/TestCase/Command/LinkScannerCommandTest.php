@@ -45,8 +45,7 @@ class LinkScannerCommandTest extends TestCase
      */
     protected function setLinkScannerCommand()
     {
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl);
-        $this->LinkScanner->Client = $this->getClientReturnsSampleResponse();
+        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsSampleResponse());
 
         $this->getEventManager();
 
@@ -115,8 +114,7 @@ class LinkScannerCommandTest extends TestCase
         }
 
         //With an error response (404 status code)
-        $this->setLinkScannerCommand();
-        $this->Command->LinkScanner->Client = $this->getClientReturnsErrorResponse();
+        $this->Command->LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsErrorResponse());
         $this->Command->run(['--verbose'], $this->io);
         $this->assertErrorContains('404');
     }
