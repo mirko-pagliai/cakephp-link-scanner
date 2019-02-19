@@ -124,6 +124,16 @@ class LinkScanner implements Serializable
     }
 
     /**
+     * Magic method for reading data from inaccessible properties
+     * @param string $name Property name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->$name;
+    }
+
+    /**
      * Internal method to create a lock file
      * @return bool
      * @throws RuntimeException
@@ -154,8 +164,8 @@ class LinkScanner implements Serializable
     {
         $this->alreadyScanned[] = $url;
         $cacheKey = sprintf('response_%s', md5(serialize($url)));
-        $response = $this->getConfig('cache') ? Cache::read($cacheKey, 'LinkScanner') : null;
 
+        $response = $this->getConfig('cache') ? Cache::read($cacheKey, 'LinkScanner') : null;
         if (!$response instanceof ScanResponse) {
             try {
                 $clientResponse = $this->Client->get($url);
@@ -180,8 +190,8 @@ class LinkScanner implements Serializable
      *
      * ### Events
      * This method will trigger some events:
-     *  - `LinkScanner.foundLinkToBeScanned`: will be triggered if, after
-     *      scanning a single url, an other link to be scanned are found;
+     *  - `LinkScanner.foundLinkToBeScanned`: will be triggered when other links
+     *      to be scanned are found;
      *  - `LinkScanner.responseNotOk`: will be triggered when a single url is
      *      scanned and the response is not ok.
      * @param string|array $url Url to scan
@@ -218,8 +228,8 @@ class LinkScanner implements Serializable
             return;
         }
 
+        //Continues scanning for the links found
         $linksToBeScanned = array_filter($response->BodyParser->extractLinks(), [$this, 'canBeScanned']);
-
         foreach ($linksToBeScanned as $link) {
             //Skips, if the link has already been scanned
             if (in_array($link, $this->alreadyScanned)) {
@@ -229,8 +239,7 @@ class LinkScanner implements Serializable
             $this->dispatchEvent('LinkScanner.foundLinkToBeScanned', [$link]);
 
             //Single scan for external links, recursive scan for internal links
-            $methodToCall = is_external_url($link, $this->hostname) ? '_singleScan' : '_recursiveScan';
-            $this->$methodToCall($link, $url);
+            call_user_func_array([$this, is_external_url($link, $this->hostname) ? '_singleScan' : __METHOD__], [$link, $url]);
         }
     }
 
@@ -242,11 +251,13 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.beforeScanUrl`: will be triggered before a single url is
      *      scanned;
      *  - `LinkScanner.afterScanUrl`: will be triggered after a single url is
-     *      scanned.
+     *      scanned;
+     *  - `LinkScanner.foundRedirect`: will be triggered if a redirect is found.
      * @param string|array $url Url to scan
      * @param string|null $referer Referer of this url
      * @return ScanResponse|null
      * @uses _getResponse()
+     * @uses canBeScanned()
      * @uses $ResultScan
      * @uses $hostname
      */
@@ -260,21 +271,18 @@ class LinkScanner implements Serializable
         $response = $this->_getResponse($url);
         $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
 
-        //Recursive scan for redirects
-        if ($this->getConfig('followRedirects')) {
+        //Follows redirects
+        if ($response->isRedirect() && $this->getConfig('followRedirects')) {
             $location = $response->getHeaderLine('location');
-            if ($response->isRedirect() && $location) {
-                if (!$this->canBeScanned($location)) {
-                    return null;
-                }
-
-                $this->dispatchEvent('LinkScanner.foundRedirect', [$location]);
-
-                return $this->_singleScan($location);
+            if (!$this->canBeScanned($location)) {
+                return null;
             }
+
+            $this->dispatchEvent('LinkScanner.foundRedirect', [$location]);
+
+            return call_user_func([$this, __METHOD__], $location);
         }
 
-        //Appends result
         $this->ResultScan = $this->ResultScan->appendItem(new ScanEntity([
             'code' => $response->getStatusCode(),
             'external' => is_external_url($url, $this->hostname),
@@ -283,16 +291,6 @@ class LinkScanner implements Serializable
         ] + compact('url', 'referer')));
 
         return $response;
-    }
-
-    /**
-     * Magic method for reading data from inaccessible properties
-     * @param string $name Property name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->$name;
     }
 
     /**
@@ -309,7 +307,7 @@ class LinkScanner implements Serializable
      */
     protected function canBeScanned($url)
     {
-        if (in_array($url, $this->alreadyScanned) ||
+        if (!is_url($url) || in_array($url, $this->alreadyScanned) ||
             (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
             return false;
         }
