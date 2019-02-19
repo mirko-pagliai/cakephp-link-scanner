@@ -26,7 +26,7 @@ use LinkScanner\ResultScan;
  *
  * This class provided methods to be performed as events by `LinkScannerCommand`.
  */
-class LinkScannerCommandEventListener implements LinkScannerEventListenerInterface
+final class LinkScannerCommandEventListener implements LinkScannerEventListenerInterface
 {
     /**
      * @var \Cake\Console\Arguments
