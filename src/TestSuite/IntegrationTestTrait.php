@@ -76,18 +76,15 @@ trait IntegrationTestTrait
             ->setMethods(['getScannedUrl'])
             ->getMock();
 
+        //This ensures the `getScannedUrl()` method returns all the urls as strings
+        $ResultScan->method('getScannedUrl')->will($this->returnCallback(function () use ($ResultScan) {
+            return $ResultScan->getIterator()->extract('url')->toArray();
+        }));
+
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs([$fullBaseUrl, $this->getClientReturnsFromTests(), $ResultScan])
             ->setMethods(['_createLockFile'])
             ->getMock();
-
-        //This ensures the `getScannedUrl()` method returns all the urls as strings
-        $LinkScanner->ResultScan->method('getScannedUrl')
-            ->will($this->returnCallback(function () use ($ResultScan) {
-                return $ResultScan->getIterator()->extract('url')->map(function ($url) {
-                    return is_string($url) ? $url : Router::url($url, true);
-                })->toArray();
-            }));
 
         return $LinkScanner;
     }
