@@ -232,7 +232,7 @@ class LinkScannerCommandTest extends TestCase
         //Enables follow redirects
         $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $this->Command->LinkScanner = $this->LinkScanner;
-        $this->getEventManager()->setEventList(new \Cake\Event\EventList());
+        $this->getEventManager();
         array_pop($params);
         $this->Command->run(array_merge($params, ['--follow-redirects']), $this->io);
         $this->assertEventFired('LinkScanner.foundRedirect', $this->LinkScanner->getEventManager());
