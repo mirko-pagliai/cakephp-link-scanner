@@ -240,7 +240,6 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputContains('Redirects will be followed');
         $this->assertOutputContains('Redirect found: http://localhost/pages/third_page');
 
-
         //With an invalid full base url
         $this->expectException(StopException::class);
         $this->Command->run(['--full-base-url=invalid'], $this->io);
