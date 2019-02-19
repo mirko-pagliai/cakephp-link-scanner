@@ -339,6 +339,8 @@ class LinkScannerTest extends TestCase
             'Scanning http://localhost/pages/nohtml',
             'Found link: http://localhost/pages/redirect',
             'Scanning http://localhost/pages/redirect',
+            'Found link: http://localhost/pages/sameredirect',
+            'Scanning http://localhost/pages/sameredirect',
         ];
         $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
@@ -355,6 +357,7 @@ class LinkScannerTest extends TestCase
             'http://localhost/pages/second_page',
             'http://localhost/pages/nohtml',
             'http://localhost/pages/redirect',
+            'http://localhost/pages/sameredirect',
         ];
         $expectedExternalLinks = ['http://google.it'];
         $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
@@ -364,15 +367,36 @@ class LinkScannerTest extends TestCase
 
         $this->debug = [];
 
-        $expectedDebug = array_merge($expectedDebug, [
+        $expectedDebug = [
+            'Scanning http://localhost/',
+            'Found link: http://google.it',
+            'Scanning http://google.it',
+            'Found link: http://localhost/pages/first_page',
+            'Scanning http://localhost/pages/first_page',
+            'Found link: http://localhost/favicon.ico',
+            'Scanning http://localhost/favicon.ico',
+            'Found link: http://localhost/css/default.css',
+            'Scanning http://localhost/css/default.css',
+            'Found link: http://localhost/js/default.js',
+            'Scanning http://localhost/js/default.js',
+            'Found link: http://localhost/pages/second_page',
+            'Scanning http://localhost/pages/second_page',
+            'Found link: http://localhost/pages/nohtml',
+            'Scanning http://localhost/pages/nohtml',
+            'Found link: http://localhost/pages/redirect',
+            'Scanning http://localhost/pages/redirect',
             'Found redirect: http://localhost/pages/third_page',
             'Scanning http://localhost/pages/third_page',
-        ]);
+            'Found link: http://localhost/pages/sameredirect',
+            'Scanning http://localhost/pages/sameredirect',
+        ];
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->setConfig('followRedirects', true)->scan();
         $this->assertEquals($expectedDebug, $this->debug);
 
-        $expectedInternaLinks[array_search('http://localhost/pages/redirect', $expectedInternaLinks)] = 'http://localhost/pages/third_page';
+        array_pop($expectedInternaLinks);
+        array_pop($expectedInternaLinks);
+        $expectedInternaLinks[] = 'http://localhost/pages/third_page';
         $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
         $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
         $this->assertEquals($expectedInternaLinks, $internalLinks->toList());
