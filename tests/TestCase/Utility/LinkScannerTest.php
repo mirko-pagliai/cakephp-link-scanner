@@ -321,10 +321,6 @@ class LinkScannerTest extends TestCase
                 $this->debug[] = sprintf('Found redirect: %s', func_get_arg(1));
             });
 
-        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
-        $LinkScanner->scan();
-
         $expectedDebug = [
             'Scanning http://localhost/',
             'Found link: http://google.it',
@@ -339,9 +335,14 @@ class LinkScannerTest extends TestCase
             'Scanning http://localhost/js/default.js',
             'Found link: http://localhost/pages/second_page',
             'Scanning http://localhost/pages/second_page',
+            'Found link: http://localhost/pages/nohtml',
+            'Scanning http://localhost/pages/nohtml',
             'Found link: http://localhost/pages/redirect',
             'Scanning http://localhost/pages/redirect',
         ];
+        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
+        $LinkScanner->scan();
         $this->assertEquals($expectedDebug, $this->debug);
 
         //Results contain both internal and external urls
@@ -352,6 +353,7 @@ class LinkScannerTest extends TestCase
             'http://localhost/css/default.css',
             'http://localhost/js/default.js',
             'http://localhost/pages/second_page',
+            'http://localhost/pages/nohtml',
             'http://localhost/pages/redirect',
         ];
         $expectedExternalLinks = ['http://google.it'];
