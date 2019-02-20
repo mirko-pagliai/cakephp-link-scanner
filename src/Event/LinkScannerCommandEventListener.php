@@ -157,11 +157,10 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * `LinkScanner.resultsImported` event
      * @param Event $event An `Event` instance
      * @param string $filename Filename
-     * @return bool
+     * @return void
      */
     public function resultsImported(Event $event, $filename)
     {
-        return true;
     }
 
     /**
