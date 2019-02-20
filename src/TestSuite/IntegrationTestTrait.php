@@ -15,7 +15,6 @@ namespace LinkScanner\TestSuite;
 use Cake\Core\Configure;
 use Cake\Http\Client;
 use Cake\Routing\Router;
-use LinkScanner\ResultScan;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
 
@@ -72,20 +71,9 @@ trait IntegrationTestTrait
         $fullBaseUrl = $fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
 
-        $ResultScan = $this->getMockBuilder(ResultScan::class)
-            ->setMethods(['getScannedUrl'])
-            ->getMock();
-
-        //This ensures the `getScannedUrl()` method returns all the urls as strings
-        $ResultScan->method('getScannedUrl')->will($this->returnCallback(function () use ($ResultScan) {
-            return $ResultScan->getIterator()->extract('url')->toArray();
-        }));
-
-        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs([$fullBaseUrl, $this->getClientReturnsFromTests(), $ResultScan])
+        return $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([$fullBaseUrl, $this->getClientReturnsFromTests()])
             ->setMethods(['_createLockFile'])
             ->getMock();
-
-        return $LinkScanner;
     }
 }
