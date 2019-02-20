@@ -27,6 +27,7 @@ use LinkScanner\ORM\ScanEntity;
 use LinkScanner\ResultScan;
 use RuntimeException;
 use Serializable;
+use Tools\BodyParser;
 
 /**
  * A link scanner
@@ -225,13 +226,15 @@ class LinkScanner implements Serializable
             return;
         }
 
+        $BodyParser = new BodyParser($response->getBody(), $url);
+
         //Returns, if the response body does not contain html code
-        if (!$response->BodyParser->isHtml()) {
+        if (!$BodyParser->isHtml()) {
             return;
         }
 
         //Continues scanning for the links found
-        $linksToBeScanned = array_filter($response->BodyParser->extractLinks(), [$this, 'canBeScanned']);
+        $linksToBeScanned = array_filter($BodyParser->extractLinks(), [$this, 'canBeScanned']);
         foreach ($linksToBeScanned as $link) {
             //Skips, if the link has already been scanned
             if (in_array($link, $this->alreadyScanned)) {

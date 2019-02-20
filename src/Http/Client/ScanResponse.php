@@ -14,7 +14,6 @@ namespace LinkScanner\Http\Client;
 
 use Cake\Http\Client\Response;
 use Serializable;
-use Tools\BodyParser;
 use Zend\Diactoros\Stream;
 
 /**
@@ -24,11 +23,6 @@ use Zend\Diactoros\Stream;
  */
 class ScanResponse implements Serializable
 {
-    /**
-     * @var \LinkScanner\Utility\BodyParser
-     */
-    public $BodyParser;
-
     /**
      * @var \Cake\Http\Client\Response|\Cake\TestSuite\Stub\Response
      */
@@ -45,14 +39,12 @@ class ScanResponse implements Serializable
      * @param \Cake\Http\Client\Response|\Cake\TestSuite\Stub\Response $response Original
      *  response object
      * @param string $fullBaseUrl Full base url
-     * @uses $BodyParser
      * @uses $Response
      * @uses $fullBaseUrl
      */
     public function __construct($response, $fullBaseUrl)
     {
         $this->fullBaseUrl = clean_url($fullBaseUrl);
-        $this->BodyParser = new BodyParser($response->getBody(), $this->fullBaseUrl);
         $this->Response = $response;
     }
 
@@ -83,26 +75,24 @@ class ScanResponse implements Serializable
     /**
      * Returns the string representation of the object
      * @return string
-     * @uses $BodyParser
      * @uses $Response
      * @uses $fullBaseUrl
      */
     public function serialize()
     {
-        return serialize([$this->BodyParser, $this->Response, (string)$this->Response->getBody(), $this->fullBaseUrl]);
+        return serialize([$this->Response, (string)$this->Response->getBody(), $this->fullBaseUrl]);
     }
 
     /**
      * Called during unserialization of the object
      * @param string $serialized String representation of object
      * @return void
-     * @uses $BodyParser
      * @uses $Response
      * @uses $fullBaseUrl
      */
     public function unserialize($serialized)
     {
-        list($this->BodyParser, $this->Response, $body, $this->fullBaseUrl) = unserialize($serialized);
+        list($this->Response, $body, $this->fullBaseUrl) = unserialize($serialized);
 
         $stream = new Stream('php://memory', 'wb+');
         $stream->write($body);
