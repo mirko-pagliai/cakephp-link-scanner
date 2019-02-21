@@ -48,7 +48,7 @@ class LinkScanner implements Serializable
      * Instance of `ResultScan`. This contains the results of the scan
      * @var \LinkScanner\ResultScan
      */
-    public $ResultScan;
+    protected $ResultScan;
 
     /**
      * Default configuration
