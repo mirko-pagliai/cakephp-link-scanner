@@ -16,9 +16,9 @@ use Cake\Cache\Cache;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Event\Event;
+use Cake\Http\Client\Response;
 use Cake\I18n\Time;
 use LinkScanner\Event\LinkScannerEventListenerInterface;
-use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 
 /**
@@ -77,12 +77,12 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
     /**
      * `LinkScanner.afterScanUrl` event
      * @param Event $event An `Event` instance
-     * @param ScanResponse $response A `ScanResponse` instance
+     * @param Response $response A `Response` instance
      * @return bool
      * @uses $args
      * @uses $io
      */
-    public function afterScanUrl(Event $event, ScanResponse $response)
+    public function afterScanUrl(Event $event, Response $response)
     {
         if (!$this->args->getOption('verbose')) {
             return true;
@@ -91,7 +91,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
         if ($response->isOk()) {
             $this->io->success(__d('link-scanner', 'OK'));
         } else {
-            call_user_func([$this->io, $response->isError() ? 'err' : 'warning'], (string)$response->getStatusCode());
+            call_user_func([$this->io, $response->isRedirect() ? 'warning' : 'err'], (string)$response->getStatusCode());
         }
 
         return true;

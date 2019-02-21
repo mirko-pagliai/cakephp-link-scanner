@@ -14,16 +14,18 @@ namespace LinkScanner\TestSuite;
 
 use Cake\Core\Configure;
 use Cake\Http\Client;
+use Cake\Http\Client\Response;
 use Cake\Routing\Router;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
+use Tools\ReflectionTrait;
 
 /**
  * A trait intended to make integration tests of your controllers easier
  */
 trait IntegrationTestTrait
 {
-    use BaseIntegrationTestTrait;
+    use BaseIntegrationTestTrait, ReflectionTrait;
 
     /**
      * Returns a stub of `Client`, where the `get()` method uses the
@@ -51,6 +53,15 @@ trait IntegrationTestTrait
             }
 
             call_user_func_array([$this, 'get'], $args);
+
+            if (!$this->_response instanceof Response) {
+                $response = new Response([], (string)$this->_response->getBody());
+                foreach ($this->_response->getHeaders() as $name => $value) {
+                    $response = $response->withHeader($name, $value);
+                }
+
+                $this->_response = $response->withStatus($this->_response->getStatusCode(), $this->_response->getReasonPhrase());
+            }
 
             return $this->_response;
         }));

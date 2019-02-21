@@ -13,14 +13,15 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
+use Cake\Http\Client\Response;
 use Exception;
 use InvalidArgumentException;
-use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 use RuntimeException;
+use Zend\Diactoros\Stream;
 
 /**
  * LinkScannerTest class
@@ -76,16 +77,26 @@ class LinkScannerTest extends TestCase
             return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         };
         $getResponseFromCache = function ($url) {
-            return Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
+            $response = Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
+
+            if ($response && is_array($response)) {
+                list($response, $body) = $response;
+
+                $stream = new Stream('php://memory', 'wb+');
+                $stream->write($body);
+                $stream->rewind();
+                $response = $response->withBody($stream);
+            }
+
+            return $response;
         };
 
         $response = $getResponseMethod($this->fullBaseUrl);
-        $this->assertInstanceof(ScanResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertStringStartsWith('text/html', $response->getContentType());
+        $this->assertStringStartsWith('text/html', $response->getHeaderLine('content-type'));
         $responseFromCache = $getResponseFromCache($this->fullBaseUrl);
         $this->assertNotEmpty($responseFromCache);
-        $this->assertInstanceof(ScanResponse::class, $responseFromCache);
+        $this->assertInstanceof(Response::class, $responseFromCache);
 
         //With disabled cache
         Cache::clearAll();
@@ -104,14 +115,13 @@ class LinkScannerTest extends TestCase
             $params = ['controller' => 'Pages', 'action' => 'display', $pageName];
 
             $response = $getResponseMethod($params);
-            $this->assertInstanceof(ScanResponse::class, $response);
             $this->assertEquals($expectedStatusCode, $response->getStatusCode());
-            $this->assertStringStartsWith('text/html', $response->getContentType());
+            $this->assertStringStartsWith('text/html', $response->getHeaderLine('content-type'));
 
             $responseFromCache = $getResponseFromCache($params);
             if ($response->isOk()) {
                 $this->assertNotEmpty($responseFromCache);
-                $this->assertInstanceof(ScanResponse::class, $responseFromCache);
+                $this->assertInstanceof(Response::class, $responseFromCache);
             } else {
                 $this->assertEmpty($responseFromCache);
             }
@@ -125,9 +135,7 @@ class LinkScannerTest extends TestCase
         $Client->method('get')->will($this->throwException(new Exception));
 
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl, $Client);
-        $response = $getResponseMethod('/noExisting');
-        $this->assertInstanceof(ScanResponse::class, $response);
-        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(404, $getResponseMethod('/noExisting')->getStatusCode());
     }
 
     /**
@@ -284,7 +292,7 @@ class LinkScannerTest extends TestCase
                 $this->assertTextStartsNotWith('https://' . $hostname, $item->url);
             }
             $this->assertContains($item->code, [200, 500]);
-            $this->assertEquals($item->type, 'text/html');
+            $this->assertStringStartsWith('text/html', $item->type);
         }
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
@@ -409,7 +417,7 @@ class LinkScannerTest extends TestCase
         $this->assertEquals($item->code, 200);
         $this->assertFalse($item->external);
         $this->assertNull($item->referer);
-        $this->assertEquals($item->type, 'text/html');
+        $this->assertStringStartsWith('text/html', $item->type);
         $this->assertEquals($item->url, 'http://localhost/');
     }
 

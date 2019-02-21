@@ -28,6 +28,7 @@ use LinkScanner\ResultScan;
 use RuntimeException;
 use Serializable;
 use Tools\BodyParser;
+use Zend\Diactoros\Stream;
 
 /**
  * A link scanner
@@ -158,7 +159,7 @@ class LinkScanner implements Serializable
      *
      * The response will be cached, if that's ok and the cache is enabled.
      * @param string $url The url or path you want to request
-     * @return ScanResponse
+     * @return Response
      * @uses $Client
      * @uses $alreadyScanned
      * @uses $fullBaseUrl
@@ -169,16 +170,25 @@ class LinkScanner implements Serializable
         $cacheKey = sprintf('response_%s', md5(serialize($url)));
 
         $response = $this->getConfig('cache') ? Cache::read($cacheKey, 'LinkScanner') : null;
-        if (!$response instanceof ScanResponse) {
-            try {
-                $clientResponse = $this->Client->get($url);
-            } catch (Exception $e) {
-                $clientResponse = (new Response)->withStatus(404);
-            }
 
-            $response = new ScanResponse($clientResponse, $this->fullBaseUrl);
-            if ($this->getConfig('cache') && !$response->isError()) {
-                Cache::write($cacheKey, $response, 'LinkScanner');
+        if ($response && is_array($response)) {
+            list($response, $body) = $response;
+
+            $stream = new Stream('php://memory', 'wb+');
+            $stream->write($body);
+            $stream->rewind();
+            $response = $response->withBody($stream);
+        }
+
+        if (!$response instanceof Response) {
+            try {
+                $response = $this->Client->get($url);
+
+                if ($this->getConfig('cache') && ($response->isOk() || $response->isRedirect())) {
+                    Cache::write($cacheKey, [$response, (string)$response->getBody()], 'LinkScanner');
+                }
+            } catch (Exception $e) {
+                $response = (new Response)->withStatus(404);
             }
         }
 
@@ -292,7 +302,7 @@ class LinkScanner implements Serializable
             'code' => $response->getStatusCode(),
             'external' => is_external_url($url, $this->hostname),
             'location' => $response->getHeaderLine('Location'),
-            'type' => $response->getContentType(),
+            'type' => $response->getHeaderLine('content-type'),
         ] + compact('url', 'referer')));
 
         return $response;
