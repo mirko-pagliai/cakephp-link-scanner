@@ -46,9 +46,6 @@ class LinkScannerCommand extends Command
             //Will trigger events provided by `LinkScannerCommandEventListener`
             $this->LinkScanner->getEventManager()->on(new LinkScannerCommandEventListener($args, $io));
 
-            if ($args->getOption('disable-external-links')) {
-                $this->LinkScanner->setConfig('externalLinks', false);
-            }
             if ($args->getOption('follow-redirects')) {
                 $this->LinkScanner->setConfig('followRedirects', true);
             }
@@ -63,6 +60,9 @@ class LinkScannerCommand extends Command
             }
             if ($args->getOption('no-cache')) {
                 $this->LinkScanner->setConfig('cache', false);
+            }
+            if ($args->getOption('no-external-links')) {
+                $this->LinkScanner->setConfig('externalLinks', false);
             }
             if ($args->hasOption('timeout')) {
                 $this->LinkScanner->Client->setConfig('timeout', $args->getOption('timeout'));
@@ -94,11 +94,6 @@ class LinkScannerCommand extends Command
         $parser->setDescription(__d('link-scanner', 'Performs a complete scan'));
 
         return $parser->addOptions([
-            'disable-external-links' => [
-                'boolean' => true,
-                'default' => false,
-                'help' => __d('link-scanner', 'Disable the scanning of external links'),
-            ],
             'export' => [
                 'boolean' => true,
                 'default' => false,
@@ -130,6 +125,11 @@ class LinkScannerCommand extends Command
                 'boolean' => true,
                 'default' => false,
                 'help' => __d('link-scanner', 'Disables the cache'),
+            ],
+            'no-external-links' => [
+                'boolean' => true,
+                'default' => false,
+                'help' => __d('link-scanner', 'Disable the scanning of external links'),
             ],
             'timeout' => [
                 'help' => __d('link-scanner', 'Timeout in seconds for GET requests. Default: {0}', $this->LinkScanner->Client->getConfig('timeout')),

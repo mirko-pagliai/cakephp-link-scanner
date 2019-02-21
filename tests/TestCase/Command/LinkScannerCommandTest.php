@@ -191,7 +191,7 @@ class LinkScannerCommandTest extends TestCase
 
         //Disables external links
         array_pop($params);
-        $params = array_merge($params, ['--full-base-url=' . $this->fullBaseUrl, '--disable-external-links']);
+        $params = array_merge($params, ['--full-base-url=' . $this->fullBaseUrl, '--no-external-links']);
 
         $this->setLinkScannerCommand();
         $this->Command->run($params, $this->io);
@@ -289,7 +289,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertEquals('Performs a complete scan', $parser->getDescription());
         $this->assertEmpty($parser->arguments());
         $this->assertArrayKeysEqual([
-            'disable-external-links',
+            'no-external-links',
             'export',
             'export-with-filename',
             'follow-redirects',
