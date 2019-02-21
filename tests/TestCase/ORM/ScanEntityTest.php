@@ -21,24 +21,6 @@ use LinkScanner\TestSuite\TestCase;
 class ScanEntityTest extends TestCase
 {
     /**
-     * Test for `isOk()` method
-     * @test
-     */
-    public function isErrorTest()
-    {
-        $statusCodes = [
-            200 => false,
-            301 => false,
-            404 => true,
-        ];
-
-        foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code') + ['location' => '/']);
-            $this->assertEquals($expectedValue, $entity->isError());
-        }
-    }
-
-    /**
      * Test for `isOk()` method (through the `__call()` method)
      * @test
      */

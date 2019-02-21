@@ -43,13 +43,4 @@ class ScanEntity extends Entity
 
         return call_user_func_array($name, $arguments);
     }
-
-    /**
-     * Checks if the response is error
-     * @return bool
-     */
-    public function isError()
-    {
-        return !$this->isOk() && !$this->isRedirect();
-    }
 }
