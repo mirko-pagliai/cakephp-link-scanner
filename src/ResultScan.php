@@ -13,7 +13,7 @@
 namespace LinkScanner;
 
 use Cake\Collection\Collection;
-use LinkScanner\ORM\ScanEntity;
+use LinkScanner\ScanEntity;
 use Traversable;
 
 /**

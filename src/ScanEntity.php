@@ -10,7 +10,7 @@
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace LinkScanner\ORM;
+namespace LinkScanner;
 
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\EntityTrait;

@@ -13,9 +13,8 @@
 namespace LinkScanner\Test\TestCase;
 
 use Cake\TestSuite\TestCase;
-use LinkScanner\ORM\ScanEntity;
 use LinkScanner\ResultScan;
-use LogicException;
+use LinkScanner\ScanEntity;
 use Tools\Exception\PropertyNotExistsException;
 
 /**

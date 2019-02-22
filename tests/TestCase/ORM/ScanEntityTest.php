@@ -12,7 +12,7 @@
  */
 namespace LinkScanner\Test\ORM;
 
-use LinkScanner\ORM\ScanEntity;
+use LinkScanner\ScanEntity;
 use LinkScanner\TestSuite\TestCase;
 
 /**
