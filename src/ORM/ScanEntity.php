@@ -12,16 +12,27 @@
  */
 namespace LinkScanner\ORM;
 
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\EntityTrait;
 use Cake\Http\Client\Response;
-use Cake\ORM\Entity;
 
 /**
- * An `ScanEntity` represents a single result of a scan.
- *
- * This class extends the `Entity` class.
+ * A `ScanEntity` represents a single result of a scan
  */
-class ScanEntity extends Entity
+class ScanEntity implements EntityInterface
 {
+    use EntityTrait;
+
+    /**
+     * Initializes the internal properties of this entity out of the keys in an
+     *  array
+     * @param array $properties hash of properties to set in this entity
+     */
+    public function __construct(array $properties = [])
+    {
+        $this->set($properties);
+    }
+
     /**
      * Magic method, is triggered when invoking inaccessible methods.
      *
@@ -33,11 +44,10 @@ class ScanEntity extends Entity
      */
     public function __call($name, $arguments)
     {
-        if (method_exists(Response::class, $name)) {
-            $properties = $this->_properties + ['location' => null];
-            $response = (new Response)
-                ->withHeader('location', $properties['location'])
-                ->withStatus($properties['code']);
+        $response = new Response;
+        if (method_exists($response, $name)) {
+            $response = $response->withHeader('location', $this->get('location'))
+                ->withStatus($this->get('code'));
             $name = [$response, $name];
         }
 
