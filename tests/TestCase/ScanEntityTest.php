@@ -10,7 +10,7 @@
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace LinkScanner\Test\ORM;
+namespace LinkScanner\Test;
 
 use LinkScanner\ScanEntity;
 use LinkScanner\TestSuite\TestCase;
