@@ -64,6 +64,7 @@ class LinkScannerTest extends TestCase
         $this->debug = [];
         $this->fullBaseUrl = 'http://google.com';
         $this->LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner->Client->setConfig('timeout', 5);
         $this->EventManager = $this->getEventManager();
     }
 
@@ -148,8 +149,8 @@ class LinkScannerTest extends TestCase
 
         //Filename can be `null`, relative or absolute
         foreach ([
-            null => $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
-            'example' => $this->LinkScanner->getConfig('target') . DS . 'example',
+            null => $this->LinkScanner->getConfig('target') . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
+            'example' => $this->LinkScanner->getConfig('target') . 'example',
             TMP . 'example' => TMP . 'example',
         ] as $filenameWhereToExport => $expectedFilename) {
             $result = $this->LinkScanner->export($filenameWhereToExport);
