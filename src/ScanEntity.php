@@ -106,11 +106,10 @@ class ScanEntity implements ArrayAccess
      * Implements `$entity[$offset];`
      * @param mixed $offset The offset to get
      * @return mixed
-     * @uses __get()
      */
     public function offsetGet($offset)
     {
-        return $this->__get($offset);
+        return $this->$offset;
     }
 
     /**
@@ -132,17 +131,14 @@ class ScanEntity implements ArrayAccess
      * @param mixed $offset The offset to remove
      * @return bool `true` if the offset has been removed, `false` if the
      *  property does not exist
-     * @uses offsetExists()
+     * @uses has()
      * @uses $properties
      */
     public function offsetUnset($offset)
     {
-        if (!$this->offsetExists($offset)) {
-            return false;
-        }
-
+        $exists = $this->has($offset);
         unset($this->properties[$offset]);
 
-        return true;
+        return $exists;
     }
 }
