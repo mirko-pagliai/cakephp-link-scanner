@@ -116,29 +116,22 @@ class ScanEntity implements ArrayAccess
      * Implements `$entity[$offset] = $value;`
      * @param mixed $offset The offset to set
      * @param mixed $value The value to set.
-     * @return bool
+     * @return void
      * @uses $properties
      */
     public function offsetSet($offset, $value)
     {
         $this->properties[$offset] = $value;
-
-        return true;
     }
 
     /**
      * Implements `unset($result[$offset]);`
      * @param mixed $offset The offset to remove
-     * @return bool `true` if the offset has been removed, `false` if the
-     *  property does not exist
-     * @uses has()
+     * @return void
      * @uses $properties
      */
     public function offsetUnset($offset)
     {
-        $exists = $this->has($offset);
         unset($this->properties[$offset]);
-
-        return $exists;
     }
 }

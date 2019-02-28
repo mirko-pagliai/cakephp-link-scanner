@@ -43,6 +43,20 @@ class ScanEntityTest extends TestCase
     }
 
     /**
+     * Test for `ArrayAccess` interface
+     * @test
+     */
+    public function testArrayAccess()
+    {
+        $this->ScanEntity['newKey'] = 'a key';
+        $this->assertTrue(isset($this->ScanEntity['newKey']));
+        $this->assertSame('a key', $this->ScanEntity['newKey']);
+        unset($this->ScanEntity['newKey']);
+        $this->assertFalse(isset($this->ScanEntity['newKey']));
+        $this->assertNull($this->ScanEntity['newKey']);
+    }
+
+    /**
      * Test for `__call()`
      * @test
      */
