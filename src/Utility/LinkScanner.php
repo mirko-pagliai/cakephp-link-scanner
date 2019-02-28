@@ -414,7 +414,7 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.resultsImported`: will be triggered when the results have
      *  been exported.
      * @param string $filename Filename from which to import
-     * @return object
+     * @return \LinkScanner\Utility\LinkScanner
      * @see unserialize()
      * @throws RuntimeException
      */
