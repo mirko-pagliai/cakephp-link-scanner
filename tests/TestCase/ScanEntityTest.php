@@ -76,26 +76,14 @@ class ScanEntityTest extends TestCase
      */
     public function testDebugInfo()
     {
-        $file = __FILE__;
-        $class = get_class($this->ScanEntity);
-        $line = __LINE__ + 2;
         ob_start();
+        $line = __LINE__ + 1;
         var_dump($this->ScanEntity);
         $dump = ob_get_contents();
         ob_end_clean();
-        $expected = <<<HEREDOC
-$file:$line:
-class $class#62 (3) {
-  public \$code =>
-  int(200)
-  public \$location =>
-  string(27) "http://example.com/location"
-  public \$url =>
-  string(18) "http://example.com"
-}
-
-HEREDOC;
-        $this->assertSame($expected, $dump);
+        $this->assertTextContains(__FILE__, $dump);
+        $this->assertTextContains($line, $dump);
+        $this->assertTextContains(get_class($this->ScanEntity), $dump);
     }
 
     /**
