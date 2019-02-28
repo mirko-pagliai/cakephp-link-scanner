@@ -21,10 +21,32 @@ use LinkScanner\TestSuite\TestCase;
 class ScanEntityTest extends TestCase
 {
     /**
-     * Test for `isOk()` method (through the `__call()` method)
+     * @var \LinkScanner\ScanEntity
+     */
+    protected $ScanEntity;
+
+    /**
+     * Setup the test case, backup the static object values so they can be
+     * restored. Specifically backs up the contents of Configure and paths in
+     *  App if they have not already been backed up
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->ScanEntity = new ScanEntity([
+            'code' => 200,
+            'location' => 'http://example.com/location',
+            'url' => 'http://example.com',
+        ]);
+    }
+
+    /**
+     * Test for `__call()`
      * @test
      */
-    public function isOkTest()
+    public function testCall()
     {
         $statusCodes = [
             200 => true,
@@ -33,17 +55,9 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code') + ['location' => '/']);
-            $this->assertEquals($expectedValue, $entity->isOk());
+            $this->ScanEntity->offsetSet('code', $code);
+            $this->assertEquals($expectedValue, $this->ScanEntity->isOk());
         }
-    }
-
-    /**
-     * Test for `isRedirect()` method (through the `__call()` method)
-     * @test
-     */
-    public function isRedirectTest()
-    {
         $statusCodes = [
             200 => false,
             301 => true,
@@ -51,8 +65,56 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code') + ['location' => '/']);
-            $this->assertEquals($expectedValue, $entity->isRedirect());
+            $this->ScanEntity->offsetSet('code', $code);
+            $this->assertEquals($expectedValue, $this->ScanEntity->isRedirect());
         }
+    }
+
+    /**
+     * Test for `__debugInfo()` method
+     * @test
+     */
+    public function testDebugInfo()
+    {
+        $file = __FILE__;
+        $class = get_class($this->ScanEntity);
+        $line = __LINE__ + 2;
+        ob_start();
+        var_dump($this->ScanEntity);
+        $dump = ob_get_contents();
+        ob_end_clean();
+        $expected = <<<HEREDOC
+$file:$line:
+class $class#62 (3) {
+  public \$code =>
+  int(200)
+  public \$location =>
+  string(27) "http://example.com/location"
+  public \$url =>
+  string(18) "http://example.com"
+}
+
+HEREDOC;
+        $this->assertSame($expected, $dump);
+    }
+
+    /**
+     * Test for `__get()` method
+     * @test
+     */
+    public function testGet()
+    {
+        $this->assertSame(200, $this->ScanEntity->code);
+        $this->assertNull($this->ScanEntity->noExisting);
+    }
+
+    /**
+     * Test for `has()` method
+     * @test
+     */
+    public function testHas()
+    {
+        $this->assertTrue($this->ScanEntity->has('code'));
+        $this->assertFalse($this->ScanEntity->has('noExisting'));
     }
 }
