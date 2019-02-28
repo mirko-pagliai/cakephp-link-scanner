@@ -12,31 +12,8 @@
  */
 use Cake\Cache\Cache;
 
-//Sets the default LinkScanner name
-if (!defined('LINK_SCANNER')) {
-    define('LINK_SCANNER', 'LinkScanner');
-}
-
-//Sets the path of the lock file. Use `false` if you don't want to use a lock file
-if (!defined('LINK_SCANNER_LOCK_FILE')) {
-    define('LINK_SCANNER_LOCK_FILE', TMP . 'link_scanner_lock_file');
-}
-
-//Sets the path where to export results
-if (!defined('LINK_SCANNER_TARGET')) {
-    define('LINK_SCANNER_TARGET', TMP . 'link-scanner');
-}
-
-if (!file_exists(LINK_SCANNER_TARGET)) {
-    safe_mkdir(LINK_SCANNER_TARGET);
-}
-
-if (!is_writeable(LINK_SCANNER_TARGET)) {
-    trigger_error(sprintf('Directory %s not writeable', LINK_SCANNER_TARGET), E_USER_ERROR);
-}
-
-if (!Cache::getConfig(LINK_SCANNER)) {
-    Cache::setConfig(LINK_SCANNER, [
+if (!Cache::getConfig('LinkScanner')) {
+    Cache::setConfig('LinkScanner', [
         'className' => 'File',
         'duration' => '+1 day',
         'path' => CACHE,

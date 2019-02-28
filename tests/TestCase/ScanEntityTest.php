@@ -10,10 +10,10 @@
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace LinkScanner\Test\ORM;
+namespace LinkScanner\Test;
 
-use Cake\TestSuite\TestCase;
-use LinkScanner\ORM\ScanEntity;
+use LinkScanner\ScanEntity;
+use LinkScanner\TestSuite\TestCase;
 
 /**
  * ScanEntityTest class
@@ -21,31 +21,11 @@ use LinkScanner\ORM\ScanEntity;
 class ScanEntityTest extends TestCase
 {
     /**
-     * Test for `isOk()` method
-     * @test
-     */
-    public function isErrorTest()
-    {
-        $location = '/';
-        $statusCodes = [
-            200 => false,
-            301 => false,
-            404 => true,
-        ];
-
-        foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code', 'location'));
-            $this->assertEquals($expectedValue, $entity->isError());
-        }
-    }
-
-    /**
      * Test for `isOk()` method (through the `__call()` method)
      * @test
      */
     public function isOkTest()
     {
-        $location = '/';
         $statusCodes = [
             200 => true,
             301 => false,
@@ -53,7 +33,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code', 'location'));
+            $entity = new ScanEntity(compact('code') + ['location' => '/']);
             $this->assertEquals($expectedValue, $entity->isOk());
         }
     }
@@ -64,7 +44,6 @@ class ScanEntityTest extends TestCase
      */
     public function isRedirectTest()
     {
-        $location = '/';
         $statusCodes = [
             200 => false,
             301 => true,
@@ -72,7 +51,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code', 'location'));
+            $entity = new ScanEntity(compact('code') + ['location' => '/']);
             $this->assertEquals($expectedValue, $entity->isRedirect());
         }
     }

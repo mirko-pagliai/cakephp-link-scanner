@@ -12,7 +12,6 @@
  */
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 
 ini_set('intl.default_locale', 'en_US');
 date_default_timezone_set('UTC');
@@ -37,15 +36,15 @@ define('WWW_ROOT', APP . 'webroot' . DS);
 define('TMP', sys_get_temp_dir() . DS . 'cakephp-link-scanner' . DS);
 define('CACHE', TMP . 'cache' . DS);
 define('CONFIG', APP . 'config' . DS);
-define('LOGS', TMP);
+define('LOGS', TMP . 'logs' . DS);
 define('SESSIONS', TMP . 'sessions' . DS);
 
-safe_mkdir(TMP);
-safe_mkdir(LOGS);
-safe_mkdir(SESSIONS);
-safe_mkdir(CACHE);
-safe_mkdir(CACHE . 'views');
-safe_mkdir(CACHE . 'models');
+@mkdir(TMP);
+@mkdir(LOGS);
+@mkdir(SESSIONS);
+@mkdir(CACHE);
+@mkdir(CACHE . 'views');
+@mkdir(CACHE . 'models');
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
@@ -68,6 +67,7 @@ Configure::write('App', [
         'templates' => [APP . 'Template' . DS],
     ]
 ]);
+Configure::write('Session', ['defaults' => 'php']);
 
 Cache::setConfig([
     '_cake_core_' => [
@@ -87,14 +87,9 @@ Cache::setConfig([
     ],
 ]);
 
-//Cache is disabled by default
-Cache::disable();
+define('LINK_SCANNER_LOCK_FILE', TMP . 'link_scanner_lock_file');
+Configure::write('pluginsToLoad', ['LinkScanner']);
 
-Configure::write('Session', ['defaults' => 'php']);
-
-/**
- * Loads plugins
- */
-Plugin::load('LinkScanner', ['bootstrap' => true, 'path' => ROOT]);
+loadPHPUnitAliases();
 
 $_SERVER['PHP_SELF'] = '/';

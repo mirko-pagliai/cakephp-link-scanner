@@ -12,10 +12,10 @@
  */
 namespace LinkScanner\Test\TestCase;
 
-use Cake\Collection\CollectionInterface;
 use Cake\TestSuite\TestCase;
-use LinkScanner\ORM\ScanEntity;
 use LinkScanner\ResultScan;
+use LinkScanner\ScanEntity;
+use Tools\Exception\PropertyNotExistsException;
 
 /**
  * ResultScanTest class
@@ -65,20 +65,11 @@ class ResultScanTest extends TestCase
                 'url' => 'http://example.com/',
             ]),
         ];
+        $this->assertEquals($expected, (new ResultScan($expected))->toArray());
 
-        $this->ResultScan = new ResultScan($expected);
-        $this->assertEquals($expected, $this->ResultScan->toArray());
-    }
-
-    /**
-     * Test for `__construct()` method
-     * @expectedException LogicException
-     * @expectedExceptionMessage Missing data in the item to be appended
-     * @test
-     */
-    public function testConstructMissingData()
-    {
         //Missing `code` key
+        $this->expectException(PropertyNotExistsException::class);
+        $this->expectExceptionMessage('Object does not have `code` property');
         new ResultScan([[
             'external' => true,
             'type' => 'text/html; charset=UTF-8',
@@ -87,113 +78,83 @@ class ResultScanTest extends TestCase
     }
 
     /**
-     * Test for `__call()` method
-     * @test
-     */
-    public function testCall()
-    {
-        $expected = [new ScanEntity([
-            'code' => 200,
-            'external' => true,
-            'type' => 'text/html; charset=UTF-8',
-            'url' => 'http://google.com',
-        ])];
-        $this->assertEquals($expected, $this->ResultScan->toArray());
-        $this->assertEquals($expected, $this->ResultScan->toList());
-
-        $this->ResultScan->append([
-            'code' => 200,
-            'external' => false,
-            'type' => 'text/html;charset=UTF-8',
-            'url' => 'http://example.com/',
-        ]);
-        $this->assertEquals($expected[0], $this->ResultScan->first());
-
-        $result = $this->ResultScan->map(function ($item) {
-            $item['exampleKey'] = 'exampleValue';
-
-            return $item;
-        });
-        $this->assertInstanceof(CollectionInterface::class, $result);
-        $this->assertEquals([
-            0 => 'exampleValue',
-            1 => 'exampleValue',
-        ], $result->extract('exampleKey')->toArray());
-    }
-
-    /**
      * Test for `append()` method
      * @test
      */
     public function testAppend()
     {
-        $result = $this->ResultScan->append([
-            'code' => 200,
-            'external' => false,
-            'type' => 'text/html;charset=UTF-8',
-            'url' => 'http://example.com/',
-        ]);
-
-        $this->assertInstanceof(ResultScan::class, $result);
-        $this->assertEquals([
+        $appended = [
             new ScanEntity([
                 'code' => 200,
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://google.com',
+                'url' => 'http://example.com/',
             ]),
             new ScanEntity([
                 'code' => 200,
                 'external' => false,
-                'type' => 'text/html;charset=UTF-8',
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/page.html',
+            ]),
+        ];
+        $existing = $this->ResultScan->toArray();
+        $result = $this->ResultScan->append($appended);
+        $this->assertInstanceof(ResultScan::class, $result);
+        $this->assertEquals(array_merge($existing, $appended), $result->toArray());
+        $this->assertCount(3, $result);
+
+        //With a new `ResultScan`
+        $result = (new ResultScan)->append($appended);
+        $this->assertEquals($appended, $result->toArray());
+        $this->assertCount(2, $result);
+
+        //Missing `code` key
+        $this->expectException(PropertyNotExistsException::class);
+        $this->expectExceptionMessage('Object does not have `code` property');
+        $this->ResultScan->append([
+            new ScanEntity([
+                'external' => true,
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/anotherpage.html',
+            ]),
+        ]);
+    }
+
+    /**
+     * Test for `prepend()` method
+     * @test
+     */
+    public function testPrepend()
+    {
+        $prepended = [
+            new ScanEntity([
+                'code' => 200,
+                'external' => true,
+                'type' => 'text/html; charset=UTF-8',
                 'url' => 'http://example.com/',
             ]),
-        ], $this->ResultScan->toArray());
-    }
+        ];
+        $existing = $this->ResultScan->toArray();
+        $result = $this->ResultScan->prepend($prepended);
+        $this->assertInstanceof(ResultScan::class, $result);
+        $this->assertEquals(array_merge($prepended, $existing), $result->toArray());
+        $this->assertCount(2, $result);
 
-    /**
-     * Test for `append()` method, with missing data
-     * @expectedException LogicException
-     * @expectedExceptionMessage Missing data in the item to be appended
-     * @test
-     */
-    public function testAppendMissingData()
-    {
+        //With a new `ResultScan`
+        $result = (new ResultScan)->prepend($prepended);
+        $this->assertEquals($prepended, $result->toArray());
+        $this->assertCount(1, $result);
+
         //Missing `code` key
-        $this->ResultScan->append([
-            'external' => false,
-            'type' => 'text/html;charset=UTF-8',
-            'url' => 'http://example.com/',
+        $this->expectException(PropertyNotExistsException::class);
+        $this->expectExceptionMessage('Object does not have `code` property');
+        $this->ResultScan->prepend([
+            new ScanEntity([
+                'external' => true,
+                'type' => 'text/html; charset=UTF-8',
+                'url' => 'http://example.com/anotherpage.html',
+            ]),
         ]);
-    }
-
-    /**
-     * Test for `count()` method
-     * @test
-     */
-    public function testCount()
-    {
-        $this->assertEquals(1, $this->ResultScan->count());
-
-        $this->ResultScan->append([
-            'code' => 200,
-            'external' => false,
-            'type' => 'text/html;charset=UTF-8',
-            'url' => 'http://example.com/',
-        ]);
-
-        $this->assertEquals(2, $this->ResultScan->count());
-
-        $this->assertEquals(0, (new ResultScan([]))->count());
-    }
-
-    /**
-     * Test for `getIterator()` method
-     * @test
-     */
-    public function testGetIterator()
-    {
-        $this->assertInstanceof('Cake\Collection\Collection', $this->ResultScan->getIterator());
     }
 
     /**
@@ -202,13 +163,8 @@ class ResultScanTest extends TestCase
      */
     public function testSerializeAndUnserialize()
     {
-        $serialized = serialize($this->ResultScan);
-        $this->assertTrue(is_string($serialized));
-
-        $result = safe_unserialize($serialized);
-
+        $result = unserialize(serialize($this->ResultScan));
         $this->assertInstanceof(ResultScan::class, $result);
-        $this->assertEquals($result, $this->ResultScan);
         $this->assertEquals($result->toArray(), $this->ResultScan->toArray());
     }
 }

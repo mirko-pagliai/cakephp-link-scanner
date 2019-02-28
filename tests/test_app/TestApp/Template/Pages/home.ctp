@@ -9,3 +9,6 @@
 
 <?= $this->Html->link('First page', ['controller' => 'Pages', 'action' => 'display', 'first_page']) ?>
 <?= $this->Html->link('Second page', ['controller' => 'Pages', 'action' => 'display', 'second_page']) ?>
+<?= $this->Html->link('No html', ['controller' => 'Pages', 'action' => 'display', 'nohtml']) ?>
+<?= $this->Html->link('Redirect to home page', '/pages/redirect') ?>
+<?= $this->Html->link('Again, redirect to home page', '/pages/sameredirect') ?>

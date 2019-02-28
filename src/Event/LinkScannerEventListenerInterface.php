@@ -14,7 +14,7 @@ namespace LinkScanner\Event;
 
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use LinkScanner\Http\Client\ScanResponse;
+use Cake\Http\Client\Response;
 use LinkScanner\ResultScan;
 
 /**
@@ -25,10 +25,10 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
     /**
      * `LinkScanner.afterScanUrl` event
      * @param Event $event An `Event` instance
-     * @param ScanResponse $response A `ScanResponse` instance
+     * @param Response $response A `Response` instance
      * @return bool
      */
-    public function afterScanUrl(Event $event, ScanResponse $response);
+    public function afterScanUrl(Event $event, Response $response);
 
     /**
      * `LinkScanner.beforeScanUrl` event
@@ -47,12 +47,28 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
     public function foundLinkToBeScanned(Event $event, $link);
 
     /**
+     * `LinkScanner.foundRedirect` event
+     * @param Event $event An `Event` instance
+     * @param string $redirect Redirect
+     * @return bool
+     */
+    public function foundRedirect(Event $event, $redirect);
+
+    /**
      * `LinkScanner.resultsExported` event
      * @param Event $event An `Event` instance
-     * @param string $filename End time Filename
+     * @param string $filename Filename
      * @return bool
      */
     public function resultsExported(Event $event, $filename);
+
+    /**
+     * `LinkScanner.resultsImported` event
+     * @param Event $event An `Event` instance
+     * @param string $filename Filename
+     * @return bool
+     */
+    public function resultsImported(Event $event, $filename);
 
     /**
      * `LinkScanner.scanCompleted` event

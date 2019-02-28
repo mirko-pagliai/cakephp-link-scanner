@@ -13,133 +13,69 @@
 namespace LinkScanner;
 
 use Cake\Collection\Collection;
-use Countable;
-use IteratorAggregate;
-use LinkScanner\ORM\ScanEntity;
-use LogicException;
-use Serializable;
+use LinkScanner\ScanEntity;
+use Traversable;
 
 /**
- * This class contains the results of the scan.
- *
- * Summarily, it works like the `Collection` class, simulating all its methods
- *  and adding the `append()` method.
+ * This class contains the results of the scan
  */
-class ResultScan implements Countable, IteratorAggregate, Serializable
+class ResultScan extends Collection
 {
     /**
-     * A `Collection` instance
-     * @var \Cake\Collection\Collection
-     */
-    protected $Collection;
-
-    /**
-     * Magic method, triggered when invoking inaccessible methods in an object
-     *  context.
+     * Internal method to parse items.
      *
-     * It invokes the method from the `Collection` instance.
-     * @param string $name Method name
-     * @param array $arguments Method arguments
-     * @return $this|mixed
-     * @uses $Collection
+     * Ensures that each item is a `ScanEntity` and has all the properties it needs
+     * @param array|Traversable $items Array of items
+     * @return array Parsed items
+     * @throws PropertyNotExistsException
      */
-    public function __call($name, $arguments)
+    protected function parseItems($items)
     {
-        return call_user_func_array([$this->Collection, $name], $arguments);
+        $items = $items instanceof Traversable ? $items->toArray() : $items;
+
+        return array_map(function ($item) {
+            $item = $item instanceof ScanEntity ? $item : new ScanEntity($item);
+            property_exists_or_fail($item, ['code', 'external', 'type', 'url']);
+
+            return $item;
+        }, $items);
     }
 
     /**
      * Constructor
-     * @param array $items Items
-     * @uses append()
-     * @uses $Collection
+     * @param array|Traversable $items Items
+     * @uses parseItems()
      */
-    public function __construct(array $items = [])
+    public function __construct($items = [])
     {
-        //The collection is not created directly with `$items`, but by calling
-        //  the `append()` method for each item.
-        //  This allows checking their validity.
-        $this->Collection = new Collection([]);
-
-        array_map([$this, 'append'], $items);
+        parent::__construct($this->parseItems($items));
     }
 
     /**
-     * Appends an item
-     * @param array|Entity $item Item to append as `ScanEntity` or as array that
-     *  will be transformed into a `ScanEntity`
-     * @return $this
-     * @throws LogicException
-     * @uses $Collection
+     * Appends items.
+     *
+     * Returns a new `ResultScan` instance as the result of concatenating the
+     *  list of elements in this collection with the passed list of elements
+     * @param array|Traversable $items Items
+     * @return \LinkScanner\ResultScan
+     * @uses parseItems()
      */
-    public function append($item)
+    public function append($items)
     {
-        $item = $item instanceof ScanEntity ? $item : new ScanEntity($item);
-
-        if (!$item->has(['code', 'external', 'type', 'url'])) {
-            throw new LogicException(__d('link-scanner', 'Missing data in the item to be appended'));
-        }
-
-        $items = [$item];
-
-        if (!$this->Collection->isEmpty()) {
-            $items = array_merge($this->Collection->toArray(), $items);
-        }
-
-        $this->Collection = new Collection($items);
-
-        return $this;
+        return new ResultScan(array_merge($this->buffered()->toArray(), $this->parseItems($items)));
     }
 
     /**
-     * Counts the number of items
-     * @return int
-     * @uses $Collection
+     * Prepends items.
+     *
+     * Returns a new `ResultScan` instance as the result of concatenating the
+     *  passed list of elements with the list of elements in this collection
+     * @param array|Traversable $items Items
+     * @return \LinkScanner\ResultScan
+     * @uses parseItems()
      */
-    public function count()
+    public function prepend($items)
     {
-        return $this->Collection->count();
-    }
-
-    /**
-     * Creates a new iterator from an `ArrayObject` instance
-     * @return \Cake\Collection\Collection
-     * @uses $Collection
-     */
-    public function getIterator()
-    {
-        return $this->Collection;
-    }
-
-    /**
-     * Get the already scanned links
-     * @return array
-     * @uses $Collection
-     */
-    public function getScannedUrl()
-    {
-        return $this->Collection->extract('url')->toArray();
-    }
-
-    /**
-     * Returns a string representation of this object that can be used to
-     *  reconstruct it
-     * @return string
-     * @uses $Collection
-     */
-    public function serialize()
-    {
-        return $this->Collection->serialize();
-    }
-
-    /**
-     * Unserializes the passed string and rebuilds the Collection instance
-     * @param string $collection The serialized collection
-     * @return void
-     * @uses $Collection
-     */
-    public function unserialize($collection)
-    {
-        $this->Collection = new Collection(unserialize($collection));
+        return new ResultScan(array_merge($this->parseItems($items), $this->buffered()->toArray()));
     }
 }
