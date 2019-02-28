@@ -81,10 +81,10 @@ class ScanEntityTest extends TestCase
         var_dump($this->ScanEntity);
         $dump = ob_get_contents();
         ob_end_clean();
-        $this->assertTextContains($line, $dump);
         $this->assertTextContains(get_class($this->ScanEntity), $dump);
 
         $this->skipIf(IS_WIN);
+        $this->assertTextContains($line, $dump);
         $this->assertTextContains(__FILE__, $dump);
     }
 
