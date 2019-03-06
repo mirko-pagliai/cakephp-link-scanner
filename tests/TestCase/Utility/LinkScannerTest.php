@@ -467,7 +467,7 @@ class LinkScannerTest extends TestCase
         foreach (['invalid', ['invalid']] as $fullBaseUrl) {
             $this->assertException(InvalidArgumentException::class, function () use ($fullBaseUrl) {
                 $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
-            }, 'Invalid url `invalid`');
+            }, 'Invalid full base url `invalid`');
         }
     }
 }
