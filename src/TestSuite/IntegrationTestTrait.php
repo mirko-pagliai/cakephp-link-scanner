@@ -18,14 +18,13 @@ use Cake\Http\Client\Response;
 use Cake\Routing\Router;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
-use Tools\ReflectionTrait;
 
 /**
  * A trait intended to make integration tests of your controllers easier
  */
 trait IntegrationTestTrait
 {
-    use BaseIntegrationTestTrait, ReflectionTrait;
+    use BaseIntegrationTestTrait;
 
     /**
      * Returns a stub of `Client`, where the `get()` method uses the
