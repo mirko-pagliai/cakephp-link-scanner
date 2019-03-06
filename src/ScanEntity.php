@@ -29,10 +29,12 @@ class ScanEntity implements ArrayAccess
     /**
      * Initializes the internal properties
      * @param array $properties Properties to set
+     * @throws KeyNotExistsException
      * @uses $properties
      */
     public function __construct(array $properties = [])
     {
+        key_exists_or_fail(['code', 'external', 'type', 'url'], $properties);
         $this->properties = $properties;
     }
 

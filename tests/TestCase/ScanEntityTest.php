@@ -37,7 +37,9 @@ class ScanEntityTest extends TestCase
 
         $this->ScanEntity = new ScanEntity([
             'code' => 200,
+            'external' => false,
             'location' => 'http://example.com/location',
+            'type' => 'text/html; charset=UTF-8',
             'url' => 'http://example.com',
         ]);
     }
@@ -82,6 +84,17 @@ class ScanEntityTest extends TestCase
             $this->ScanEntity->offsetSet('code', $code);
             $this->assertEquals($expectedValue, $this->ScanEntity->isRedirect());
         }
+    }
+
+    /**
+     * Test for `__construct()` method
+     * @expectedException Tools\Exception\KeyNotExistsException
+     * @expectedExceptionMessage Key `code` does not exist
+     * @test
+     */
+    public function testConstruct()
+    {
+        new ScanEntity;
     }
 
     /**
