@@ -66,9 +66,7 @@ abstract class TestCase extends BaseTestCase
 
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
-        $Client->method('get')->will($this->returnCallback(function () {
-            return $this->getResponseWithBody(null)->withStatus(404);
-        }));
+        $Client->method('get')->will($this->returnValue($this->getResponseWithBody(null)->withStatus(404)));
 
         return $Client;
     }

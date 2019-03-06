@@ -40,18 +40,12 @@ trait IntegrationTestTrait
 
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
-        $Client->method('get')->will($this->returnCallback(function () {
-            $args = func_get_args();
-
-            if (is_string($args[0])) {
-                if (preg_match('/^https?:\/\/localhost\/?$/', $args[0])) {
-                    $args[0] = ['controller' => 'Pages', 'action' => 'display', 'home'];
-                } elseif (preg_match('/^http:\/\/localhost\/pages\/(.+)/', $args[0], $matches)) {
-                    $args[0] = ['controller' => 'Pages', 'action' => 'display', $matches[1]];
-                }
+        $Client->method('get')->will($this->returnCallback(function ($url) {
+            if (is_string($url) && preg_match('/^http:\/\/localhost\/?(pages\/(.+))?$/', $url, $matches)) {
+                $url = ['controller' => 'Pages', 'action' => 'display', empty($matches[2]) ? 'home' : $matches[2]];
             }
 
-            call_user_func_array([$this, 'get'], $args);
+            call_user_func([$this, 'get'], $url);
 
             if (!$this->_response instanceof Response) {
                 $response = new Response([], (string)$this->_response->getBody());
@@ -78,7 +72,7 @@ trait IntegrationTestTrait
      */
     protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null)
     {
-        $fullBaseUrl = $fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl');
+        $fullBaseUrl = $fullBaseUrl ?: Configure::read('App.fullBaseUrl', 'http://localhost');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
 
         return $this->getMockBuilder(LinkScanner::class)
