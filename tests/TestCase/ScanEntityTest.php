@@ -45,20 +45,6 @@ class ScanEntityTest extends TestCase
     }
 
     /**
-     * Test for `ArrayAccess` interface
-     * @test
-     */
-    public function testArrayAccess()
-    {
-        $this->ScanEntity['newKey'] = 'a key';
-        $this->assertTrue(isset($this->ScanEntity['newKey']));
-        $this->assertSame('a key', $this->ScanEntity['newKey']);
-        unset($this->ScanEntity['newKey']);
-        $this->assertFalse(isset($this->ScanEntity['newKey']));
-        $this->assertNull($this->ScanEntity['newKey']);
-    }
-
-    /**
      * Test for `__call()`
      * @test
      */
@@ -71,7 +57,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $this->ScanEntity->offsetSet('code', $code);
+            $this->ScanEntity->set('code', $code);
             $this->assertEquals($expectedValue, $this->ScanEntity->isOk());
         }
         $statusCodes = [
@@ -81,7 +67,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $this->ScanEntity->offsetSet('code', $code);
+            $this->ScanEntity->set('code', $code);
             $this->assertEquals($expectedValue, $this->ScanEntity->isRedirect());
         }
     }
@@ -95,43 +81,5 @@ class ScanEntityTest extends TestCase
     public function testConstruct()
     {
         new ScanEntity;
-    }
-
-    /**
-     * Test for `__debugInfo()` method
-     * @test
-     */
-    public function testDebugInfo()
-    {
-        ob_start();
-        $line = __LINE__ + 1;
-        var_dump($this->ScanEntity);
-        $dump = ob_get_contents();
-        ob_end_clean();
-        $this->assertTextContains(get_class($this->ScanEntity), $dump);
-
-        $this->skipIf(IS_WIN);
-        $this->assertTextContains($line, $dump);
-        $this->assertTextContains(__FILE__, $dump);
-    }
-
-    /**
-     * Test for `__get()` method
-     * @test
-     */
-    public function testGet()
-    {
-        $this->assertSame(200, $this->ScanEntity->code);
-        $this->assertNull($this->ScanEntity->noExisting);
-    }
-
-    /**
-     * Test for `has()` method
-     * @test
-     */
-    public function testHas()
-    {
-        $this->assertTrue($this->ScanEntity->has('code'));
-        $this->assertFalse($this->ScanEntity->has('noExisting'));
     }
 }
