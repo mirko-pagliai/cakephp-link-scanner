@@ -36,23 +36,6 @@
 
 						</li>
 				<li class="main">
-					<a href="namespace-LinkScanner.Http.html">
-						Http<span></span>
-					</a>
-
-						<ul>
-				<li class="main">
-					<a href="namespace-LinkScanner.Http.Client.html">
-						Client					</a>
-
-						</li>
-							</ul></li>
-				<li class="main">
-					<a href="namespace-LinkScanner.ORM.html">
-						ORM					</a>
-
-						</li>
-				<li class="main">
 					<a href="namespace-LinkScanner.TestSuite.html">
 						TestSuite					</a>
 
@@ -74,10 +57,9 @@
 			<ul>
 				<li><a href="class-LinkScanner.Command.LinkScannerCommand.html">LinkScanner\Command\LinkScannerCommand</a></li>
 				<li><a href="class-LinkScanner.Event.LinkScannerCommandEventListener.html">LinkScanner\Event\LinkScannerCommandEventListener</a></li>
-				<li><a href="class-LinkScanner.Http.Client.ScanResponse.html">LinkScanner\Http\Client\ScanResponse</a></li>
-				<li><a href="class-LinkScanner.ORM.ScanEntity.html">LinkScanner\ORM\ScanEntity</a></li>
 				<li><a href="class-LinkScanner.Plugin.html">LinkScanner\Plugin</a></li>
 				<li><a href="class-LinkScanner.ResultScan.html">LinkScanner\ResultScan</a></li>
+				<li><a href="class-LinkScanner.ScanEntity.html">LinkScanner\ScanEntity</a></li>
 				<li><a href="class-LinkScanner.TestSuite.TestCase.html">LinkScanner\TestSuite\TestCase</a></li>
 				<li><a href="class-LinkScanner.Utility.LinkScanner.html">LinkScanner\Utility\LinkScanner</a></li>
 			</ul>
@@ -154,7 +136,7 @@
 </span><span id="14" class="l">
 </span><span id="15" class="l"><span class="php-keyword1">use</span> Cake\Event\Event;
 </span><span id="16" class="l"><span class="php-keyword1">use</span> Cake\Event\EventListenerInterface;
-</span><span id="17" class="l"><span class="php-keyword1">use</span> LinkScanner\Http\Client\ScanResponse;
+</span><span id="17" class="l"><span class="php-keyword1">use</span> Cake\Http\Client\Response;
 </span><span id="18" class="l"><span class="php-keyword1">use</span> LinkScanner\ResultScan;
 </span><span id="19" class="l">
 </span><span id="20" class="l"><span class="php-comment">/**
@@ -165,10 +147,10 @@
 </span><span id="25" class="l">    <span class="php-comment">/**
 </span></span><span id="26" class="l"><span class="php-comment">     * `LinkScanner.afterScanUrl` event
 </span></span><span id="27" class="l"><span class="php-comment">     * @param Event $event An `Event` instance
-</span></span><span id="28" class="l"><span class="php-comment">     * @param ScanResponse $response A `ScanResponse` instance
+</span></span><span id="28" class="l"><span class="php-comment">     * @param Response $response A `Response` instance
 </span></span><span id="29" class="l"><span class="php-comment">     * @return bool
 </span></span><span id="30" class="l"><span class="php-comment">     */</span>
-</span><span id="31" class="l">    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> afterScanUrl(Event <span class="php-var">$event</span>, ScanResponse <span class="php-var">$response</span>);
+</span><span id="31" class="l">    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> afterScanUrl(Event <span class="php-var">$event</span>, Response <span class="php-var">$response</span>);
 </span><span id="32" class="l">
 </span><span id="33" class="l">    <span class="php-comment">/**
 </span></span><span id="34" class="l"><span class="php-comment">     * `LinkScanner.beforeScanUrl` event
@@ -237,6 +219,6 @@
 </div>
 </div>
 <script src="resources/combined.js?dbb5e1beab6852c5c079a04e11ff61ac6b499af9"></script>
-<script src="elementlist.js?5883b70dcfd3ae11f61c8814ab671f5db951ae3c"></script>
+<script src="elementlist.js?baf0213c4215ddaee61a3e9999c712f7dfeee15a"></script>
 </body>
 </html>

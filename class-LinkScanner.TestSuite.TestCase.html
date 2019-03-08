@@ -34,23 +34,6 @@
 						Event					</a>
 
 						</li>
-				<li class="main">
-					<a href="namespace-LinkScanner.Http.html">
-						Http<span></span>
-					</a>
-
-						<ul>
-				<li class="main">
-					<a href="namespace-LinkScanner.Http.Client.html">
-						Client					</a>
-
-						</li>
-							</ul></li>
-				<li class="main">
-					<a href="namespace-LinkScanner.ORM.html">
-						ORM					</a>
-
-						</li>
 				<li class="active main">
 					<a href="namespace-LinkScanner.TestSuite.html">
 						TestSuite					</a>
@@ -161,7 +144,7 @@ MeTools\TestSuite\TestCase
 		<b>Namespace:</b> <a href="namespace-LinkScanner.html">LinkScanner</a>\<a href="namespace-LinkScanner.TestSuite.html">TestSuite</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-LinkScanner.TestSuite.TestCase.html#22-127" title="Go to source code">TestSuite/TestCase.php</a>
+			<b>Located at</b> <a href="source-class-LinkScanner.TestSuite.TestCase.html#23-137" title="Go to source code">TestSuite/TestCase.php</a>
 		<br>
 	</div>
 
@@ -169,6 +152,36 @@ MeTools\TestSuite\TestCase
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
+	<tr data-order="tearDown" id="_tearDown">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_tearDown">#</a>
+		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#28-37" title="Go to source code">tearDown</a>( )</code>
+
+		<div class="description short">
+			<p>Called after every test method</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Called after every test method</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="assertEventNotFired" id="_assertEventNotFired">
 
 		<td class="attributes"><code>
@@ -181,7 +194,7 @@ MeTools\TestSuite\TestCase
 
 		<td class="name"><div>
 		<a class="anchor" href="#_assertEventNotFired">#</a>
-		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#27-41" title="Go to source code">assertEventNotFired</a>( <span>string <var>$name</var></span>, <span>Cake\Event\EventManager|null <var>$eventManager</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#39-53" title="Go to source code">assertEventNotFired</a>( <span>string <var>$name</var></span>, <span>Cake\Event\EventManager|null <var>$eventManager</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Asserts that a global event was not fired. You must track events in your
@@ -220,7 +233,7 @@ MeTools\TestSuite\TestCase
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getClientReturnsErrorResponse">#</a>
-		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#43-62" title="Go to source code">getClientReturnsErrorResponse</a>( )</code>
+		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#55-72" title="Go to source code">getClientReturnsErrorResponse</a>( )</code>
 
 		<div class="description short">
 			<p>Returns a stub of <code>Client</code>, where the <code>get()</code> method always returns a
@@ -259,7 +272,7 @@ MeTools\TestSuite\TestCase
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getClientReturnsSampleResponse">#</a>
-		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#64-90" title="Go to source code">getClientReturnsSampleResponse</a>( )</code>
+		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#74-100" title="Go to source code">getClientReturnsSampleResponse</a>( )</code>
 
 		<div class="description short">
 			<p>Returns a stub of <code>Client</code>, where the <code>get()</code> method returns a sample
@@ -298,7 +311,7 @@ MeTools\TestSuite\TestCase
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getEventManager">#</a>
-		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#92-107" title="Go to source code">getEventManager</a>( <span><code><a href="class-LinkScanner.Utility.LinkScanner.html">LinkScanner\Utility\LinkScanner</a></code> <var>$LinkScanner</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#102-117" title="Go to source code">getEventManager</a>( <span><code><a href="class-LinkScanner.Utility.LinkScanner.html">LinkScanner\Utility\LinkScanner</a></code> <var>$LinkScanner</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Sets the event list and returns the <code>EventManager</code> instance</p>
@@ -337,7 +350,7 @@ MeTools\TestSuite\TestCase
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getResponseWithBody">#</a>
-		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#109-126" title="Go to source code">getResponseWithBody</a>( <span>string <var>$body</var></span>, <span>Cake\Http\Client\Response <var>$response</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-LinkScanner.TestSuite.TestCase.html#119-136" title="Go to source code">getResponseWithBody</a>( <span>string <var>$body</var></span>, <span>Cake\Http\Client\Response <var>$response</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Gets a <code>Response</code> instance, writes a new body string and returns.</p>

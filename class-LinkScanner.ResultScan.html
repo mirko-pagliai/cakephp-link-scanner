@@ -35,23 +35,6 @@
 
 						</li>
 				<li class="main">
-					<a href="namespace-LinkScanner.Http.html">
-						Http<span></span>
-					</a>
-
-						<ul>
-				<li class="main">
-					<a href="namespace-LinkScanner.Http.Client.html">
-						Client					</a>
-
-						</li>
-							</ul></li>
-				<li class="main">
-					<a href="namespace-LinkScanner.ORM.html">
-						ORM					</a>
-
-						</li>
-				<li class="main">
 					<a href="namespace-LinkScanner.TestSuite.html">
 						TestSuite					</a>
 
@@ -73,6 +56,7 @@
 			<ul>
 				<li><a href="class-LinkScanner.Plugin.html">Plugin</a></li>
 				<li class="active"><a href="class-LinkScanner.ResultScan.html">ResultScan</a></li>
+				<li><a href="class-LinkScanner.ScanEntity.html">ScanEntity</a></li>
 			</ul>
 
 
@@ -128,20 +112,18 @@
 
 
 	<div class="description">
-	<p>This class contains the results of the scan.</p>
-
-<p>Summarily, it works like the <code>Collection</code> class, simulating all its methods and adding the <code>append()</code> method.</p>
+	<p>This class contains the results of the scan</p>
 	</div>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
+Cake\Collection\Collection
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
 <b><span>LinkScanner\ResultScan</span></b>			
-			 implements 
-<span>Countable</span>, 
-			
-<span>IteratorAggregate</span>, 
-			
-<span>Serializable</span>
 			
 			
 		</dd>
@@ -160,7 +142,7 @@
 		<b>Namespace:</b> <a href="namespace-LinkScanner.html">LinkScanner</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-LinkScanner.ResultScan.html#22-142" title="Go to source code">ResultScan.php</a>
+			<b>Located at</b> <a href="source-class-LinkScanner.ResultScan.html#19-77" title="Go to source code">ResultScan.php</a>
 		<br>
 	</div>
 
@@ -168,48 +150,47 @@
 
 	<table class="summary methods" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="__call" id="___call">
+	<tr data-order="parseItems" id="_parseItems">
 
 		<td class="attributes"><code>
-			 public 
+			 protected 
 
-			
+			array
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#___call">#</a>
-		<code><a href="source-class-LinkScanner.ResultScan.html#36-49" title="Go to source code">__call</a>( <span>string <var>$name</var></span>, <span>array <var>$arguments</var></span> )</code>
+		<a class="anchor" href="#_parseItems">#</a>
+		<code><a href="source-class-LinkScanner.ResultScan.html#24-38" title="Go to source code">parseItems</a>( <span>array|Traversable <var>$items</var></span> )</code>
 
 		<div class="description short">
-			<p>Magic method, triggered when invoking inaccessible methods in an object
- context.</p>
+			<p>Internal method to parse items.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Magic method, triggered when invoking inaccessible methods in an object context.</p>
+			<p>Internal method to parse items.</p>
 
-<p>It invokes the method from the <code>Collection</code> instance.</p>
+<p>Ensures that each item is a <code>ScanEntity</code> and has all the properties it needs</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$name</var></dt>
-					<dd>Method name</dd>
-					<dt><var>$arguments</var></dt>
-					<dd>Method arguments</dd>
+					<dt><var>$items</var></dt>
+					<dd>Array of items</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<br>$this|mixed
+					array<br>Parsed items
 				</div>
 
 
-				<h4>Uses</h4>
+				<h4>Used by</h4>
 				<div class="list">
-						<br>
+						LinkScanner\ResultScan::__construct()<br>
+						LinkScanner\ResultScan::append()<br>
+						LinkScanner\ResultScan::prepend()<br>
 				</div>
 
 
@@ -228,7 +209,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-LinkScanner.ResultScan.html#51-65" title="Go to source code">__construct</a>( <span>array <var>$items</var> = []</span> )</code>
+		<code><a href="source-class-LinkScanner.ResultScan.html#40-48" title="Go to source code">__construct</a>( <span>array|Traversable <var>$items</var> = []</span> )</code>
 
 		<div class="description short">
 			<p>Constructor</p>
@@ -248,8 +229,7 @@
 
 				<h4>Uses</h4>
 				<div class="list">
-						<code><a href="class-LinkScanner.ResultScan.html#_append">LinkScanner\ResultScan::append()</a></code><br>
-						<br>
+						<code><a href="class-LinkScanner.ResultScan.html#_parseItems">LinkScanner\ResultScan::parseItems()</a></code><br>
 				</div>
 
 
@@ -261,250 +241,88 @@
 		<td class="attributes"><code>
 			 public 
 
-			
+			<code><a href="class-LinkScanner.ResultScan.html">LinkScanner\ResultScan</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_append">#</a>
-		<code><a href="source-class-LinkScanner.ResultScan.html#67-89" title="Go to source code">append</a>( <span>array|Entity <var>$item</var></span> )</code>
+		<code><a href="source-class-LinkScanner.ResultScan.html#50-62" title="Go to source code">append</a>( <span>array|Traversable <var>$items</var></span> )</code>
 
 		<div class="description short">
-			<p>Appends an item</p>
+			<p>Appends items.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Appends an item</p>
+			<p>Appends items.</p>
+
+<p>Returns a new <code>ResultScan</code> instance as the result of concatenating the list of elements in this collection with the passed list of elements</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$item</var></dt>
-					<dd><p>Item to append as <code>ScanEntity</code> or as array that
- will be transformed into a <code>ScanEntity</code></p></dd>
+					<dt><var>$items</var></dt>
+					<dd>Items</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<br>$this
+					<code><a href="class-LinkScanner.ResultScan.html">LinkScanner\ResultScan</a></code>
 				</div>
 
-				<h4>Throws</h4>
-				<div class="list">
-					LogicException
-				</div>
 
 				<h4>Uses</h4>
 				<div class="list">
-						<br>
-				</div>
-				<h4>Used by</h4>
-				<div class="list">
-						LinkScanner\ResultScan::__construct()<br>
+						<code><a href="class-LinkScanner.ResultScan.html#_parseItems">LinkScanner\ResultScan::parseItems()</a></code><br>
 				</div>
 
 
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="count" id="_count">
+	<tr data-order="prepend" id="_prepend">
 
 		<td class="attributes"><code>
 			 public 
 
-			integer
+			<code><a href="class-LinkScanner.ResultScan.html">LinkScanner\ResultScan</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_count">#</a>
-		<code><a href="source-class-LinkScanner.ResultScan.html#91-99" title="Go to source code">count</a>( )</code>
+		<a class="anchor" href="#_prepend">#</a>
+		<code><a href="source-class-LinkScanner.ResultScan.html#64-76" title="Go to source code">prepend</a>( <span>array|Traversable <var>$items</var></span> )</code>
 
 		<div class="description short">
-			<p>Counts the number of items</p>
+			<p>Prepends items.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Counts the number of items</p>
+			<p>Prepends items.</p>
 
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					integer
-				</div>
-
-
-				<h4>Uses</h4>
-				<div class="list">
-						<br>
-				</div>
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>Countable::count()</code></div>
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getIterator" id="_getIterator">
-
-		<td class="attributes"><code>
-			 public 
-
-			Cake\Collection\Collection
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getIterator">#</a>
-		<code><a href="source-class-LinkScanner.ResultScan.html#101-109" title="Go to source code">getIterator</a>( )</code>
-
-		<div class="description short">
-			<p>Creates a new iterator from an <code>ArrayObject</code> instance</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Creates a new iterator from an <code>ArrayObject</code> instance</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					Cake\Collection\Collection
-				</div>
-
-
-				<h4>Uses</h4>
-				<div class="list">
-						<br>
-				</div>
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>IteratorAggregate::getIterator()</code></div>
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getScannedUrl" id="_getScannedUrl">
-
-		<td class="attributes"><code>
-			 public 
-
-			array
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getScannedUrl">#</a>
-		<code><a href="source-class-LinkScanner.ResultScan.html#111-119" title="Go to source code">getScannedUrl</a>( )</code>
-
-		<div class="description short">
-			<p>Get the already scanned links</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Get the already scanned links</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					array
-				</div>
-
-
-				<h4>Uses</h4>
-				<div class="list">
-						<br>
-				</div>
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="serialize" id="_serialize">
-
-		<td class="attributes"><code>
-			 public 
-
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_serialize">#</a>
-		<code><a href="source-class-LinkScanner.ResultScan.html#121-130" title="Go to source code">serialize</a>( )</code>
-
-		<div class="description short">
-			<p>Returns a string representation of this object that can be used to
- reconstruct it</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Returns a string representation of this object that can be used to reconstruct it</p>
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					string
-				</div>
-
-
-				<h4>Uses</h4>
-				<div class="list">
-						<br>
-				</div>
-
-
-				<h4>Implementation of</h4>
-				<div class="list"><code>Serializable::serialize()</code></div>
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="unserialize" id="_unserialize">
-
-		<td class="attributes"><code>
-			 public 
-
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_unserialize">#</a>
-		<code><a href="source-class-LinkScanner.ResultScan.html#132-141" title="Go to source code">unserialize</a>( <span>string <var>$collection</var></span> )</code>
-
-		<div class="description short">
-			<p>Unserializes the passed string and rebuilds the Collection instance</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Unserializes the passed string and rebuilds the Collection instance</p>
+<p>Returns a new <code>ResultScan</code> instance as the result of concatenating the passed list of elements with the list of elements in this collection</p>
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$collection</var></dt>
-					<dd>The serialized collection</dd>
+					<dt><var>$items</var></dt>
+					<dd>Items</dd>
 				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code><a href="class-LinkScanner.ResultScan.html">LinkScanner\ResultScan</a></code>
+				</div>
 
 
 				<h4>Uses</h4>
 				<div class="list">
-						<br>
+						<code><a href="class-LinkScanner.ResultScan.html#_parseItems">LinkScanner\ResultScan::parseItems()</a></code><br>
 				</div>
 
 
-				<h4>Implementation of</h4>
-				<div class="list"><code>Serializable::unserialize()</code></div>
 		</div>
 		</div></td>
 	</tr>
@@ -521,45 +339,6 @@
 
 
 
-	<table class="summary properties" id="properties">
-	<caption>Properties summary</caption>
-	<tr data-order="Collection" id="$Collection">
-		<td class="attributes"><code>
-			protected  
-			Cake\Collection\Collection
-		</code></td>
-
-		<td class="name">
-				<a href="source-class-LinkScanner.ResultScan.html#30-34" title="Go to source code"><var>$Collection</var></a>
-
-			<div class="description short">
-				<p>A <code>Collection</code> instance</p>
-			</div>
-
-			<div class="description detailed hidden">
-				<p>A <code>Collection</code> instance</p>
-
-					<h4>Used by</h4>
-					<div class="list">
-							LinkScanner\ResultScan::__call()<br>
-							LinkScanner\ResultScan::__construct()<br>
-							LinkScanner\ResultScan::append()<br>
-							LinkScanner\ResultScan::count()<br>
-							LinkScanner\ResultScan::getIterator()<br>
-							LinkScanner\ResultScan::getScannedUrl()<br>
-							LinkScanner\ResultScan::serialize()<br>
-							LinkScanner\ResultScan::unserialize()<br>
-					</div>
-			</div>
-		</td>
-		<td class="value">
-			<div>
-				<a href="#$Collection" class="anchor">#</a>
-				<code></code>
-			</div>
-		</td>
-	</tr>
-	</table>
 
 
 

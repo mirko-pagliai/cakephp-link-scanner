@@ -35,23 +35,6 @@
 
 						</li>
 				<li class="main">
-					<a href="namespace-LinkScanner.Http.html">
-						Http<span></span>
-					</a>
-
-						<ul>
-				<li class="main">
-					<a href="namespace-LinkScanner.Http.Client.html">
-						Client					</a>
-
-						</li>
-							</ul></li>
-				<li class="main">
-					<a href="namespace-LinkScanner.ORM.html">
-						ORM					</a>
-
-						</li>
-				<li class="main">
 					<a href="namespace-LinkScanner.TestSuite.html">
 						TestSuite					</a>
 
@@ -159,9 +142,7 @@
 		<b>Namespace:</b> <a href="namespace-LinkScanner.html">LinkScanner</a>\<a href="namespace-LinkScanner.Utility.html">Utility</a><br>
 		
 
-				<b>Used by:</b>
-				LinkScanner\Command\LinkScannerCommand::execute()<br>
-			<b>Located at</b> <a href="source-class-LinkScanner.Utility.LinkScanner.html#31-469" title="Go to source code">Utility/LinkScanner.php</a>
+			<b>Located at</b> <a href="source-class-LinkScanner.Utility.LinkScanner.html#33-491" title="Go to source code">Utility/LinkScanner.php</a>
 		<br>
 	</div>
 
@@ -181,7 +162,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#98-115" title="Go to source code">__construct</a>( <span>string|array|null <var>$fullBaseUrl</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#109-128" title="Go to source code">__construct</a>( <span>string|array|null <var>$fullBaseUrl</var> = <span class="php-keyword1">null</span></span>, <span>Cake\Http\Client|null <var>$Client</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-LinkScanner.ResultScan.html">LinkScanner\ResultScan</a></code>|null <var>$ResultScan</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Construct.</p>
@@ -198,6 +179,10 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 				<div class="list"><dl>
 					<dt><var>$fullBaseUrl</var></dt>
 					<dd>Full base url</dd>
+					<dt><var>$Client</var></dt>
+					<dd>A Client instance or null</dd>
+					<dt><var>$ResultScan</var></dt>
+					<dd>A Client instance or null</dd>
 				</dl></div>
 
 
@@ -208,6 +193,45 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 						<br>
 						<code><a href="class-LinkScanner.Utility.LinkScanner.html#_setFullBaseUrl">LinkScanner\Utility\LinkScanner::setFullBaseUrl()</a></code><br>
 				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__get" id="___get">
+
+		<td class="attributes"><code>
+			 public 
+
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___get">#</a>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#130-138" title="Go to source code">__get</a>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			<p>Magic method for reading data from inaccessible properties</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Magic method for reading data from inaccessible properties</p>
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd>Property name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					mixed
+				</div>
+
+
 
 
 		</div>
@@ -225,7 +249,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#__createLockFile">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#117-131" title="Go to source code">_createLockFile</a>( )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#140-155" title="Go to source code">_createLockFile</a>( )</code>
 
 		<div class="description short">
 			<p>Internal method to create a lock file</p>
@@ -246,6 +270,10 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 					RuntimeException
 				</div>
 
+				<h4>Uses</h4>
+				<div class="list">
+						<br>
+				</div>
 				<h4>Used by</h4>
 				<div class="list">
 						LinkScanner\Utility\LinkScanner::scan()<br>
@@ -260,21 +288,21 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		<td class="attributes"><code>
 			 protected 
 
-			<code><a href="class-LinkScanner.Http.Client.ScanResponse.html">LinkScanner\Http\Client\ScanResponse</a></code>
+			Cake\Http\Client\Response
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#__getResponse">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#133-165" title="Go to source code">_getResponse</a>( <span>string <var>$url</var></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#157-196" title="Go to source code">_getResponse</a>( <span>string <var>$url</var></span> )</code>
 
 		<div class="description short">
-			<p>Performs a single GET request and returns the response as <code>ScanResponse</code>.</p>
+			<p>Performs a single GET request and returns a <code>ScanResponse</code> instance.</p>
 		</div>
 
 		<div class="description detailed hidden">
-			<p>Performs a single GET request and returns the response as <code>ScanResponse</code>.</p>
+			<p>Performs a single GET request and returns a <code>ScanResponse</code> instance.</p>
 
 <p>The response will be cached, if that's ok and the cache is enabled.</p>
 
@@ -287,7 +315,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><a href="class-LinkScanner.Http.Client.ScanResponse.html">LinkScanner\Http\Client\ScanResponse</a></code>
+					Cake\Http\Client\Response
 				</div>
 
 
@@ -318,7 +346,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#__recursiveScan">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#167-227" title="Go to source code">_recursiveScan</a>( <span>string|array <var>$url</var></span>, <span>string|null <var>$referer</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#198-259" title="Go to source code">_recursiveScan</a>( <span>string|array <var>$url</var></span>, <span>string|null <var>$referer</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Internal method to perform a recursive scan.</p>
@@ -327,11 +355,11 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		<div class="description detailed hidden">
 			<p>Internal method to perform a recursive scan.</p>
 
-<p>It recursively repeats the scan for all the urls found that have not already been scanned.</p>
+<p>It recursively repeats the scan for all urls found that have not already been scanned.</p>
 
 <h3>Events</h3>
 
-<p>This method will trigger some events: - <code>LinkScanner.foundLinkToBeScanned</code>: will be triggered if, after scanning a single url, an other link to be scanned are found; - <code>LinkScanner.responseNotOk</code>: will be triggered when a single url is scanned and the response is not ok.</p>
+<p>This method will trigger some events: - <code>LinkScanner.foundLinkToBeScanned</code>: will be triggered when other links to be scanned are found; - <code>LinkScanner.responseNotOk</code>: will be triggered when a single url is scanned and the response is not ok.</p>
 
 
 				<h4>Parameters</h4>
@@ -366,14 +394,14 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		<td class="attributes"><code>
 			 protected 
 
-			<code><a href="class-LinkScanner.Http.Client.ScanResponse.html">LinkScanner\Http\Client\ScanResponse</a></code>|null
+			LinkScanner\Http\Client\ScanResponse|null
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#__singleScan">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#229-278" title="Go to source code">_singleScan</a>( <span>string|array <var>$url</var></span>, <span>string|null <var>$referer</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#261-309" title="Go to source code">_singleScan</a>( <span>string|array <var>$url</var></span>, <span>string|null <var>$referer</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Internal method to perform a single scan.</p>
@@ -384,7 +412,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 <h3>Events</h3>
 
-<p>This method will trigger some events: - <code>LinkScanner.beforeScanUrl</code>: will be triggered before a single url is scanned; - <code>LinkScanner.afterScanUrl</code>: will be triggered after a single url is scanned.</p>
+<p>This method will trigger some events: - <code>LinkScanner.beforeScanUrl</code>: will be triggered before a single url is scanned; - <code>LinkScanner.afterScanUrl</code>: will be triggered after a single url is scanned; - <code>LinkScanner.foundRedirect</code>: will be triggered if a redirect is found.</p>
 
 
 				<h4>Parameters</h4>
@@ -397,13 +425,14 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><a href="class-LinkScanner.Http.Client.ScanResponse.html">LinkScanner\Http\Client\ScanResponse</a></code>|null
+					LinkScanner\Http\Client\ScanResponse|null
 				</div>
 
 
 				<h4>Uses</h4>
 				<div class="list">
 						<code><a href="class-LinkScanner.Utility.LinkScanner.html#__getResponse">LinkScanner\Utility\LinkScanner::_getResponse()</a></code><br>
+						<code><a href="class-LinkScanner.Utility.LinkScanner.html#_canBeScanned">LinkScanner\Utility\LinkScanner::canBeScanned()</a></code><br>
 						<br>
 						<br>
 				</div>
@@ -411,45 +440,6 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 				<div class="list">
 						LinkScanner\Utility\LinkScanner::_recursiveScan()<br>
 				</div>
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="__get" id="___get">
-
-		<td class="attributes"><code>
-			 public 
-
-			mixed
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#___get">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#280-288" title="Go to source code">__get</a>( <span>string <var>$name</var></span> )</code>
-
-		<div class="description short">
-			<p>Magic method for reading data from inaccessible properties</p>
-		</div>
-
-		<div class="description detailed hidden">
-			<p>Magic method for reading data from inaccessible properties</p>
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$name</var></dt>
-					<dd>Property name</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					mixed
-				</div>
-
-
 
 
 		</div>
@@ -467,7 +457,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_canBeScanned">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#290-315" title="Go to source code">canBeScanned</a>( <span>string <var>$url</var></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#311-336" title="Go to source code">canBeScanned</a>( <span>string <var>$url</var></span> )</code>
 
 		<div class="description short">
 			<p>Checks if an url can be scanned.</p>
@@ -499,6 +489,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 				<h4>Used by</h4>
 				<div class="list">
 						LinkScanner\Utility\LinkScanner::_recursiveScan()<br>
+						LinkScanner\Utility\LinkScanner::_singleScan()<br>
 				</div>
 
 
@@ -517,7 +508,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_serialize">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#317-331" title="Go to source code">serialize</a>( )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#338-352" title="Go to source code">serialize</a>( )</code>
 
 		<div class="description short">
 			<p>Returns the string representation of the object</p>
@@ -557,7 +548,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_unserialize">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#333-350" title="Go to source code">unserialize</a>( <span>string <var>$serialized</var></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#354-371" title="Go to source code">unserialize</a>( <span>string <var>$serialized</var></span> )</code>
 
 		<div class="description short">
 			<p>Called during unserialization of the object</p>
@@ -598,7 +589,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_export">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#352-385" title="Go to source code">export</a>( <span>string|null <var>$filename</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#373-406" title="Go to source code">export</a>( <span>string|null <var>$filename</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			<p>Exports scan results.</p>
@@ -650,14 +641,14 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		<td class="attributes"><code>
 			 public static
 
-			object
+			<code><a href="class-LinkScanner.Utility.LinkScanner.html">LinkScanner\Utility\LinkScanner</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_import">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#387-413" title="Go to source code">import</a>( <span>string <var>$filename</var></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#408-434" title="Go to source code">import</a>( <span>string <var>$filename</var></span> )</code>
 
 		<div class="description short">
 			<p>Imports scan results.</p>
@@ -681,7 +672,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					object
+					<code><a href="class-LinkScanner.Utility.LinkScanner.html">LinkScanner\Utility\LinkScanner</a></code>
 				</div>
 
 				<h4>Throws</h4>
@@ -710,7 +701,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_scan">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#415-451" title="Go to source code">scan</a>( )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#436-473" title="Go to source code">scan</a>( )</code>
 
 		<div class="description short">
 			<p>Performs a complete scan.</p>
@@ -741,6 +732,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 						<br>
 						<br>
 						<br>
+						<br>
 				</div>
 
 
@@ -759,7 +751,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setFullBaseUrl">#</a>
-		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#453-468" title="Go to source code">setFullBaseUrl</a>( <span>string <var>$fullBaseUrl</var></span> )</code>
+		<code><a href="source-class-LinkScanner.Utility.LinkScanner.html#475-490" title="Go to source code">setFullBaseUrl</a>( <span>string <var>$fullBaseUrl</var></span> )</code>
 
 		<div class="description short">
 			<p>Sets the full base url and, consequently, the hostname</p>
@@ -816,12 +808,12 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 	<caption>Properties summary</caption>
 	<tr data-order="Client" id="$Client">
 		<td class="attributes"><code>
-			public  
+			protected  
 			Cake\Http\Client
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#39-43" title="Go to source code"><var>$Client</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#41-45" title="Go to source code"><var>$Client</var></a>
 
 			<div class="description short">
 				<p>Instance of <code>Client</code></p>
@@ -848,12 +840,12 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 	</tr>
 	<tr data-order="ResultScan" id="$ResultScan">
 		<td class="attributes"><code>
-			public  
+			protected  
 			<code><a href="class-LinkScanner.ResultScan.html">LinkScanner\ResultScan</a></code>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#45-49" title="Go to source code"><var>$ResultScan</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#47-51" title="Go to source code"><var>$ResultScan</var></a>
 
 			<div class="description short">
 				<p>Instance of <code>ResultScan</code>. This contains the results of the scan</p>
@@ -885,7 +877,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#51-60" title="Go to source code"><var>$_defaultConfig</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#53-65" title="Go to source code"><var>$_defaultConfig</var></a>
 
 			<div class="description short">
 				<p>Default configuration</p>
@@ -900,10 +892,13 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 			<div>
 				<a href="#$_defaultConfig" class="anchor">#</a>
 				<code>[
+    <span class="php-quote">'cache'</span> =&gt; <span class="php-keyword1">true</span>,
     <span class="php-quote">'excludeLinks'</span> =&gt; [<span class="php-quote">'\{.*\}'</span>, <span class="php-quote">'javascript:'</span>],
     <span class="php-quote">'externalLinks'</span> =&gt; <span class="php-keyword1">true</span>,
     <span class="php-quote">'followRedirects'</span> =&gt; <span class="php-keyword1">false</span>,
     <span class="php-quote">'maxDepth'</span> =&gt; <span class="php-num">0</span>,
+    <span class="php-quote">'lockFile'</span> =&gt; <span class="php-keyword1">true</span>,
+    <span class="php-quote">'target'</span> =&gt; TMP,
 ]</code>
 			</div>
 		</td>
@@ -915,7 +910,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#62-66" title="Go to source code"><var>$alreadyScanned</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#67-71" title="Go to source code"><var>$alreadyScanned</var></a>
 
 			<div class="description short">
 				<p>Urls already scanned</p>
@@ -946,7 +941,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#68-72" title="Go to source code"><var>$currentDepth</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#73-77" title="Go to source code"><var>$currentDepth</var></a>
 
 			<div class="description short">
 				<p>Current scan depth level</p>
@@ -975,7 +970,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#74-78" title="Go to source code"><var>$endTime</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#79-83" title="Go to source code"><var>$endTime</var></a>
 
 			<div class="description short">
 				<p>End time</p>
@@ -1004,7 +999,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#80-84" title="Go to source code"><var>$fullBaseUrl</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#85-89" title="Go to source code"><var>$fullBaseUrl</var></a>
 
 			<div class="description short">
 				<p>Full base url</p>
@@ -1035,7 +1030,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#86-90" title="Go to source code"><var>$hostname</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#91-95" title="Go to source code"><var>$hostname</var></a>
 
 			<div class="description short">
 				<p>Host name</p>
@@ -1061,6 +1056,36 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 			</div>
 		</td>
 	</tr>
+	<tr data-order="lockFile" id="$lockFile">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#97-101" title="Go to source code"><var>$lockFile</var></a>
+
+			<div class="description short">
+				<p>Lock file path</p>
+			</div>
+
+			<div class="description detailed hidden">
+				<p>Lock file path</p>
+
+					<h4>Used by</h4>
+					<div class="list">
+							LinkScanner\Utility\LinkScanner::_createLockFile()<br>
+							LinkScanner\Utility\LinkScanner::scan()<br>
+					</div>
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$lockFile" class="anchor">#</a>
+				<code>TMP . <span class="php-quote">'link_scanner_lock_file'</span></code>
+			</div>
+		</td>
+	</tr>
 	<tr data-order="startTime" id="$startTime">
 		<td class="attributes"><code>
 			protected  
@@ -1068,7 +1093,7 @@ If <code>null</code> the <code>App.fullBaseUrl</code> value will be used.</p>
 		</code></td>
 
 		<td class="name">
-				<a href="source-class-LinkScanner.Utility.LinkScanner.html#92-96" title="Go to source code"><var>$startTime</var></a>
+				<a href="source-class-LinkScanner.Utility.LinkScanner.html#103-107" title="Go to source code"><var>$startTime</var></a>
 
 			<div class="description short">
 				<p>Start time</p>
