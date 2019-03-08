@@ -36,6 +36,7 @@ In addition, you can refer to our [API](//mirko-pagliai.github.io/cakephp-link-s
 
 ## To do list
 * allow the use of a configuration file for the shell;
+* allow to export results as html and/or xml.
 
 ## Versioning
 For transparency and insight into our release cycle and to maintain backward 
