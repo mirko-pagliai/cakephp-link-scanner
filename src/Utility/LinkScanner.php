@@ -124,7 +124,7 @@ class LinkScanner implements Serializable
         $this->Client = $Client ?: new Client(['redirect' => true]);
         $this->ResultScan = $ResultScan ?: new ResultScan;
 
-        $this->setFullBaseUrl($fullBaseUrl ?: Configure::readOrFail('App.fullBaseUrl'));
+        $this->setFullBaseUrl($fullBaseUrl ?: Configure::read('App.fullBaseUrl', 'http://localhost'));
     }
 
     /**
@@ -482,7 +482,7 @@ class LinkScanner implements Serializable
      */
     public function setFullBaseUrl($fullBaseUrl)
     {
-        is_true_or_fail(is_url($fullBaseUrl), __d('link-scanner', 'Invalid url `{0}`', $fullBaseUrl), InvalidArgumentException::class);
+        is_true_or_fail(is_url($fullBaseUrl), __d('link-scanner', 'Invalid full base url `{0}`', $fullBaseUrl), InvalidArgumentException::class);
         $this->fullBaseUrl = clean_url($fullBaseUrl);
         $this->hostname = get_hostname_from_url($fullBaseUrl);
 

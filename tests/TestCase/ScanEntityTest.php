@@ -21,10 +21,34 @@ use LinkScanner\TestSuite\TestCase;
 class ScanEntityTest extends TestCase
 {
     /**
-     * Test for `isOk()` method (through the `__call()` method)
+     * @var \LinkScanner\ScanEntity
+     */
+    protected $ScanEntity;
+
+    /**
+     * Setup the test case, backup the static object values so they can be
+     * restored. Specifically backs up the contents of Configure and paths in
+     *  App if they have not already been backed up
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->ScanEntity = new ScanEntity([
+            'code' => 200,
+            'external' => false,
+            'location' => 'http://example.com/location',
+            'type' => 'text/html; charset=UTF-8',
+            'url' => 'http://example.com',
+        ]);
+    }
+
+    /**
+     * Test for `__call()`
      * @test
      */
-    public function isOkTest()
+    public function testCall()
     {
         $statusCodes = [
             200 => true,
@@ -33,17 +57,9 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code') + ['location' => '/']);
-            $this->assertEquals($expectedValue, $entity->isOk());
+            $this->ScanEntity->set('code', $code);
+            $this->assertEquals($expectedValue, $this->ScanEntity->isOk());
         }
-    }
-
-    /**
-     * Test for `isRedirect()` method (through the `__call()` method)
-     * @test
-     */
-    public function isRedirectTest()
-    {
         $statusCodes = [
             200 => false,
             301 => true,
@@ -51,8 +67,19 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $entity = new ScanEntity(compact('code') + ['location' => '/']);
-            $this->assertEquals($expectedValue, $entity->isRedirect());
+            $this->ScanEntity->set('code', $code);
+            $this->assertEquals($expectedValue, $this->ScanEntity->isRedirect());
         }
+    }
+
+    /**
+     * Test for `__construct()` method
+     * @expectedException Tools\Exception\KeyNotExistsException
+     * @expectedExceptionMessage Key `code` does not exist
+     * @test
+     */
+    public function testConstruct()
+    {
+        new ScanEntity;
     }
 }

@@ -12,28 +12,28 @@
  */
 namespace LinkScanner;
 
-use ArrayAccess;
 use Cake\Http\Client\Response;
+use Tools\Entity;
 
 /**
  * A `ScanEntity` represents a single result of a scan
  */
-class ScanEntity implements ArrayAccess
+class ScanEntity extends Entity
 {
     /**
-     * Properties
-     * @var array
+     * @var \Cake\Http\Client\Response
      */
-    protected $properties;
+    protected $Response;
 
     /**
      * Initializes the internal properties
      * @param array $properties Properties to set
-     * @uses $properties
+     * @throws KeyNotExistsException
      */
     public function __construct(array $properties = [])
     {
-        $this->properties = $properties;
+        key_exists_or_fail(['code', 'external', 'type', 'url'], $properties);
+        parent::__construct($properties);
     }
 
     /**
@@ -47,98 +47,13 @@ class ScanEntity implements ArrayAccess
      */
     public function __call($name, $arguments)
     {
-        $response = new Response;
-        if (method_exists($response, $name)) {
-            $response = $response->withHeader('location', $this->location)
-                ->withStatus($this->code);
+        if (method_exists(Response::class, $name)) {
+            $response = (new Response)
+                ->withHeader('location', $this->get('location'))
+                ->withStatus($this->get('code'));
             $name = [$response, $name];
         }
 
         return call_user_func_array($name, $arguments);
-    }
-
-    /**
-     * Called by `var_dump()` when dumping the object to get the properties that
-     *  should be shown
-     * @return array
-     * @uses $properties
-     */
-    public function __debugInfo()
-    {
-        return $this->properties;
-    }
-
-    /**
-     * Magic method for reading data from inaccessible properties
-     * @param string $name Property name
-     * @return mixed Property value or `null` if the property does not exist
-     * @uses has()
-     * @uses $properties
-     */
-    public function __get($name)
-    {
-        return $this->has($name) ? $this->properties[$name] : null;
-    }
-
-    /**
-     * Returs true if the entity has a property
-     * @param string $name Property name
-     * @return bool
-     * @uses $properties
-     */
-    public function has($name)
-    {
-        return array_key_exists($name, $this->properties);
-    }
-
-    /**
-     * Implements `isset($entity);`
-     * @param mixed $offset The offset to check
-     * @return bool
-     * @uses has()
-     */
-    public function offsetExists($offset)
-    {
-        return $this->has($offset);
-    }
-
-    /**
-     * Implements `$entity[$offset];`
-     * @param mixed $offset The offset to get
-     * @return mixed
-     */
-    public function offsetGet($offset)
-    {
-        return $this->$offset;
-    }
-
-    /**
-     * Implements `$entity[$offset] = $value;`
-     * @param mixed $offset The offset to set
-     * @param mixed $value The value to set.
-     * @return bool
-     * @uses $properties
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->properties[$offset] = $value;
-
-        return true;
-    }
-
-    /**
-     * Implements `unset($result[$offset]);`
-     * @param mixed $offset The offset to remove
-     * @return bool `true` if the offset has been removed, `false` if the
-     *  property does not exist
-     * @uses has()
-     * @uses $properties
-     */
-    public function offsetUnset($offset)
-    {
-        $exists = $this->has($offset);
-        unset($this->properties[$offset]);
-
-        return $exists;
     }
 }

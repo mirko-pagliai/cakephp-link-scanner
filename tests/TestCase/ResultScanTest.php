@@ -15,7 +15,6 @@ namespace LinkScanner\Test\TestCase;
 use Cake\TestSuite\TestCase;
 use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
-use Tools\Exception\PropertyNotExistsException;
 
 /**
  * ResultScanTest class
@@ -28,9 +27,7 @@ class ResultScanTest extends TestCase
     protected $ResultScan;
 
     /**
-     * Setup the test case, backup the static object values so they can be
-     * restored. Specifically backs up the contents of Configure and paths in
-     *  App if they have not already been backed up
+     * Called before every test method
      * @return void
      */
     public function setUp()
@@ -66,15 +63,6 @@ class ResultScanTest extends TestCase
             ]),
         ];
         $this->assertEquals($expected, (new ResultScan($expected))->toArray());
-
-        //Missing `code` key
-        $this->expectException(PropertyNotExistsException::class);
-        $this->expectExceptionMessage('Object does not have `code` property');
-        new ResultScan([[
-            'external' => true,
-            'type' => 'text/html; charset=UTF-8',
-            'url' => 'http://google.com',
-        ]]);
     }
 
     /**
@@ -107,17 +95,6 @@ class ResultScanTest extends TestCase
         $result = (new ResultScan)->append($appended);
         $this->assertEquals($appended, $result->toArray());
         $this->assertCount(2, $result);
-
-        //Missing `code` key
-        $this->expectException(PropertyNotExistsException::class);
-        $this->expectExceptionMessage('Object does not have `code` property');
-        $this->ResultScan->append([
-            new ScanEntity([
-                'external' => true,
-                'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://example.com/anotherpage.html',
-            ]),
-        ]);
     }
 
     /**
@@ -144,17 +121,6 @@ class ResultScanTest extends TestCase
         $result = (new ResultScan)->prepend($prepended);
         $this->assertEquals($prepended, $result->toArray());
         $this->assertCount(1, $result);
-
-        //Missing `code` key
-        $this->expectException(PropertyNotExistsException::class);
-        $this->expectExceptionMessage('Object does not have `code` property');
-        $this->ResultScan->prepend([
-            new ScanEntity([
-                'external' => true,
-                'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://example.com/anotherpage.html',
-            ]),
-        ]);
     }
 
     /**

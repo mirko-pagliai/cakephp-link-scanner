@@ -27,17 +27,13 @@ class ResultScan extends Collection
      * Ensures that each item is a `ScanEntity` and has all the properties it needs
      * @param array|Traversable $items Array of items
      * @return array Parsed items
-     * @throws PropertyNotExistsException
      */
     protected function parseItems($items)
     {
         $items = $items instanceof Traversable ? $items->toArray() : $items;
 
         return array_map(function ($item) {
-            $item = $item instanceof ScanEntity ? $item : new ScanEntity($item);
-            property_exists_or_fail($item, ['code', 'external', 'type', 'url']);
-
-            return $item;
+            return $item instanceof ScanEntity ? $item : new ScanEntity($item);
         }, $items);
     }
 

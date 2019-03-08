@@ -52,9 +52,7 @@ class LinkScannerTest extends TestCase
     protected $fullBaseUrl;
 
     /**
-     * Setup the test case, backup the static object values so they can be
-     * restored. Specifically backs up the contents of Configure and paths in
-     *  App if they have not already been backed up
+     * Called before every test method
      * @return void
      */
     public function setUp()
@@ -469,7 +467,7 @@ class LinkScannerTest extends TestCase
         foreach (['invalid', ['invalid']] as $fullBaseUrl) {
             $this->assertException(InvalidArgumentException::class, function () use ($fullBaseUrl) {
                 $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
-            }, 'Invalid url `invalid`');
+            }, 'Invalid full base url `invalid`');
         }
     }
 }

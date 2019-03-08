@@ -31,17 +31,25 @@ class LinkScannerCommand extends Command
     public $LinkScanner;
 
     /**
+     * Hook method invoked by CakePHP when a command is about to be executed
+     * @return void
+     * @uses $LinkScanner
+     */
+    public function initialize()
+    {
+        $this->LinkScanner = $this->LinkScanner ?: new LinkScanner;
+    }
+
+    /**
      * Performs a complete scan
      * @param Arguments $args The command arguments
      * @param ConsoleIo $io The console io
      * @return null|int The exit code or null for success
      * @see LinkScannerCommandEventListener::implementedEvents()
-     * @uses LinkScanner
+     * @uses $LinkScanner
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
-        $this->LinkScanner = $this->LinkScanner ?: new LinkScanner;
-
         try {
             //Will trigger events provided by `LinkScannerCommandEventListener`
             $this->LinkScanner->getEventManager()->on(new LinkScannerCommandEventListener($args, $io));
