@@ -85,7 +85,7 @@ class LinkScannerCommandTest extends TestCase
             'followRedirects' => false,
             'maxDepth' => 1,
             'lockFile' => true,
-            'target' => TMP,
+            'target' => TMP . 'cakephp-link-scanner',
         ], $this->LinkScanner->getConfig());
 
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
@@ -134,7 +134,7 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testScanParams()
     {
-        touch(LINK_SCANNER_LOCK_FILE);
+        touch($this->Command->LinkScanner->lockFile);
         $params = [
             '--export',
             '--force',
@@ -151,14 +151,14 @@ class LinkScannerCommandTest extends TestCase
             'followRedirects' => false,
             'maxDepth' => 2,
             'lockFile' => false,
-            'target' => TMP,
+            'target' => TMP . 'cakephp-link-scanner',
         ];
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
         $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals(15, $this->LinkScanner->Client->getConfig('timeout'));
-        $this->assertFileNotExists(LINK_SCANNER_LOCK_FILE);
+        $this->assertFileNotExists($this->LinkScanner->lockFile);
         $this->assertFileExists($expectedFilename);
         $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->fullBaseUrl, '/')));
