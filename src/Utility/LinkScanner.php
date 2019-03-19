@@ -17,6 +17,7 @@ use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
+use Cake\Filesystem\File;
 use Cake\Filesystem\Folder;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
@@ -124,7 +125,7 @@ class LinkScanner implements Serializable
         $this->Client = $Client ?: new Client(['redirect' => true]);
         $this->ResultScan = $ResultScan ?: new ResultScan;
 
-        $this->setFullBaseUrl($fullBaseUrl ?: Configure::read('App.fullBaseUrl', 'http://localhost'));
+        $this->setFullBaseUrl($fullBaseUrl ?: (Configure::read('App.fullBaseUrl') ?: 'http://localhost'));
     }
 
     /**
@@ -145,13 +146,16 @@ class LinkScanner implements Serializable
      */
     protected function _createLockFile()
     {
-        is_true_or_fail(!$this->getConfig('lockFile') || !file_exists($this->lockFile), __d(
+        $lockFile = new File($this->lockFile);
+        is_true_or_fail(!$this->getConfig('lockFile') || !$lockFile->exists(), __d(
             'link-scanner',
             'Lock file `{0}` already exists, maybe a scan is already in progress. If not, remove it manually',
             $this->lockFile
         ), RuntimeException::class);
 
-        return $this->getConfig('lockFile') ? touch($this->lockFile) !== false : true;
+        ;
+
+        return $this->getConfig('lockFile') ? $lockFile->create() !== false : true;
     }
 
     /**
