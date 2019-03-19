@@ -5,7 +5,11 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/hqk7fxtad6r75wk3?svg=true)](https://ci.appveyor.com/project/mirko-pagliai/cakephp-link-scanner)
 [![codecov](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner/branch/master/graph/badge.svg)](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner)
 
-*LinkScanner* is a CakePHP plugin to scan links.
+*LinkScanner* is a CakePHP plugin for recursively scanning links: starting from
+a full base url, it performs GET requests, checks the status codes, inspects the
+response bodies and, if it finds other links, it continues recursively scanning.
+
+![gif of terminal](https://github.com/mirko-pagliai/cakephp-link-scanner/raw/develop/tty.gif)
 
 Did you like this plugin? Its development requires a lot of time for me.
 Please consider the possibility of making [a donation](//paypal.me/mirkopagliai):  
@@ -25,12 +29,19 @@ Plugin::load('LinkScanner', ['bootstrap' => true]);
 ```
 
 For more information on how to load the plugin, please refer to the 
-[Cookbook](http://book.cakephp.org/3.0/en/plugins.html#loading-a-plugin).
+[Cookbook](//book.cakephp.org/3.0/en/plugins.html#loading-a-plugin).
+
+## Configuration
+It's not essential, but it may be useful to set the `App.fullBaseUrl` value
+correctly [refer to the Cookbook](//book.cakephp.org/3.0/en/development/configuration.html#general-configuration),
+especially if you plan to use the plugin mainly on your app, so as not to have
+to indicate the full base url which to start the scan every time.
 
 ## How to use
 Please, refer to the wiki:
-- **[How to use the LinkScanner utility](https://github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScanner-utility)**
-- **[Examples for ResultScan](https://github.com/mirko-pagliai/cakephp-link-scanner/wiki/Examples-for-ResultScan)**
+- [How to use the LinkScanner utility](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScanner-utility)
+- [How to use the LinkScannerCommand](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScannerCommand)
+- [Examples for ResultScan](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/Examples-for-ResultScan)
 
 In addition, you can refer to our [API](//mirko-pagliai.github.io/cakephp-link-scanner).
 
@@ -41,4 +52,4 @@ In addition, you can refer to our [API](//mirko-pagliai.github.io/cakephp-link-s
 ## Versioning
 For transparency and insight into our release cycle and to maintain backward 
 compatibility, *Assets* will be maintained under the 
-[Semantic Versioning guidelines](http://semver.org).
+[Semantic Versioning guidelines](//semver.org).
