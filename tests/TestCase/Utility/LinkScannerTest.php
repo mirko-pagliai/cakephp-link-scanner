@@ -147,8 +147,8 @@ class LinkScannerTest extends TestCase
 
         //Filename can be `null`, relative or absolute
         foreach ([
-            null => $this->LinkScanner->getConfig('target') . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
-            'example' => $this->LinkScanner->getConfig('target') . 'example',
+            null => $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
+            'example' => $this->LinkScanner->getConfig('target') . DS . 'example',
             TMP . 'example' => TMP . 'example',
         ] as $filenameWhereToExport => $expectedFilename) {
             $result = $this->LinkScanner->export($filenameWhereToExport);
@@ -195,7 +195,7 @@ class LinkScannerTest extends TestCase
                 'followRedirects' => false,
                 'maxDepth' => 1,
                 'lockFile' => true,
-                'target' => TMP,
+                'target' => TMP . 'cakephp-link-scanner',
             ], $result->getConfig());
             $this->assertEquals(100, $result->Client->getConfig('timeout'));
 
@@ -305,8 +305,8 @@ class LinkScannerTest extends TestCase
 
         //The lock file alread exists
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Lock file `' . LINK_SCANNER_LOCK_FILE . '` already exists, maybe a scan is already in progress. If not, remove it manually');
-        file_put_contents(LINK_SCANNER_LOCK_FILE, null);
+        $this->expectExceptionMessage('Lock file `' . $LinkScanner->lockFile . '` already exists, maybe a scan is already in progress. If not, remove it manually');
+        file_put_contents($LinkScanner->lockFile, null);
         (new LinkScanner)->scan();
     }
 

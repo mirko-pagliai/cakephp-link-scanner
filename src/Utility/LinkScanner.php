@@ -61,7 +61,7 @@ class LinkScanner implements Serializable
         'followRedirects' => false,
         'maxDepth' => 0,
         'lockFile' => true,
-        'target' => TMP,
+        'target' => TMP . 'cakephp-link-scanner',
     ];
 
     /**
@@ -98,7 +98,7 @@ class LinkScanner implements Serializable
      * Lock file path
      * @var string
      */
-    protected $lockFile = TMP . 'link_scanner_lock_file';
+    protected $lockFile = TMP . 'cakephp-link-scanner' . DS . 'link_scanner_lock_file';
 
     /**
      * Start time

@@ -33,13 +33,14 @@ define('APP', TEST_APP . 'TestApp' . DS);
 define('APP_DIR', 'TestApp');
 define('WEBROOT_DIR', 'webroot');
 define('WWW_ROOT', APP . 'webroot' . DS);
-define('TMP', sys_get_temp_dir() . DS . 'cakephp-link-scanner' . DS);
+define('TMP', sys_get_temp_dir() . DS);
 define('CACHE', TMP . 'cache' . DS);
 define('CONFIG', APP . 'config' . DS);
 define('LOGS', TMP . 'logs' . DS);
 define('SESSIONS', TMP . 'sessions' . DS);
 
 @mkdir(TMP);
+@mkdir(TMP . 'cakephp-link-scanner');
 @mkdir(LOGS);
 @mkdir(SESSIONS);
 @mkdir(CACHE);
@@ -87,7 +88,6 @@ Cache::setConfig([
     ],
 ]);
 
-define('LINK_SCANNER_LOCK_FILE', TMP . 'link_scanner_lock_file');
 Configure::write('pluginsToLoad', ['LinkScanner']);
 
 loadPHPUnitAliases();
