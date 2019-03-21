@@ -22,6 +22,8 @@ You can install the plugin via composer:
 ```bash
 $ composer require --prefer-dist mirko-pagliai/cakephp-link-scanner
 ```
+
+**NOTE: the latest version available requires at least CakePHP 3.7.1**.
     
 Then you have to edit `APP/config/bootstrap.php` to load the plugin:
 ```php
