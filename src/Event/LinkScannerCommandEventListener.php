@@ -88,11 +88,9 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             return true;
         }
 
-        if ($response->isOk()) {
-            $this->io->success(__d('link-scanner', 'OK'));
-        } else {
-            call_user_func([$this->io, $response->isRedirect() ? 'warning' : 'err'], (string)$response->getStatusCode());
-        }
+        $method = $response->isOk() ? 'success' : ($response->isRedirect() ? 'warning' : 'error');
+        $message = $response->isOk() ? __d('link-scanner', 'OK') : (string)$response->getStatusCode();
+        call_user_func([$this->io, $method], $message);
 
         return true;
     }

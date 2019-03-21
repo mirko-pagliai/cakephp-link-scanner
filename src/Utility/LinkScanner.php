@@ -146,16 +146,13 @@ class LinkScanner implements Serializable
      */
     protected function _createLockFile()
     {
-        $lockFile = new File($this->lockFile);
-        is_true_or_fail(!$this->getConfig('lockFile') || !$lockFile->exists(), __d(
+        is_true_or_fail(!$this->getConfig('lockFile') || !file_exists($this->lockFile), __d(
             'link-scanner',
             'Lock file `{0}` already exists, maybe a scan is already in progress. If not, remove it manually',
             $this->lockFile
         ), RuntimeException::class);
 
-        ;
-
-        return $this->getConfig('lockFile') ? $lockFile->create() !== false : true;
+        return $this->getConfig('lockFile') ? new File($this->lockFile, true) !== false : true;
     }
 
     /**
@@ -240,21 +237,11 @@ class LinkScanner implements Serializable
             return;
         }
 
-        $BodyParser = new BodyParser($response->getBody(), $url);
-
-        //Returns, if the response body does not contain html code
-        if (!$BodyParser->isHtml()) {
-            return;
-        }
-
         //Continues scanning for the links found
-        $linksToBeScanned = array_filter($BodyParser->extractLinks(), [$this, 'canBeScanned']);
-        foreach ($linksToBeScanned as $link) {
-            //Skips, if the link has already been scanned
-            if (in_array($link, $this->alreadyScanned)) {
+        foreach ((new BodyParser($response->getBody(), $url))->extractLinks() as $link) {
+            if (!$this->canBeScanned($link)) {
                 continue;
             }
-
             $this->dispatchEvent('LinkScanner.foundLinkToBeScanned', [$link]);
 
             //Single scan for external links, recursive scan for internal links
@@ -395,15 +382,9 @@ class LinkScanner implements Serializable
     {
         is_true_or_fail(!$this->ResultScan->isEmpty(), __d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'), RuntimeException::class);
 
-        try {
-            $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
-            $filename = Folder::isAbsolute($filename) ? $filename : Folder::slashTerm($this->getConfig('target')) . $filename;
-            file_put_contents($filename, serialize($this));
-        } catch (Exception $e) {
-            $message = preg_replace('/^file_put_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
-            throw new RuntimeException(__d('link-scanner', 'Failed to export results to file `{0}` with message `{1}`', $filename, $message));
-        }
-
+        $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
+        $filename = Folder::isAbsolute($filename) ? $filename : Folder::slashTerm($this->getConfig('target')) . $filename;
+        (new File($filename, true))->write(serialize($this));
         $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
 
         return $filename;
@@ -460,18 +441,20 @@ class LinkScanner implements Serializable
     public function scan()
     {
         $this->_createLockFile();
-
         $this->startTime = time();
 
-        $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $this->fullBaseUrl]);
+        $maxNestingLevel = ini_set('xdebug.max_nesting_level', -1);
 
-        $this->_recursiveScan($this->fullBaseUrl);
+        try {
+            $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $this->fullBaseUrl]);
+            $this->_recursiveScan($this->fullBaseUrl);
+            $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
+        } finally {
+            ini_set('xdebug.max_nesting_level', $maxNestingLevel);
+        }
 
         $this->endTime = time();
-
         @unlink($this->lockFile);
-
-        $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
 
         return $this;
     }

@@ -163,12 +163,6 @@ class LinkScannerTest extends TestCase
         $this->assertException(RuntimeException::class, function () {
             (new LinkScanner)->export();
         }, 'There is no result to export. Perhaps the scan was not performed?');
-
-        //With a no existing file
-        $noExistingFile = TMP . 'noExistingDir' . DS . 'result';
-        $this->assertException(RuntimeException::class, function () use ($noExistingFile) {
-            $this->LinkScanner->scan()->export($noExistingFile);
-        }, 'Failed to export results to file `' . $noExistingFile . '` with message `failed to open stream: No such file or directory`');
     }
 
     /**
