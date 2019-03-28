@@ -80,7 +80,7 @@ class LinkScannerCommandTest extends TestCase
 
         $this->assertEquals([
             'cache' => true,
-            'excludeLinks' => ['\{.*\}', 'javascript:'],
+            'excludeLinks' => ['[\{\}+]'],
             'externalLinks' => true,
             'followRedirects' => false,
             'maxDepth' => 1,
@@ -146,7 +146,7 @@ class LinkScannerCommandTest extends TestCase
 
         $expectedConfig = [
             'cache' => true,
-            'excludeLinks' => ['\{.*\}', 'javascript:'],
+            'excludeLinks' => ['[\{\}+]'],
             'externalLinks' => true,
             'followRedirects' => false,
             'maxDepth' => 2,

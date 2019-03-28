@@ -184,7 +184,7 @@ class LinkScannerTest extends TestCase
 
             $this->assertEquals([
                 'cache' => true,
-                'excludeLinks' => ['\{.*\}', 'javascript:'],
+                'excludeLinks' => ['[\{\}+]'],
                 'externalLinks' => false,
                 'followRedirects' => false,
                 'maxDepth' => 1,

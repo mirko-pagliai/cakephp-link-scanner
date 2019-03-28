@@ -1,4 +1,7 @@
 # 1.x branch
+### 1.0.4-RC2
+* scan correctly excludes `mailto:` and `javascript:` links.
+
 ### 1.0.3-RC1
 * some little fixes.
 
