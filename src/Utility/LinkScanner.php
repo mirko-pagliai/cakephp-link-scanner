@@ -313,7 +313,7 @@ class LinkScanner implements Serializable
      */
     protected function canBeScanned($url)
     {
-        if (!is_url($url) || preg_match('/^(mailto|javascript):/', $url) || in_array($url, $this->alreadyScanned) ||
+        if (!is_url($url) || in_array($url, $this->alreadyScanned) ||
             (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
             return false;
         }
