@@ -1,5 +1,7 @@
 # 1.x branch
 ### 1.0.4-RC2
+* removed `LinkScanner::setFullBaseUrl()` method. The full base url can be set
+    as class configuration.
 
 ### 1.0.3-RC1
 * some little fixes.

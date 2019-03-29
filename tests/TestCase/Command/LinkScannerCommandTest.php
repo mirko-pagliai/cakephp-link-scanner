@@ -47,7 +47,8 @@ class LinkScannerCommandTest extends TestCase
      */
     protected function setLinkScannerCommand()
     {
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
+        $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->getEventManager();
 
         $this->_out = new ConsoleOutput;
@@ -83,6 +84,7 @@ class LinkScannerCommandTest extends TestCase
             'excludeLinks' => ['[\{\}+]'],
             'externalLinks' => true,
             'followRedirects' => false,
+            'fullBaseUrl' => $this->fullBaseUrl,
             'maxDepth' => 1,
             'lockFile' => true,
             'target' => TMP . 'cakephp-link-scanner',
@@ -113,7 +115,8 @@ class LinkScannerCommandTest extends TestCase
         }
 
         //With an error response (404 status code)
-        $this->Command->LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsErrorResponse());
+        $this->Command->LinkScanner = new LinkScanner($this->getClientReturnsErrorResponse());
+        $this->Command->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->Command->run(['--verbose'], $this->io);
         $this->assertErrorContains('404');
     }
@@ -149,6 +152,7 @@ class LinkScannerCommandTest extends TestCase
             'excludeLinks' => ['[\{\}+]'],
             'externalLinks' => true,
             'followRedirects' => false,
+            'fullBaseUrl' => $this->fullBaseUrl,
             'maxDepth' => 2,
             'lockFile' => false,
             'target' => TMP . 'cakephp-link-scanner',
@@ -182,9 +186,9 @@ class LinkScannerCommandTest extends TestCase
         $params[] = '--full-base-url=http://anotherFullBaseUrl';
         $this->setLinkScannerCommand();
         $this->Command->run($params, $this->io);
+        $expectedConfig['fullBaseUrl'] = 'http://anotherFullBaseUrl';
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
-        $this->assertEquals('http://anotherFullBaseUrl', $this->LinkScanner->fullBaseUrl);
-        $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->fullBaseUrl, '/')));
+        $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
         $this->assertErrorEmpty();
 
         //Disables external links
@@ -193,7 +197,9 @@ class LinkScannerCommandTest extends TestCase
 
         $this->setLinkScannerCommand();
         $this->Command->run($params, $this->io);
-        $this->assertEquals(['externalLinks' => false] + $expectedConfig, $this->LinkScanner->getConfig());
+        $expectedConfig['externalLinks'] = false;
+        $expectedConfig['fullBaseUrl'] = $this->fullBaseUrl;
+        $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
 
         $lineDifferentFullBaseUrl = function ($line) {
             $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl)));
