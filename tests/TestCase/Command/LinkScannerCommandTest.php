@@ -42,11 +42,13 @@ class LinkScannerCommandTest extends TestCase
     protected $fullBaseUrl = 'http://google.com';
 
     /**
-     * Internal method to set and get the `LinkScannerCommand` instance and all
-     *  properties of this test class
+     * Called before every test method
+     * @return void
      */
-    protected function setLinkScannerCommand()
+    public function setUp()
     {
+        parent::setUp();
+
         $this->LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->getEventManager();
@@ -58,17 +60,6 @@ class LinkScannerCommandTest extends TestCase
 
         $this->Command = new LinkScannerCommand;
         $this->Command->LinkScanner = $this->LinkScanner;
-    }
-
-    /**
-     * Called before every test method
-     * @return void
-     */
-    public function setUp()
-    {
-        $this->setLinkScannerCommand();
-
-        parent::setUp();
     }
 
     /**
@@ -184,7 +175,7 @@ class LinkScannerCommandTest extends TestCase
         //With a different full base url
         array_pop($params);
         $params[] = '--full-base-url=http://anotherFullBaseUrl';
-        $this->setLinkScannerCommand();
+        self::setUp();
         $this->Command->run($params, $this->io);
         $expectedConfig['fullBaseUrl'] = 'http://anotherFullBaseUrl';
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
@@ -195,7 +186,7 @@ class LinkScannerCommandTest extends TestCase
         array_pop($params);
         $params = array_merge($params, ['--full-base-url=' . $this->fullBaseUrl, '--no-external-links']);
 
-        $this->setLinkScannerCommand();
+        self::setUp();
         $this->Command->run($params, $this->io);
         $expectedConfig['externalLinks'] = false;
         $expectedConfig['fullBaseUrl'] = $this->fullBaseUrl;
@@ -211,7 +202,7 @@ class LinkScannerCommandTest extends TestCase
 
         //Re-enables external links
         array_pop($params);
-        $this->setLinkScannerCommand();
+        self::setUp();
         $this->Command->run($params, $this->io);
         $expectedConfig['externalLinks'] = true;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
@@ -221,7 +212,7 @@ class LinkScannerCommandTest extends TestCase
             'example' => $this->LinkScanner->getConfig('target') . DS . 'example',
             TMP . 'example' => TMP . 'example',
         ] as $filename => $expectedExportFile) {
-            $this->setLinkScannerCommand();
+            self::setUp();
             array_shift($params);
             array_unshift($params, '--export-with-filename=' . $filename);
 
