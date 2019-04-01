@@ -9,7 +9,7 @@
 a full base url, it performs GET requests, checks the status codes, inspects the
 response bodies and, if it finds other links, it continues recursively scanning.
 
-![gif of terminal](https://github.com/mirko-pagliai/cakephp-link-scanner/raw/master/tty.gif)
+![gif of terminal](https://github.com/mirko-pagliai/cakephp-link-scanner/raw/master/docs/tty.gif)
 
 Did you like this plugin? Its development requires a lot of time for me.
 Please consider the possibility of making [a donation](//paypal.me/mirkopagliai):  
