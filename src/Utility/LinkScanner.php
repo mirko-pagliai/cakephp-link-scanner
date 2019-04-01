@@ -450,13 +450,12 @@ class LinkScanner implements Serializable
         try {
             $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $fullBaseUrl]);
             $this->_recursiveScan($fullBaseUrl);
+            $this->endTime = time();
             $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
         } finally {
             ini_set('xdebug.max_nesting_level', $maxNestingLevel);
+            @unlink($this->lockFile);
         }
-
-        $this->endTime = time();
-        @unlink($this->lockFile);
 
         return $this;
     }
