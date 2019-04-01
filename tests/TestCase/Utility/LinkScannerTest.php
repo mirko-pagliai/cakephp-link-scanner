@@ -13,9 +13,9 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
+use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Http\Client\Response;
 use Exception;
-use InvalidArgumentException;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
@@ -61,9 +61,32 @@ class LinkScannerTest extends TestCase
 
         $this->debug = [];
         $this->fullBaseUrl = 'http://google.com';
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsSampleResponse());
+        $this->LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
+        $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->LinkScanner->Client->setConfig('timeout', 5);
         $this->EventManager = $this->getEventManager();
+    }
+
+    /**
+     * Test for `__construct()` method
+     * @test
+     */
+    public function testConstruct()
+    {
+        $default = (new LinkScanner)->getConfig();
+        $config = ['LinkScanner' => [
+            'cache' => false,
+            'externalLinks' => false,
+            'followRedirects' => true,
+            'fullBaseUrl' => 'http://localhost',
+            'maxDepth' => 2,
+        ]];
+        $expected = array_merge($default, $config['LinkScanner']);
+
+        (new PhpConfig)->dump('link_scanner', $config);
+        $this->assertSame($expected, (new LinkScanner)->getConfig());
+
+        @unlink(CONFIG . 'link_scanner.php');
     }
 
     /**
@@ -133,7 +156,8 @@ class LinkScannerTest extends TestCase
 
         $Client->method('get')->will($this->throwException(new Exception));
 
-        $this->LinkScanner = new LinkScanner($this->fullBaseUrl, $Client);
+        $this->LinkScanner = new LinkScanner($Client);
+        $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->assertEquals(404, $getResponseMethod('/noExisting')->getStatusCode());
     }
 
@@ -171,9 +195,8 @@ class LinkScannerTest extends TestCase
      */
     public function testImport()
     {
-        $this->LinkScanner->setConfig('externalLinks', false)->setConfig('maxDepth', 1);
         $this->LinkScanner->Client->setConfig('timeout', 100);
-        $this->LinkScanner->scan();
+        $this->LinkScanner->setConfig('externalLinks', false)->setConfig('maxDepth', 1)->scan();
         $filename = $this->LinkScanner->export();
 
         $resultAsObject = (new LinkScanner)->import($filename);
@@ -184,9 +207,10 @@ class LinkScannerTest extends TestCase
 
             $this->assertEquals([
                 'cache' => true,
-                'excludeLinks' => ['\{.*\}', 'javascript:'],
+                'excludeLinks' => '/[\{\}+]/',
                 'externalLinks' => false,
                 'followRedirects' => false,
+                'fullBaseUrl' => $this->fullBaseUrl,
                 'maxDepth' => 1,
                 'lockFile' => true,
                 'target' => TMP . 'cakephp-link-scanner',
@@ -255,21 +279,27 @@ class LinkScannerTest extends TestCase
         //Takes the last url from the last scan and adds it to the url to
         //  exclude on the next scan
         $randomUrl = $this->LinkScanner->ResultScan->extract('url')->last();
-        $LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsSampleResponse());
-        $LinkScanner->setConfig('excludeLinks', preg_quote($randomUrl, '/'))->scan();
+        $LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
+        $LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl)
+            ->setConfig('excludeLinks', '#' . preg_quote($randomUrl) . '#')
+            ->scan();
         $this->assertCount(0, $LinkScanner->ResultScan->match(['url' => $randomUrl]));
 
         //Tries again with two urls to exclude on the next scan
         $randomsUrls = $this->LinkScanner->ResultScan->extract('url')->take(2, 1)->toList();
-        $LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsSampleResponse());
-        $LinkScanner->setConfig('excludeLinks', [preg_quote($randomsUrls[0], '/'), preg_quote($randomsUrls[1], '/')]);
-        $LinkScanner->scan();
+        $LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
+        $LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl)
+            ->setConfig('excludeLinks', '#(' . implode('|', array_map('preg_quote', $randomsUrls)) . ')#')
+            ->scan();
         $this->assertCount(0, $LinkScanner->ResultScan->match(['url' => $randomsUrls[0]]));
         $this->assertCount(0, $LinkScanner->ResultScan->match(['url' => $randomsUrls[1]]));
 
         //Disables external links and tries again
-        $LinkScanner = new LinkScanner($this->fullBaseUrl, $this->getClientReturnsSampleResponse());
-        $result = $LinkScanner->setConfig('maxDepth', 2)->setConfig('externalLinks', false)->scan();
+        $LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
+        $LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl)
+            ->setConfig('maxDepth', 2)
+            ->setConfig('externalLinks', false)
+            ->scan();
         $newInternalLinks = $LinkScanner->ResultScan->match(['external' => false]);
         $newExternalLinks = $LinkScanner->ResultScan->match(['external' => true]);
         $this->assertEquals($newInternalLinks, $internalLinks);
@@ -421,9 +451,8 @@ class LinkScannerTest extends TestCase
     public function testScanNoOtherLinks()
     {
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
-        $LinkScanner->scan();
 
-        $this->assertEventNotFired('LinkScanner.foundLinkToBeScanned', $this->getEventManager($LinkScanner));
+        $this->assertEventNotFired('LinkScanner.foundLinkToBeScanned', $this->getEventManager($LinkScanner->scan()));
     }
 
     /**
@@ -437,31 +466,5 @@ class LinkScannerTest extends TestCase
         $LinkScanner->scan();
 
         $this->assertEventFired('LinkScanner.' . 'responseNotOk', $EventManager);
-    }
-
-    /**
-     * Test for `setFullBaseUrl()` method
-     * @test
-     */
-    public function testSetFullBaseUrl()
-    {
-        foreach ([
-            'http://fullBaseUrl.com',
-            'http://fullBaseUrl.com/site',
-            'https://fullBaseUrl.com',
-            'ftp://fullBaseUrl.com',
-        ] as $fullBaseUrl) {
-            $result = $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
-            $this->assertInstanceof(LinkScanner::class, $result);
-            $this->assertEquals($fullBaseUrl, $result->fullBaseUrl);
-            $this->assertEquals('fullBaseUrl.com', $result->hostname);
-        }
-
-        //With a no-string or an invalid string
-        foreach (['invalid', ['invalid']] as $fullBaseUrl) {
-            $this->assertException(InvalidArgumentException::class, function () use ($fullBaseUrl) {
-                $this->LinkScanner->setFullBaseUrl($fullBaseUrl);
-            }, 'Invalid full base url `invalid`');
-        }
     }
 }

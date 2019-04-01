@@ -4,8 +4,11 @@
 
 <br />
 
-<a href="#text">Text</a>
-<a>No href...</a>
+<!-- These will be ignored -->
+<a href="#text">Text</a><br />
+<a>No href...</a><br />
+<a href="mailto:mymail@example.com">My mail</a><br />
+<a href="javascript:alert('hello!');">Javascript alert</a><br />
 
 <?= $this->Html->link('First page', ['controller' => 'Pages', 'action' => 'display', 'first_page']) ?>
 <?= $this->Html->link('Second page', ['controller' => 'Pages', 'action' => 'display', 'second_page']) ?>

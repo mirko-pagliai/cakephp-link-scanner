@@ -14,6 +14,7 @@ namespace LinkScanner\Utility;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
@@ -57,9 +58,10 @@ class LinkScanner implements Serializable
      */
     protected $_defaultConfig = [
         'cache' => true,
-        'excludeLinks' => ['\{.*\}', 'javascript:'],
+        'excludeLinks' => '/[\{\}+]/',
         'externalLinks' => true,
         'followRedirects' => false,
+        'fullBaseUrl' => null,
         'maxDepth' => 0,
         'lockFile' => true,
         'target' => TMP . 'cakephp-link-scanner',
@@ -84,12 +86,6 @@ class LinkScanner implements Serializable
     protected $endTime;
 
     /**
-     * Full base url
-     * @var string|array|null
-     */
-    protected $fullBaseUrl = null;
-
-    /**
      * Host name
      * @var string|array|null
      */
@@ -108,24 +104,23 @@ class LinkScanner implements Serializable
     protected $startTime = 0;
 
     /**
-     * Construct.
-     *
-     * The full base url can be a string or an array of parameters as for the
-     *  `Router::url()` method.
-     * If `null` the `App.fullBaseUrl` value will be used.
-     * @param string|array|null $fullBaseUrl Full base url
+     * Construct
      * @param \Cake\Http\Client|null $Client A Client instance or null
      * @param \LinkScanner\ResultScan|null $ResultScan A Client instance or null
      * @uses $Client
      * @uses $ResultScan
-     * @uses setFullBaseUrl()
      */
-    public function __construct($fullBaseUrl = null, $Client = null, $ResultScan = null)
+    public function __construct($Client = null, $ResultScan = null)
     {
         $this->Client = $Client ?: new Client(['redirect' => true]);
         $this->ResultScan = $ResultScan ?: new ResultScan;
 
-        $this->setFullBaseUrl($fullBaseUrl ?: (Configure::read('App.fullBaseUrl') ?: 'http://localhost'));
+        if (file_exists(CONFIG . 'link_scanner.php')) {
+            $config = (new PhpConfig)->read('link_scanner');
+            if (isset($config['LinkScanner'])) {
+                $this->setConfig($config['LinkScanner']);
+            }
+        }
     }
 
     /**
@@ -318,9 +313,10 @@ class LinkScanner implements Serializable
             return false;
         }
 
-        $excludeLinks = $this->getConfig('excludeLinks');
-        if ($excludeLinks && preg_match('/' . implode('|', (array)$excludeLinks) . '/', $url)) {
-            return false;
+        foreach ((array)$this->getConfig('excludeLinks') as $pattern) {
+            if (preg_match($pattern, $url)) {
+                return false;
+            }
         }
 
         return true;
@@ -430,24 +426,30 @@ class LinkScanner implements Serializable
      * Other events will be triggered by `_recursiveScan()` and `_singleScan()`
      *  methods.
      * @return $this
+     * @throws InvalidArgumentException
      * @uses _createLockFile()
      * @uses _recursiveScan()
      * @uses $ResultScan
      * @uses $endTime
-     * @uses $fullBaseUrl
+     * @uses $hostname
      * @uses $lockFile
      * @uses $startTime
      */
     public function scan()
     {
+        //Sets the full base url
+        $fullBaseUrl = clean_url($this->getConfig('fullBaseUrl', Configure::read('App.fullBaseUrl') ?: 'http://localhost'));
+        is_true_or_fail(is_url($fullBaseUrl), __d('link-scanner', 'Invalid full base url `{0}`', $fullBaseUrl), InvalidArgumentException::class);
+        $this->hostname = get_hostname_from_url($fullBaseUrl);
+
         $this->_createLockFile();
         $this->startTime = time();
 
         $maxNestingLevel = ini_set('xdebug.max_nesting_level', -1);
 
         try {
-            $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $this->fullBaseUrl]);
-            $this->_recursiveScan($this->fullBaseUrl);
+            $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $fullBaseUrl]);
+            $this->_recursiveScan($fullBaseUrl);
             $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
         } finally {
             ini_set('xdebug.max_nesting_level', $maxNestingLevel);
@@ -455,23 +457,6 @@ class LinkScanner implements Serializable
 
         $this->endTime = time();
         @unlink($this->lockFile);
-
-        return $this;
-    }
-
-    /**
-     * Sets the full base url and, consequently, the hostname
-     * @param string $fullBaseUrl Full base url
-     * @return $this
-     * @throws InvalidArgumentException
-     * @uses $fullBaseUrl
-     * @uses $hostname
-     */
-    public function setFullBaseUrl($fullBaseUrl)
-    {
-        is_true_or_fail(is_url($fullBaseUrl), __d('link-scanner', 'Invalid full base url `{0}`', $fullBaseUrl), InvalidArgumentException::class);
-        $this->fullBaseUrl = clean_url($fullBaseUrl);
-        $this->hostname = get_hostname_from_url($fullBaseUrl);
 
         return $this;
     }

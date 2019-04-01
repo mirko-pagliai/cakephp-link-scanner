@@ -61,7 +61,7 @@ class LinkScannerCommand extends Command
                 $this->LinkScanner->setConfig('lockFile', false);
             }
             if ($args->hasOption('full-base-url')) {
-                $this->LinkScanner->setFullBaseUrl($args->getOption('full-base-url'));
+                $this->LinkScanner->setConfig('fullBaseUrl', $args->getOption('full-base-url'));
             }
             if ($args->hasOption('max-depth')) {
                 $this->LinkScanner->setConfig('maxDepth', $args->getOption('max-depth'));

@@ -75,9 +75,11 @@ trait IntegrationTestTrait
         $fullBaseUrl = $fullBaseUrl ?: Configure::read('App.fullBaseUrl', 'http://localhost');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
 
-        return $this->getMockBuilder(LinkScanner::class)
-            ->setConstructorArgs([$fullBaseUrl, $this->getClientReturnsFromTests()])
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([$this->getClientReturnsFromTests()])
             ->setMethods(['_createLockFile'])
             ->getMock();
+
+        return $LinkScanner->setConfig('fullBaseUrl', $fullBaseUrl);
     }
 }
