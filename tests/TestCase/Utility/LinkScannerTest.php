@@ -13,6 +13,7 @@
 namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
+use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Http\Client\Response;
 use Exception;
 use LinkScanner\ResultScan;
@@ -64,6 +65,28 @@ class LinkScannerTest extends TestCase
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->LinkScanner->Client->setConfig('timeout', 5);
         $this->EventManager = $this->getEventManager();
+    }
+
+    /**
+     * Test for `__construct()` method
+     * @test
+     */
+    public function testConstruct()
+    {
+        $default = (new LinkScanner)->getConfig();
+        $config = ['LinkScanner' => [
+            'cache' => false,
+            'externalLinks' => false,
+            'followRedirects' => true,
+            'fullBaseUrl' => 'http://localhost',
+            'maxDepth' => 2,
+        ]];
+        $expected = array_merge($default, $config['LinkScanner']);
+
+        (new PhpConfig)->dump('link_scanner', $config);
+        $this->assertSame($expected, (new LinkScanner)->getConfig());
+
+        @unlink(CONFIG . 'link_scanner.php');
     }
 
     /**

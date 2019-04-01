@@ -14,6 +14,7 @@ namespace LinkScanner\Utility;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
@@ -113,6 +114,13 @@ class LinkScanner implements Serializable
     {
         $this->Client = $Client ?: new Client(['redirect' => true]);
         $this->ResultScan = $ResultScan ?: new ResultScan;
+
+        if (file_exists(CONFIG . 'link_scanner.php')) {
+            $config = (new PhpConfig)->read('link_scanner');
+            if (isset($config['LinkScanner'])) {
+                $this->setConfig($config['LinkScanner']);
+            }
+        }
     }
 
     /**
