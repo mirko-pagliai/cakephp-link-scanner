@@ -58,7 +58,7 @@ class LinkScanner implements Serializable
      */
     protected $_defaultConfig = [
         'cache' => true,
-        'excludeLinks' => ['[\{\}+]'],
+        'excludeLinks' => '/[\{\}+]/',
         'externalLinks' => true,
         'followRedirects' => false,
         'fullBaseUrl' => null,
@@ -313,9 +313,10 @@ class LinkScanner implements Serializable
             return false;
         }
 
-        $excludeLinks = $this->getConfig('excludeLinks');
-        if ($excludeLinks && preg_match('/' . implode('|', (array)$excludeLinks) . '/', $url)) {
-            return false;
+        foreach ((array)$this->getConfig('excludeLinks') as $pattern) {
+            if (preg_match($pattern, $url)) {
+                return false;
+            }
         }
 
         return true;

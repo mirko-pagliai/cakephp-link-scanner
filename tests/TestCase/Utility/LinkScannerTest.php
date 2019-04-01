@@ -207,7 +207,7 @@ class LinkScannerTest extends TestCase
 
             $this->assertEquals([
                 'cache' => true,
-                'excludeLinks' => ['[\{\}+]'],
+                'excludeLinks' => '/[\{\}+]/',
                 'externalLinks' => false,
                 'followRedirects' => false,
                 'fullBaseUrl' => $this->fullBaseUrl,
@@ -281,7 +281,7 @@ class LinkScannerTest extends TestCase
         $randomUrl = $this->LinkScanner->ResultScan->extract('url')->last();
         $LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
         $LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl)
-            ->setConfig('excludeLinks', preg_quote($randomUrl, '/'))
+            ->setConfig('excludeLinks', '#' . preg_quote($randomUrl) . '#')
             ->scan();
         $this->assertCount(0, $LinkScanner->ResultScan->match(['url' => $randomUrl]));
 
@@ -289,7 +289,7 @@ class LinkScannerTest extends TestCase
         $randomsUrls = $this->LinkScanner->ResultScan->extract('url')->take(2, 1)->toList();
         $LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
         $LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl)
-            ->setConfig('excludeLinks', [preg_quote($randomsUrls[0], '/'), preg_quote($randomsUrls[1], '/')])
+            ->setConfig('excludeLinks', '#(' . implode('|', array_map('preg_quote', $randomsUrls)) . ')#')
             ->scan();
         $this->assertCount(0, $LinkScanner->ResultScan->match(['url' => $randomsUrls[0]]));
         $this->assertCount(0, $LinkScanner->ResultScan->match(['url' => $randomsUrls[1]]));

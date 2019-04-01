@@ -72,7 +72,7 @@ class LinkScannerCommandTest extends TestCase
 
         $this->assertEquals([
             'cache' => true,
-            'excludeLinks' => ['[\{\}+]'],
+            'excludeLinks' => '/[\{\}+]/',
             'externalLinks' => true,
             'followRedirects' => false,
             'fullBaseUrl' => $this->fullBaseUrl,
@@ -140,7 +140,7 @@ class LinkScannerCommandTest extends TestCase
 
         $expectedConfig = [
             'cache' => true,
-            'excludeLinks' => ['[\{\}+]'],
+            'excludeLinks' => '/[\{\}+]/',
             'externalLinks' => true,
             'followRedirects' => false,
             'fullBaseUrl' => $this->fullBaseUrl,
