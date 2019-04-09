@@ -264,6 +264,7 @@ class LinkScanner implements Serializable
      */
     protected function _singleScan($url, $referer = null)
     {
+        $url = clean_url($url, true, true);
         if (!$this->canBeScanned($url)) {
             return null;
         }
@@ -438,7 +439,7 @@ class LinkScanner implements Serializable
     public function scan()
     {
         //Sets the full base url
-        $fullBaseUrl = clean_url($this->getConfig('fullBaseUrl', Configure::read('App.fullBaseUrl') ?: 'http://localhost'));
+        $fullBaseUrl = $this->getConfig('fullBaseUrl', Configure::read('App.fullBaseUrl') ?: 'http://localhost');
         is_true_or_fail(is_url($fullBaseUrl), __d('link-scanner', 'Invalid full base url `{0}`', $fullBaseUrl), InvalidArgumentException::class);
         $this->hostname = get_hostname_from_url($fullBaseUrl);
 
