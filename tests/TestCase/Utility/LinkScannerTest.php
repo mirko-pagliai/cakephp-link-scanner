@@ -353,7 +353,7 @@ class LinkScannerTest extends TestCase
             });
 
         $expectedDebug = [
-            'Scanning http://localhost/',
+            'Scanning http://localhost',
             'Found link: http://google.it',
             'Scanning http://google.it',
             'Found link: http://localhost/pages/first_page',
@@ -380,7 +380,7 @@ class LinkScannerTest extends TestCase
 
         //Results contain both internal and external urls
         $expectedInternaLinks = [
-            'http://localhost/',
+            'http://localhost',
             'http://localhost/pages/first_page',
             'http://localhost/favicon.ico',
             'http://localhost/css/default.css',
@@ -399,7 +399,7 @@ class LinkScannerTest extends TestCase
         $this->debug = [];
 
         $expectedDebug = [
-            'Scanning http://localhost/',
+            'Scanning http://localhost',
             'Found link: http://google.it',
             'Scanning http://google.it',
             'Found link: http://localhost/pages/first_page',
@@ -441,7 +441,7 @@ class LinkScannerTest extends TestCase
         $this->assertFalse($item->external);
         $this->assertNull($item->referer);
         $this->assertStringStartsWith('text/html', $item->type);
-        $this->assertEquals($item->url, 'http://localhost/');
+        $this->assertEquals($item->url, 'http://localhost');
     }
 
     /**
