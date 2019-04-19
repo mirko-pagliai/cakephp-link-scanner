@@ -25,13 +25,14 @@ $ composer require --prefer-dist mirko-pagliai/cakephp-link-scanner
 
 **NOTE: the latest version available requires at least CakePHP 3.7.1**.
     
-Then you have to edit `APP/config/bootstrap.php` to load the plugin:
-```php
-Plugin::load('LinkScanner', ['bootstrap' => true]);
-```
+Then you have to load the plugin. For more information on how to load the plugin,
+please refer to the [Cookbook](//book.cakephp.org/3.0/en/plugins.html#loading-a-plugin).
 
-For more information on how to load the plugin, please refer to the 
-[Cookbook](//book.cakephp.org/3.0/en/plugins.html#loading-a-plugin).
+Simply, you can execute the shell command to enable the plugin:
+```bash
+    bin/cake plugin load LinkScanner
+```
+This would update your application's bootstrap method.
 
 ## Configuration
 It's not essential, but it may be useful to set the `App.fullBaseUrl` value
