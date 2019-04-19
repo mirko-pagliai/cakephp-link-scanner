@@ -1,6 +1,6 @@
 # 1.x branch
 ## 1.0 branch
-### 1.0.5-RC3
+### 1.0.5
 * now it correctly handles the url with the trailing slash or the `www` prefix.
 
 ### 1.0.4-RC2
