@@ -30,7 +30,7 @@ please refer to the [Cookbook](//book.cakephp.org/3.0/en/plugins.html#loading-a-
 
 Simply, you can execute the shell command to enable the plugin:
 ```bash
-    bin/cake plugin load LinkScanner
+bin/cake plugin load LinkScanner
 ```
 This would update your application's bootstrap method.
 
