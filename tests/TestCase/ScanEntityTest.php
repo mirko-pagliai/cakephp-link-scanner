@@ -14,6 +14,7 @@ namespace LinkScanner\Test;
 
 use LinkScanner\ScanEntity;
 use LinkScanner\TestSuite\TestCase;
+use Tools\Exception\KeyNotExistsException;
 
 /**
  * ScanEntityTest class
@@ -74,12 +75,12 @@ class ScanEntityTest extends TestCase
 
     /**
      * Test for `__construct()` method
-     * @expectedException Tools\Exception\KeyNotExistsException
-     * @expectedExceptionMessage Key `code` does not exist
      * @test
      */
     public function testConstruct()
     {
+        $this->expectException(KeyNotExistsException::class);
+        $this->expectExceptionMessage('Key `code` does not exist');
         new ScanEntity;
     }
 }
