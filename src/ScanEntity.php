@@ -28,7 +28,7 @@ class ScanEntity extends Entity
     /**
      * Initializes the internal properties
      * @param array $properties Properties to set
-     * @throws KeyNotExistsException
+     * @throws \Tools\Exception\KeyNotExistsException
      */
     public function __construct(array $properties = [])
     {
@@ -48,7 +48,7 @@ class ScanEntity extends Entity
     public function __call($name, $arguments)
     {
         if (method_exists(Response::class, $name)) {
-            $response = (new Response)
+            $response = (new Response())
                 ->withHeader('location', $this->get('location'))
                 ->withStatus($this->get('code'));
             $name = [$response, $name];

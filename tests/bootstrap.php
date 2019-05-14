@@ -10,6 +10,7 @@
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
+
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 
@@ -65,7 +66,7 @@ Configure::write('App', [
     'paths' => [
         'plugins' => [APP . 'Plugin' . DS],
         'templates' => [APP . 'Template' . DS],
-    ]
+    ],
 ]);
 Configure::write('Session', ['defaults' => 'php']);
 
