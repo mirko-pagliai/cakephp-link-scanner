@@ -53,7 +53,10 @@ trait IntegrationTestTrait
                     $response = $response->withHeader($name, $value);
                 }
 
-                $this->_response = $response->withStatus($this->_response->getStatusCode(), $this->_response->getReasonPhrase());
+                $this->_response = $response->withStatus(
+                    $this->_response->getStatusCode(),
+                    $this->_response->getReasonPhrase()
+                );
             }
 
             return $this->_response;

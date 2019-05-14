@@ -81,6 +81,6 @@ class ScanEntityTest extends TestCase
     {
         $this->expectException(KeyNotExistsException::class);
         $this->expectExceptionMessage('Key `code` does not exist');
-        new ScanEntity;
+        new ScanEntity();
     }
 }

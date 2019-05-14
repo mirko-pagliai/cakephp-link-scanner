@@ -73,7 +73,7 @@ class LinkScannerTest extends TestCase
      */
     public function testConstruct()
     {
-        $default = (new LinkScanner)->getConfig();
+        $default = (new LinkScanner())->getConfig();
         $config = ['LinkScanner' => [
             'cache' => false,
             'externalLinks' => false,
@@ -83,8 +83,8 @@ class LinkScannerTest extends TestCase
         ]];
         $expected = array_merge($default, $config['LinkScanner']);
 
-        (new PhpConfig)->dump('link_scanner', $config);
-        $this->assertSame($expected, (new LinkScanner)->getConfig());
+        (new PhpConfig())->dump('link_scanner', $config);
+        $this->assertSame($expected, (new LinkScanner())->getConfig());
 
         @unlink(CONFIG . 'link_scanner.php');
     }
@@ -102,7 +102,7 @@ class LinkScannerTest extends TestCase
             $response = Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
 
             if ($response && is_array($response)) {
-                list($response, $body) = $response;
+                [$response, $body] = $response;
 
                 $stream = new Stream('php://memory', 'wb+');
                 $stream->write($body);
@@ -154,7 +154,7 @@ class LinkScannerTest extends TestCase
             ->setMethods(['get'])
             ->getMock();
 
-        $Client->method('get')->will($this->throwException(new Exception));
+        $Client->method('get')->will($this->throwException(new Exception()));
 
         $this->LinkScanner = new LinkScanner($Client);
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
@@ -185,7 +185,7 @@ class LinkScannerTest extends TestCase
 
         //Without the scan being performed
         $this->assertException(RuntimeException::class, function () {
-            (new LinkScanner)->export();
+            (new LinkScanner())->export();
         }, 'There is no result to export. Perhaps the scan was not performed?');
     }
 
@@ -199,7 +199,7 @@ class LinkScannerTest extends TestCase
         $this->LinkScanner->setConfig('externalLinks', false)->setConfig('maxDepth', 1)->scan();
         $filename = $this->LinkScanner->export();
 
-        $resultAsObject = (new LinkScanner)->import($filename);
+        $resultAsObject = (new LinkScanner())->import($filename);
         $resultAsStatic = LinkScanner::import($filename);
 
         foreach ([$resultAsObject, $resultAsStatic] as $result) {
@@ -331,7 +331,7 @@ class LinkScannerTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Lock file `' . $LinkScanner->lockFile . '` already exists, maybe a scan is already in progress. If not, remove it manually');
         file_put_contents($LinkScanner->lockFile, null);
-        (new LinkScanner)->scan();
+        (new LinkScanner())->scan();
     }
 
     /**

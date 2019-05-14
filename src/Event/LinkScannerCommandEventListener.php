@@ -40,8 +40,8 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * Construct
-     * @param Arguments $args The command arguments
-     * @param ConsoleIo $io The console io
+     * @param \Cake\Console\Arguments $args The command arguments
+     * @param \Cake\Console\ConsoleIo $io The console io
      * @uses $args
      * @uses $io
      */
@@ -76,8 +76,8 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * `LinkScanner.afterScanUrl` event
-     * @param Event $event An `Event` instance
-     * @param Response $response A `Response` instance
+     * @param \Cake\Event\Event $event An `Event` instance
+     * @param \Cake\Http\Client\Response $response A `Response` instance
      * @return bool
      * @uses $args
      * @uses $io
@@ -97,7 +97,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * `LinkScanner.beforeScanUrl` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $url Url
      * @return bool
      * @uses $io
@@ -111,7 +111,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * `LinkScanner.foundLinkToBeScanned` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $link Link
      * @return bool
      * @uses $io
@@ -125,7 +125,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * `LinkScanner.foundRedirect` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $url Redirect
      * @return bool
      * @uses $io
@@ -139,7 +139,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * `LinkScanner.resultsExported` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
      * @return bool
      * @uses $io
@@ -153,7 +153,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * `LinkScanner.resultsImported` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
      * @return void
      */
@@ -163,10 +163,10 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * `LinkScanner.scanCompleted` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param int $startTime Start time
      * @param int $endTime End time
-     * @param ResultScan $ResultScan A `ResultScan` instance
+     * @param \LinkScanner\ResultScan $ResultScan A `ResultScan` instance
      * @return bool
      * @uses $args
      * @uses $io
@@ -193,7 +193,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
     /**
      * `LinkScanner.scanStarted` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param int $startTime Start time
      * @param string $fullBaseUrl Full base url
      * @return bool
@@ -217,7 +217,11 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
         $cache = Cache::getConfig('LinkScanner');
         if (!$this->args->getOption('no-cache') && Cache::enabled() && !empty($cache['duration'])) {
-            $this->io->success(__d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']));
+            $this->io->success(__d(
+                'link-scanner',
+                'The cache is enabled and its duration is `{0}`',
+                $cache['duration']
+            ));
         } else {
             $this->io->info(__d('link-scanner', 'The cache is disabled'));
         }

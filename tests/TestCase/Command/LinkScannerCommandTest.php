@@ -53,12 +53,12 @@ class LinkScannerCommandTest extends TestCase
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->getEventManager();
 
-        $this->_out = new ConsoleOutput;
-        $this->_err = new ConsoleOutput;
+        $this->_out = new ConsoleOutput();
+        $this->_err = new ConsoleOutput();
         $this->io = new ConsoleIo($this->_out, $this->_err);
         $this->io->level(2);
 
-        $this->Command = new LinkScannerCommand;
+        $this->Command = new LinkScannerCommand();
         $this->Command->LinkScanner = $this->LinkScanner;
     }
 
@@ -198,7 +198,7 @@ class LinkScannerCommandTest extends TestCase
             return substr($line, 0, strlen('Checking')) === 'Checking' && !preg_match($pattern, $line);
         };
         $this->assertEmpty(array_filter($this->_out->messages(), $lineDifferentFullBaseUrl));
-        $this->assertOutputContains(('Scanning of external links is not enabled'));
+        $this->assertOutputContains('Scanning of external links is not enabled');
 
         //Re-enables external links
         array_pop($params);
@@ -259,7 +259,7 @@ class LinkScannerCommandTest extends TestCase
         $count = count($messages);
         while (key($messages) !== $count - 5) {
             next($messages);
-        };
+        }
 
         $this->assertRegexp('/^\-+$/', current($messages));
         $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
@@ -279,7 +279,7 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testBuildOptionParser()
     {
-        $parser = $this->invokeMethod($this->Command, 'buildOptionParser', [new ConsoleOptionParser]);
+        $parser = $this->invokeMethod($this->Command, 'buildOptionParser', [new ConsoleOptionParser()]);
         $this->assertInstanceOf(ConsoleOptionParser::class, $parser);
         $this->assertEquals('Performs a complete scan', $parser->getDescription());
         $this->assertEmpty($parser->arguments());
