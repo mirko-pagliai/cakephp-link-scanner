@@ -103,7 +103,7 @@ class LinkScannerTest extends TestCase
             $response = Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
 
             if ($response && is_array($response)) {
-                [$response, $body] = $response;
+                list($response, $body) = $response;
 
                 $stream = new Stream('php://memory', 'wb+');
                 $stream->write($body);
