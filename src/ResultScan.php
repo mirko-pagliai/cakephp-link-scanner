@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -13,6 +14,7 @@
 namespace LinkScanner;
 
 use Cake\Collection\Collection;
+use Cake\Collection\CollectionInterface;
 use LinkScanner\ScanEntity;
 use Traversable;
 
@@ -56,7 +58,7 @@ class ResultScan extends Collection
      * @return \Cake\Collection\CollectionInterface
      * @uses parseItems()
      */
-    public function append($items)
+    public function append($items): CollectionInterface
     {
         return new ResultScan(array_merge($this->buffered()->toArray(), $this->parseItems($items)));
     }
@@ -70,7 +72,7 @@ class ResultScan extends Collection
      * @return \Cake\Collection\CollectionInterface
      * @uses parseItems()
      */
-    public function prepend($items)
+    public function prepend($items): CollectionInterface
     {
         return new ResultScan(array_merge($this->parseItems($items), $this->buffered()->toArray()));
     }

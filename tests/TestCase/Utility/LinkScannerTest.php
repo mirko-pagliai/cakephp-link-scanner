@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -55,7 +56,7 @@ class LinkScannerTest extends TestCase
      * Called before every test method
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -130,17 +131,15 @@ class LinkScannerTest extends TestCase
         $this->LinkScanner->setConfig('cache', true);
 
         foreach ([
-            'nolinks' => 200,
-            'home' => 200,
-            'noexisting' => 500,
-        ] as $pageName => $expectedStatusCode) {
-            $params = ['controller' => 'Pages', 'action' => 'display', $pageName];
-
-            $response = $getResponseMethod($params);
+            'http://localhost/pages/nolinks' => 200,
+            'http://localhost/pages/home' => 200,
+            'http://localhost/pages/noexisting' => 500,
+        ] as $url => $expectedStatusCode) {
+            $response = $getResponseMethod($url);
             $this->assertEquals($expectedStatusCode, $response->getStatusCode());
             $this->assertStringStartsWith('text/html', $response->getHeaderLine('content-type'));
 
-            $responseFromCache = $getResponseFromCache($params);
+            $responseFromCache = $getResponseFromCache($url);
             if ($response->isOk()) {
                 $this->assertNotEmpty($responseFromCache);
                 $this->assertInstanceof(Response::class, $responseFromCache);
@@ -373,8 +372,7 @@ class LinkScannerTest extends TestCase
             'Found link: http://localhost/pages/sameredirect',
             'Scanning http://localhost/pages/sameredirect',
         ];
-        $params = ['controller' => 'Pages', 'action' => 'display', 'home'];
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $LinkScanner->scan();
         $this->assertEquals($expectedDebug, $this->debug);
 
@@ -421,7 +419,7 @@ class LinkScannerTest extends TestCase
             'Found link: http://localhost/pages/sameredirect',
             'Scanning http://localhost/pages/sameredirect',
         ];
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $LinkScanner->setConfig('followRedirects', true)->scan();
         $this->assertEquals($expectedDebug, $this->debug);
 
@@ -433,7 +431,7 @@ class LinkScannerTest extends TestCase
         $this->assertEquals($expectedInternaLinks, $internalLinks->toList());
         $this->assertEquals($expectedExternalLinks, $externalLinks->toList());
 
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $LinkScanner->setConfig('maxDepth', 1)->scan();
         $this->assertCount(1, $LinkScanner->ResultScan);
         $item = $LinkScanner->ResultScan->first();
@@ -450,7 +448,7 @@ class LinkScannerTest extends TestCase
      */
     public function testScanNoOtherLinks()
     {
-        $LinkScanner = $this->getLinkScannerClientReturnsFromTests(['controller' => 'Pages', 'action' => 'display', 'nolinks']);
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests('http://localhost/pages/nolinks');
 
         $this->assertEventNotFired('LinkScanner.foundLinkToBeScanned', $this->getEventManager($LinkScanner->scan()));
     }

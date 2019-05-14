@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -57,7 +58,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      *  associated with the respective event
      * @return array
      */
-    public function implementedEvents()
+    public function implementedEvents(): array
     {
         $events = [
             'afterScanUrl',

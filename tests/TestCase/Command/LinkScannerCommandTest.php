@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -45,7 +46,7 @@ class LinkScannerCommandTest extends TestCase
      * Called before every test method
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -255,7 +256,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputRegExp('/Timeout in seconds for GET requests: \d+/');
 
         //Moves to final lines
-        $messages = $this->_out->messages();
+        $messages = array_values(array_filter($this->_out->messages()));
         $count = count($messages);
         while (key($messages) !== $count - 5) {
             next($messages);

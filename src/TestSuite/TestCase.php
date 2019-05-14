@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -29,7 +30,7 @@ abstract class TestCase extends BaseTestCase
      * Called after every test method
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -66,7 +67,7 @@ abstract class TestCase extends BaseTestCase
 
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
-        $Client->method('get')->will($this->returnValue($this->getResponseWithBody(null)->withStatus(404)));
+        $Client->method('get')->will($this->returnValue($this->getResponseWithBody('')->withStatus(404)));
 
         return $Client;
     }
@@ -108,7 +109,7 @@ abstract class TestCase extends BaseTestCase
      * @param \LinkScanner\Utility\LinkScanner|null $LinkScanner `LinkScanner` instance or `null`
      * @return \Cake\Event\EventManager
      */
-    protected function getEventManager(LinkScanner $LinkScanner = null)
+    protected function getEventManager(?LinkScanner $LinkScanner = null)
     {
         $LinkScanner = $LinkScanner ?: $this->LinkScanner;
         $eventManager = $LinkScanner->getEventManager();
@@ -129,7 +130,7 @@ abstract class TestCase extends BaseTestCase
      *  `null` to create a new instance
      * @return \Cake\Http\Client\Response
      */
-    protected function getResponseWithBody($body, Response $response = null)
+    protected function getResponseWithBody(string $body, ?Response $response = null)
     {
         $response = $response ?: new Response();
         $stream = new Stream('php://memory', 'wb+');

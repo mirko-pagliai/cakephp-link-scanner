@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -35,7 +36,7 @@ class LinkScannerCommand extends Command
      * @return void
      * @uses $LinkScanner
      */
-    public function initialize()
+    public function initialize(): void
     {
         $this->LinkScanner = $this->LinkScanner ?: new LinkScanner();
     }
@@ -48,7 +49,7 @@ class LinkScannerCommand extends Command
      * @see LinkScannerCommandEventListener::implementedEvents()
      * @uses $LinkScanner
      */
-    public function execute(Arguments $args, ConsoleIo $io)
+    public function execute(Arguments $args, ConsoleIo $io): ?int
     {
         try {
             //Will trigger events provided by `LinkScannerCommandEventListener`
@@ -95,7 +96,7 @@ class LinkScannerCommand extends Command
      * @return \Cake\Console\ConsoleOptionParser The built parser
      * @uses $LinkScanner
      */
-    protected function buildOptionParser(ConsoleOptionParser $parser)
+    protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
         $parser->setDescription(__d('link-scanner', 'Performs a complete scan'));
 

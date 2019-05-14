@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -160,7 +161,7 @@ class LinkScanner implements Serializable
      * @uses $alreadyScanned
      * @uses $fullBaseUrl
      */
-    protected function _getResponse($url)
+    protected function _getResponse(string $url): Response
     {
         $this->alreadyScanned[] = $url;
         $cacheKey = sprintf('response_%s', md5(serialize($url)));
@@ -168,7 +169,7 @@ class LinkScanner implements Serializable
         $response = $this->getConfig('cache') ? Cache::read($cacheKey, 'LinkScanner') : null;
 
         if ($response && is_array($response)) {
-            list($response, $body) = $response;
+            [$response, $body] = $response;
 
             $stream = new Stream('php://memory', 'wb+');
             $stream->write($body);
@@ -464,7 +465,7 @@ class LinkScanner implements Serializable
         $this->_createLockFile();
         $this->startTime = time();
 
-        $maxNestingLevel = ini_set('xdebug.max_nesting_level', -1);
+        $maxNestingLevel = ini_set('xdebug.max_nesting_level', '-1');
 
         try {
             $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $fullBaseUrl]);

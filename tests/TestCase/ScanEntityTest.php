@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -32,7 +33,7 @@ class ScanEntityTest extends TestCase
      *  App if they have not already been backed up
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -59,7 +60,7 @@ class ScanEntityTest extends TestCase
 
         foreach ($statusCodes as $code => $expectedValue) {
             $this->ScanEntity->set('code', $code);
-            $this->assertEquals($expectedValue, $this->ScanEntity->isOk());
+            $this->assertEquals($expectedValue, $this->ScanEntity->isSuccess());
         }
         $statusCodes = [
             200 => false,

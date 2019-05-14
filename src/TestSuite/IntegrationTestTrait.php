@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -42,7 +43,7 @@ trait IntegrationTestTrait
         //It also analyzes the url of the test application and transforms them into parameter arrays
         $Client->method('get')->will($this->returnCallback(function ($url) {
             if (is_string($url) && preg_match('/^http:\/\/localhost\/?(pages\/(.+))?$/', $url, $matches)) {
-                $url = ['controller' => 'Pages', 'action' => 'display', empty($matches[2]) ? 'home' : $matches[2]];
+                $url = ['controller' => 'Pages', 'action' => 'display', $matches[2] ?? 'home'];
             }
 
             call_user_func([$this, 'get'], $url);
