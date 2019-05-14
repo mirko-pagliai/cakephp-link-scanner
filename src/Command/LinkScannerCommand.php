@@ -60,10 +60,10 @@ class LinkScannerCommand extends Command
             if ($args->getOption('force')) {
                 $this->LinkScanner->setConfig('lockFile', false);
             }
-            if ($args->hasOption('full-base-url')) {
+            if ($args->getOption('full-base-url')) {
                 $this->LinkScanner->setConfig('fullBaseUrl', $args->getOption('full-base-url'));
             }
-            if ($args->hasOption('max-depth')) {
+            if ($args->getOption('max-depth')) {
                 $this->LinkScanner->setConfig('maxDepth', $args->getOption('max-depth'));
             }
             if ($args->getOption('no-cache')) {
@@ -72,7 +72,7 @@ class LinkScannerCommand extends Command
             if ($args->getOption('no-external-links')) {
                 $this->LinkScanner->setConfig('externalLinks', false);
             }
-            if ($args->hasOption('timeout')) {
+            if ($args->getOption('timeout')) {
                 $this->LinkScanner->Client->setConfig('timeout', $args->getOption('timeout'));
             }
 
