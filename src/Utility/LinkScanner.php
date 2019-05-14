@@ -203,7 +203,7 @@ class LinkScanner implements Serializable
      *      to be scanned are found;
      *  - `LinkScanner.responseNotOk`: will be triggered when a single url is
      *      scanned and the response is not ok.
-     * @param string|array $url Url to scan
+     * @param string $url Url to scan
      * @param string|null $referer Referer of this url
      * @return void
      * @uses _singleScan()
@@ -255,7 +255,7 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.afterScanUrl`: will be triggered after a single url is
      *      scanned;
      *  - `LinkScanner.foundRedirect`: will be triggered if a redirect is found.
-     * @param string|array $url Url to scan
+     * @param string $url Url to scan
      * @param string|null $referer Referer of this url
      * @return \LinkScanner\Http\Client\ScanResponse|null
      * @uses _getResponse()
