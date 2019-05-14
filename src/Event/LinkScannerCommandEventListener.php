@@ -70,7 +70,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             'scanStarted',
         ];
 
-        return array_combine(array_map(function ($event) {
+        return array_combine(array_map(function (string $event) {
             return 'LinkScanner.' . $event;
         }, $events), $events);
     }
@@ -83,7 +83,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @uses $args
      * @uses $io
      */
-    public function afterScanUrl(Event $event, Response $response)
+    public function afterScanUrl(Event $event, Response $response): bool
     {
         if (!$this->args->getOption('verbose')) {
             return true;
@@ -103,7 +103,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @return bool
      * @uses $io
      */
-    public function beforeScanUrl(Event $event, $url)
+    public function beforeScanUrl(Event $event, string $url): bool
     {
         $this->io->verbose(__d('link-scanner', 'Checking {0} ...', $url), 0);
 
@@ -117,7 +117,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @return bool
      * @uses $io
      */
-    public function foundLinkToBeScanned(Event $event, $link)
+    public function foundLinkToBeScanned(Event $event, string $link): bool
     {
         $this->io->verbose(__d('link-scanner', 'Link found: {0}', $link));
 
@@ -131,7 +131,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @return bool
      * @uses $io
      */
-    public function foundRedirect(Event $event, $url)
+    public function foundRedirect(Event $event, string $url): bool
     {
         $this->io->verbose(__d('link-scanner', 'Redirect found: {0}', $url));
 
@@ -145,7 +145,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @return bool
      * @uses $io
      */
-    public function resultsExported(Event $event, $filename)
+    public function resultsExported(Event $event, string $filename): bool
     {
         $this->io->success(__d('link-scanner', 'Results have been exported to {0}', $filename));
 
@@ -156,10 +156,11 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * `LinkScanner.resultsImported` event
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
-     * @return void
+     * @return bool
      */
-    public function resultsImported(Event $event, $filename)
+    public function resultsImported(Event $event, string $filename): bool
     {
+        return true;
     }
 
     /**
@@ -172,7 +173,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @uses $args
      * @uses $io
      */
-    public function scanCompleted(Event $event, $startTime, $endTime, ResultScan $ResultScan)
+    public function scanCompleted(Event $event, int $startTime, int $endTime, ResultScan $ResultScan): bool
     {
         if ($this->args->getOption('verbose')) {
             $this->io->hr();
@@ -201,7 +202,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @uses $args
      * @uses $io
      */
-    public function scanStarted(Event $event, $startTime, $fullBaseUrl)
+    public function scanStarted(Event $event, int $startTime, string $fullBaseUrl): bool
     {
         if ($this->args->getOption('verbose')) {
             $this->io->hr();

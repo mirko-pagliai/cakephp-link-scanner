@@ -25,7 +25,6 @@ use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
 use InvalidArgumentException;
-use LinkScanner\Http\Client\ScanResponse;
 use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
 use RuntimeException;
@@ -111,7 +110,7 @@ class LinkScanner implements Serializable
      * @uses $Client
      * @uses $ResultScan
      */
-    public function __construct($Client = null, $ResultScan = null)
+    public function __construct($Client = null, ?ResultScan $ResultScan = null)
     {
         $this->Client = $Client ?: new Client(['redirect' => true]);
         $this->ResultScan = $ResultScan ?: new ResultScan();
@@ -129,7 +128,7 @@ class LinkScanner implements Serializable
      * @param string $name Property name
      * @return mixed
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         return $this->$name;
     }
@@ -140,7 +139,7 @@ class LinkScanner implements Serializable
      * @throws \RuntimeException
      * @uses $lockFile
      */
-    protected function _createLockFile()
+    protected function _createLockFile(): bool
     {
         is_true_or_fail(!$this->getConfig('lockFile') || !file_exists($this->lockFile), __d(
             'link-scanner',
@@ -213,7 +212,7 @@ class LinkScanner implements Serializable
      * @uses $currentDepth
      * @uses $hostname
      */
-    protected function _recursiveScan($url, $referer = null)
+    protected function _recursiveScan(string $url, ?string $referer = null): void
     {
         $response = $this->_singleScan($url, $referer);
 
@@ -258,13 +257,13 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.foundRedirect`: will be triggered if a redirect is found.
      * @param string $url Url to scan
      * @param string|null $referer Referer of this url
-     * @return \LinkScanner\Http\Client\ScanResponse|null
+     * @return \Cake\Http\Client\Response|null
      * @uses _getResponse()
      * @uses canBeScanned()
      * @uses $ResultScan
      * @uses $hostname
      */
-    protected function _singleScan($url, $referer = null)
+    protected function _singleScan(string $url, ?string $referer = null): ?Response
     {
         $url = clean_url($url, true, true);
         if (!$this->canBeScanned($url)) {
@@ -309,7 +308,7 @@ class LinkScanner implements Serializable
      * @uses $alreadyScanned
      * @uses $hostname
      */
-    protected function canBeScanned($url)
+    protected function canBeScanned(string $url): bool
     {
         if (!is_url($url) || in_array($url, $this->alreadyScanned) ||
             (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
@@ -330,7 +329,7 @@ class LinkScanner implements Serializable
      * @return string
      * @uses $Client
      */
-    public function serialize()
+    public function serialize(): string
     {
         //Unsets the event class and event manager. For the `Client` instance,
         //  it takes only configuration and cookies
@@ -347,7 +346,7 @@ class LinkScanner implements Serializable
      * @return void
      * @uses $Client
      */
-    public function unserialize($serialized)
+    public function unserialize($serialized): void
     {
         //Resets the event list and the Client instance
         $properties = unserialize($serialized);
@@ -377,7 +376,7 @@ class LinkScanner implements Serializable
      * @uses $hostname
      * @uses $startTime
      */
-    public function export($filename = null)
+    public function export(?string $filename = null): string
     {
         is_true_or_fail(
             !$this->ResultScan->isEmpty(),
@@ -404,11 +403,11 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.resultsImported`: will be triggered when the results have
      *  been exported.
      * @param string $filename Filename from which to import
-     * @return \LinkScanner\Utility\LinkScanner
+     * @return $this
      * @see unserialize()
      * @throws \RuntimeException
      */
-    public static function import($filename)
+    public static function import(string $filename)
     {
         try {
             if (!Folder::isAbsolute($filename)) {

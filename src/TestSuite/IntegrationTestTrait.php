@@ -33,7 +33,7 @@ trait IntegrationTestTrait
      *  the test app
      * @return \Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getClientReturnsFromTests()
+    protected function getClientReturnsFromTests(): object
     {
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
@@ -74,7 +74,7 @@ trait IntegrationTestTrait
      * @return \LinkScanner\Utility\LinkScanner|\PHPUnit_Framework_MockObject_MockObject
      * @uses getClientReturnsFromTests()
      */
-    protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null)
+    protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null): object
     {
         $fullBaseUrl = $fullBaseUrl ?: Configure::read('App.fullBaseUrl', 'http://localhost');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
