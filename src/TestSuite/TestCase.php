@@ -35,6 +35,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::tearDown();
 
+        @unlink(TMP . 'cakephp-link-scanner' . DS . 'link_scanner_lock_file');
+
         Cache::clearAll();
     }
 
