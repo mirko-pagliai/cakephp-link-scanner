@@ -44,7 +44,7 @@ class LinkScannerCommand extends Command
      * Performs a complete scan
      * @param Arguments $args The command arguments
      * @param ConsoleIo $io The console io
-     * @return null|int The exit code or null for success
+     * @return int|null The exit code or null for success
      * @see LinkScannerCommandEventListener::implementedEvents()
      * @uses $LinkScanner
      */

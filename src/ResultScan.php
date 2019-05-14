@@ -53,7 +53,7 @@ class ResultScan extends Collection
      * Returns a new `ResultScan` instance as the result of concatenating the
      *  list of elements in this collection with the passed list of elements
      * @param array|Traversable $items Items
-     * @return \LinkScanner\ResultScan
+     * @return \Cake\Collection\CollectionInterface
      * @uses parseItems()
      */
     public function append($items)
@@ -67,7 +67,7 @@ class ResultScan extends Collection
      * Returns a new `ResultScan` instance as the result of concatenating the
      *  passed list of elements with the list of elements in this collection
      * @param array|Traversable $items Items
-     * @return \LinkScanner\ResultScan
+     * @return \Cake\Collection\CollectionInterface
      * @uses parseItems()
      */
     public function prepend($items)
