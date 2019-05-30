@@ -24,15 +24,15 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
 {
     /**
      * `LinkScanner.afterScanUrl` event
-     * @param Event $event An `Event` instance
-     * @param Response $response A `Response` instance
+     * @param \Cake\Event\Event $event An `Event` instance
+     * @param \Cake\Http\Client\Response $response A `Response` instance
      * @return bool
      */
     public function afterScanUrl(Event $event, Response $response);
 
     /**
      * `LinkScanner.beforeScanUrl` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $url Url
      * @return bool
      */
@@ -40,7 +40,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
 
     /**
      * `LinkScanner.foundLinkToBeScanned` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $link Link
      * @return bool
      */
@@ -48,7 +48,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
 
     /**
      * `LinkScanner.foundRedirect` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $redirect Redirect
      * @return bool
      */
@@ -56,7 +56,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
 
     /**
      * `LinkScanner.resultsExported` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
      * @return bool
      */
@@ -64,7 +64,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
 
     /**
      * `LinkScanner.resultsImported` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
      * @return bool
      */
@@ -72,17 +72,17 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
 
     /**
      * `LinkScanner.scanCompleted` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param int $startTime Start time
      * @param int $endTime End time
-     * @param ResultScan $ResultScan A `ResultScan` instance
+     * @param \LinkScanner\ResultScan $ResultScan A `ResultScan` instance
      * @return bool
      */
     public function scanCompleted(Event $event, $startTime, $endTime, ResultScan $ResultScan);
 
     /**
      * `LinkScanner.scanStarted` event
-     * @param Event $event An `Event` instance
+     * @param \Cake\Event\Event $event An `Event` instance
      * @param int $startTime Start time
      * @param string $fullBaseUrl Full base url
      * @return bool

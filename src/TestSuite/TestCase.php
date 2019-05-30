@@ -33,6 +33,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::tearDown();
 
+        @unlink(TMP . 'cakephp-link-scanner' . DS . 'link_scanner_lock_file');
+
         Cache::clearAll();
     }
 
@@ -40,7 +42,7 @@ abstract class TestCase extends BaseTestCase
      * Asserts that a global event was not fired. You must track events in your
      *  event manager for this assertion to work
      * @param string $name Event name
-     * @param Cake\Event\EventManager|null $eventManager Event manager to check,
+     * @param \Cake\Event\EventManager|null $eventManager Event manager to check,
      *  defaults to global event manager
      * @return void
      */
@@ -87,7 +89,11 @@ abstract class TestCase extends BaseTestCase
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
 
-            $response = is_readable($responseFile) ? @unserialize(file_get_contents($responseFile)) : (new Client(['redirect' => true]))->get($url);
+            if (is_readable($responseFile)) {
+                $response = @unserialize(file_get_contents($responseFile));
+            } else {
+                $response = (new Client(['redirect' => true]))->get($url);
+            }
             is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($response));
 
             $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile)) : (string)$response->getBody();
@@ -110,7 +116,7 @@ abstract class TestCase extends BaseTestCase
         $eventManager = $LinkScanner->getEventManager();
 
         if (!$eventManager->getEventList()) {
-            $eventManager->setEventList(new EventList);
+            $eventManager->setEventList(new EventList());
         }
 
         return $eventManager;
@@ -121,13 +127,13 @@ abstract class TestCase extends BaseTestCase
      *
      * If `$response` is null, a new `Response` instance will be created.
      * @param string $body Body of the response
-     * @param Response|null $response A `Response` instance or `null` to create
-     *  a new instance
+     * @param \Cake\Http\Client\Response|null $response A `Response` instance or
+     *  `null` to create a new instance
      * @return \Cake\Http\Client\Response
      */
     protected function getResponseWithBody($body, Response $response = null)
     {
-        $response = $response ?: new Response;
+        $response = $response ?: new Response();
         $stream = new Stream('php://memory', 'wb+');
         $stream->write($body);
         $stream->rewind();

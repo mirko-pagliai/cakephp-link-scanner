@@ -26,7 +26,7 @@ use MeTools\Console\Command;
 class LinkScannerCommand extends Command
 {
     /**
-     * @var LinkScanner\Utility\LinkScanner
+     * @var \LinkScanner\Utility\LinkScanner
      */
     public $LinkScanner;
 
@@ -37,14 +37,14 @@ class LinkScannerCommand extends Command
      */
     public function initialize()
     {
-        $this->LinkScanner = $this->LinkScanner ?: new LinkScanner;
+        $this->LinkScanner = $this->LinkScanner ?: new LinkScanner();
     }
 
     /**
      * Performs a complete scan
-     * @param Arguments $args The command arguments
-     * @param ConsoleIo $io The console io
-     * @return null|int The exit code or null for success
+     * @param \Cake\Console\Arguments $args The command arguments
+     * @param \Cake\Console\ConsoleIo $io The console io
+     * @return int|null The exit code or null for success
      * @see LinkScannerCommandEventListener::implementedEvents()
      * @uses $LinkScanner
      */
@@ -60,10 +60,10 @@ class LinkScannerCommand extends Command
             if ($args->getOption('force')) {
                 $this->LinkScanner->setConfig('lockFile', false);
             }
-            if ($args->hasOption('full-base-url')) {
+            if ($args->getOption('full-base-url')) {
                 $this->LinkScanner->setConfig('fullBaseUrl', $args->getOption('full-base-url'));
             }
-            if ($args->hasOption('max-depth')) {
+            if ($args->getOption('max-depth')) {
                 $this->LinkScanner->setConfig('maxDepth', $args->getOption('max-depth'));
             }
             if ($args->getOption('no-cache')) {
@@ -72,7 +72,7 @@ class LinkScannerCommand extends Command
             if ($args->getOption('no-external-links')) {
                 $this->LinkScanner->setConfig('externalLinks', false);
             }
-            if ($args->hasOption('timeout')) {
+            if ($args->getOption('timeout')) {
                 $this->LinkScanner->Client->setConfig('timeout', $args->getOption('timeout'));
             }
 
@@ -91,8 +91,8 @@ class LinkScannerCommand extends Command
 
     /**
      * Hook method for defining this command's option parser
-     * @param ConsoleOptionParser $parser The parser to be defined
-     * @return ConsoleOptionParser The built parser
+     * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
+     * @return \Cake\Console\ConsoleOptionParser The built parser
      * @uses $LinkScanner
      */
     protected function buildOptionParser(ConsoleOptionParser $parser)
@@ -121,10 +121,18 @@ class LinkScannerCommand extends Command
                 'short' => 'f',
             ],
             'full-base-url' => [
-                'help' => __d('link-scanner', 'Full base url. By default, the `{0}` value will be used', 'App.fullBaseUrl'),
+                'help' => __d(
+                    'link-scanner',
+                    'Full base url. By default, the `{0}` value will be used',
+                    'App.fullBaseUrl'
+                ),
             ],
             'max-depth' => [
-                'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->getConfig('maxDepth')),
+                'help' => __d(
+                    'link-scanner',
+                    'Maximum depth of the scan. Default: {0}',
+                    $this->LinkScanner->getConfig('maxDepth')
+                ),
                 'short' => 'd',
             ],
             'no-cache' => [
@@ -138,7 +146,11 @@ class LinkScannerCommand extends Command
                 'help' => __d('link-scanner', 'Disable the scanning of external links'),
             ],
             'timeout' => [
-                'help' => __d('link-scanner', 'Timeout in seconds for GET requests. Default: {0}', $this->LinkScanner->Client->getConfig('timeout')),
+                'help' => __d(
+                    'link-scanner',
+                    'Timeout in seconds for GET requests. Default: {0}',
+                    $this->LinkScanner->Client->getConfig('timeout')
+                ),
                 'short' => 't',
             ],
         ]);

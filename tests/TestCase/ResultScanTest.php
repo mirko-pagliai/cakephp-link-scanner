@@ -92,7 +92,7 @@ class ResultScanTest extends TestCase
         $this->assertCount(3, $result);
 
         //With a new `ResultScan`
-        $result = (new ResultScan)->append($appended);
+        $result = (new ResultScan())->append($appended);
         $this->assertEquals($appended, $result->toArray());
         $this->assertCount(2, $result);
     }
@@ -118,7 +118,7 @@ class ResultScanTest extends TestCase
         $this->assertCount(2, $result);
 
         //With a new `ResultScan`
-        $result = (new ResultScan)->prepend($prepended);
+        $result = (new ResultScan())->prepend($prepended);
         $this->assertEquals($prepended, $result->toArray());
         $this->assertCount(1, $result);
     }

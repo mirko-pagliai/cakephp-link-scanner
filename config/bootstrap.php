@@ -10,6 +10,7 @@
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
+
 use Cake\Cache\Cache;
 
 if (!Cache::getConfig('LinkScanner')) {
