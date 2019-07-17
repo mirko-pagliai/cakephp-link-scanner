@@ -4,6 +4,10 @@
 * updated for `cakephp` 4 and `phpunit` 8.
 
 ## 1.0 branch
+### 1.0.6
+* little fixes;
+* updated for `php-tools` `1.2.6`.
+
 ### 1.0.5
 * now it correctly handles the url with the trailing slash or the `www` prefix.
 

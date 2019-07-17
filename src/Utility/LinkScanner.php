@@ -386,7 +386,7 @@ class LinkScanner implements Serializable
 
         $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
         if (!Folder::isAbsolute($filename)) {
-            $filename = Folder::slashTerm($this->getConfig('target')) . $filename;
+            $filename = add_slash_term($this->getConfig('target')) . $filename;
         }
         (new File($filename, true))->write(serialize($this));
         $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
@@ -411,7 +411,7 @@ class LinkScanner implements Serializable
     {
         try {
             if (!Folder::isAbsolute($filename)) {
-                $filename = Folder::slashTerm(self::getConfig('target')) . $filename;
+                $filename = add_slash_term(self::getConfig('target')) . $filename;
             }
             $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
