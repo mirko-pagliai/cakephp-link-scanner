@@ -197,7 +197,7 @@ class LinkScannerTest extends TestCase
     {
         $this->LinkScanner->Client->setConfig('timeout', 100);
         $this->LinkScanner->setConfig('externalLinks', false)->setConfig('maxDepth', 1)->scan();
-        $filename = $this->LinkScanner->export();
+        $filename = basename($this->LinkScanner->export());
 
         $resultAsObject = (new LinkScanner())->import($filename);
         $resultAsStatic = LinkScanner::import($filename);
