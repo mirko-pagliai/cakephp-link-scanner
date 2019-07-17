@@ -29,8 +29,9 @@ use MeTools\TestSuite\ConsoleIntegrationTestTrait;
  */
 class LinkScannerCommandTest extends TestCase
 {
-    use ConsoleIntegrationTestTrait;
-    use IntegrationTestTrait;
+    use ConsoleIntegrationTestTrait, IntegrationTestTrait {
+        ConsoleIntegrationTestTrait::configApplication insteadof IntegrationTestTrait;
+    }
 
     /**
      * @var \LinkScanner\Utility\LinkScanner
@@ -112,6 +113,7 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->run(['--verbose'], $this->io);
         $this->assertErrorContains('404');
     }
+
     /**
      * Test for `scan()` method, with cache enabled
      * @test
