@@ -232,7 +232,7 @@ class LinkScannerTest extends TestCase
         //With a no existing file
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to import results from file `' . TMP . 'noExistingDir' . DS . 'result` with message `failed to open stream: No such file or directory`');
-        LinkScanner::import(TMP . 'noExistingDir' . DS . 'result');
+        $this->LinkScanner->import(TMP . 'noExistingDir' . DS . 'result');
     }
 
     /**
