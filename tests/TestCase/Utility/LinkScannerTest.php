@@ -197,49 +197,43 @@ class LinkScannerTest extends TestCase
     {
         $this->LinkScanner->Client->setConfig('timeout', 100);
         $this->LinkScanner->setConfig('externalLinks', false)->setConfig('maxDepth', 1)->scan();
-        $filename = $this->LinkScanner->export();
+        $filename = basename($this->LinkScanner->export());
+        $result = (new LinkScanner())->import($filename);
+        $this->assertInstanceof(LinkScanner::class, $result);
+        $this->assertEquals([
+            'cache' => true,
+            'excludeLinks' => '/[\{\}+]/',
+            'externalLinks' => false,
+            'followRedirects' => false,
+            'fullBaseUrl' => $this->fullBaseUrl,
+            'maxDepth' => 1,
+            'lockFile' => true,
+            'target' => TMP . 'cakephp-link-scanner',
+        ], $result->getConfig());
+        $this->assertEquals(100, $result->Client->getConfig('timeout'));
 
-        $resultAsObject = (new LinkScanner())->import($filename);
-        $resultAsStatic = LinkScanner::import($filename);
+        //Checks the event is fired only on the new object. Then, it flushes
+        //  both event lists, so that the objects comparison will run
+        $this->assertEventNotFired('LinkScanner.resultsImported', $this->EventManager);
+        $this->assertEventFired('LinkScanner.resultsImported', $this->getEventManager($result));
+        $this->EventManager->getEventList()->flush();
+        $this->getEventManager($result)->getEventList()->flush();
 
-        foreach ([$resultAsObject, $resultAsStatic] as $result) {
-            $this->assertInstanceof(LinkScanner::class, $result);
-
-            $this->assertEquals([
-                'cache' => true,
-                'excludeLinks' => '/[\{\}+]/',
-                'externalLinks' => false,
-                'followRedirects' => false,
-                'fullBaseUrl' => $this->fullBaseUrl,
-                'maxDepth' => 1,
-                'lockFile' => true,
-                'target' => TMP . 'cakephp-link-scanner',
-            ], $result->getConfig());
-            $this->assertEquals(100, $result->Client->getConfig('timeout'));
-
-            //Checks the event is fired only on the new object. Then, it flushes
-            //  both event lists, so that the objects comparison will run
-            $this->assertEventNotFired('LinkScanner.resultsImported', $this->EventManager);
-            $this->assertEventFired('LinkScanner.resultsImported', $this->getEventManager($result));
-            $this->EventManager->getEventList()->flush();
-            $this->getEventManager($result)->getEventList()->flush();
-
-            //Gets properties from both client, fixes properties of the `Client`
-            //  instances and performs the comparison
-            $expectedClientProperties = $this->getProperties($this->LinkScanner->Client);
-            $resultClientProperties = $this->getProperties($result->Client);
-            foreach (['_adapter', '__phpunit_invocationMocker', '__phpunit_originalObject', '__phpunit_configurable'] as $key) {
-                unset($expectedClientProperties[$key], $resultClientProperties[$key]);
-            }
-            $expectedProperties = ['Client' => $expectedClientProperties] + $this->getProperties($this->LinkScanner);
-            $resultProperties = ['Client' => $resultClientProperties] + $this->getProperties($result);
-            $this->assertEquals($expectedProperties, $resultProperties);
+        //Gets properties from both client, fixes properties of the `Client`
+        //  instances and performs the comparison
+        $expectedClientProperties = $this->getProperties($this->LinkScanner->Client);
+        $resultClientProperties = $this->getProperties($result->Client);
+        foreach (['_adapter', '__phpunit_invocationMocker', '__phpunit_originalObject', '__phpunit_configurable'] as $key) {
+            unset($expectedClientProperties[$key], $resultClientProperties[$key]);
         }
+        $expectedProperties = ['Client' => $expectedClientProperties] + $this->getProperties($this->LinkScanner);
+        $resultProperties = ['Client' => $resultClientProperties] + $this->getProperties($result);
+        $this->assertEquals($expectedProperties, $resultProperties);
 
         //With a no existing file
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to import results from file `' . TMP . 'noExistingDir' . DS . 'result` with message `failed to open stream: No such file or directory`');
-        LinkScanner::import(TMP . 'noExistingDir' . DS . 'result');
+        $this->LinkScanner->import(TMP . 'noExistingDir' . DS . 'result');
     }
 
     /**

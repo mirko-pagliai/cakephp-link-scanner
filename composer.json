@@ -12,7 +12,7 @@
         "php": ">=5.5.9",
         "cakephp/cakephp": "^3.7.1",
         "mirko-pagliai/me-tools": "^2.18",
-        "mirko-pagliai/php-tools": "^1.2.3"
+        "mirko-pagliai/php-tools": "^1.2.6"
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^3.0",
