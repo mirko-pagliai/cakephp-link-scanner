@@ -1,6 +1,7 @@
 # 1.x branch
 ## 1.0 branch
 ### 1.0.6
+* `LinkScanner::import()` can no longer be called statically;
 * little fixes;
 * updated for `php-tools` `1.2.6`.
 

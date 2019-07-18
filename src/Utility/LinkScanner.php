@@ -403,14 +403,13 @@ class LinkScanner implements Serializable
      *  been exported.
      * @param string $filename Filename from which to import
      * @return \LinkScanner\Utility\LinkScanner
-     * @see unserialize()
      * @throws \RuntimeException
      */
-    public static function import($filename)
+    public function import($filename)
     {
         try {
             if (!Folder::isAbsolute($filename)) {
-                $filename = add_slash_term(self::getConfig('target')) . $filename;
+                $filename = add_slash_term($this->getConfig('target')) . $filename;
             }
             $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
