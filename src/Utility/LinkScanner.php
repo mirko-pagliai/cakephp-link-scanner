@@ -19,8 +19,6 @@ use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
-use Cake\Filesystem\File;
-use Cake\Filesystem\Folder;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
@@ -147,7 +145,7 @@ class LinkScanner implements Serializable
             $this->lockFile
         ), RuntimeException::class);
 
-        return $this->getConfig('lockFile') ? new File($this->lockFile, true) !== false : true;
+        return $this->getConfig('lockFile') ? create_file($this->lockFile) !== false : true;
     }
 
     /**
@@ -385,10 +383,8 @@ class LinkScanner implements Serializable
         );
 
         $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
-        if (!Folder::isAbsolute($filename)) {
-            $filename = add_slash_term($this->getConfig('target')) . $filename;
-        }
-        (new File($filename, true))->write(serialize($this));
+        $filename = is_absolute($filename) ? $filename : add_slash_term($this->getConfig('target')) . $filename;
+        create_file($filename, serialize($this));
         $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
 
         return $filename;
@@ -409,9 +405,7 @@ class LinkScanner implements Serializable
     public function import(string $filename)
     {
         try {
-            if (!Folder::isAbsolute($filename)) {
-                $filename = add_slash_term($this->getConfig('target')) . $filename;
-            }
+            $filename = is_absolute($filename) ? $filename : add_slash_term($this->getConfig('target')) . $filename;
             $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
             $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
