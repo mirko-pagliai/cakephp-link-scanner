@@ -1,5 +1,8 @@
 # 1.x branch
 ## 1.0 branch
+### 1.0.7
+* added tests for lower dependencies.
+
 ### 1.0.6
 * `LinkScanner::import()` can no longer be called statically;
 * little fixes;
