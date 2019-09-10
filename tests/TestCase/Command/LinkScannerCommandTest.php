@@ -111,6 +111,7 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->run(['--verbose'], $this->io);
         $this->assertErrorContains('404');
     }
+
     /**
      * Test for `scan()` method, with cache enabled
      * @test
