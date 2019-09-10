@@ -220,13 +220,13 @@ class LinkScannerTest extends TestCase
 
         //Gets properties from both client, fixes properties of the `Client`
         //  instances and performs the comparison
-        $expectedClientProperties = $this->getProperties($this->LinkScanner->Client);
-        $resultClientProperties = $this->getProperties($result->Client);
+        $expectedProperties = $this->getProperties($this->LinkScanner->Client);
+        $resultProperties = $this->getProperties($result->Client);
         foreach (['_adapter', '__phpunit_invocationMocker', '__phpunit_originalObject', '__phpunit_configurable'] as $key) {
-            unset($expectedClientProperties[$key], $resultClientProperties[$key]);
+            unset($expectedProperties[$key], $resultProperties[$key]);
         }
-        $expectedProperties = ['Client' => $expectedClientProperties] + $this->getProperties($this->LinkScanner);
-        $resultProperties = ['Client' => $resultClientProperties] + $this->getProperties($result);
+        $expectedProperties = ['Client' => $expectedProperties] + $this->getProperties($this->LinkScanner);
+        $resultProperties = ['Client' => $resultProperties] + $this->getProperties($result);
         $this->assertEquals($expectedProperties, $resultProperties);
 
         //With a no existing file
@@ -301,12 +301,7 @@ class LinkScannerTest extends TestCase
         $hostname = get_hostname_from_url($this->fullBaseUrl);
 
         foreach ($LinkScanner->ResultScan as $item) {
-            if (!$item->external) {
-                $this->assertRegexp(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->url);
-            } else {
-                $this->assertTextStartsNotWith('http://' . $hostname, $item->url);
-                $this->assertTextStartsNotWith('https://' . $hostname, $item->url);
-            }
+            $this->assertRegexp(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->url);
             $this->assertContains($item->code, [200, 500]);
             $this->assertStringStartsWith('text/html', $item->type);
         }

@@ -195,12 +195,12 @@ class LinkScannerCommandTest extends TestCase
         $expectedConfig['fullBaseUrl'] = $this->fullBaseUrl;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
 
-        $lineDifferentFullBaseUrl = function ($line) {
+        $differentLines = function ($line) {
             $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl)));
 
             return substr($line, 0, strlen('Checking')) === 'Checking' && !preg_match($pattern, $line);
         };
-        $this->assertEmpty(array_filter($this->_out->messages(), $lineDifferentFullBaseUrl));
+        $this->assertEmpty(array_filter($this->_out->messages(), $differentLines));
         $this->assertOutputContains('Scanning of external links is not enabled');
 
         //Re-enables external links
@@ -209,7 +209,7 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->run($params, $this->io);
         $expectedConfig['externalLinks'] = true;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
-        $this->assertNotEmpty(array_filter($this->_out->messages(), $lineDifferentFullBaseUrl));
+        $this->assertNotEmpty(array_filter($this->_out->messages(), $differentLines));
 
         foreach ([
             'example' => $this->LinkScanner->getConfig('target') . DS . 'example',
