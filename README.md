@@ -4,6 +4,7 @@
 [![Build Status](https://api.travis-ci.org/mirko-pagliai/cakephp-link-scanner.svg?branch=master)](https://travis-ci.org/mirko-pagliai/cakephp-link-scanner)
 [![Build status](https://ci.appveyor.com/api/projects/status/hqk7fxtad6r75wk3?svg=true)](https://ci.appveyor.com/project/mirko-pagliai/cakephp-link-scanner)
 [![codecov](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner/branch/master/graph/badge.svg)](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner)
+[![CodeFactor](https://www.codefactor.io/repository/github/mirko-pagliai/cakephp-link-scanner/badge/cakephp4)](https://www.codefactor.io/repository/github/mirko-pagliai/cakephp-link-scanner/overview/cakephp4)
 
 *LinkScanner* is a CakePHP plugin for recursively scanning links: starting from
 a full base url, it performs GET requests, checks the status codes, inspects the
