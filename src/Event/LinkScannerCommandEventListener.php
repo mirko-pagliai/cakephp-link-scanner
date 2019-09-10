@@ -218,7 +218,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
         $this->io->hr();
 
         $cache = Cache::getConfig('LinkScanner');
-        list($method, $message) = ['info', __d('link-scanner', 'The cache is disabled')];
+        [$method, $message] = ['info', __d('link-scanner', 'The cache is disabled')];
         if (!$this->args->getOption('no-cache') && Cache::enabled() && !empty($cache['duration'])) {
             $method = 'success';
             $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']);
