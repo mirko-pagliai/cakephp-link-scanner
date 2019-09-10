@@ -88,18 +88,21 @@ abstract class TestCase extends BaseTestCase
         $Client->method('get')->will($this->returnCallback(function ($url) {
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
+            $getResponse = function () use ($url) {
+                return (new Client(['redirect' => true]))->get($url);
+            };
 
             if (is_readable($responseFile)) {
-                $response = @unserialize(file_get_contents($responseFile));
-            } else {
-                $response = (new Client(['redirect' => true]))->get($url);
+                $getResponse = function () use ($responseFile) {
+                    return @unserialize(file_get_contents($responseFile));
+                };
             }
-            is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($response));
+            is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($getResponse()));
 
-            $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile)) : (string)$response->getBody();
+            $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile)) : (string)$getResponse()->getBody();
             is_readable($bodyFile) ? null : file_put_contents($bodyFile, serialize($body));
 
-            return $this->getResponseWithBody($body, $response);
+            return $this->getResponseWithBody($body, $getResponse());
         }));
 
         return $Client;

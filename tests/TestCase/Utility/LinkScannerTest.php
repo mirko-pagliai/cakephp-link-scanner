@@ -174,8 +174,8 @@ class LinkScannerTest extends TestCase
             null => $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
             'example' => $this->LinkScanner->getConfig('target') . DS . 'example',
             TMP . 'example' => TMP . 'example',
-        ] as $filenameWhereToExport => $expectedFilename) {
-            $result = $this->LinkScanner->export($filenameWhereToExport);
+        ] as $filename => $expectedFilename) {
+            $result = $this->LinkScanner->export($filename);
             $this->assertFileExists($result);
             $this->assertEquals($expectedFilename, $result);
             $this->assertEventFired('LinkScanner.resultsExported', $this->EventManager);
@@ -373,7 +373,7 @@ class LinkScannerTest extends TestCase
         $this->assertEquals($expectedDebug, $this->debug);
 
         //Results contain both internal and external urls
-        $expectedInternaLinks = [
+        $expectedInternal = [
             'http://localhost',
             'http://localhost/pages/first_page',
             'http://localhost/favicon.ico',
@@ -384,11 +384,11 @@ class LinkScannerTest extends TestCase
             'http://localhost/pages/redirect',
             'http://localhost/pages/sameredirect',
         ];
-        $expectedExternalLinks = ['http://google.it'];
+        $expectedExternal = ['http://google.it'];
         $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
         $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
-        $this->assertEquals($expectedInternaLinks, $internalLinks->toList());
-        $this->assertEquals($expectedExternalLinks, $externalLinks->toList());
+        $this->assertEquals($expectedInternal, $internalLinks->toList());
+        $this->assertEquals($expectedExternal, $externalLinks->toList());
 
         $this->debug = [];
 
@@ -419,13 +419,13 @@ class LinkScannerTest extends TestCase
         $LinkScanner->setConfig('followRedirects', true)->scan();
         $this->assertEquals($expectedDebug, $this->debug);
 
-        array_pop($expectedInternaLinks);
-        array_pop($expectedInternaLinks);
-        $expectedInternaLinks[] = 'http://localhost/pages/third_page';
+        array_pop($expectedInternal);
+        array_pop($expectedInternal);
+        $expectedInternal[] = 'http://localhost/pages/third_page';
         $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
         $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
-        $this->assertEquals($expectedInternaLinks, $internalLinks->toList());
-        $this->assertEquals($expectedExternalLinks, $externalLinks->toList());
+        $this->assertEquals($expectedInternal, $internalLinks->toList());
+        $this->assertEquals($expectedExternal, $externalLinks->toList());
 
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests($params);
         $LinkScanner->setConfig('maxDepth', 1)->scan();
@@ -459,6 +459,6 @@ class LinkScannerTest extends TestCase
         $EventManager = $this->getEventManager($LinkScanner);
         $LinkScanner->scan();
 
-        $this->assertEventFired('LinkScanner.' . 'responseNotOk', $EventManager);
+        $this->assertEventFired('LinkScanner.responseNotOk', $EventManager);
     }
 }
