@@ -42,15 +42,15 @@ to indicate the full base url which to start the scan every time.
 
 ## How to use
 Please, refer to the wiki:
-- [How to use the LinkScanner utility](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScanner-utility)
-- [How to use the LinkScannerCommand](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScannerCommand)
-- [Examples for ResultScan](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/Examples-for-ResultScan)
+*   [How to use the LinkScanner utility](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScanner-utility)
+*   [How to use the LinkScannerCommand](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScannerCommand)
+*   [Examples for ResultScan](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/Examples-for-ResultScan)
 
 In addition, you can refer to our [API](//mirko-pagliai.github.io/cakephp-link-scanner).
 
 ## To do list
-* allow the use of a configuration file for the shell;
-* allow to export results as html and/or xml.
+*   allow the use of a configuration file for the shell;
+*   allow to export results as html and/or xml.
 
 ## Versioning
 For transparency and insight into our release cycle and to maintain backward 

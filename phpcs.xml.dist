@@ -8,6 +8,9 @@
     <rule ref="Generic.Commenting.Todo">
         <severity>0</severity>
     </rule>
+    <rule ref="Generic.Files.LineLength.TooLong">
+        <severity>0</severity>
+    </rule>
     <rule ref="Generic.PHP.NoSilencedErrors.Discouraged">
         <severity>0</severity>
     </rule>
