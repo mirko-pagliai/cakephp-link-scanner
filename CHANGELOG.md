@@ -1,5 +1,10 @@
 # 1.x branch
 ## 1.0 branch
+### 1.0.7
+* added tests for lower dependencies;
+* no longer uses `File` and `Folder` classes;
+* little fixes.
+
 ### 1.0.6
 * `LinkScanner::import()` can no longer be called statically;
 * little fixes;

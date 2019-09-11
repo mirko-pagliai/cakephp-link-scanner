@@ -18,8 +18,6 @@ use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
-use Cake\Filesystem\File;
-use Cake\Filesystem\Folder;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
@@ -28,6 +26,7 @@ use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
 use RuntimeException;
 use Serializable;
+use Symfony\Component\Filesystem\Filesystem;
 use Tools\BodyParser;
 use Zend\Diactoros\Stream;
 
@@ -146,7 +145,20 @@ class LinkScanner implements Serializable
             $this->lockFile
         ), RuntimeException::class);
 
-        return $this->getConfig('lockFile') ? new File($this->lockFile, true) !== false : true;
+        return $this->getConfig('lockFile') ? create_file($this->lockFile) !== false : true;
+    }
+
+    /**
+     * Internal method to get the absolute path for a filename
+     * @param string $filename Filename
+     * @return string
+     * @since 1.0.7
+     */
+    protected function _getAbsolutePath($filename)
+    {
+        $isAbsolute = (new Filesystem())->isAbsolutePath($filename);
+
+        return $isAbsolute ? $filename : add_slash_term($this->getConfig('target')) . $filename;
     }
 
     /**
@@ -371,6 +383,7 @@ class LinkScanner implements Serializable
      * @return string
      * @see serialize()
      * @throws \RuntimeException
+     * @uses _getAbsolutePath()
      * @uses $ResultScan
      * @uses $hostname
      * @uses $startTime
@@ -383,11 +396,8 @@ class LinkScanner implements Serializable
             RuntimeException::class
         );
 
-        $filename = $filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime);
-        if (!Folder::isAbsolute($filename)) {
-            $filename = add_slash_term($this->getConfig('target')) . $filename;
-        }
-        (new File($filename, true))->write(serialize($this));
+        $filename = $this->_getAbsolutePath($filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime));
+        create_file($filename, serialize($this));
         $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
 
         return $filename;
@@ -403,14 +413,14 @@ class LinkScanner implements Serializable
      *  been exported.
      * @param string $filename Filename from which to import
      * @return \LinkScanner\Utility\LinkScanner
+     * @uses _getAbsolutePath()
      * @throws \RuntimeException
      */
     public function import($filename)
     {
+        $filename = $this->_getAbsolutePath($filename);
+
         try {
-            if (!Folder::isAbsolute($filename)) {
-                $filename = add_slash_term($this->getConfig('target')) . $filename;
-            }
             $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
             $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());

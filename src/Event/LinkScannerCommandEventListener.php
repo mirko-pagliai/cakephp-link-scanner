@@ -216,33 +216,30 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
         $this->io->hr();
 
         $cache = Cache::getConfig('LinkScanner');
+        list($method, $message) = ['info', __d('link-scanner', 'The cache is disabled')];
         if (!$this->args->getOption('no-cache') && Cache::enabled() && !empty($cache['duration'])) {
-            $this->io->success(__d(
-                'link-scanner',
-                'The cache is enabled and its duration is `{0}`',
-                $cache['duration']
-            ));
-        } else {
-            $this->io->info(__d('link-scanner', 'The cache is disabled'));
+            $method = 'success';
+            $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']);
         }
+        call_user_func([$this->io, $method], $message);
 
+        $message = __d('link-scanner', 'Force mode is not enabled');
         if ($this->args->getOption('force')) {
-            $this->io->info(__d('link-scanner', 'Force mode is enabled'));
-        } else {
-            $this->io->info(__d('link-scanner', 'Force mode is not enabled'));
+            $message = __d('link-scanner', 'Force mode is enabled');
         }
+        $this->io->info($message);
 
+        $message = __d('link-scanner', 'Scanning of external links is not enabled');
         if ($event->getSubject()->getConfig('externalLinks')) {
-            $this->io->info(__d('link-scanner', 'Scanning of external links is enabled'));
-        } else {
-            $this->io->info(__d('link-scanner', 'Scanning of external links is not enabled'));
+            $message = __d('link-scanner', 'Scanning of external links is enabled');
         }
+        $this->io->info($message);
 
+        $message = __d('link-scanner', 'Redirects will not be followed');
         if ($event->getSubject()->getConfig('followRedirects')) {
-            $this->io->info(__d('link-scanner', 'Redirects will be followed'));
-        } else {
-            $this->io->info(__d('link-scanner', 'Redirects will not be followed'));
+            $message = __d('link-scanner', 'Redirects will be followed');
         }
+        $this->io->info($message);
 
         $maxDepth = $event->getSubject()->getConfig('maxDepth');
         if (is_positive($maxDepth)) {

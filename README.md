@@ -4,6 +4,7 @@
 [![Build Status](https://api.travis-ci.org/mirko-pagliai/cakephp-link-scanner.svg?branch=master)](https://travis-ci.org/mirko-pagliai/cakephp-link-scanner)
 [![Build status](https://ci.appveyor.com/api/projects/status/hqk7fxtad6r75wk3?svg=true)](https://ci.appveyor.com/project/mirko-pagliai/cakephp-link-scanner)
 [![codecov](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner/branch/master/graph/badge.svg)](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner)
+[![CodeFactor](https://www.codefactor.io/repository/github/mirko-pagliai/cakephp-link-scanner/badge/cakephp4)](https://www.codefactor.io/repository/github/mirko-pagliai/cakephp-link-scanner/overview/cakephp4)
 
 *LinkScanner* is a CakePHP plugin for recursively scanning links: starting from
 a full base url, it performs GET requests, checks the status codes, inspects the
@@ -42,15 +43,15 @@ to indicate the full base url which to start the scan every time.
 
 ## How to use
 Please, refer to the wiki:
-- [How to use the LinkScanner utility](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScanner-utility)
-- [How to use the LinkScannerCommand](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScannerCommand)
-- [Examples for ResultScan](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/Examples-for-ResultScan)
+*   [How to use the LinkScanner utility](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScanner-utility)
+*   [How to use the LinkScannerCommand](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScannerCommand)
+*   [Examples for ResultScan](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/Examples-for-ResultScan)
 
 In addition, you can refer to our [API](//mirko-pagliai.github.io/cakephp-link-scanner).
 
 ## To do list
-* allow the use of a configuration file for the shell;
-* allow to export results as html and/or xml.
+*   allow the use of a configuration file for the shell;
+*   allow to export results as html and/or xml.
 
 ## Versioning
 For transparency and insight into our release cycle and to maintain backward 
