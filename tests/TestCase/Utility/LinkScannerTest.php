@@ -143,8 +143,6 @@ class LinkScannerTest extends TestCase
             if ($response->isOk()) {
                 $this->assertNotEmpty($responseFromCache);
                 $this->assertInstanceof(Response::class, $responseFromCache);
-            } else {
-                $this->assertEmpty($responseFromCache);
             }
         }
 
