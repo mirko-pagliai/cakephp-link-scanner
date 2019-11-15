@@ -1,0 +1,1635 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project title="cakephp-link-scanner" version="2.9.1">
+  <partials/>
+  <file path="Event/LinkScannerEventListenerInterface.php" generated-path="Event.LinkScannerEventListenerInterface.html" hash="35a70ef865958e574c83f35197dab44b" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="Event">\Cake\Event\Event</namespace-alias>
+    <namespace-alias name="EventListenerInterface">\Cake\Event\EventListenerInterface</namespace-alias>
+    <namespace-alias name="Response">\Cake\Http\Client\Response</namespace-alias>
+    <namespace-alias name="ResultScan">\LinkScanner\ResultScan</namespace-alias>
+    <interface namespace="LinkScanner\Event" line="23" package="Default">
+      <extends>\Cake\Event\EventListenerInterface</extends>
+      <name>LinkScannerEventListenerInterface</name>
+      <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface</full_name>
+      <docblock line="23">
+        <description>Event listener interface for the `LinkScanner`</description>
+        <long-description></long-description>
+        <tag name="package" line="23" description="Default"/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="31" package="Default">
+        <name>afterScanUrl</name>
+        <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::afterScanUrl()</full_name>
+        <docblock line="31">
+          <description>`LinkScanner.afterScanUrl` event</description>
+          <long-description></long-description>
+          <tag name="param" line="31" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="31" description="&lt;p&gt;A &lt;code&gt;Response&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Http\Client\Response" variable="$response">
+            <type>\Cake\Http\Client\Response</type>
+          </tag>
+          <tag name="return" line="31" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Cake\Http\Client\Response</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="39" package="Default">
+        <name>beforeScanUrl</name>
+        <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::beforeScanUrl()</full_name>
+        <docblock line="39">
+          <description>`LinkScanner.beforeScanUrl` event</description>
+          <long-description></long-description>
+          <tag name="param" line="39" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="39" description="&lt;p&gt;Url&lt;/p&gt;" type="string" variable="$url">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="39" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$url</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="47" package="Default">
+        <name>foundLinkToBeScanned</name>
+        <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::foundLinkToBeScanned()</full_name>
+        <docblock line="47">
+          <description>`LinkScanner.foundLinkToBeScanned` event</description>
+          <long-description></long-description>
+          <tag name="param" line="47" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="47" description="&lt;p&gt;Link&lt;/p&gt;" type="string" variable="$link">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="47" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$link</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="55" package="Default">
+        <name>foundRedirect</name>
+        <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::foundRedirect()</full_name>
+        <docblock line="55">
+          <description>`LinkScanner.foundRedirect` event</description>
+          <long-description></long-description>
+          <tag name="param" line="55" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="55" description="&lt;p&gt;Redirect&lt;/p&gt;" type="string" variable="$redirect">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="55" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$redirect</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="63" package="Default">
+        <name>resultsExported</name>
+        <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::resultsExported()</full_name>
+        <docblock line="63">
+          <description>`LinkScanner.resultsExported` event</description>
+          <long-description></long-description>
+          <tag name="param" line="63" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="63" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="63" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$filename</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="71" package="Default">
+        <name>resultsImported</name>
+        <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::resultsImported()</full_name>
+        <docblock line="71">
+          <description>`LinkScanner.resultsImported` event</description>
+          <long-description></long-description>
+          <tag name="param" line="71" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="71" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="71" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$filename</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="81" package="Default">
+        <name>scanCompleted</name>
+        <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::scanCompleted()</full_name>
+        <docblock line="81">
+          <description>`LinkScanner.scanCompleted` event</description>
+          <long-description></long-description>
+          <tag name="param" line="81" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="81" description="&lt;p&gt;Start time&lt;/p&gt;" type="integer" variable="$startTime">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="81" description="&lt;p&gt;End time&lt;/p&gt;" type="integer" variable="$endTime">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="81" description="&lt;p&gt;A &lt;code&gt;ResultScan&lt;/code&gt; instance&lt;/p&gt;" type="\LinkScanner\ResultScan" variable="$ResultScan">
+            <type>\LinkScanner\ResultScan</type>
+          </tag>
+          <tag name="return" line="81" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$startTime</name>
+          <default></default>
+          <type>integer</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$endTime</name>
+          <default></default>
+          <type>integer</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$ResultScan</name>
+          <default></default>
+          <type>\LinkScanner\ResultScan</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="90" package="Default">
+        <name>scanStarted</name>
+        <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::scanStarted()</full_name>
+        <docblock line="90">
+          <description>`LinkScanner.scanStarted` event</description>
+          <long-description></long-description>
+          <tag name="param" line="90" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="90" description="&lt;p&gt;Start time&lt;/p&gt;" type="integer" variable="$startTime">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="90" description="&lt;p&gt;Full base url&lt;/p&gt;" type="string" variable="$fullBaseUrl">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="90" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$startTime</name>
+          <default></default>
+          <type>integer</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$fullBaseUrl</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+    </interface>
+  </file>
+  <file path="ScanEntity.php" generated-path="ScanEntity.html" hash="a3f6dcf0946aae8ad2b0018b59cd4800" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="Response">\Cake\Http\Client\Response</namespace-alias>
+    <namespace-alias name="Entity">\Tools\Entity</namespace-alias>
+    <class final="false" abstract="false" namespace="LinkScanner" line="21" package="Default">
+      <extends>\Tools\Entity</extends>
+      <name>ScanEntity</name>
+      <full_name>\LinkScanner\ScanEntity</full_name>
+      <docblock line="21">
+        <description>A `ScanEntity` represents a single result of a scan</description>
+        <long-description></long-description>
+        <tag name="package" line="21" description="Default"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="LinkScanner" line="27" package="Default">
+        <name>$Response</name>
+        <full_name>\LinkScanner\ScanEntity::$Response</full_name>
+        <default></default>
+        <docblock line="27">
+          <description>A `Response` object</description>
+          <long-description></long-description>
+          <tag name="var" line="27" description="" type="\Cake\Http\Client\Response" variable="">
+            <type>\Cake\Http\Client\Response</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="34" package="Default">
+        <name>__construct</name>
+        <full_name>\LinkScanner\ScanEntity::__construct()</full_name>
+        <docblock line="34">
+          <description>Initializes the internal properties</description>
+          <long-description></long-description>
+          <tag name="param" line="34" description="&lt;p&gt;Properties to set&lt;/p&gt;" type="array" variable="$properties">
+            <type>array</type>
+          </tag>
+          <tag name="throws" line="34" description="" type="\Tools\Exception\KeyNotExistsException">
+            <type>\Tools\Exception\KeyNotExistsException</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$properties</name>
+          <default>array()</default>
+          <type>array</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="49" package="Default">
+        <name>__call</name>
+        <full_name>\LinkScanner\ScanEntity::__call()</full_name>
+        <docblock line="49">
+          <description>Magic method, is triggered when invoking inaccessible methods.</description>
+          <long-description>It calls the same method name from the original `Response` class</long-description>
+          <tag name="param" line="49" description="&lt;p&gt;Method name&lt;/p&gt;" type="string" variable="$name">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="49" description="&lt;p&gt;Method arguments&lt;/p&gt;" type="mixed" variable="$arguments">
+            <type>mixed</type>
+          </tag>
+          <tag name="return" line="49" description="" type="mixed">
+            <type>mixed</type>
+          </tag>
+          <tag name="see" line="49" description="" link="\Cake\Http\Client\Response"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$name</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$arguments</name>
+          <default></default>
+          <type>mixed</type>
+        </argument>
+      </method>
+    </class>
+  </file>
+  <file path="TestSuite/TestCase.php" generated-path="TestSuite.TestCase.html" hash="2e26bb93cc3432109f4fd99740c5bcf7" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="Cache">\Cake\Cache\Cache</namespace-alias>
+    <namespace-alias name="EventList">\Cake\Event\EventList</namespace-alias>
+    <namespace-alias name="Client">\Cake\Http\Client</namespace-alias>
+    <namespace-alias name="Response">\Cake\Http\Client\Response</namespace-alias>
+    <namespace-alias name="LinkScanner">\LinkScanner\Utility\LinkScanner</namespace-alias>
+    <namespace-alias name="BaseTestCase">\MeTools\TestSuite\TestCase</namespace-alias>
+    <namespace-alias name="Stream">\Zend\Diactoros\Stream</namespace-alias>
+    <class final="false" abstract="true" namespace="LinkScanner\TestSuite" line="26" package="Default">
+      <extends>\MeTools\TestSuite\TestCase</extends>
+      <name>TestCase</name>
+      <full_name>\LinkScanner\TestSuite\TestCase</full_name>
+      <docblock line="26">
+        <description>TestCase class</description>
+        <long-description></long-description>
+        <tag name="package" line="26" description="Default"/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\TestSuite" line="32" package="Default">
+        <name>tearDown</name>
+        <full_name>\LinkScanner\TestSuite\TestCase::tearDown()</full_name>
+        <docblock line="32">
+          <description>Called after every test method</description>
+          <long-description></long-description>
+          <tag name="return" line="32" description="" type="void">
+            <type>void</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\TestSuite" line="49" package="Default">
+        <name>assertEventNotFired</name>
+        <full_name>\LinkScanner\TestSuite\TestCase::assertEventNotFired()</full_name>
+        <docblock line="49">
+          <description>Asserts that a global event was not fired. You must track events in your
+ event manager for this assertion to work</description>
+          <long-description></long-description>
+          <tag name="param" line="49" description="&lt;p&gt;Event name&lt;/p&gt;" type="string" variable="$name">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="49" description="&lt;p&gt;Event manager to check,&#10; defaults to global event manager&lt;/p&gt;" type="\Cake\Event\EventManager|null" variable="$eventManager">
+            <type>\Cake\Event\EventManager</type>
+            <type>null</type>
+          </tag>
+          <tag name="return" line="49" description="" type="void">
+            <type>void</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$name</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$eventManager</name>
+          <default>null</default>
+          <type>\Cake\Event\EventManager|null</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="63" package="Default">
+        <name>getClientReturnsErrorResponse</name>
+        <full_name>\LinkScanner\TestSuite\TestCase::getClientReturnsErrorResponse()</full_name>
+        <docblock line="63">
+          <description>Returns a stub of `Client`, where the `get()` method always returns a
+ response with error (404 status code)</description>
+          <long-description></long-description>
+          <tag name="return" line="63" description="" type="\Cake\Http\Client">
+            <type>\Cake\Http\Client</type>
+          </tag>
+          <tag name="uses" line="63" description="" link="\LinkScanner\TestSuite\TestCase::getResponseWithBody()"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="82" package="Default">
+        <name>getClientReturnsSampleResponse</name>
+        <full_name>\LinkScanner\TestSuite\TestCase::getClientReturnsSampleResponse()</full_name>
+        <docblock line="82">
+          <description>Returns a stub of `Client`, where the `get()` method returns a sample
+ response which is read from `examples/responses` files</description>
+          <long-description></long-description>
+          <tag name="return" line="82" description="" type="\Cake\Http\Client">
+            <type>\Cake\Http\Client</type>
+          </tag>
+          <tag name="uses" line="82" description="" link="\LinkScanner\TestSuite\TestCase::getResponseWithBody()"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="116" package="Default">
+        <name>getEventManager</name>
+        <full_name>\LinkScanner\TestSuite\TestCase::getEventManager()</full_name>
+        <docblock line="116">
+          <description>Sets the event list and returns the `EventManager` instance</description>
+          <long-description></long-description>
+          <tag name="param" line="116" description="&lt;p&gt;&lt;code&gt;LinkScanner&lt;/code&gt; instance or &lt;code&gt;null&lt;/code&gt;&lt;/p&gt;" type="\LinkScanner\Utility\LinkScanner|null" variable="$LinkScanner">
+            <type>\LinkScanner\Utility\LinkScanner</type>
+            <type>null</type>
+          </tag>
+          <tag name="return" line="116" description="" type="\Cake\Event\EventManager">
+            <type>\Cake\Event\EventManager</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$LinkScanner</name>
+          <default>null</default>
+          <type>\LinkScanner\Utility\LinkScanner|null</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="137" package="Default">
+        <name>getResponseWithBody</name>
+        <full_name>\LinkScanner\TestSuite\TestCase::getResponseWithBody()</full_name>
+        <docblock line="137">
+          <description>Gets a `Response` instance, writes a new body string and returns.</description>
+          <long-description>If `$response` is null, a new `Response` instance will be created.</long-description>
+          <tag name="param" line="137" description="&lt;p&gt;Body of the response&lt;/p&gt;" type="string" variable="$body">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="137" description="&lt;p&gt;A &lt;code&gt;Response&lt;/code&gt; instance or&#10;&lt;code&gt;null&lt;/code&gt; to create a new instance&lt;/p&gt;" type="\Cake\Http\Client\Response|null" variable="$response">
+            <type>\Cake\Http\Client\Response</type>
+            <type>null</type>
+          </tag>
+          <tag name="return" line="137" description="" type="\Cake\Http\Client\Response">
+            <type>\Cake\Http\Client\Response</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$body</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default>null</default>
+          <type>\Cake\Http\Client\Response|null</type>
+        </argument>
+      </method>
+    </class>
+  </file>
+  <file path="ResultScan.php" generated-path="ResultScan.html" hash="21222b4ec81fc7c9472a848153ced583" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="Collection">\Cake\Collection\Collection</namespace-alias>
+    <namespace-alias name="ScanEntity">\LinkScanner\ScanEntity</namespace-alias>
+    <namespace-alias name="Traversable">\Traversable</namespace-alias>
+    <class final="false" abstract="false" namespace="LinkScanner" line="22" package="Default">
+      <extends>\Cake\Collection\Collection</extends>
+      <name>ResultScan</name>
+      <full_name>\LinkScanner\ResultScan</full_name>
+      <docblock line="22">
+        <description>This class contains the results of the scan</description>
+        <long-description></long-description>
+        <tag name="package" line="22" description="Default"/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner" line="31" package="Default">
+        <name>parseItems</name>
+        <full_name>\LinkScanner\ResultScan::parseItems()</full_name>
+        <docblock line="31">
+          <description>Internal method to parse items.</description>
+          <long-description>Ensures that each item is a `ScanEntity` and has all the properties it needs</long-description>
+          <tag name="param" line="31" description="&lt;p&gt;Array of items&lt;/p&gt;" type="array|\Traversable" variable="$items">
+            <type>array</type>
+            <type>\Traversable</type>
+          </tag>
+          <tag name="return" line="31" description="Parsed items" type="array">
+            <type>array</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$items</name>
+          <default></default>
+          <type>array|\Traversable</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="45" package="Default">
+        <name>__construct</name>
+        <full_name>\LinkScanner\ResultScan::__construct()</full_name>
+        <docblock line="45">
+          <description>Constructor</description>
+          <long-description></long-description>
+          <tag name="param" line="45" description="&lt;p&gt;Items&lt;/p&gt;" type="array|\Traversable" variable="$items">
+            <type>array</type>
+            <type>\Traversable</type>
+          </tag>
+          <tag name="uses" line="45" description="" link="\LinkScanner\ResultScan::parseItems()"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$items</name>
+          <default>array()</default>
+          <type>array|\Traversable</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="59" package="Default">
+        <name>append</name>
+        <full_name>\LinkScanner\ResultScan::append()</full_name>
+        <docblock line="59">
+          <description>Appends items.</description>
+          <long-description>Returns a new `ResultScan` instance as the result of concatenating the
+ list of elements in this collection with the passed list of elements</long-description>
+          <tag name="param" line="59" description="&lt;p&gt;Items&lt;/p&gt;" type="array|\Traversable" variable="$items">
+            <type>array</type>
+            <type>\Traversable</type>
+          </tag>
+          <tag name="return" line="59" description="" type="\Cake\Collection\CollectionInterface">
+            <type>\Cake\Collection\CollectionInterface</type>
+          </tag>
+          <tag name="uses" line="59" description="" link="\LinkScanner\ResultScan::parseItems()"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$items</name>
+          <default></default>
+          <type>array|\Traversable</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="73" package="Default">
+        <name>prepend</name>
+        <full_name>\LinkScanner\ResultScan::prepend()</full_name>
+        <docblock line="73">
+          <description>Prepends items.</description>
+          <long-description>Returns a new `ResultScan` instance as the result of concatenating the
+ passed list of elements with the list of elements in this collection</long-description>
+          <tag name="param" line="73" description="&lt;p&gt;Items&lt;/p&gt;" type="array|\Traversable" variable="$items">
+            <type>array</type>
+            <type>\Traversable</type>
+          </tag>
+          <tag name="return" line="73" description="" type="\Cake\Collection\CollectionInterface">
+            <type>\Cake\Collection\CollectionInterface</type>
+          </tag>
+          <tag name="uses" line="73" description="" link="\LinkScanner\ResultScan::parseItems()"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$items</name>
+          <default></default>
+          <type>array|\Traversable</type>
+        </argument>
+      </method>
+    </class>
+  </file>
+  <file path="TestSuite/IntegrationTestTrait.php" generated-path="TestSuite.IntegrationTestTrait.html" hash="9da744e05f6f4bfe684c812f9eb70b82" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="Configure">\Cake\Core\Configure</namespace-alias>
+    <namespace-alias name="Client">\Cake\Http\Client</namespace-alias>
+    <namespace-alias name="Response">\Cake\Http\Client\Response</namespace-alias>
+    <namespace-alias name="Router">\Cake\Routing\Router</namespace-alias>
+    <namespace-alias name="LinkScanner">\LinkScanner\Utility\LinkScanner</namespace-alias>
+    <namespace-alias name="BaseIntegrationTestTrait">\MeTools\TestSuite\IntegrationTestTrait</namespace-alias>
+    <trait namespace="LinkScanner\TestSuite" line="25" package="Default">
+      <name>IntegrationTestTrait</name>
+      <full_name>\LinkScanner\TestSuite\IntegrationTestTrait</full_name>
+      <docblock line="25">
+        <description>A trait intended to make integration tests of your controllers easier</description>
+        <long-description></long-description>
+        <tag name="package" line="25" description="Default"/>
+      </docblock>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="35" package="Default">
+        <name>getClientReturnsFromTests</name>
+        <full_name>\LinkScanner\TestSuite\IntegrationTestTrait::getClientReturnsFromTests()</full_name>
+        <docblock line="35">
+          <description>Returns a stub of `Client`, where the `get()` method uses the
+ `IntegrationTestTrait::get()` method and allows you to get responses from
+ the test app</description>
+          <long-description></long-description>
+          <tag name="return" line="35" description="" type="\Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject">
+            <type>\Cake\Http\Client</type>
+            <type>\PHPUnit_Framework_MockObject_MockObject</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="76" package="Default">
+        <name>getLinkScannerClientReturnsFromTests</name>
+        <full_name>\LinkScanner\TestSuite\IntegrationTestTrait::getLinkScannerClientReturnsFromTests()</full_name>
+        <docblock line="76">
+          <description>Returns a stub of `LinkScanner` instance, with the `Client::get()`
+ method uses the `IntegrationTestTrait::get()` method and allows you to
+ get responses from the test app</description>
+          <long-description></long-description>
+          <tag name="param" line="76" description="&lt;p&gt;Full base url&lt;/p&gt;" type="string|array|null" variable="$fullBaseUrl">
+            <type>string</type>
+            <type>array</type>
+            <type>null</type>
+          </tag>
+          <tag name="return" line="76" description="" type="\LinkScanner\Utility\LinkScanner|\PHPUnit_Framework_MockObject_MockObject">
+            <type>\LinkScanner\Utility\LinkScanner</type>
+            <type>\PHPUnit_Framework_MockObject_MockObject</type>
+          </tag>
+          <tag name="uses" line="76" description="" link="\LinkScanner\TestSuite\IntegrationTestTrait::getClientReturnsFromTests()"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$fullBaseUrl</name>
+          <default>null</default>
+          <type>string|array|null</type>
+        </argument>
+      </method>
+    </trait>
+  </file>
+  <file path="Event/LinkScannerCommandEventListener.php" generated-path="Event.LinkScannerCommandEventListener.html" hash="6e9fd08d1176be2f29241433cfb1e6b8" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="Cache">\Cake\Cache\Cache</namespace-alias>
+    <namespace-alias name="Arguments">\Cake\Console\Arguments</namespace-alias>
+    <namespace-alias name="ConsoleIo">\Cake\Console\ConsoleIo</namespace-alias>
+    <namespace-alias name="Event">\Cake\Event\Event</namespace-alias>
+    <namespace-alias name="Response">\Cake\Http\Client\Response</namespace-alias>
+    <namespace-alias name="Time">\Cake\I18n\Time</namespace-alias>
+    <namespace-alias name="LinkScannerEventListenerInterface">\LinkScanner\Event\LinkScannerEventListenerInterface</namespace-alias>
+    <namespace-alias name="ResultScan">\LinkScanner\ResultScan</namespace-alias>
+    <class final="true" abstract="false" namespace="LinkScanner\Event" line="29" package="Default">
+      <extends/>
+      <implements>\LinkScanner\Event\LinkScannerEventListenerInterface</implements>
+      <name>LinkScannerCommandEventListener</name>
+      <full_name>\LinkScanner\Event\LinkScannerCommandEventListener</full_name>
+      <docblock line="29">
+        <description>Event listener for the `LinkScannerCommand` class.</description>
+        <long-description>This class provided methods to be performed as events by `LinkScannerCommand`.</long-description>
+        <tag name="package" line="29" description="Default"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="LinkScanner\Event" line="35" package="Default">
+        <name>$args</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::$args</full_name>
+        <default></default>
+        <docblock line="35">
+          <description>`Arguments` instance</description>
+          <long-description></long-description>
+          <tag name="var" line="35" description="" type="\Cake\Console\Arguments" variable="">
+            <type>\Cake\Console\Arguments</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Event" line="41" package="Default">
+        <name>$io</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::$io</full_name>
+        <default></default>
+        <docblock line="41">
+          <description>`ConsoleIo` instance</description>
+          <long-description></long-description>
+          <tag name="var" line="41" description="" type="\Cake\Console\ConsoleIo" variable="">
+            <type>\Cake\Console\ConsoleIo</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="50" package="Default">
+        <name>__construct</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::__construct()</full_name>
+        <docblock line="50">
+          <description>Construct</description>
+          <long-description></long-description>
+          <tag name="param" line="50" description="&lt;p&gt;The command arguments&lt;/p&gt;" type="\Cake\Console\Arguments" variable="$args">
+            <type>\Cake\Console\Arguments</type>
+          </tag>
+          <tag name="param" line="50" description="&lt;p&gt;The console io&lt;/p&gt;" type="\Cake\Console\ConsoleIo" variable="$io">
+            <type>\Cake\Console\ConsoleIo</type>
+          </tag>
+          <tag name="uses" line="50" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$args"/>
+          <tag name="uses" line="50" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$io"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>\Cake\Console\Arguments</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$io</name>
+          <default></default>
+          <type>\Cake\Console\ConsoleIo</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="62" package="Default">
+        <name>implementedEvents</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::implementedEvents()</full_name>
+        <docblock line="62">
+          <description>Returns a list of events this object is implementing. When the class is
+ registered in an event manager, each individual method will be
+ associated with the respective event</description>
+          <long-description></long-description>
+          <tag name="return" line="62" description="" type="array">
+            <type>array</type>
+          </tag>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="87" package="Default">
+        <name>afterScanUrl</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::afterScanUrl()</full_name>
+        <docblock line="87">
+          <description>`LinkScanner.afterScanUrl` event</description>
+          <long-description></long-description>
+          <tag name="param" line="87" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="87" description="&lt;p&gt;A &lt;code&gt;Response&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Http\Client\Response" variable="$response">
+            <type>\Cake\Http\Client\Response</type>
+          </tag>
+          <tag name="return" line="87" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="uses" line="87" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$args"/>
+          <tag name="uses" line="87" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$io"/>
+          <tag name="inherited_from" description="\LinkScanner\Event\LinkScannerEventListenerInterface::afterScanUrl()" refers="\LinkScanner\Event\LinkScannerEventListenerInterface::afterScanUrl()" link="/classes/LinkScanner.Event.LinkScannerEventListenerInterface.html#method_afterScanUrl"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$response</name>
+          <default></default>
+          <type>\Cake\Http\Client\Response</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="107" package="Default">
+        <name>beforeScanUrl</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::beforeScanUrl()</full_name>
+        <docblock line="107">
+          <description>`LinkScanner.beforeScanUrl` event</description>
+          <long-description></long-description>
+          <tag name="param" line="107" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="107" description="&lt;p&gt;Url&lt;/p&gt;" type="string" variable="$url">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="107" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="uses" line="107" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$io"/>
+          <tag name="inherited_from" description="\LinkScanner\Event\LinkScannerEventListenerInterface::beforeScanUrl()" refers="\LinkScanner\Event\LinkScannerEventListenerInterface::beforeScanUrl()" link="/classes/LinkScanner.Event.LinkScannerEventListenerInterface.html#method_beforeScanUrl"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$url</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="121" package="Default">
+        <name>foundLinkToBeScanned</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::foundLinkToBeScanned()</full_name>
+        <docblock line="121">
+          <description>`LinkScanner.foundLinkToBeScanned` event</description>
+          <long-description></long-description>
+          <tag name="param" line="121" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="121" description="&lt;p&gt;Link&lt;/p&gt;" type="string" variable="$link">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="121" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="uses" line="121" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$io"/>
+          <tag name="inherited_from" description="\LinkScanner\Event\LinkScannerEventListenerInterface::foundLinkToBeScanned()" refers="\LinkScanner\Event\LinkScannerEventListenerInterface::foundLinkToBeScanned()" link="/classes/LinkScanner.Event.LinkScannerEventListenerInterface.html#method_foundLinkToBeScanned"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$link</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="135" package="Default">
+        <name>foundRedirect</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::foundRedirect()</full_name>
+        <docblock line="135">
+          <description>`LinkScanner.foundRedirect` event</description>
+          <long-description></long-description>
+          <tag name="param" line="135" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="135" description="&lt;p&gt;Redirect&lt;/p&gt;" type="string" variable="$url">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="135" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="uses" line="135" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$io"/>
+          <tag name="inherited_from" description="\LinkScanner\Event\LinkScannerEventListenerInterface::foundRedirect()" refers="\LinkScanner\Event\LinkScannerEventListenerInterface::foundRedirect()" link="/classes/LinkScanner.Event.LinkScannerEventListenerInterface.html#method_foundRedirect"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$url</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="149" package="Default">
+        <name>resultsExported</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::resultsExported()</full_name>
+        <docblock line="149">
+          <description>`LinkScanner.resultsExported` event</description>
+          <long-description></long-description>
+          <tag name="param" line="149" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="149" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="149" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="uses" line="149" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$io"/>
+          <tag name="inherited_from" description="\LinkScanner\Event\LinkScannerEventListenerInterface::resultsExported()" refers="\LinkScanner\Event\LinkScannerEventListenerInterface::resultsExported()" link="/classes/LinkScanner.Event.LinkScannerEventListenerInterface.html#method_resultsExported"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$filename</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="162" package="Default">
+        <name>resultsImported</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::resultsImported()</full_name>
+        <docblock line="162">
+          <description>`LinkScanner.resultsImported` event</description>
+          <long-description></long-description>
+          <tag name="param" line="162" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="162" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="162" description="" type="void">
+            <type>void</type>
+          </tag>
+          <tag name="inherited_from" description="\LinkScanner\Event\LinkScannerEventListenerInterface::resultsImported()" refers="\LinkScanner\Event\LinkScannerEventListenerInterface::resultsImported()" link="/classes/LinkScanner.Event.LinkScannerEventListenerInterface.html#method_resultsImported"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$filename</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="176" package="Default">
+        <name>scanCompleted</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::scanCompleted()</full_name>
+        <docblock line="176">
+          <description>`LinkScanner.scanCompleted` event</description>
+          <long-description></long-description>
+          <tag name="param" line="176" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="176" description="&lt;p&gt;Start time&lt;/p&gt;" type="integer" variable="$startTime">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="176" description="&lt;p&gt;End time&lt;/p&gt;" type="integer" variable="$endTime">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="176" description="&lt;p&gt;A &lt;code&gt;ResultScan&lt;/code&gt; instance&lt;/p&gt;" type="\LinkScanner\ResultScan" variable="$ResultScan">
+            <type>\LinkScanner\ResultScan</type>
+          </tag>
+          <tag name="return" line="176" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="uses" line="176" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$args"/>
+          <tag name="uses" line="176" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$io"/>
+          <tag name="inherited_from" description="\LinkScanner\Event\LinkScannerEventListenerInterface::scanCompleted()" refers="\LinkScanner\Event\LinkScannerEventListenerInterface::scanCompleted()" link="/classes/LinkScanner.Event.LinkScannerEventListenerInterface.html#method_scanCompleted"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$startTime</name>
+          <default></default>
+          <type>integer</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$endTime</name>
+          <default></default>
+          <type>integer</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$ResultScan</name>
+          <default></default>
+          <type>\LinkScanner\ResultScan</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="205" package="Default">
+        <name>scanStarted</name>
+        <full_name>\LinkScanner\Event\LinkScannerCommandEventListener::scanStarted()</full_name>
+        <docblock line="205">
+          <description>`LinkScanner.scanStarted` event</description>
+          <long-description></long-description>
+          <tag name="param" line="205" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+            <type>\Cake\Event\Event</type>
+          </tag>
+          <tag name="param" line="205" description="&lt;p&gt;Start time&lt;/p&gt;" type="integer" variable="$startTime">
+            <type>integer</type>
+          </tag>
+          <tag name="param" line="205" description="&lt;p&gt;Full base url&lt;/p&gt;" type="string" variable="$fullBaseUrl">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="205" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="uses" line="205" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$args"/>
+          <tag name="uses" line="205" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::$io"/>
+          <tag name="inherited_from" description="\LinkScanner\Event\LinkScannerEventListenerInterface::scanStarted()" refers="\LinkScanner\Event\LinkScannerEventListenerInterface::scanStarted()" link="/classes/LinkScanner.Event.LinkScannerEventListenerInterface.html#method_scanStarted"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$event</name>
+          <default></default>
+          <type>\Cake\Event\Event</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$startTime</name>
+          <default></default>
+          <type>integer</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$fullBaseUrl</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+    </class>
+  </file>
+  <file path="Plugin.php" generated-path="Plugin.html" hash="bde542de8310211a63605ffd86e34261" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="BasePlugin">\Cake\Core\BasePlugin</namespace-alias>
+    <class final="false" abstract="false" namespace="LinkScanner" line="20" package="Default">
+      <extends>\Cake\Core\BasePlugin</extends>
+      <name>Plugin</name>
+      <full_name>\LinkScanner\Plugin</full_name>
+      <docblock line="20">
+        <description>Plugin class</description>
+        <long-description></long-description>
+        <tag name="package" line="20" description="Default"/>
+      </docblock>
+    </class>
+  </file>
+  <file path="Utility/LinkScanner.php" generated-path="Utility.LinkScanner.html" hash="f147b8940f02afc9a05ab080bde0fab3" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="Cache">\Cake\Cache\Cache</namespace-alias>
+    <namespace-alias name="Configure">\Cake\Core\Configure</namespace-alias>
+    <namespace-alias name="PhpConfig">\Cake\Core\Configure\Engine\PhpConfig</namespace-alias>
+    <namespace-alias name="InstanceConfigTrait">\Cake\Core\InstanceConfigTrait</namespace-alias>
+    <namespace-alias name="EventDispatcherTrait">\Cake\Event\EventDispatcherTrait</namespace-alias>
+    <namespace-alias name="EventList">\Cake\Event\EventList</namespace-alias>
+    <namespace-alias name="Client">\Cake\Http\Client</namespace-alias>
+    <namespace-alias name="Response">\Cake\Http\Client\Response</namespace-alias>
+    <namespace-alias name="Exception">\Exception</namespace-alias>
+    <namespace-alias name="InvalidArgumentException">\InvalidArgumentException</namespace-alias>
+    <namespace-alias name="ResultScan">\LinkScanner\ResultScan</namespace-alias>
+    <namespace-alias name="ScanEntity">\LinkScanner\ScanEntity</namespace-alias>
+    <namespace-alias name="RuntimeException">\RuntimeException</namespace-alias>
+    <namespace-alias name="Serializable">\Serializable</namespace-alias>
+    <namespace-alias name="Filesystem">\Symfony\Component\Filesystem\Filesystem</namespace-alias>
+    <namespace-alias name="BodyParser">\Tools\BodyParser</namespace-alias>
+    <namespace-alias name="Stream">\Zend\Diactoros\Stream</namespace-alias>
+    <class final="false" abstract="false" namespace="LinkScanner\Utility" line="36" package="Default">
+      <extends/>
+      <implements>\Serializable</implements>
+      <name>LinkScanner</name>
+      <full_name>\LinkScanner\Utility\LinkScanner</full_name>
+      <docblock line="36">
+        <description>A link scanner</description>
+        <long-description></long-description>
+        <tag name="package" line="36" description="Default"/>
+      </docblock>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="45" package="Default">
+        <name>$Client</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$Client</full_name>
+        <default></default>
+        <docblock line="45">
+          <description>Instance of `Client`</description>
+          <long-description></long-description>
+          <tag name="var" line="45" description="" type="\Cake\Http\Client" variable="">
+            <type>\Cake\Http\Client</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="51" package="Default">
+        <name>$ResultScan</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$ResultScan</full_name>
+        <default></default>
+        <docblock line="51">
+          <description>Instance of `ResultScan`. This contains the results of the scan</description>
+          <long-description></long-description>
+          <tag name="var" line="51" description="" type="\LinkScanner\ResultScan" variable="">
+            <type>\LinkScanner\ResultScan</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="57" package="Default">
+        <name>$_defaultConfig</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$_defaultConfig</full_name>
+        <default>array('cache' =&gt; true, 'excludeLinks' =&gt; '/[\{\}+]/', 'externalLinks' =&gt; true, 'followRedirects' =&gt; false, 'fullBaseUrl' =&gt; null, 'maxDepth' =&gt; 0, 'lockFile' =&gt; true, 'target' =&gt; TMP . 'cakephp-link-scanner')</default>
+        <docblock line="57">
+          <description>Default configuration</description>
+          <long-description></long-description>
+          <tag name="var" line="57" description="" type="array" variable="">
+            <type>array</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="72" package="Default">
+        <name>$alreadyScanned</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$alreadyScanned</full_name>
+        <default>array()</default>
+        <docblock line="72">
+          <description>Urls already scanned</description>
+          <long-description></long-description>
+          <tag name="var" line="72" description="" type="array" variable="">
+            <type>array</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="78" package="Default">
+        <name>$currentDepth</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$currentDepth</full_name>
+        <default>0</default>
+        <docblock line="78">
+          <description>Current scan depth level</description>
+          <long-description></long-description>
+          <tag name="var" line="78" description="" type="integer" variable="">
+            <type>integer</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="84" package="Default">
+        <name>$endTime</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$endTime</full_name>
+        <default></default>
+        <docblock line="84">
+          <description>End time</description>
+          <long-description></long-description>
+          <tag name="var" line="84" description="" type="integer" variable="">
+            <type>integer</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="90" package="Default">
+        <name>$hostname</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$hostname</full_name>
+        <default>null</default>
+        <docblock line="90">
+          <description>Host name</description>
+          <long-description></long-description>
+          <tag name="var" line="90" description="" type="string|array|null" variable="">
+            <type>string</type>
+            <type>array</type>
+            <type>null</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="96" package="Default">
+        <name>$lockFile</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$lockFile</full_name>
+        <default>TMP . 'cakephp-link-scanner' . DS . 'link_scanner_lock_file'</default>
+        <docblock line="96">
+          <description>Lock file path</description>
+          <long-description></long-description>
+          <tag name="var" line="96" description="" type="string" variable="">
+            <type>string</type>
+          </tag>
+        </docblock>
+      </property>
+      <property static="false" visibility="protected" namespace="LinkScanner\Utility" line="102" package="Default">
+        <name>$startTime</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::$startTime</full_name>
+        <default>0</default>
+        <docblock line="102">
+          <description>Start time</description>
+          <long-description></long-description>
+          <tag name="var" line="102" description="" type="integer" variable="">
+            <type>integer</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Utility" line="111" package="Default">
+        <name>__construct</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::__construct()</full_name>
+        <docblock line="111">
+          <description>Construct</description>
+          <long-description></long-description>
+          <tag name="param" line="111" description="&lt;p&gt;A Client instance or null&lt;/p&gt;" type="\Cake\Http\Client|null" variable="$Client">
+            <type>\Cake\Http\Client</type>
+            <type>null</type>
+          </tag>
+          <tag name="param" line="111" description="&lt;p&gt;A Client instance or null&lt;/p&gt;" type="\LinkScanner\ResultScan|null" variable="$ResultScan">
+            <type>\LinkScanner\ResultScan</type>
+            <type>null</type>
+          </tag>
+          <tag name="uses" line="111" description="" link="\LinkScanner\Utility\LinkScanner::$Client"/>
+          <tag name="uses" line="111" description="" link="\LinkScanner\Utility\LinkScanner::$ResultScan"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$Client</name>
+          <default>null</default>
+          <type>\Cake\Http\Client|null</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$ResultScan</name>
+          <default>null</default>
+          <type>\LinkScanner\ResultScan|null</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Utility" line="129" package="Default">
+        <name>__get</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::__get()</full_name>
+        <docblock line="129">
+          <description>Magic method for reading data from inaccessible properties</description>
+          <long-description></long-description>
+          <tag name="param" line="129" description="&lt;p&gt;Property name&lt;/p&gt;" type="string" variable="$name">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="129" description="" type="mixed">
+            <type>mixed</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$name</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\Utility" line="140" package="Default">
+        <name>_createLockFile</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::_createLockFile()</full_name>
+        <docblock line="140">
+          <description>Internal method to create a lock file</description>
+          <long-description></long-description>
+          <tag name="return" line="140" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="throws" line="140" description="" type="\RuntimeException">
+            <type>\RuntimeException</type>
+          </tag>
+          <tag name="uses" line="140" description="" link="\LinkScanner\Utility\LinkScanner::$lockFile"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\Utility" line="157" package="Default">
+        <name>_getAbsolutePath</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::_getAbsolutePath()</full_name>
+        <docblock line="157">
+          <description>Internal method to get the absolute path for a filename</description>
+          <long-description></long-description>
+          <tag name="param" line="157" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="157" description="" type="string">
+            <type>string</type>
+          </tag>
+          <tag name="since" line="157" description="1.0.7"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$filename</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\Utility" line="174" package="Default">
+        <name>_getResponse</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::_getResponse()</full_name>
+        <docblock line="174">
+          <description>Performs a single GET request and returns a `ScanResponse` instance.</description>
+          <long-description>The response will be cached, if that's ok and the cache is enabled.</long-description>
+          <tag name="param" line="174" description="&lt;p&gt;The url or path you want to request&lt;/p&gt;" type="string" variable="$url">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="174" description="" type="\Cake\Http\Client\Response">
+            <type>\Cake\Http\Client\Response</type>
+          </tag>
+          <tag name="uses" line="174" description="" link="\LinkScanner\Utility\LinkScanner::$Client"/>
+          <tag name="uses" line="174" description="" link="\LinkScanner\Utility\LinkScanner::$alreadyScanned"/>
+          <tag name="uses" line="174" description="" link="\LinkScanner\Utility\$fullBaseUrl"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$url</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\Utility" line="226" package="Default">
+        <name>_recursiveScan</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::_recursiveScan()</full_name>
+        <docblock line="226">
+          <description>Internal method to perform a recursive scan.</description>
+          <long-description>It recursively repeats the scan for all urls found that have not
+ already been scanned.
+
+### Events
+This method will trigger some events:
+ - `LinkScanner.foundLinkToBeScanned`: will be triggered when other links
+     to be scanned are found;
+ - `LinkScanner.responseNotOk`: will be triggered when a single url is
+     scanned and the response is not ok.</long-description>
+          <tag name="param" line="226" description="&lt;p&gt;Url to scan&lt;/p&gt;" type="string" variable="$url">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="226" description="&lt;p&gt;Referer of this url&lt;/p&gt;" type="string|null" variable="$referer">
+            <type>string</type>
+            <type>null</type>
+          </tag>
+          <tag name="return" line="226" description="" type="void">
+            <type>void</type>
+          </tag>
+          <tag name="uses" line="226" description="" link="\LinkScanner\Utility\LinkScanner::_singleScan()"/>
+          <tag name="uses" line="226" description="" link="\LinkScanner\Utility\LinkScanner::canBeScanned()"/>
+          <tag name="uses" line="226" description="" link="\LinkScanner\Utility\LinkScanner::$alreadyScanned"/>
+          <tag name="uses" line="226" description="" link="\LinkScanner\Utility\LinkScanner::$currentDepth"/>
+          <tag name="uses" line="226" description="" link="\LinkScanner\Utility\LinkScanner::$hostname"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$url</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$referer</name>
+          <default>null</default>
+          <type>string|null</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\Utility" line="277" package="Default">
+        <name>_singleScan</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::_singleScan()</full_name>
+        <docblock line="277">
+          <description>Internal method to perform a single scan.</description>
+          <long-description>### Events
+This method will trigger some events:
+ - `LinkScanner.beforeScanUrl`: will be triggered before a single url is
+     scanned;
+ - `LinkScanner.afterScanUrl`: will be triggered after a single url is
+     scanned;
+ - `LinkScanner.foundRedirect`: will be triggered if a redirect is found.</long-description>
+          <tag name="param" line="277" description="&lt;p&gt;Url to scan&lt;/p&gt;" type="string" variable="$url">
+            <type>string</type>
+          </tag>
+          <tag name="param" line="277" description="&lt;p&gt;Referer of this url&lt;/p&gt;" type="string|null" variable="$referer">
+            <type>string</type>
+            <type>null</type>
+          </tag>
+          <tag name="return" line="277" description="" type="\LinkScanner\Http\Client\ScanResponse|null">
+            <type>\LinkScanner\Http\Client\ScanResponse</type>
+            <type>null</type>
+          </tag>
+          <tag name="uses" line="277" description="" link="\LinkScanner\Utility\LinkScanner::_getResponse()"/>
+          <tag name="uses" line="277" description="" link="\LinkScanner\Utility\LinkScanner::canBeScanned()"/>
+          <tag name="uses" line="277" description="" link="\LinkScanner\Utility\LinkScanner::$ResultScan"/>
+          <tag name="uses" line="277" description="" link="\LinkScanner\Utility\LinkScanner::$hostname"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$url</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$referer</name>
+          <default>null</default>
+          <type>string|null</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\Utility" line="322" package="Default">
+        <name>canBeScanned</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::canBeScanned()</full_name>
+        <docblock line="322">
+          <description>Checks if an url can be scanned.</description>
+          <long-description>Returns false if:
+ - the url has already been scanned;
+ - it's an external url and the external url scan has been disabled;
+ - the url matches the url patterns to be excluded.</long-description>
+          <tag name="param" line="322" description="&lt;p&gt;Url to check&lt;/p&gt;" type="string" variable="$url">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="322" description="" type="boolean">
+            <type>boolean</type>
+          </tag>
+          <tag name="uses" line="322" description="" link="\LinkScanner\Utility\LinkScanner::$alreadyScanned"/>
+          <tag name="uses" line="322" description="" link="\LinkScanner\Utility\LinkScanner::$hostname"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$url</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Utility" line="343" package="Default">
+        <name>serialize</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::serialize()</full_name>
+        <docblock line="343">
+          <description>Returns the string representation of the object</description>
+          <long-description></long-description>
+          <tag name="return" line="343" description="" type="string">
+            <type>string</type>
+          </tag>
+          <tag name="uses" line="343" description="" link="\LinkScanner\Utility\LinkScanner::$Client"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Utility" line="360" package="Default">
+        <name>unserialize</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::unserialize()</full_name>
+        <docblock line="360">
+          <description>Called during unserialization of the object</description>
+          <long-description></long-description>
+          <tag name="param" line="360" description="&lt;p&gt;The string representation of the object&lt;/p&gt;" type="string" variable="$serialized">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="360" description="" type="void">
+            <type>void</type>
+          </tag>
+          <tag name="uses" line="360" description="" link="\LinkScanner\Utility\LinkScanner::$Client"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$serialized</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Utility" line="391" package="Default">
+        <name>export</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::export()</full_name>
+        <docblock line="391">
+          <description>Exports scan results.</description>
+          <long-description>The filename will be generated automatically, or you can indicate a
+ relative or absolute path.
+### Events
+This method will trigger some events:
+ - `LinkScanner.resultsExported`: will be triggered when the results have
+ been exported.</long-description>
+          <tag name="param" line="391" description="&lt;p&gt;Filename where to export&lt;/p&gt;" type="string|null" variable="$filename">
+            <type>string</type>
+            <type>null</type>
+          </tag>
+          <tag name="return" line="391" description="" type="string">
+            <type>string</type>
+          </tag>
+          <tag name="see" line="391" description="" link="\LinkScanner\Utility\LinkScanner::serialize()"/>
+          <tag name="throws" line="391" description="" type="\RuntimeException">
+            <type>\RuntimeException</type>
+          </tag>
+          <tag name="uses" line="391" description="" link="\LinkScanner\Utility\LinkScanner::_getAbsolutePath()"/>
+          <tag name="uses" line="391" description="" link="\LinkScanner\Utility\LinkScanner::$ResultScan"/>
+          <tag name="uses" line="391" description="" link="\LinkScanner\Utility\LinkScanner::$hostname"/>
+          <tag name="uses" line="391" description="" link="\LinkScanner\Utility\LinkScanner::$startTime"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$filename</name>
+          <default>null</default>
+          <type>string|null</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Utility" line="419" package="Default">
+        <name>import</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::import()</full_name>
+        <docblock line="419">
+          <description>Imports scan results.</description>
+          <long-description>You can indicate a relative or absolute path.
+### Events
+This method will trigger some events:
+ - `LinkScanner.resultsImported`: will be triggered when the results have
+ been exported.</long-description>
+          <tag name="param" line="419" description="&lt;p&gt;Filename from which to import&lt;/p&gt;" type="string" variable="$filename">
+            <type>string</type>
+          </tag>
+          <tag name="return" line="419" description="" type="\LinkScanner\Utility\LinkScanner">
+            <type>\LinkScanner\Utility\LinkScanner</type>
+          </tag>
+          <tag name="uses" line="419" description="" link="\LinkScanner\Utility\LinkScanner::_getAbsolutePath()"/>
+          <tag name="throws" line="419" description="" type="\RuntimeException">
+            <type>\RuntimeException</type>
+          </tag>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$filename</name>
+          <default></default>
+          <type>string</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Utility" line="461" package="Default">
+        <name>scan</name>
+        <full_name>\LinkScanner\Utility\LinkScanner::scan()</full_name>
+        <docblock line="461">
+          <description>Performs a complete scan.</description>
+          <long-description>### Events
+This method will trigger some events:
+ - `LinkScanner.scanStarted`: will be triggered before the scan starts;
+ - `LinkScanner.scanCompleted`: will be triggered after the scan is
+     finished.
+
+Other events will be triggered by `_recursiveScan()` and `_singleScan()`
+ methods.</long-description>
+          <tag name="return" line="461" description="" type="\LinkScanner\Utility\LinkScanner">
+            <type>\LinkScanner\Utility\LinkScanner</type>
+          </tag>
+          <tag name="throws" line="461" description="" type="\InvalidArgumentException">
+            <type>\InvalidArgumentException</type>
+          </tag>
+          <tag name="uses" line="461" description="" link="\LinkScanner\Utility\LinkScanner::_createLockFile()"/>
+          <tag name="uses" line="461" description="" link="\LinkScanner\Utility\LinkScanner::_recursiveScan()"/>
+          <tag name="uses" line="461" description="" link="\LinkScanner\Utility\LinkScanner::$ResultScan"/>
+          <tag name="uses" line="461" description="" link="\LinkScanner\Utility\LinkScanner::$endTime"/>
+          <tag name="uses" line="461" description="" link="\LinkScanner\Utility\LinkScanner::$hostname"/>
+          <tag name="uses" line="461" description="" link="\LinkScanner\Utility\LinkScanner::$lockFile"/>
+          <tag name="uses" line="461" description="" link="\LinkScanner\Utility\LinkScanner::$startTime"/>
+          <tag name="fluent" description="This method is part of a fluent interface and will return the same instance"/>
+        </docblock>
+      </method>
+    </class>
+  </file>
+  <file path="Command/LinkScannerCommand.php" generated-path="Command.LinkScannerCommand.html" hash="af937357009838ca38a84d9795a7e440" package="Default">
+    <docblock line="0">
+      <description>This file is part of cakephp-link-scanner.</description>
+      <long-description>Licensed under The MIT License
+For full copyright and license information, please see the LICENSE.txt
+Redistributions of files must retain the above copyright notice.</long-description>
+      <tag name="copyright" line="0" description="Copyright (c) Mirko Pagliai"/>
+      <tag name="link" line="0" description="https://github.com/mirko-pagliai/cakephp-link-scanner" link="https://github.com/mirko-pagliai/cakephp-link-scanner"/>
+      <tag name="license" line="0" description="MIT License" link="https://opensource.org/licenses/mit-license.php"/>
+      <tag name="package" line="0" description="Default"/>
+    </docblock>
+    <namespace-alias name="Arguments">\Cake\Console\Arguments</namespace-alias>
+    <namespace-alias name="ConsoleIo">\Cake\Console\ConsoleIo</namespace-alias>
+    <namespace-alias name="ConsoleOptionParser">\Cake\Console\ConsoleOptionParser</namespace-alias>
+    <namespace-alias name="Exception">\Exception</namespace-alias>
+    <namespace-alias name="LinkScannerCommandEventListener">\LinkScanner\Event\LinkScannerCommandEventListener</namespace-alias>
+    <namespace-alias name="LinkScanner">\LinkScanner\Utility\LinkScanner</namespace-alias>
+    <namespace-alias name="Command">\MeTools\Console\Command</namespace-alias>
+    <class final="false" abstract="false" namespace="LinkScanner\Command" line="26" package="Default">
+      <extends>\MeTools\Console\Command</extends>
+      <name>LinkScannerCommand</name>
+      <full_name>\LinkScanner\Command\LinkScannerCommand</full_name>
+      <docblock line="26">
+        <description>A link scanner command</description>
+        <long-description></long-description>
+        <tag name="package" line="26" description="Default"/>
+      </docblock>
+      <property static="false" visibility="public" namespace="LinkScanner\Command" line="32" package="Default">
+        <name>$LinkScanner</name>
+        <full_name>\LinkScanner\Command\LinkScannerCommand::$LinkScanner</full_name>
+        <default></default>
+        <docblock line="32">
+          <description>A `LinkScanner` instance</description>
+          <long-description></long-description>
+          <tag name="var" line="32" description="" type="\LinkScanner\Utility\LinkScanner" variable="">
+            <type>\LinkScanner\Utility\LinkScanner</type>
+          </tag>
+        </docblock>
+      </property>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Command" line="39" package="Default">
+        <name>initialize</name>
+        <full_name>\LinkScanner\Command\LinkScannerCommand::initialize()</full_name>
+        <docblock line="39">
+          <description>Hook method invoked by CakePHP when a command is about to be executed</description>
+          <long-description></long-description>
+          <tag name="return" line="39" description="" type="void">
+            <type>void</type>
+          </tag>
+          <tag name="uses" line="39" description="" link="\LinkScanner\Command\LinkScannerCommand::$LinkScanner"/>
+        </docblock>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Command" line="52" package="Default">
+        <name>execute</name>
+        <full_name>\LinkScanner\Command\LinkScannerCommand::execute()</full_name>
+        <docblock line="52">
+          <description>Performs a complete scan</description>
+          <long-description></long-description>
+          <tag name="param" line="52" description="&lt;p&gt;The command arguments&lt;/p&gt;" type="\Cake\Console\Arguments" variable="$args">
+            <type>\Cake\Console\Arguments</type>
+          </tag>
+          <tag name="param" line="52" description="&lt;p&gt;The console io&lt;/p&gt;" type="\Cake\Console\ConsoleIo" variable="$io">
+            <type>\Cake\Console\ConsoleIo</type>
+          </tag>
+          <tag name="return" line="52" description="The exit code or null for success" type="integer|null">
+            <type>integer</type>
+            <type>null</type>
+          </tag>
+          <tag name="see" line="52" description="" link="\LinkScanner\Event\LinkScannerCommandEventListener::implementedEvents()"/>
+          <tag name="uses" line="52" description="" link="\LinkScanner\Command\LinkScannerCommand::$LinkScanner"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$args</name>
+          <default></default>
+          <type>\Cake\Console\Arguments</type>
+        </argument>
+        <argument line="0" by_reference="false">
+          <name>$io</name>
+          <default></default>
+          <type>\Cake\Console\ConsoleIo</type>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\Command" line="99" package="Default">
+        <name>buildOptionParser</name>
+        <full_name>\LinkScanner\Command\LinkScannerCommand::buildOptionParser()</full_name>
+        <docblock line="99">
+          <description>Hook method for defining this command's option parser</description>
+          <long-description></long-description>
+          <tag name="param" line="99" description="&lt;p&gt;The parser to be defined&lt;/p&gt;" type="\Cake\Console\ConsoleOptionParser" variable="$parser">
+            <type>\Cake\Console\ConsoleOptionParser</type>
+          </tag>
+          <tag name="return" line="99" description="The built parser" type="\Cake\Console\ConsoleOptionParser">
+            <type>\Cake\Console\ConsoleOptionParser</type>
+          </tag>
+          <tag name="uses" line="99" description="" link="\LinkScanner\Command\LinkScannerCommand::$LinkScanner"/>
+        </docblock>
+        <argument line="0" by_reference="false">
+          <name>$parser</name>
+          <default></default>
+          <type>\Cake\Console\ConsoleOptionParser</type>
+        </argument>
+      </method>
+    </class>
+  </file>
+  <package name="Default" full_name="Default"/>
+  <package name="global" full_name="global"/>
+  <namespace name="LinkScanner" full_name="LinkScanner">
+    <namespace name="Command" full_name="LinkScanner\Command"/>
+    <namespace name="Event" full_name="LinkScanner\Event"/>
+    <namespace name="TestSuite" full_name="LinkScanner\TestSuite"/>
+    <namespace name="Utility" full_name="LinkScanner\Utility"/>
+  </namespace>
+  <deprecated count="0"/>
+</project>
