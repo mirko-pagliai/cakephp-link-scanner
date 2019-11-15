@@ -20,6 +20,15 @@
     <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
         <exclude-pattern>/webroot</exclude-pattern>
     </rule>
+    <rule ref="PSR12.ControlStructures.ControlStructureSpacing.CloseParenthesisLine">
+        <severity>0</severity>
+    </rule>
+    <rule ref="PSR12.ControlStructures.ControlStructureSpacing.FirstExpressionLine">
+        <severity>0</severity>
+    </rule>
+    <rule ref="PSR12.ControlStructures.ControlStructureSpacing.LineIndent">
+        <severity>0</severity>
+    </rule>
     <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference.ClassNameReferencedViaFunctionCall">
         <severity>0</severity>
     </rule>
