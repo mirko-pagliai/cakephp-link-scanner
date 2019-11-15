@@ -27,6 +27,7 @@ use MeTools\Console\Command;
 class LinkScannerCommand extends Command
 {
     /**
+     * A `LinkScanner` instance
      * @var \LinkScanner\Utility\LinkScanner
      */
     public $LinkScanner;

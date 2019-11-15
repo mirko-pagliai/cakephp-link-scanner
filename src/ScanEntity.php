@@ -22,6 +22,7 @@ use Tools\Entity;
 class ScanEntity extends Entity
 {
     /**
+     * A `Response` object
      * @var \Cake\Http\Client\Response
      */
     protected $Response;
