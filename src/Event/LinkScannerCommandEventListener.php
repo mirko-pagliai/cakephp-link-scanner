@@ -29,11 +29,13 @@ use LinkScanner\ResultScan;
 final class LinkScannerCommandEventListener implements LinkScannerEventListenerInterface
 {
     /**
+     * `Arguments` instance
      * @var \Cake\Console\Arguments
      */
     protected $args;
 
     /**
+     * `ConsoleIo` instance
      * @var \Cake\Console\ConsoleIo
      */
     protected $io;
