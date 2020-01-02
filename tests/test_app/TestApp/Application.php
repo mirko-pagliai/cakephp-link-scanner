@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -13,6 +14,7 @@
 namespace App;
 
 use Cake\Http\BaseApplication;
+use Cake\Http\MiddlewareQueue;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use LinkScanner\Plugin as LinkScanner;
 
@@ -27,7 +29,7 @@ class Application extends BaseApplication
     /**
      * Load all the application configuration and bootstrap logic
      */
-    public function bootstrap()
+    public function bootstrap(): void
     {
         $this->addPlugin(LinkScanner::class);
     }
@@ -37,10 +39,8 @@ class Application extends BaseApplication
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to set in your App Class
      * @return \Cake\Http\MiddlewareQueue
      */
-    public function middleware($middlewareQueue)
+    public function middleware($middlewareQueue): MiddlewareQueue
     {
-        $middlewareQueue->add(new RoutingMiddleware($this));
-
-        return $middlewareQueue;
+        return $middlewareQueue->add(new RoutingMiddleware($this));
     }
 }

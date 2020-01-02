@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -14,6 +15,7 @@ namespace LinkScanner\TestSuite;
 
 use Cake\Cache\Cache;
 use Cake\Event\EventList;
+use Cake\Event\EventManager;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use LinkScanner\Utility\LinkScanner;
@@ -29,7 +31,7 @@ abstract class TestCase extends BaseTestCase
      * Called after every test method
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -46,7 +48,7 @@ abstract class TestCase extends BaseTestCase
      *  defaults to global event manager
      * @return void
      */
-    public function assertEventNotFired($name, $eventManager = null)
+    public function assertEventNotFired(string $name, ?EventManager $eventManager = null): void
     {
         $eventManager = $eventManager ?: EventManager::instance();
         $eventHasFired = $eventManager->getEventList()->hasEvent($name);
@@ -57,10 +59,10 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns a stub of `Client`, where the `get()` method always returns a
      *  response with error (404 status code)
-     * @return \Cake\Http\Client
+     * @return \Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject
      * @uses getResponseWithBody()
      */
-    protected function getClientReturnsErrorResponse()
+    protected function getClientReturnsErrorResponse(): object
     {
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
@@ -68,7 +70,7 @@ abstract class TestCase extends BaseTestCase
 
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
-        $Client->method('get')->will($this->returnValue($this->getResponseWithBody(null)->withStatus(404)));
+        $Client->method('get')->will($this->returnValue($this->getResponseWithBody('')->withStatus(404)));
 
         return $Client;
     }
@@ -76,10 +78,10 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns a stub of `Client`, where the `get()` method returns a sample
      *  response which is read from `examples/responses` files
-     * @return \Cake\Http\Client
+     * @return \Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject
      * @uses getResponseWithBody()
      */
-    protected function getClientReturnsSampleResponse()
+    protected function getClientReturnsSampleResponse(): object
     {
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
@@ -113,7 +115,7 @@ abstract class TestCase extends BaseTestCase
      * @param \LinkScanner\Utility\LinkScanner|null $LinkScanner `LinkScanner` instance or `null`
      * @return \Cake\Event\EventManager
      */
-    protected function getEventManager(LinkScanner $LinkScanner = null)
+    protected function getEventManager(?LinkScanner $LinkScanner = null): EventManager
     {
         $LinkScanner = $LinkScanner ?: $this->LinkScanner;
         $eventManager = $LinkScanner->getEventManager();
@@ -134,7 +136,7 @@ abstract class TestCase extends BaseTestCase
      *  `null` to create a new instance
      * @return \Cake\Http\Client\Response
      */
-    protected function getResponseWithBody($body, Response $response = null)
+    protected function getResponseWithBody(string $body, ?Response $response = null): Response
     {
         $response = $response ?: new Response();
         $stream = new Stream('php://memory', 'wb+');

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -46,7 +47,7 @@ class ScanEntity extends Entity
      * @return mixed
      * @see \Cake\Http\Client\Response
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, $arguments)
     {
         if (method_exists(Response::class, $name)) {
             $response = (new Response())

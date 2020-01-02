@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -28,7 +29,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
      * @param \Cake\Http\Client\Response $response A `Response` instance
      * @return bool
      */
-    public function afterScanUrl(Event $event, Response $response);
+    public function afterScanUrl(Event $event, Response $response): bool;
 
     /**
      * `LinkScanner.beforeScanUrl` event
@@ -36,7 +37,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
      * @param string $url Url
      * @return bool
      */
-    public function beforeScanUrl(Event $event, $url);
+    public function beforeScanUrl(Event $event, string $url): bool;
 
     /**
      * `LinkScanner.foundLinkToBeScanned` event
@@ -44,7 +45,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
      * @param string $link Link
      * @return bool
      */
-    public function foundLinkToBeScanned(Event $event, $link);
+    public function foundLinkToBeScanned(Event $event, string $link): bool;
 
     /**
      * `LinkScanner.foundRedirect` event
@@ -52,7 +53,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
      * @param string $redirect Redirect
      * @return bool
      */
-    public function foundRedirect(Event $event, $redirect);
+    public function foundRedirect(Event $event, string $redirect): bool;
 
     /**
      * `LinkScanner.resultsExported` event
@@ -60,7 +61,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
      * @param string $filename Filename
      * @return bool
      */
-    public function resultsExported(Event $event, $filename);
+    public function resultsExported(Event $event, string $filename): bool;
 
     /**
      * `LinkScanner.resultsImported` event
@@ -68,7 +69,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
      * @param string $filename Filename
      * @return bool
      */
-    public function resultsImported(Event $event, $filename);
+    public function resultsImported(Event $event, string $filename): bool;
 
     /**
      * `LinkScanner.scanCompleted` event
@@ -78,7 +79,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
      * @param \LinkScanner\ResultScan $ResultScan A `ResultScan` instance
      * @return bool
      */
-    public function scanCompleted(Event $event, $startTime, $endTime, ResultScan $ResultScan);
+    public function scanCompleted(Event $event, int $startTime, int $endTime, ResultScan $ResultScan): bool;
 
     /**
      * `LinkScanner.scanStarted` event
@@ -87,5 +88,5 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
      * @param string $fullBaseUrl Full base url
      * @return bool
      */
-    public function scanStarted(Event $event, $startTime, $fullBaseUrl);
+    public function scanStarted(Event $event, int $startTime, string $fullBaseUrl): bool;
 }
