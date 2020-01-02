@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Cake\Core\Configure;
@@ -21,7 +23,7 @@ class PagesController extends AppController
     {
         //Disables the layout for `nohtml` and `nolinks` pages
         if (in_array(array_value_first($path), ['nohtml', 'nolinks'])) {
-            $this->viewBuilder()->setLayout(false);
+            $this->viewBuilder()->disableAutoLayout();
         }
 
         $count = count($path);

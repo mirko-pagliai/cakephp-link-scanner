@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -32,7 +33,7 @@ trait IntegrationTestTrait
      *  the test app
      * @return \Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getClientReturnsFromTests()
+    protected function getClientReturnsFromTests(): object
     {
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
@@ -42,7 +43,7 @@ trait IntegrationTestTrait
         //It also analyzes the url of the test application and transforms them into parameter arrays
         $Client->method('get')->will($this->returnCallback(function ($url) {
             if (is_string($url) && preg_match('/^http:\/\/localhost\/?(pages\/(.+))?$/', $url, $matches)) {
-                $url = ['controller' => 'Pages', 'action' => 'display', empty($matches[2]) ? 'home' : $matches[2]];
+                $url = ['controller' => 'Pages', 'action' => 'display', $matches[2] ?? 'home'];
             }
 
             call_user_func([$this, 'get'], $url);
@@ -73,7 +74,7 @@ trait IntegrationTestTrait
      * @return \LinkScanner\Utility\LinkScanner|\PHPUnit_Framework_MockObject_MockObject
      * @uses getClientReturnsFromTests()
      */
-    protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null)
+    protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null): object
     {
         $fullBaseUrl = $fullBaseUrl ?: Configure::read('App.fullBaseUrl', 'http://localhost');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -89,7 +90,5 @@ Cache::setConfig([
 ]);
 
 Configure::write('pluginsToLoad', ['LinkScanner']);
-
-loadPHPUnitAliases();
 
 $_SERVER['PHP_SELF'] = '/';
