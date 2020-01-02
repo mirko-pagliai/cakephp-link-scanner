@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -13,6 +14,7 @@
 namespace LinkScanner;
 
 use Cake\Collection\Collection;
+use Cake\Collection\CollectionInterface;
 use LinkScanner\ScanEntity;
 use Traversable;
 
@@ -25,10 +27,10 @@ class ResultScan extends Collection
      * Internal method to parse items.
      *
      * Ensures that each item is a `ScanEntity` and has all the properties it needs
-     * @param array|\Traversable $items Array of items
+     * @param iterable $items Items
      * @return array Parsed items
      */
-    protected function parseItems($items)
+    protected function parseItems(iterable $items): array
     {
         $items = $items instanceof Traversable ? $items->toArray() : $items;
 
@@ -39,10 +41,10 @@ class ResultScan extends Collection
 
     /**
      * Constructor
-     * @param array|\Traversable $items Items
+     * @param iterable $items Items
      * @uses parseItems()
      */
-    public function __construct($items = [])
+    public function __construct(iterable $items = [])
     {
         parent::__construct($this->parseItems($items));
     }
@@ -52,11 +54,11 @@ class ResultScan extends Collection
      *
      * Returns a new `ResultScan` instance as the result of concatenating the
      *  list of elements in this collection with the passed list of elements
-     * @param array|\Traversable $items Items
+     * @param iterable $items Items
      * @return \Cake\Collection\CollectionInterface
      * @uses parseItems()
      */
-    public function append($items)
+    public function append($items): CollectionInterface
     {
         return new ResultScan(array_merge($this->buffered()->toArray(), $this->parseItems($items)));
     }
@@ -66,11 +68,11 @@ class ResultScan extends Collection
      *
      * Returns a new `ResultScan` instance as the result of concatenating the
      *  passed list of elements with the list of elements in this collection
-     * @param array|\Traversable $items Items
+     * @param iterable $items Items
      * @return \Cake\Collection\CollectionInterface
      * @uses parseItems()
      */
-    public function prepend($items)
+    public function prepend($items): CollectionInterface
     {
         return new ResultScan(array_merge($this->parseItems($items), $this->buffered()->toArray()));
     }
