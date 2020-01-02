@@ -8,4 +8,7 @@
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse">
         <exclude-pattern>/tests/test_app/TestApp/Template/Error/error500.php</exclude-pattern>
     </rule>
+    <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace.UseFromSameNamespace">
+        <severity>0</severity>
+    </rule>
 </ruleset>
