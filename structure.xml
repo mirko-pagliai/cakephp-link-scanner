@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project title="cakephp-link-scanner" version="2.9.1">
   <partials/>
-  <file path="Event/LinkScannerEventListenerInterface.php" generated-path="Event.LinkScannerEventListenerInterface.html" hash="81c3cc466b3f4fe03315b2c00a5c512d" package="Default">
+  <file path="Event/LinkScannerEventListenerInterface.php" generated-path="Event.LinkScannerEventListenerInterface.html" hash="c4383ec382ca07477e8e6ada8db3eb13" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -11,28 +11,28 @@
     <namespace-alias name="EventListenerInterface">\Cake\Event\EventListenerInterface</namespace-alias>
     <namespace-alias name="Response">\Cake\Http\Client\Response</namespace-alias>
     <namespace-alias name="ResultScan">\LinkScanner\ResultScan</namespace-alias>
-    <interface namespace="LinkScanner\Event" line="24" package="Default">
+    <interface namespace="LinkScanner\Event" line="25" package="Default">
       <extends>\Cake\Event\EventListenerInterface</extends>
       <name>LinkScannerEventListenerInterface</name>
       <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface</full_name>
-      <docblock line="24">
+      <docblock line="25">
         <description>Event listener interface for the `LinkScanner`</description>
         <long-description></long-description>
-        <tag name="package" line="24" description="Default"/>
+        <tag name="package" line="25" description="Default"/>
       </docblock>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="32" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="33" package="Default">
         <name>afterScanUrl</name>
         <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::afterScanUrl()</full_name>
-        <docblock line="32">
+        <docblock line="33">
           <description>`LinkScanner.afterScanUrl` event</description>
           <long-description></long-description>
-          <tag name="param" line="32" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+          <tag name="param" line="33" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
             <type>\Cake\Event\Event</type>
           </tag>
-          <tag name="param" line="32" description="&lt;p&gt;A &lt;code&gt;Response&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Http\Client\Response" variable="$response">
+          <tag name="param" line="33" description="&lt;p&gt;A &lt;code&gt;Response&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Http\Client\Response" variable="$response">
             <type>\Cake\Http\Client\Response</type>
           </tag>
-          <tag name="return" line="32" description="" type="boolean">
+          <tag name="return" line="33" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -47,19 +47,19 @@
           <type>\Cake\Http\Client\Response</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="40" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="41" package="Default">
         <name>beforeScanUrl</name>
         <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::beforeScanUrl()</full_name>
-        <docblock line="40">
+        <docblock line="41">
           <description>`LinkScanner.beforeScanUrl` event</description>
           <long-description></long-description>
-          <tag name="param" line="40" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+          <tag name="param" line="41" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
             <type>\Cake\Event\Event</type>
           </tag>
-          <tag name="param" line="40" description="&lt;p&gt;Url&lt;/p&gt;" type="string" variable="$url">
+          <tag name="param" line="41" description="&lt;p&gt;Url&lt;/p&gt;" type="string" variable="$url">
             <type>string</type>
           </tag>
-          <tag name="return" line="40" description="" type="boolean">
+          <tag name="return" line="41" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -74,19 +74,19 @@
           <type>string</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="48" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="49" package="Default">
         <name>foundLinkToBeScanned</name>
         <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::foundLinkToBeScanned()</full_name>
-        <docblock line="48">
+        <docblock line="49">
           <description>`LinkScanner.foundLinkToBeScanned` event</description>
           <long-description></long-description>
-          <tag name="param" line="48" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+          <tag name="param" line="49" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
             <type>\Cake\Event\Event</type>
           </tag>
-          <tag name="param" line="48" description="&lt;p&gt;Link&lt;/p&gt;" type="string" variable="$link">
+          <tag name="param" line="49" description="&lt;p&gt;Link&lt;/p&gt;" type="string" variable="$link">
             <type>string</type>
           </tag>
-          <tag name="return" line="48" description="" type="boolean">
+          <tag name="return" line="49" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -101,19 +101,19 @@
           <type>string</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="56" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="57" package="Default">
         <name>foundRedirect</name>
         <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::foundRedirect()</full_name>
-        <docblock line="56">
+        <docblock line="57">
           <description>`LinkScanner.foundRedirect` event</description>
           <long-description></long-description>
-          <tag name="param" line="56" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+          <tag name="param" line="57" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
             <type>\Cake\Event\Event</type>
           </tag>
-          <tag name="param" line="56" description="&lt;p&gt;Redirect&lt;/p&gt;" type="string" variable="$redirect">
+          <tag name="param" line="57" description="&lt;p&gt;Redirect&lt;/p&gt;" type="string" variable="$redirect">
             <type>string</type>
           </tag>
-          <tag name="return" line="56" description="" type="boolean">
+          <tag name="return" line="57" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -128,19 +128,19 @@
           <type>string</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="64" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="65" package="Default">
         <name>resultsExported</name>
         <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::resultsExported()</full_name>
-        <docblock line="64">
+        <docblock line="65">
           <description>`LinkScanner.resultsExported` event</description>
           <long-description></long-description>
-          <tag name="param" line="64" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+          <tag name="param" line="65" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
             <type>\Cake\Event\Event</type>
           </tag>
-          <tag name="param" line="64" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
+          <tag name="param" line="65" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
             <type>string</type>
           </tag>
-          <tag name="return" line="64" description="" type="boolean">
+          <tag name="return" line="65" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -155,19 +155,19 @@
           <type>string</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="72" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="73" package="Default">
         <name>resultsImported</name>
         <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::resultsImported()</full_name>
-        <docblock line="72">
+        <docblock line="73">
           <description>`LinkScanner.resultsImported` event</description>
           <long-description></long-description>
-          <tag name="param" line="72" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+          <tag name="param" line="73" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
             <type>\Cake\Event\Event</type>
           </tag>
-          <tag name="param" line="72" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
+          <tag name="param" line="73" description="&lt;p&gt;Filename&lt;/p&gt;" type="string" variable="$filename">
             <type>string</type>
           </tag>
-          <tag name="return" line="72" description="" type="boolean">
+          <tag name="return" line="73" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -182,25 +182,25 @@
           <type>string</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="82" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="83" package="Default">
         <name>scanCompleted</name>
         <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::scanCompleted()</full_name>
-        <docblock line="82">
+        <docblock line="83">
           <description>`LinkScanner.scanCompleted` event</description>
           <long-description></long-description>
-          <tag name="param" line="82" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+          <tag name="param" line="83" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
             <type>\Cake\Event\Event</type>
           </tag>
-          <tag name="param" line="82" description="&lt;p&gt;Start time&lt;/p&gt;" type="integer" variable="$startTime">
+          <tag name="param" line="83" description="&lt;p&gt;Start time&lt;/p&gt;" type="integer" variable="$startTime">
             <type>integer</type>
           </tag>
-          <tag name="param" line="82" description="&lt;p&gt;End time&lt;/p&gt;" type="integer" variable="$endTime">
+          <tag name="param" line="83" description="&lt;p&gt;End time&lt;/p&gt;" type="integer" variable="$endTime">
             <type>integer</type>
           </tag>
-          <tag name="param" line="82" description="&lt;p&gt;A &lt;code&gt;ResultScan&lt;/code&gt; instance&lt;/p&gt;" type="\LinkScanner\ResultScan" variable="$ResultScan">
+          <tag name="param" line="83" description="&lt;p&gt;A &lt;code&gt;ResultScan&lt;/code&gt; instance&lt;/p&gt;" type="\LinkScanner\ResultScan" variable="$ResultScan">
             <type>\LinkScanner\ResultScan</type>
           </tag>
-          <tag name="return" line="82" description="" type="boolean">
+          <tag name="return" line="83" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -225,22 +225,22 @@
           <type>\LinkScanner\ResultScan</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="91" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner\Event" line="92" package="Default">
         <name>scanStarted</name>
         <full_name>\LinkScanner\Event\LinkScannerEventListenerInterface::scanStarted()</full_name>
-        <docblock line="91">
+        <docblock line="92">
           <description>`LinkScanner.scanStarted` event</description>
           <long-description></long-description>
-          <tag name="param" line="91" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
+          <tag name="param" line="92" description="&lt;p&gt;An &lt;code&gt;Event&lt;/code&gt; instance&lt;/p&gt;" type="\Cake\Event\Event" variable="$event">
             <type>\Cake\Event\Event</type>
           </tag>
-          <tag name="param" line="91" description="&lt;p&gt;Start time&lt;/p&gt;" type="integer" variable="$startTime">
+          <tag name="param" line="92" description="&lt;p&gt;Start time&lt;/p&gt;" type="integer" variable="$startTime">
             <type>integer</type>
           </tag>
-          <tag name="param" line="91" description="&lt;p&gt;Full base url&lt;/p&gt;" type="string" variable="$fullBaseUrl">
+          <tag name="param" line="92" description="&lt;p&gt;Full base url&lt;/p&gt;" type="string" variable="$fullBaseUrl">
             <type>string</type>
           </tag>
-          <tag name="return" line="91" description="" type="boolean">
+          <tag name="return" line="92" description="" type="boolean">
             <type>boolean</type>
           </tag>
         </docblock>
@@ -265,7 +265,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="ScanEntity.php" generated-path="ScanEntity.html" hash="e649ab852a5fed09c8ecf810a103b6d7" package="Default">
+  <file path="ScanEntity.php" generated-path="ScanEntity.html" hash="0bbde03bd3bf799ad32aeb36b872b8df" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -273,37 +273,37 @@
     </docblock>
     <namespace-alias name="Response">\Cake\Http\Client\Response</namespace-alias>
     <namespace-alias name="Entity">\Tools\Entity</namespace-alias>
-    <class final="false" abstract="false" namespace="LinkScanner" line="22" package="Default">
+    <class final="false" abstract="false" namespace="LinkScanner" line="23" package="Default">
       <extends>\Tools\Entity</extends>
       <name>ScanEntity</name>
       <full_name>\LinkScanner\ScanEntity</full_name>
-      <docblock line="22">
+      <docblock line="23">
         <description>A `ScanEntity` represents a single result of a scan</description>
         <long-description></long-description>
-        <tag name="package" line="22" description="Default"/>
+        <tag name="package" line="23" description="Default"/>
       </docblock>
-      <property static="false" visibility="protected" namespace="LinkScanner" line="28" package="Default">
+      <property static="false" visibility="protected" namespace="LinkScanner" line="29" package="Default">
         <name>$Response</name>
         <full_name>\LinkScanner\ScanEntity::$Response</full_name>
         <default></default>
-        <docblock line="28">
+        <docblock line="29">
           <description>A `Response` object</description>
           <long-description></long-description>
-          <tag name="var" line="28" description="" type="\Cake\Http\Client\Response" variable="">
+          <tag name="var" line="29" description="" type="\Cake\Http\Client\Response" variable="">
             <type>\Cake\Http\Client\Response</type>
           </tag>
         </docblock>
       </property>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="35" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="36" package="Default">
         <name>__construct</name>
         <full_name>\LinkScanner\ScanEntity::__construct()</full_name>
-        <docblock line="35">
+        <docblock line="36">
           <description>Initializes the internal properties</description>
           <long-description></long-description>
-          <tag name="param" line="35" description="&lt;p&gt;Properties to set&lt;/p&gt;" type="array" variable="$properties">
+          <tag name="param" line="36" description="&lt;p&gt;Properties to set&lt;/p&gt;" type="array" variable="$properties">
             <type>array</type>
           </tag>
-          <tag name="throws" line="35" description="" type="\Tools\Exception\KeyNotExistsException">
+          <tag name="throws" line="36" description="" type="\Tools\Exception\KeyNotExistsException">
             <type>\Tools\Exception\KeyNotExistsException</type>
           </tag>
         </docblock>
@@ -313,22 +313,22 @@
           <type>array</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="50" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="51" package="Default">
         <name>__call</name>
         <full_name>\LinkScanner\ScanEntity::__call()</full_name>
-        <docblock line="50">
+        <docblock line="51">
           <description>Magic method, is triggered when invoking inaccessible methods.</description>
           <long-description>It calls the same method name from the original `Response` class</long-description>
-          <tag name="param" line="50" description="&lt;p&gt;Method name&lt;/p&gt;" type="string" variable="$name">
+          <tag name="param" line="51" description="&lt;p&gt;Method name&lt;/p&gt;" type="string" variable="$name">
             <type>string</type>
           </tag>
-          <tag name="param" line="50" description="&lt;p&gt;Method arguments&lt;/p&gt;" type="mixed" variable="$arguments">
+          <tag name="param" line="51" description="&lt;p&gt;Method arguments&lt;/p&gt;" type="mixed" variable="$arguments">
             <type>mixed</type>
           </tag>
-          <tag name="return" line="50" description="" type="mixed">
+          <tag name="return" line="51" description="" type="mixed">
             <type>mixed</type>
           </tag>
-          <tag name="see" line="50" description="" link="\Cake\Http\Client\Response"/>
+          <tag name="see" line="51" description="" link="\Cake\Http\Client\Response"/>
         </docblock>
         <argument line="0" by_reference="false">
           <name>$name</name>
@@ -346,7 +346,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="TestSuite/TestCase.php" generated-path="TestSuite.TestCase.html" hash="2c247a0c06dafbd6aada58d019bd7a90" package="Default">
+  <file path="TestSuite/TestCase.php" generated-path="TestSuite.TestCase.html" hash="ad769a030de75fbf3fc768add2114470" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -356,7 +356,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="ResultScan.php" generated-path="ResultScan.html" hash="766ee53bf7f58ab32ed6ed196ba2903d" package="Default">
+  <file path="ResultScan.php" generated-path="ResultScan.html" hash="6c28516cb1ee32751962a24b293de87c" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -366,25 +366,25 @@
     <namespace-alias name="CollectionInterface">\Cake\Collection\CollectionInterface</namespace-alias>
     <namespace-alias name="ScanEntity">\LinkScanner\ScanEntity</namespace-alias>
     <namespace-alias name="Traversable">\Traversable</namespace-alias>
-    <class final="false" abstract="false" namespace="LinkScanner" line="24" package="Default">
+    <class final="false" abstract="false" namespace="LinkScanner" line="25" package="Default">
       <extends>\Cake\Collection\Collection</extends>
       <name>ResultScan</name>
       <full_name>\LinkScanner\ResultScan</full_name>
-      <docblock line="24">
+      <docblock line="25">
         <description>This class contains the results of the scan</description>
         <long-description></long-description>
-        <tag name="package" line="24" description="Default"/>
+        <tag name="package" line="25" description="Default"/>
       </docblock>
-      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner" line="33" package="Default">
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner" line="34" package="Default">
         <name>parseItems</name>
         <full_name>\LinkScanner\ResultScan::parseItems()</full_name>
-        <docblock line="33">
+        <docblock line="34">
           <description>Internal method to parse items.</description>
           <long-description>Ensures that each item is a `ScanEntity` and has all the properties it needs</long-description>
-          <tag name="param" line="33" description="&lt;p&gt;Items&lt;/p&gt;" type="\LinkScanner\iterable" variable="$items">
+          <tag name="param" line="34" description="&lt;p&gt;Items&lt;/p&gt;" type="\LinkScanner\iterable" variable="$items">
             <type>\LinkScanner\iterable</type>
           </tag>
-          <tag name="return" line="33" description="Parsed items" type="array">
+          <tag name="return" line="34" description="Parsed items" type="array">
             <type>array</type>
           </tag>
         </docblock>
@@ -394,16 +394,16 @@
           <type>\LinkScanner\iterable</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="47" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="48" package="Default">
         <name>__construct</name>
         <full_name>\LinkScanner\ResultScan::__construct()</full_name>
-        <docblock line="47">
+        <docblock line="48">
           <description>Constructor</description>
           <long-description></long-description>
-          <tag name="param" line="47" description="&lt;p&gt;Items&lt;/p&gt;" type="\LinkScanner\iterable" variable="$items">
+          <tag name="param" line="48" description="&lt;p&gt;Items&lt;/p&gt;" type="\LinkScanner\iterable" variable="$items">
             <type>\LinkScanner\iterable</type>
           </tag>
-          <tag name="uses" line="47" description="" link="\LinkScanner\ResultScan::parseItems()"/>
+          <tag name="uses" line="48" description="" link="\LinkScanner\ResultScan::parseItems()"/>
         </docblock>
         <argument line="0" by_reference="false">
           <name>$items</name>
@@ -411,20 +411,20 @@
           <type>\LinkScanner\iterable</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="61" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="62" package="Default">
         <name>append</name>
         <full_name>\LinkScanner\ResultScan::append()</full_name>
-        <docblock line="61">
+        <docblock line="62">
           <description>Appends items.</description>
           <long-description>Returns a new `ResultScan` instance as the result of concatenating the
  list of elements in this collection with the passed list of elements</long-description>
-          <tag name="param" line="61" description="&lt;p&gt;Items&lt;/p&gt;" type="\LinkScanner\iterable" variable="$items">
+          <tag name="param" line="62" description="&lt;p&gt;Items&lt;/p&gt;" type="\LinkScanner\iterable" variable="$items">
             <type>\LinkScanner\iterable</type>
           </tag>
-          <tag name="return" line="61" description="" type="\Cake\Collection\CollectionInterface">
+          <tag name="return" line="62" description="" type="\Cake\Collection\CollectionInterface">
             <type>\Cake\Collection\CollectionInterface</type>
           </tag>
-          <tag name="uses" line="61" description="" link="\LinkScanner\ResultScan::parseItems()"/>
+          <tag name="uses" line="62" description="" link="\LinkScanner\ResultScan::parseItems()"/>
         </docblock>
         <argument line="0" by_reference="false">
           <name>$items</name>
@@ -432,20 +432,20 @@
           <type>\LinkScanner\iterable</type>
         </argument>
       </method>
-      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="75" package="Default">
+      <method final="false" abstract="false" static="false" visibility="public" namespace="LinkScanner" line="76" package="Default">
         <name>prepend</name>
         <full_name>\LinkScanner\ResultScan::prepend()</full_name>
-        <docblock line="75">
+        <docblock line="76">
           <description>Prepends items.</description>
           <long-description>Returns a new `ResultScan` instance as the result of concatenating the
  passed list of elements with the list of elements in this collection</long-description>
-          <tag name="param" line="75" description="&lt;p&gt;Items&lt;/p&gt;" type="\LinkScanner\iterable" variable="$items">
+          <tag name="param" line="76" description="&lt;p&gt;Items&lt;/p&gt;" type="\LinkScanner\iterable" variable="$items">
             <type>\LinkScanner\iterable</type>
           </tag>
-          <tag name="return" line="75" description="" type="\Cake\Collection\CollectionInterface">
+          <tag name="return" line="76" description="" type="\Cake\Collection\CollectionInterface">
             <type>\Cake\Collection\CollectionInterface</type>
           </tag>
-          <tag name="uses" line="75" description="" link="\LinkScanner\ResultScan::parseItems()"/>
+          <tag name="uses" line="76" description="" link="\LinkScanner\ResultScan::parseItems()"/>
         </docblock>
         <argument line="0" by_reference="false">
           <name>$items</name>
@@ -458,7 +458,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="TestSuite/IntegrationTestTrait.php" generated-path="TestSuite.IntegrationTestTrait.html" hash="9aa94504f35e88673d55a4ff3d25e3b0" package="Default">
+  <file path="TestSuite/IntegrationTestTrait.php" generated-path="TestSuite.IntegrationTestTrait.html" hash="47e7d7a1ec468223c98cb08206d78f04" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -470,46 +470,46 @@
     <namespace-alias name="Router">\Cake\Routing\Router</namespace-alias>
     <namespace-alias name="LinkScanner">\LinkScanner\Utility\LinkScanner</namespace-alias>
     <namespace-alias name="BaseIntegrationTestTrait">\MeTools\TestSuite\IntegrationTestTrait</namespace-alias>
-    <trait namespace="LinkScanner\TestSuite" line="26" package="Default">
+    <trait namespace="LinkScanner\TestSuite" line="27" package="Default">
       <name>IntegrationTestTrait</name>
       <full_name>\LinkScanner\TestSuite\IntegrationTestTrait</full_name>
-      <docblock line="26">
+      <docblock line="27">
         <description>A trait intended to make integration tests of your controllers easier</description>
         <long-description></long-description>
-        <tag name="package" line="26" description="Default"/>
+        <tag name="package" line="27" description="Default"/>
       </docblock>
-      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="36" package="Default">
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="37" package="Default">
         <name>getClientReturnsFromTests</name>
         <full_name>\LinkScanner\TestSuite\IntegrationTestTrait::getClientReturnsFromTests()</full_name>
-        <docblock line="36">
+        <docblock line="37">
           <description>Returns a stub of `Client`, where the `get()` method uses the
  `IntegrationTestTrait::get()` method and allows you to get responses from
  the test app</description>
           <long-description></long-description>
-          <tag name="return" line="36" description="" type="\Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject">
+          <tag name="return" line="37" description="" type="\Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject">
             <type>\Cake\Http\Client</type>
             <type>\PHPUnit_Framework_MockObject_MockObject</type>
           </tag>
         </docblock>
       </method>
-      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="77" package="Default">
+      <method final="false" abstract="false" static="false" visibility="protected" namespace="LinkScanner\TestSuite" line="78" package="Default">
         <name>getLinkScannerClientReturnsFromTests</name>
         <full_name>\LinkScanner\TestSuite\IntegrationTestTrait::getLinkScannerClientReturnsFromTests()</full_name>
-        <docblock line="77">
+        <docblock line="78">
           <description>Returns a stub of `LinkScanner` instance, with the `Client::get()`
  method uses the `IntegrationTestTrait::get()` method and allows you to
  get responses from the test app</description>
           <long-description></long-description>
-          <tag name="param" line="77" description="&lt;p&gt;Full base url&lt;/p&gt;" type="string|array|null" variable="$fullBaseUrl">
+          <tag name="param" line="78" description="&lt;p&gt;Full base url&lt;/p&gt;" type="string|array|null" variable="$fullBaseUrl">
             <type>string</type>
             <type>array</type>
             <type>null</type>
           </tag>
-          <tag name="return" line="77" description="" type="\LinkScanner\Utility\LinkScanner|\PHPUnit_Framework_MockObject_MockObject">
+          <tag name="return" line="78" description="" type="\LinkScanner\Utility\LinkScanner|\PHPUnit_Framework_MockObject_MockObject">
             <type>\LinkScanner\Utility\LinkScanner</type>
             <type>\PHPUnit_Framework_MockObject_MockObject</type>
           </tag>
-          <tag name="uses" line="77" description="" link="\LinkScanner\TestSuite\IntegrationTestTrait::getClientReturnsFromTests()"/>
+          <tag name="uses" line="78" description="" link="\LinkScanner\TestSuite\IntegrationTestTrait::getClientReturnsFromTests()"/>
         </docblock>
         <argument line="0" by_reference="false">
           <name>$fullBaseUrl</name>
@@ -522,7 +522,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="Event/LinkScannerCommandEventListener.php" generated-path="Event.LinkScannerCommandEventListener.html" hash="0d155e373e88991fbf11845e4216e22e" package="Default">
+  <file path="Event/LinkScannerCommandEventListener.php" generated-path="Event.LinkScannerCommandEventListener.html" hash="1e08c2d3865239afff9fac7c193bb08f" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -532,28 +532,28 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="Plugin.php" generated-path="Plugin.html" hash="a439af73f5ea140c163c47ad8f68da08" package="Default">
+  <file path="Plugin.php" generated-path="Plugin.html" hash="7b106d04c95572d934cd6f423eb73289" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
       <tag name="package" line="0" description="Default"/>
     </docblock>
     <namespace-alias name="BasePlugin">\Cake\Core\BasePlugin</namespace-alias>
-    <class final="false" abstract="false" namespace="LinkScanner" line="21" package="Default">
+    <class final="false" abstract="false" namespace="LinkScanner" line="22" package="Default">
       <extends>\Cake\Core\BasePlugin</extends>
       <name>Plugin</name>
       <full_name>\LinkScanner\Plugin</full_name>
-      <docblock line="21">
+      <docblock line="22">
         <description>Plugin class</description>
         <long-description></long-description>
-        <tag name="package" line="21" description="Default"/>
+        <tag name="package" line="22" description="Default"/>
       </docblock>
     </class>
     <parse_markers>
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="Utility/LinkScanner.php" generated-path="Utility.LinkScanner.html" hash="422d364e1c0ba6b6906b9cb9fcab101c" package="Default">
+  <file path="Utility/LinkScanner.php" generated-path="Utility.LinkScanner.html" hash="03afcfa4c68829d1ca8c3a8b6a4adb44" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -563,7 +563,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="Command/LinkScannerCommand.php" generated-path="Command.LinkScannerCommand.html" hash="bb75aff69aa672d4e63e9c8a5e81487e" package="Default">
+  <file path="Command/LinkScannerCommand.php" generated-path="Command.LinkScannerCommand.html" hash="0eab453841ec40e4c880eacf201e5890" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
