@@ -1,5 +1,8 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.1
+* small fixes to standardize to `cakephp` 4.
+
 ### 1.1.0
 * updated for `cakephp` 4 and `phpunit` 8.
 
