@@ -38,7 +38,7 @@ abstract class TestCase extends BaseTestCase
 
         @unlink(TMP . 'cakephp-link-scanner' . DS . 'link_scanner_lock_file');
 
-        Cache::clearAll();
+        Cache::clear('LinkScanner');
     }
 
     /**
@@ -118,8 +118,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getEventManager(?LinkScanner $LinkScanner = null): EventManager
     {
-        $LinkScanner = $LinkScanner ?: $this->LinkScanner;
-        $eventManager = $LinkScanner->getEventManager();
+        $eventManager = ($LinkScanner ?: $this->LinkScanner)->getEventManager();
 
         if (!$eventManager->getEventList()) {
             $eventManager->setEventList(new EventList());
@@ -139,11 +138,10 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getResponseWithBody(string $body, ?Response $response = null): Response
     {
-        $response = $response ?: new Response();
         $stream = new Stream('php://memory', 'wb+');
         $stream->write($body);
         $stream->rewind();
 
-        return $response->withBody($stream);
+        return ($response ?: new Response())->withBody($stream);
     }
 }
