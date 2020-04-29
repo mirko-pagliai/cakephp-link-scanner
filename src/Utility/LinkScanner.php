@@ -135,6 +135,34 @@ class LinkScanner implements Serializable
     }
 
     /**
+     * Internal method to check if an url can be scanned.
+     *
+     * Returns `false` if:
+     *  - the url has already been scanned;
+     *  - it's an external url and the external url scan has been disabled;
+     *  - the url matches the url patterns to be excluded.
+     * @param string $url Url to check
+     * @return bool
+     * @uses $alreadyScanned
+     * @uses $hostname
+     */
+    protected function _canBeScanned(string $url): bool
+    {
+        if (!is_url($url) || in_array($url, $this->alreadyScanned) ||
+            (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
+            return false;
+        }
+
+        foreach ((array)$this->getConfig('excludeLinks') as $pattern) {
+            if (preg_match($pattern, $url)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Internal method to create a lock file
      * @return bool
      * @throws \RuntimeException
@@ -221,8 +249,8 @@ class LinkScanner implements Serializable
      * @param string $url Url to scan
      * @param string|null $referer Referer of this url
      * @return void
+     * @uses _canBeScanned()
      * @uses _singleScan()
-     * @uses canBeScanned()
      * @uses $alreadyScanned
      * @uses $currentDepth
      * @uses $hostname
@@ -248,7 +276,7 @@ class LinkScanner implements Serializable
 
         //Continues scanning for the links found
         foreach ((new BodyParser($response->getBody(), $url))->extractLinks() as $link) {
-            if (!$this->canBeScanned($link)) {
+            if (!$this->_canBeScanned($link)) {
                 continue;
             }
             $this->dispatchEvent('LinkScanner.foundLinkToBeScanned', [$link]);
@@ -273,15 +301,15 @@ class LinkScanner implements Serializable
      * @param string $url Url to scan
      * @param string|null $referer Referer of this url
      * @return \Cake\Http\Client\Response|null
+     * @uses _canBeScanned()
      * @uses _getResponse()
-     * @uses canBeScanned()
      * @uses $ResultScan
      * @uses $hostname
      */
     protected function _singleScan(string $url, ?string $referer = null): ?Response
     {
         $url = clean_url($url, true, true);
-        if (!$this->canBeScanned($url)) {
+        if (!$this->_canBeScanned($url)) {
             return null;
         }
 
@@ -292,7 +320,7 @@ class LinkScanner implements Serializable
 
         //Follows redirects
         if ($response->isRedirect() && $this->getConfig('followRedirects')) {
-            if (!$this->canBeScanned($location)) {
+            if (!$this->_canBeScanned($location)) {
                 return null;
             }
 
@@ -310,34 +338,6 @@ class LinkScanner implements Serializable
         ] + compact('location', 'url', 'referer')));
 
         return $response;
-    }
-
-    /**
-     * Internal method to check if an url can be scanned.
-     *
-     * Returns `false` if:
-     *  - the url has already been scanned;
-     *  - it's an external url and the external url scan has been disabled;
-     *  - the url matches the url patterns to be excluded.
-     * @param string $url Url to check
-     * @return bool
-     * @uses $alreadyScanned
-     * @uses $hostname
-     */
-    protected function canBeScanned(string $url): bool
-    {
-        if (!is_url($url) || in_array($url, $this->alreadyScanned) ||
-            (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
-            return false;
-        }
-
-        foreach ((array)$this->getConfig('excludeLinks') as $pattern) {
-            if (preg_match($pattern, $url)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**

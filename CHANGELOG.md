@@ -1,5 +1,8 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.2
+* `LinkScanner::canBeScanned()` method renamed as `_canBeScanned()`.
+
 ### 1.1.1
 * small fixes to standardize to `cakephp` 4.
 
