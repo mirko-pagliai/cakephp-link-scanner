@@ -75,7 +75,6 @@ class LinkScannerTest extends TestCase
      */
     public function testConstruct()
     {
-        $default = (new LinkScanner())->getConfig();
         $config = ['LinkScanner' => [
             'cache' => false,
             'externalLinks' => false,
@@ -83,7 +82,7 @@ class LinkScannerTest extends TestCase
             'fullBaseUrl' => 'http://localhost',
             'maxDepth' => 2,
         ]];
-        $expected = array_merge($default, $config['LinkScanner']);
+        $expected = array_merge($this->LinkScanner->getConfig(), $config['LinkScanner']);
 
         (new PhpConfig())->dump('link_scanner', $config);
         $this->assertSame($expected, (new LinkScanner())->getConfig());
