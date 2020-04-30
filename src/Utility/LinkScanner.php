@@ -59,6 +59,7 @@ class LinkScanner implements Serializable
     protected $_defaultConfig = [
         'cache' => true,
         'excludeLinks' => '/[\{\}+]/',
+        'exportOnlyBadResults' => false,
         'externalLinks' => true,
         'followRedirects' => false,
         'fullBaseUrl' => null,
@@ -400,6 +401,12 @@ class LinkScanner implements Serializable
             __d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'),
             RuntimeException::class
         );
+
+        if ($this->getConfig('exportOnlyBadResults')) {
+            $this->ResultScan = new ResultScan($this->ResultScan->filter(function (ScanEntity $item) {
+                return $item->get('code') >= 400;
+            }));
+        }
 
         $filename = $this->_getAbsolutePath($filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime));
         create_file($filename, serialize($this));
