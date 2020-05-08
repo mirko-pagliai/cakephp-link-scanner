@@ -271,6 +271,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertEquals('Performs a complete scan', $parser->getDescription());
         $this->assertEmpty($parser->arguments());
         $this->assertArrayKeysEqual([
+            'export-only-bad-results',
             'no-external-links',
             'export',
             'export-with-filename',

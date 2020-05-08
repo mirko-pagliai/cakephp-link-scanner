@@ -57,6 +57,9 @@ class LinkScannerCommand extends Command
             //Will trigger events provided by `LinkScannerCommandEventListener`
             $this->LinkScanner->getEventManager()->on(new LinkScannerCommandEventListener($args, $io));
 
+            if ($args->getOption('export-only-bad-results')) {
+                $this->LinkScanner->setConfig('exportOnlyBadResults', true);
+            }
             if ($args->getOption('follow-redirects')) {
                 $this->LinkScanner->setConfig('followRedirects', true);
             }
@@ -108,6 +111,12 @@ class LinkScannerCommand extends Command
                 'default' => false,
                 'help' => __d('link-scanner', 'Export results. The filename will be generated automatically'),
                 'short' => 'e',
+            ],
+            'export-only-bad-results' => [
+                'boolean' => true,
+                'default' => false,
+                'help' => __d('link-scanner', 'Only negative results will be exported (status code 400 or 500).
+                    This allows you to save space for exported files'),
             ],
             'export-with-filename' => [
                 'help' => __d('link-scanner', 'Export results. You must pass a relative or absolute path'),

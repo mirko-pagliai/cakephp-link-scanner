@@ -3,7 +3,8 @@
 ### 1.1.2
 * added `exportOnlyBadResults` option for `LinkScanner`. With a `true` value,
     only negative results will be considered when exporting. This allows you to
-    save space for exported files;
+    save space for exported files. Added `--export-only-bad-results` option for
+    `LinkScannerCommand`;
 * `LinkScanner::canBeScanned()` method renamed as `_canBeScanned()`.
 
 ### 1.1.1
