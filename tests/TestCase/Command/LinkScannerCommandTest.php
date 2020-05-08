@@ -169,6 +169,11 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
         $this->assertErrorEmpty();
 
+        //Exports only bad results
+        self::setUp();
+        $this->Command->run(array_merge($params, ['--export-only-bad-results']), $this->io);
+        $this->assertEquals(['exportOnlyBadResults' => true] + $expectedConfig, $this->LinkScanner->getConfig());
+
         //Disables external links
         array_pop($params);
         $params = array_merge($params, ['--full-base-url=' . $this->fullBaseUrl, '--no-external-links']);
