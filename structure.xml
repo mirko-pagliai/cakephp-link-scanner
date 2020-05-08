@@ -346,7 +346,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="TestSuite/TestCase.php" generated-path="TestSuite.TestCase.html" hash="ad769a030de75fbf3fc768add2114470" package="Default">
+  <file path="TestSuite/TestCase.php" generated-path="TestSuite.TestCase.html" hash="0dc6d6bc3f46e1d7ca87c1d5efe1d9aa" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -356,7 +356,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="ResultScan.php" generated-path="ResultScan.html" hash="6c28516cb1ee32751962a24b293de87c" package="Default">
+  <file path="ResultScan.php" generated-path="ResultScan.html" hash="267537e26333205f5558596f95f76c75" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -371,7 +371,7 @@
       <name>ResultScan</name>
       <full_name>\LinkScanner\ResultScan</full_name>
       <docblock line="25">
-        <description>This class contains the results of the scan</description>
+        <description>A `ResultScan` instance is a collection that contains a scan results</description>
         <long-description></long-description>
         <tag name="package" line="25" description="Default"/>
       </docblock>
@@ -522,7 +522,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="Event/LinkScannerCommandEventListener.php" generated-path="Event.LinkScannerCommandEventListener.html" hash="1e08c2d3865239afff9fac7c193bb08f" package="Default">
+  <file path="Event/LinkScannerCommandEventListener.php" generated-path="Event.LinkScannerCommandEventListener.html" hash="477e7d4585ea3a84637cb2bff288acf0" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -553,7 +553,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="Utility/LinkScanner.php" generated-path="Utility.LinkScanner.html" hash="03afcfa4c68829d1ca8c3a8b6a4adb44" package="Default">
+  <file path="Utility/LinkScanner.php" generated-path="Utility.LinkScanner.html" hash="09137425ff0a6132dcee02b210125ae8" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
@@ -563,7 +563,7 @@
       <error line="0" code="PPC:ERR-50000">No summary was found for this file</error>
     </parse_markers>
   </file>
-  <file path="Command/LinkScannerCommand.php" generated-path="Command.LinkScannerCommand.html" hash="0eab453841ec40e4c880eacf201e5890" package="Default">
+  <file path="Command/LinkScannerCommand.php" generated-path="Command.LinkScannerCommand.html" hash="ae060d59c0ebdbaeb9cba7c764a0719e" package="Default">
     <docblock line="0">
       <description></description>
       <long-description></long-description>
