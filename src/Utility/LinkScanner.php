@@ -120,7 +120,7 @@ class LinkScanner implements Serializable
 
         if (file_exists(CONFIG . 'link_scanner.php')) {
             $config = (new PhpConfig())->read('link_scanner');
-            $this->setConfig($config['LinkScanner'] ?? []);
+            $this->setConfig(isset($config['LinkScanner']) ? $config['LinkScanner'] : []);
         }
     }
 
