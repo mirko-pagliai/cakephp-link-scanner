@@ -1,5 +1,15 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.2
+* added `exportOnlyBadResults` option for `LinkScanner`. With a `true` value,
+    only negative results will be considered when exporting. This allows you to
+    save space for exported files. Added `--export-only-bad-results` option for
+    `LinkScannerCommand`;
+* `LinkScanner::canBeScanned()` method renamed as `_canBeScanned()`.
+
+### 1.1.1
+* small fixes to standardize to `cakephp` 4.
+
 ### 1.1.0
 * updated for `cakephp` 4 and `phpunit` 8.
 

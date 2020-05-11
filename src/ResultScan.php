@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -17,7 +18,7 @@ use LinkScanner\ScanEntity;
 use Traversable;
 
 /**
- * This class contains the results of the scan
+ * A `ResultScan` instance is a collection that contains a scan results
  */
 class ResultScan extends Collection
 {

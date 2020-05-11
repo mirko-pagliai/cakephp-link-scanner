@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -18,11 +19,6 @@ ini_set('intl.default_locale', 'en_US');
 date_default_timezone_set('UTC');
 mb_internal_encoding('UTF-8');
 
-if (!defined('DS')) {
-    define('DS', DIRECTORY_SEPARATOR);
-}
-
-// Path constants to a few helpful things.
 define('ROOT', dirname(__DIR__) . DS);
 define('VENDOR', ROOT . 'vendor' . DS);
 define('CAKE_CORE_INCLUDE_PATH', ROOT . 'vendor' . DS . 'cakephp' . DS . 'cakephp');
@@ -39,7 +35,6 @@ define('CACHE', TMP . 'cache' . DS);
 define('CONFIG', APP . 'config' . DS);
 define('LOGS', TMP . 'logs' . DS);
 define('SESSIONS', TMP . 'sessions' . DS);
-
 @mkdir(TMP);
 @mkdir(LOGS);
 @mkdir(SESSIONS);
@@ -63,10 +58,7 @@ Configure::write('App', [
     'imageBaseUrl' => 'img/',
     'jsBaseUrl' => 'js/',
     'cssBaseUrl' => 'css/',
-    'paths' => [
-        'plugins' => [APP . 'Plugin' . DS],
-        'templates' => [APP . 'Template' . DS],
-    ],
+    'paths' => ['templates' => [APP . 'Template' . DS]],
 ]);
 Configure::write('Session', ['defaults' => 'php']);
 
@@ -74,11 +66,6 @@ Cache::setConfig([
     '_cake_core_' => [
         'engine' => 'File',
         'prefix' => 'cake_core_',
-        'serialize' => true,
-    ],
-    '_cake_model_' => [
-        'engine' => 'File',
-        'prefix' => 'cake_model_',
         'serialize' => true,
     ],
     'default' => [

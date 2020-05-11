@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -68,18 +69,10 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testScan()
     {
+        $expectedConfig = ['maxDepth' => 1] + $this->LinkScanner->getConfig();
         $this->Command->run(['--max-depth=1'], $this->io);
 
-        $this->assertEquals([
-            'cache' => true,
-            'excludeLinks' => '/[\{\}+]/',
-            'externalLinks' => true,
-            'followRedirects' => false,
-            'fullBaseUrl' => $this->fullBaseUrl,
-            'maxDepth' => 1,
-            'lockFile' => true,
-            'target' => TMP . 'cakephp-link-scanner',
-        ], $this->LinkScanner->getConfig());
+        $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
 
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
         $this->assertOutputContains(sprintf('Checking %s ...', $this->fullBaseUrl));
@@ -104,12 +97,6 @@ class LinkScannerCommandTest extends TestCase
         ] as $eventName) {
             $this->assertEventNotFired('LinkScanner.' . $eventName, $this->LinkScanner->getEventManager());
         }
-
-        //With an error response (404 status code)
-        $this->Command->LinkScanner = new LinkScanner($this->getClientReturnsErrorResponse());
-        $this->Command->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
-        $this->Command->run(['--verbose'], $this->io);
-        $this->assertErrorContains('404');
     }
 
     /**
@@ -137,18 +124,9 @@ class LinkScannerCommandTest extends TestCase
             '--timeout=15',
             '--verbose',
         ];
+        $expectedConfig = ['maxDepth' => 2, 'lockFile' => false] + $this->LinkScanner->getConfig();
         $this->Command->run($params, $this->io);
 
-        $expectedConfig = [
-            'cache' => true,
-            'excludeLinks' => '/[\{\}+]/',
-            'externalLinks' => true,
-            'followRedirects' => false,
-            'fullBaseUrl' => $this->fullBaseUrl,
-            'maxDepth' => 2,
-            'lockFile' => false,
-            'target' => TMP . 'cakephp-link-scanner',
-        ];
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
         $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
 
@@ -182,6 +160,11 @@ class LinkScannerCommandTest extends TestCase
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
         $this->assertErrorEmpty();
+
+        //Exports only bad results
+        self::setUp();
+        $this->Command->run(array_merge($params, ['--export-only-bad-results']), $this->io);
+        $this->assertEquals(['exportOnlyBadResults' => true] + $expectedConfig, $this->LinkScanner->getConfig());
 
         //Disables external links
         array_pop($params);
@@ -285,6 +268,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertEquals('Performs a complete scan', $parser->getDescription());
         $this->assertEmpty($parser->arguments());
         $this->assertArrayKeysEqual([
+            'export-only-bad-results',
             'no-external-links',
             'export',
             'export-with-filename',

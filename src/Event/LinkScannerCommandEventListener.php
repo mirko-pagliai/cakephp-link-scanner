@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -92,7 +93,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
         $method = $response->isOk() ? 'success' : ($response->isRedirect() ? 'warning' : 'error');
         $message = $response->isOk() ? __d('link-scanner', 'OK') : (string)$response->getStatusCode();
-        call_user_func([$this->io, $method], $message);
+        $this->io->{$method}($message);
 
         return true;
     }
@@ -223,7 +224,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             $method = 'success';
             $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']);
         }
-        call_user_func([$this->io, $method], $message);
+        $this->io->{$method}($message);
 
         $message = __d('link-scanner', 'Force mode is not enabled');
         if ($this->args->getOption('force')) {

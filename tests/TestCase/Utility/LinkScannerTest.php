@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of cakephp-link-scanner.
  *
@@ -73,17 +74,16 @@ class LinkScannerTest extends TestCase
      */
     public function testConstruct()
     {
-        $default = (new LinkScanner())->getConfig();
-        $config = ['LinkScanner' => [
+        $config = [
             'cache' => false,
             'externalLinks' => false,
             'followRedirects' => true,
             'fullBaseUrl' => 'http://localhost',
             'maxDepth' => 2,
-        ]];
-        $expected = array_merge($default, $config['LinkScanner']);
+        ];
+        $expected = array_merge($this->LinkScanner->getConfig(), $config);
 
-        (new PhpConfig())->dump('link_scanner', $config);
+        (new PhpConfig())->dump('link_scanner', ['LinkScanner' => $config]);
         $this->assertSame($expected, (new LinkScanner())->getConfig());
 
         @unlink(CONFIG . 'link_scanner.php');
@@ -121,7 +121,7 @@ class LinkScannerTest extends TestCase
         $this->assertInstanceof(Response::class, $responseFromCache);
 
         //With disabled cache
-        Cache::clearAll();
+        Cache::clear(false, 'LinkScanner');
         $this->LinkScanner->setConfig('cache', false);
         $getResponseMethod($this->fullBaseUrl);
         $this->assertEmpty($getResponseFromCache($this->fullBaseUrl));
@@ -166,11 +166,12 @@ class LinkScannerTest extends TestCase
     public function testExport()
     {
         $this->LinkScanner->setConfig('maxDepth', 1)->scan();
+        $target = $this->LinkScanner->getConfig('target');
 
         //Filename can be `null`, relative or absolute
         foreach ([
-            null => $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
-            'example' => $this->LinkScanner->getConfig('target') . DS . 'example',
+            null => $target . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
+            'example' => $target . DS . 'example',
             TMP . 'example' => TMP . 'example',
         ] as $filename => $expectedFilename) {
             $result = $this->LinkScanner->export($filename);
@@ -182,9 +183,9 @@ class LinkScannerTest extends TestCase
         }
 
         //Without the scan being performed
-        $this->assertException(RuntimeException::class, function () {
-            (new LinkScanner())->export();
-        }, 'There is no result to export. Perhaps the scan was not performed?');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('There is no result to export. Perhaps the scan was not performed?');
+        (new LinkScanner())->export();
     }
 
     /**
@@ -195,19 +196,11 @@ class LinkScannerTest extends TestCase
     {
         $this->LinkScanner->Client->setConfig('timeout', 100);
         $this->LinkScanner->setConfig('externalLinks', false)->setConfig('maxDepth', 1)->scan();
+        $config = $this->LinkScanner->getConfig();
         $filename = basename($this->LinkScanner->export());
         $result = (new LinkScanner())->import($filename);
         $this->assertInstanceof(LinkScanner::class, $result);
-        $this->assertEquals([
-            'cache' => true,
-            'excludeLinks' => '/[\{\}+]/',
-            'externalLinks' => false,
-            'followRedirects' => false,
-            'fullBaseUrl' => $this->fullBaseUrl,
-            'maxDepth' => 1,
-            'lockFile' => true,
-            'target' => TMP . 'cakephp-link-scanner',
-        ], $result->getConfig());
+        $this->assertEquals($config, $result->getConfig());
         $this->assertEquals(100, $result->Client->getConfig('timeout'));
 
         //Checks the event is fired only on the new object. Then, it flushes
@@ -264,8 +257,8 @@ class LinkScannerTest extends TestCase
         //Results contain both internal and external urls
         $internalLinks = $this->LinkScanner->ResultScan->match(['external' => false]);
         $externalLinks = $this->LinkScanner->ResultScan->match(['external' => true]);
-        $this->assertNotEmpty($internalLinks->toList());
-        $this->assertNotEmpty($externalLinks->toList());
+        $this->assertFalse($internalLinks->isEmpty());
+        $this->assertFalse($externalLinks->isEmpty());
         $this->assertEquals($this->LinkScanner->ResultScan->count(), $internalLinks->count() + $externalLinks->count());
 
         //Takes the last url from the last scan and adds it to the url to
@@ -300,9 +293,9 @@ class LinkScannerTest extends TestCase
         $hostname = get_hostname_from_url($this->fullBaseUrl);
 
         foreach ($LinkScanner->ResultScan as $item) {
-            $this->assertRegexp(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->url);
-            $this->assertContains($item->code, [200, 500]);
-            $this->assertStringStartsWith('text/html', $item->type);
+            $this->assertRegexp(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->get('url'));
+            $this->assertContains($item->get('code'), [200, 500]);
+            $this->assertStringStartsWith('text/html', $item->get('type'));
         }
 
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
@@ -365,6 +358,11 @@ class LinkScannerTest extends TestCase
         $LinkScanner->scan();
         $this->assertEquals($expectedDebug, $this->debug);
 
+        //Results contain different status code
+        $this->assertFalse($LinkScanner->ResultScan->match(['code' => 200])->isEmpty());
+        $this->assertFalse($LinkScanner->ResultScan->match(['code' => 302])->isEmpty());
+        $this->assertFalse($LinkScanner->ResultScan->match(['code' => 404])->isEmpty());
+
         //Results contain both internal and external urls
         $expectedInternal = [
             'http://localhost',
@@ -424,11 +422,18 @@ class LinkScannerTest extends TestCase
         $LinkScanner->setConfig('maxDepth', 1)->scan();
         $this->assertCount(1, $LinkScanner->ResultScan);
         $item = $LinkScanner->ResultScan->first();
-        $this->assertEquals($item->code, 200);
-        $this->assertFalse($item->external);
-        $this->assertNull($item->referer);
-        $this->assertStringStartsWith('text/html', $item->type);
-        $this->assertEquals($item->url, 'http://localhost');
+        $this->assertEquals($item->get('code'), 200);
+        $this->assertFalse($item->get('external'));
+        $this->assertNull($item->get('referer'));
+        $this->assertStringStartsWith('text/html', $item->get('type'));
+        $this->assertEquals($item->get('url'), 'http://localhost');
+
+        $LinkScanner = $this->getLinkScannerClientReturnsFromTests();
+        $LinkScanner->setConfig('exportOnlyBadResults', true)->scan();
+        $LinkScanner->export();
+        $this->assertTrue($LinkScanner->ResultScan->match(['code' => 200])->isEmpty());
+        $this->assertTrue($LinkScanner->ResultScan->match(['code' => 302])->isEmpty());
+        $this->assertFalse($LinkScanner->ResultScan->match(['code' => 404])->isEmpty());
     }
 
     /**

@@ -16,12 +16,6 @@ use Cake\Http\BaseApplication;
 use Cake\Routing\Middleware\RoutingMiddleware;
 use LinkScanner\Plugin as LinkScanner;
 
-/**
- * Application setup class.
- *
- * This defines the bootstrapping logic and middleware layers you
- * want to use in your application.
- */
 class Application extends BaseApplication
 {
     /**
