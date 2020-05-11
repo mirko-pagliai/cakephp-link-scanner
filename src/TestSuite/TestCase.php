@@ -137,10 +137,11 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getResponseWithBody($body, Response $response = null)
     {
+        $response = $response ?: new Response();
         $stream = new Stream('php://memory', 'wb+');
         $stream->write($body);
         $stream->rewind();
 
-        return ($response ?: new Response())->withBody($stream);
+        return $response->withBody($stream);
     }
 }
