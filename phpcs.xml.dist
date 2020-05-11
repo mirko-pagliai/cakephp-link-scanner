@@ -17,6 +17,12 @@
     <rule ref="SlevomatCodingStandard.PHP.ShortList.LongListUsed">
         <severity>0</severity>
     </rule>
+    <rule ref="SlevomatCodingStandard.Commenting.DocCommentSpacing.IncorrectLinesCountBetweenDescriptionAndAnnotations">
+        <severity>0</severity>
+    </rule>
+    <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceOperator.NullCoalesceOperatorNotUsed">
+        <severity>0</severity>
+    </rule>
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.DeclareStrictTypesMissing">
         <severity>0</severity>
     </rule>
