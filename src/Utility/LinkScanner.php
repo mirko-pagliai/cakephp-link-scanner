@@ -146,7 +146,7 @@ class LinkScanner implements Serializable
      * @uses $alreadyScanned
      * @uses $hostname
      */
-    protected function _canBeScanned(string $url)
+    protected function _canBeScanned($url)
     {
         if (!is_url($url) || in_array($url, $this->alreadyScanned) ||
             (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
