@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>cakephp-link-scanner-                 Class
+     LinkScanner\ScanEntity
+</title>
+        <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/highlight/default.css">
+        <script src="assets/highlight/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <nav class="navbar sticky-top navbar-dark bg-dark">
+            <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 col-lg-4 p-3">
+                    <ul class="list-unstyled m-0">
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Command-LinkScannerCommand.html" title="LinkScanner\Command\LinkScannerCommand">LinkScanner\Command\LinkScannerCommand</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Event-LinkScannerCommandEventListener.html" title="LinkScanner\Event\LinkScannerCommandEventListener">LinkScanner\Event\LinkScannerCommandEventListener</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Event-LinkScannerEventListenerInterface.html" title="LinkScanner\Event\LinkScannerEventListenerInterface">LinkScanner\Event\LinkScannerEventListenerInterface</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Plugin.html" title="LinkScanner\Plugin">LinkScanner\Plugin</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-ResultScan.html" title="LinkScanner\ResultScan">LinkScanner\ResultScan</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-ScanEntity.html" title="LinkScanner\ScanEntity">LinkScanner\ScanEntity</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-TestSuite-IntegrationTestTrait.html" title="LinkScanner\TestSuite\IntegrationTestTrait">LinkScanner\TestSuite\IntegrationTestTrait</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-TestSuite-TestCase.html" title="LinkScanner\TestSuite\TestCase">LinkScanner\TestSuite\TestCase</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Utility-LinkScanner.html" title="LinkScanner\Utility\LinkScanner">LinkScanner\Utility\LinkScanner</a>
+    </li>
+</ul>
+                </div>
+                <div class="col p-3">
+                        <h2>            Class
+     <em>ScanEntity</em></h2>
+
+    <p>A `ScanEntity` represents a single result of a scan</p>
+
+            <p>
+            Extends <code>Tools\Entity</code>.
+        </p>
+    
+    
+    
+    <div class="p-3 mb-2 bg-light text-dark">
+        <div><strong>Namespace:</strong> LinkScanner</div>
+        <div><strong>Location:</strong> /home/mirko/Libs/Plugins/cakephp-link-scanner/src/ScanEntity.php</div>
+    </div>
+
+    
+            <h4>Properties summary</h4>
+        <ul>
+                            <li>
+                    <div>
+    <code>$Response</code> <span class="badge badge-light">protected</span>
+</div>
+<div><span class="badge badge-light">Cake\Http\Client\Response</span></div>
+<div><p>A <code>Response</code> object</p></div>
+                </li>
+                    </ul>
+    
+            <h4>Methods summary</h4>
+        <ul>
+                            <li>
+                    <div>
+    <code>
+        <a href="#__construct">__construct()</a>
+    </code> <span class="badge badge-light">public</span>
+    <div><p>Initializes the internal properties</p></div>
+</div>                </li>
+                            <li>
+                    <div>
+    <code>
+        <a href="#__call">__call()</a>
+    </code> <span class="badge badge-light">public</span>
+    <div><p>Magic method, is triggered when invoking inaccessible methods.</p></div>
+</div>                </li>
+                    </ul>
+    
+            <h4>Methods detail</h4>
+                    <div class="mb-4">
+                <a name="__construct"></a>
+<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>__construct()</h5></div>
+<div class="ml-3">
+    <pre><code class="language-php">__construct(array $properties = [])</code></pre>
+    <blockquote class="blockquote">
+        <small class="font-weight-light"><p>Initializes the internal properties</p></small>
+    </blockquote>
+
+    <h6>Parameters</h6>
+    <div class="mb-3">
+        <code class="language-php">array $properties = []</code> <p>Properties to set</p>
+    </div>
+
+    <h6>Throws</h6>
+    <div class="mb-3">
+        <div><code>Tools\Exception\KeyNotExistsException</code></div>
+    </div>
+</div>            </div>
+                    <div class="mb-4">
+                <a name="__call"></a>
+<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>__call()</h5></div>
+<div class="ml-3">
+    <pre><code class="language-php">__call(string $name, mixed $arguments)</code></pre>
+    <blockquote class="blockquote">
+        <small class="font-weight-light"><p>Magic method, is triggered when invoking inaccessible methods.
+It calls the same method name from the original <code>Response</code> class</p></small>
+    </blockquote>
+
+    <h6>Parameters</h6>
+    <div class="mb-3">
+        <code class="language-php">string $name</code> <p>Method name</p>
+    </div>
+    <div class="mb-3">
+        <code class="language-php">mixed $arguments</code> <p>Method arguments</p>
+    </div>
+
+    <h6>Return</h6>
+    <div class="mb-3">
+        <div><code>mixed</code></div>
+    </div>
+
+    <h6>See</h6>
+    <div class="mb-3">
+        <div>Cake\Http\Client\Response</div>
+    </div></div>            </div>
+            
+                </div>
+            </div>
+        </div>
+
+        <div id="footer">
+    <p class="bg-light m-0 p-3 small text-center">
+        This documentation was built automatically thanks to <a href="https://github.com/mirko-pagliai/php-doc-maker" target="_blank">php-doc-maker</a>
+    </p>
+</div>
+    </body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>cakephp-link-scanner-                 Trait
+     LinkScanner\TestSuite\IntegrationTestTrait
+</title>
+        <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/highlight/default.css">
+        <script src="assets/highlight/highlight.pack.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+    <body>
+        <nav class="navbar sticky-top navbar-dark bg-dark">
+            <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 col-lg-4 p-3">
+                    <ul class="list-unstyled m-0">
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Command-LinkScannerCommand.html" title="LinkScanner\Command\LinkScannerCommand">LinkScanner\Command\LinkScannerCommand</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Event-LinkScannerCommandEventListener.html" title="LinkScanner\Event\LinkScannerCommandEventListener">LinkScanner\Event\LinkScannerCommandEventListener</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Event-LinkScannerEventListenerInterface.html" title="LinkScanner\Event\LinkScannerEventListenerInterface">LinkScanner\Event\LinkScannerEventListenerInterface</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Plugin.html" title="LinkScanner\Plugin">LinkScanner\Plugin</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-ResultScan.html" title="LinkScanner\ResultScan">LinkScanner\ResultScan</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-ScanEntity.html" title="LinkScanner\ScanEntity">LinkScanner\ScanEntity</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-TestSuite-IntegrationTestTrait.html" title="LinkScanner\TestSuite\IntegrationTestTrait">LinkScanner\TestSuite\IntegrationTestTrait</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-TestSuite-TestCase.html" title="LinkScanner\TestSuite\TestCase">LinkScanner\TestSuite\TestCase</a>
+    </li>
+    <li class="text-truncate">
+        <a href="Class-LinkScanner-Utility-LinkScanner.html" title="LinkScanner\Utility\LinkScanner">LinkScanner\Utility\LinkScanner</a>
+    </li>
+</ul>
+                </div>
+                <div class="col p-3">
+                        <h2>            Trait
+     <em>IntegrationTestTrait</em></h2>
+
+    <p>A trait intended to make integration tests of your controllers easier</p>
+
+    
+    
+            <p>
+            Uses <code>MeTools\TestSuite\IntegrationTestTrait</code>.
+        </p>
+    
+    <div class="p-3 mb-2 bg-light text-dark">
+        <div><strong>Namespace:</strong> LinkScanner\TestSuite</div>
+        <div><strong>Location:</strong> /home/mirko/Libs/Plugins/cakephp-link-scanner/src/TestSuite/IntegrationTestTrait.php</div>
+    </div>
+
+    
+    
+            <h4>Methods summary</h4>
+        <ul>
+                            <li>
+                    <div>
+    <code>
+        <a href="#getClientReturnsFromTests">getClientReturnsFromTests()</a>
+    </code> <span class="badge badge-light">protected</span>
+    <div><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method uses the
+<code>IntegrationTestTrait::get()</code> method and allows you to get responses from
+the test app</p></div>
+</div>                </li>
+                            <li>
+                    <div>
+    <code>
+        <a href="#getLinkScannerClientReturnsFromTests">getLinkScannerClientReturnsFromTests()</a>
+    </code> <span class="badge badge-light">protected</span>
+    <div><p>Returns a stub of <code>LinkScanner</code> instance, with the <code>Client::get()</code>
+method uses the <code>IntegrationTestTrait::get()</code> method and allows you to
+get responses from the test app</p></div>
+</div>                </li>
+                    </ul>
+    
+            <h4>Methods detail</h4>
+                    <div class="mb-4">
+                <a name="getClientReturnsFromTests"></a>
+<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>getClientReturnsFromTests()</h5></div>
+<div class="ml-3">
+    <pre><code class="language-php">getClientReturnsFromTests()</code></pre>
+    <blockquote class="blockquote">
+        <small class="font-weight-light"><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method uses the
+<code>IntegrationTestTrait::get()</code> method and allows you to get responses from
+the test app</p></small>
+    </blockquote>
+
+    <h6>Return</h6>
+    <div class="mb-3">
+        <div><code>Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject</code></div>
+    </div></div>            </div>
+                    <div class="mb-4">
+                <a name="getLinkScannerClientReturnsFromTests"></a>
+<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>getLinkScannerClientReturnsFromTests()</h5></div>
+<div class="ml-3">
+    <pre><code class="language-php">getLinkScannerClientReturnsFromTests(string|array|null $fullBaseUrl = null)</code></pre>
+    <blockquote class="blockquote">
+        <small class="font-weight-light"><p>Returns a stub of <code>LinkScanner</code> instance, with the <code>Client::get()</code>
+method uses the <code>IntegrationTestTrait::get()</code> method and allows you to
+get responses from the test app</p></small>
+    </blockquote>
+
+    <h6>Parameters</h6>
+    <div class="mb-3">
+        <code class="language-php">string|array|null $fullBaseUrl = null</code> <p>Full base url</p>
+    </div>
+
+    <h6>Return</h6>
+    <div class="mb-3">
+        <div><code>LinkScanner\Utility\LinkScanner|\PHPUnit_Framework_MockObject_MockObject</code></div>
+    </div></div>            </div>
+            
+                </div>
+            </div>
+        </div>
+
+        <div id="footer">
+    <p class="bg-light m-0 p-3 small text-center">
+        This documentation was built automatically thanks to <a href="https://github.com/mirko-pagliai/php-doc-maker" target="_blank">php-doc-maker</a>
+    </p>
+</div>
+    </body>
+</html>
