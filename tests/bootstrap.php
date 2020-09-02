@@ -14,6 +14,7 @@
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Utility\Security;
 
 ini_set('intl.default_locale', 'en_US');
 date_default_timezone_set('UTC');
@@ -76,6 +77,7 @@ Cache::setConfig([
 ]);
 
 Configure::write('pluginsToLoad', ['LinkScanner']);
+Security::setSalt('a-long-but-not-random-value');
 
 loadPHPUnitAliases();
 

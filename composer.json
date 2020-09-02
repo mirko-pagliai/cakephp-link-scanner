@@ -4,10 +4,12 @@
     "homepage": "https://github.com/mirko-pagliai/cakephp-link-scanner",
     "type": "cakephp-plugin",
     "license": "MIT",
-    "authors": [{
+    "authors": [
+        {
             "name": "Mirko Pagliai",
             "email": "mirko.pagliai@gmail.com"
-        }],
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
         "cakephp/cakephp": "^3.7.1",
