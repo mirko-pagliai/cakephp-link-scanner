@@ -16,6 +16,7 @@ namespace LinkScanner;
 
 use Cake\Http\Client\Response;
 use Tools\Entity;
+use Tools\Exceptionist;
 
 /**
  * A `ScanEntity` represents a single result of a scan
@@ -35,7 +36,7 @@ class ScanEntity extends Entity
      */
     public function __construct(array $properties = [])
     {
-        key_exists_or_fail(['code', 'external', 'type', 'url'], $properties);
+        Exceptionist::arrayKeyExists(['code', 'external', 'type', 'url'], $properties);
         parent::__construct($properties);
     }
 

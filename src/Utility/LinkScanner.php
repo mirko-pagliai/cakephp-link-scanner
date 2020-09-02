@@ -30,6 +30,7 @@ use RuntimeException;
 use Serializable;
 use Symfony\Component\Filesystem\Filesystem;
 use Tools\BodyParser;
+use Tools\Exceptionist;
 use Zend\Diactoros\Stream;
 
 /**
@@ -171,7 +172,7 @@ class LinkScanner implements Serializable
      */
     protected function _createLockFile(): bool
     {
-        is_true_or_fail(!$this->getConfig('lockFile') || !file_exists($this->lockFile), __d(
+        Exceptionist::isTrue(!$this->getConfig('lockFile') || !file_exists($this->lockFile), __d(
             'link-scanner',
             'Lock file `{0}` already exists, maybe a scan is already in progress. If not, remove it manually',
             $this->lockFile
@@ -396,7 +397,7 @@ class LinkScanner implements Serializable
      */
     public function export(?string $filename = null): string
     {
-        is_true_or_fail(
+        Exceptionist::isTrue(
             !$this->ResultScan->isEmpty(),
             __d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'),
             RuntimeException::class
@@ -474,8 +475,8 @@ class LinkScanner implements Serializable
     {
         //Sets the full base url
         $fullBaseUrl = $this->getConfig('fullBaseUrl', Configure::read('App.fullBaseUrl') ?: 'http://localhost');
-        is_true_or_fail(
-            is_url($fullBaseUrl),
+        Exceptionist::isUrl(
+            $fullBaseUrl,
             __d('link-scanner', 'Invalid full base url `{0}`', $fullBaseUrl),
             InvalidArgumentException::class
         );
