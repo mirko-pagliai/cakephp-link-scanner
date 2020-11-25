@@ -16,6 +16,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure\Engine\PhpConfig;
+use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
 use LinkScanner\ResultScan;

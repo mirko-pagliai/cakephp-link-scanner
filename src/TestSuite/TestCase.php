@@ -118,7 +118,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getEventManager(?LinkScanner $LinkScanner = null): EventManager
     {
-        $eventManager = ($LinkScanner ?: $this->LinkScanner)->getEventManager();
+        $eventManager = ($LinkScanner ?? $this->LinkScanner)->getEventManager();
 
         if (!$eventManager->getEventList()) {
             $eventManager->setEventList(new EventList());

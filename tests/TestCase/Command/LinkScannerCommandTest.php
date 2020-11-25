@@ -150,7 +150,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputContains('Redirects will not be followed');
         $this->assertOutputContains('Maximum depth of the scan: 2');
         $this->assertOutputContains('Timeout in seconds for GET requests: 15');
-        $this->assertOutputContains(sprintf('Results have been exported to', $expectedFilename));
+        $this->assertOutputContains('Results have been exported to ' . $expectedFilename);
         $this->assertErrorEmpty();
 
         //With disabled cache
@@ -212,7 +212,7 @@ class LinkScannerCommandTest extends TestCase
             $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
             $this->assertFileExists($expectedExportFile);
             $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
-            $this->assertOutputContains(sprintf('Results have been exported to', $expectedExportFile));
+            $this->assertOutputContains('Results have been exported to ' . $expectedExportFile);
             $this->assertErrorEmpty();
         }
 

@@ -46,8 +46,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * Construct
      * @param \Cake\Console\Arguments $args The command arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @uses $args
-     * @uses $io
      */
     public function __construct(Arguments $args, ConsoleIo $io)
     {
@@ -83,8 +81,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param \Cake\Http\Client\Response $response A `Response` instance
      * @return bool
-     * @uses $args
-     * @uses $io
      */
     public function afterScanUrl(Event $event, Response $response): bool
     {
@@ -104,7 +100,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $url Url
      * @return bool
-     * @uses $io
      */
     public function beforeScanUrl(Event $event, string $url): bool
     {
@@ -118,7 +113,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $link Link
      * @return bool
-     * @uses $io
      */
     public function foundLinkToBeScanned(Event $event, string $link): bool
     {
@@ -130,13 +124,12 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
     /**
      * `LinkScanner.foundRedirect` event
      * @param \Cake\Event\Event $event An `Event` instance
-     * @param string $url Redirect
+     * @param string $redirect Redirect
      * @return bool
-     * @uses $io
      */
-    public function foundRedirect(Event $event, string $url): bool
+    public function foundRedirect(Event $event, string $redirect): bool
     {
-        $this->io->verbose(__d('link-scanner', 'Redirect found: {0}', $url));
+        $this->io->verbose(__d('link-scanner', 'Redirect found: {0}', $redirect));
 
         return true;
     }
@@ -146,7 +139,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
      * @return bool
-     * @uses $io
      */
     public function resultsExported(Event $event, string $filename): bool
     {
@@ -173,8 +165,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param int $endTime End time
      * @param \LinkScanner\ResultScan $ResultScan A `ResultScan` instance
      * @return bool
-     * @uses $args
-     * @uses $io
      */
     public function scanCompleted(Event $event, int $startTime, int $endTime, ResultScan $ResultScan): bool
     {
@@ -202,8 +192,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param int $startTime Start time
      * @param string $fullBaseUrl Full base url
      * @return bool
-     * @uses $args
-     * @uses $io
      */
     public function scanStarted(Event $event, int $startTime, string $fullBaseUrl): bool
     {

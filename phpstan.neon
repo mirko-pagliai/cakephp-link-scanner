@@ -1,0 +1,54 @@
+parameters:
+    level: 6
+
+    paths:
+        - config
+        - src
+        - tests
+
+    bootstrapFiles:
+        - tests/bootstrap.php
+
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    treatPhpDocTypesAsCertain: false
+
+    excludes_analyse:
+        -  tests/test_app/
+
+    ignoreErrors:
+        - '#^Ternary operator condition is always true\.$#'
+        - '#^Call to an undefined static method Tools\\Exceptionist#'
+        - '#^Call to an undefined method (Cake|Psr|Traversable)#'
+
+        -
+            message: '#^Access to protected property LinkScanner\\Utility\\LinkScanner::\$Client\.$#'
+            path: src/Command/LinkScannerCommand.php
+
+        -
+            message: '#does not accept Cake\\Collection\\CollectionInterface\.$#'
+            path: src/Utility/LinkScanner.php
+
+        -
+            message: '#^Access to an undefined property LinkScanner\\TestSuite\\TestCase::\$LinkScanner\.$#'
+            path: src/TestSuite/TestCase.php
+
+        -
+            message: '#^Access to protected property LinkScanner\\Utility\\LinkScanner#'
+            path: tests/TestCase
+
+        -
+            message: '#^(Access|Call) to an undefined (property|method)#'
+            path: tests/TestCase
+
+        -
+            message: '# has no return typehint specified\.$#'
+            path: tests/TestCase
+
+        -
+            message: '#on an unknown class PHPUnit_Framework_MockObject_MockObject\.$#'
+            path: tests/TestCase
+
+        -
+            message: '#Cake\\Event\\EventManagerInterface given\.$#'
+            path: tests/TestCase
