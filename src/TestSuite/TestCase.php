@@ -60,7 +60,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns a stub of `Client`, where the `get()` method always returns a
      *  response with error (404 status code)
-     * @return \Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject
+     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
      * @uses getResponseWithBody()
      */
     protected function getClientReturnsErrorResponse(): object
@@ -79,7 +79,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns a stub of `Client`, where the `get()` method returns a sample
      *  response which is read from `examples/responses` files
-     * @return \Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject
+     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
      * @uses getResponseWithBody()
      */
     protected function getClientReturnsSampleResponse(): object

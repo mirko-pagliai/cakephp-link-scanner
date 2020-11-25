@@ -32,7 +32,7 @@ trait IntegrationTestTrait
      * Returns a stub of `Client`, where the `get()` method uses the
      *  `IntegrationTestTrait::get()` method and allows you to get responses from
      *  the test app
-     * @return \Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject
+     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getClientReturnsFromTests(): object
     {
@@ -72,7 +72,7 @@ trait IntegrationTestTrait
      *  method uses the `IntegrationTestTrait::get()` method and allows you to
      *  get responses from the test app
      * @param string|array|null $fullBaseUrl Full base url
-     * @return \LinkScanner\Utility\LinkScanner|\PHPUnit_Framework_MockObject_MockObject
+     * @return \LinkScanner\Utility\LinkScanner|\PHPUnit\Framework\MockObject\MockObject
      * @uses getClientReturnsFromTests()
      */
     protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null): object
