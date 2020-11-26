@@ -1,0 +1,61 @@
+/**
+ * This file is part of php-doc-maker.
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright   Copyright (c) Mirko Pagliai
+ * @link        https://github.com/mirko-pagliai/php-doc-maker
+ * @license     https://opensource.org/licenses/mit-license.php MIT License
+ */
+
+.class-element .namespace {
+    background-color: #f8f9fa;
+    color: #343a40;
+    margin-bottom: .5rem;
+    padding: 1rem;
+}
+
+.constant-element p,
+.parameter-element p,
+.property-element p {
+    margin-bottom: 0;
+}
+
+.constant-element p:last-child,
+.parameter-element p:last-child,
+.property-element p:last-child {
+    margin-bottom: 1rem;
+}
+
+.constant-element pre,
+.property-element pre {
+    margin-bottom: 0;
+}
+
+.method-element .body {
+    margin-left: 1rem;
+}
+
+.method-element .body .description {
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+}
+
+.method-element .title {
+    background: #17a2b8;
+    color: #fff;
+    margin-bottom: 1rem;
+    padding: .5rem .5rem .25rem;
+}
+
+.parameter-element {
+    margin-bottom: 1rem;
+}
+
+.parameter-element pre,
+.tag-element pre {
+    margin-bottom: .3rem;
+}

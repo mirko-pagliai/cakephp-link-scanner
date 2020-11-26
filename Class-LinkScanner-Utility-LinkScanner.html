@@ -3,23 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>cakephp-link-scanner-                 Class
-     LinkScanner\Utility\LinkScanner
-</title>
+        <title>cakephp-link-scanner - Class LinkScanner\Utility\LinkScanner</title>
         <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/highlight/default.css">
+        <link rel="stylesheet" href="assets/highlight/styles/default.css">
+        <link rel="stylesheet" href="assets/default.css">
         <script src="assets/highlight/highlight.pack.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
-        <nav class="navbar sticky-top navbar-dark bg-dark">
-            <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
-        </nav>
+<nav class="navbar sticky-top navbar-dark bg-dark">
+    <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
+    <div class="d-inline">
+        <a class="btn btn-sm btn-warning" href="errors.html" title="Errors">
+            Errors <span class="badge badge-dark badge-pill">10</span>
+        </a>
+    </div>
+</nav>
 
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3 col-lg-4 p-3">
-                    <ul class="list-unstyled m-0">
+<ul class="list-unstyled m-0">
     <li class="text-truncate">
         <a href="Class-LinkScanner-Command-LinkScannerCommand.html" title="LinkScanner\Command\LinkScannerCommand">LinkScanner\Command\LinkScannerCommand</a>
     </li>
@@ -49,317 +53,189 @@
     </li>
 </ul>
                 </div>
-                <div class="col p-3">
-                        <h2>            Class
-     <em>LinkScanner</em></h2>
+                <div class="col-md-9 col-lg-8 p-3">
+                    <div class="class-element">
+    <h2>Class <em>LinkScanner</em></h2>
 
-    <p>A link scanner</p>
+    <div class="description"><p>A link scanner</p></div>
 
-    
-            <p>
-            Implements <code>Serializable</code>.
-        </p>
-    
-            <p>
-            Uses <code>Cake\Event\EventDispatcherTrait</code>, <code>Cake\Core\InstanceConfigTrait</code>.
-        </p>
-    
-    <div class="p-3 mb-2 bg-light text-dark">
-        <div><strong>Namespace:</strong> LinkScanner\Utility</div>
-        <div><strong>Location:</strong> /home/mirko/Libs/Plugins/cakephp-link-scanner/src/Utility/LinkScanner.php</div>
+
+    <div class="mb-2">Implements
+        <code>Serializable</code>
     </div>
 
-    
-            <h4>Properties summary</h4>
+    <div class="mb-2">Uses
         <ul>
-                            <li>
-                    <div>
-    <code>$Client</code> <span class="badge badge-light">protected</span>
+            <li><code>Cake\Event\EventDispatcherTrait</code></li>
+            <li><code>Cake\Core\InstanceConfigTrait</code></li>
+        </ul>
+    </div>
+
+    <div class="namespace">
+        <div><strong>Namespace:</strong> <pre class="d-inline">LinkScanner\Utility</pre></div>
+        <div><strong>Location:</strong> <pre class="d-inline">/home/mirko/Libs/Plugins/cakephp-link-scanner/src/Utility/LinkScanner.php</pre></div>
+    </div>
+
+
+    <h4>Properties summary</h4>
+    <ul>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$Client</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>Cake\Http\Client</pre>
+    <div class="description"><p>Instance of <code>Client</code></p></div>
 </div>
-<div><span class="badge badge-light">Cake\Http\Client</span></div>
-<div><p>Instance of <code>Client</code></p></div>
-                </li>
-                            <li>
-                    <div>
-    <code>$ResultScan</code> <span class="badge badge-light">protected</span>
+        </li>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$ResultScan</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>LinkScanner\ResultScan</pre>
+    <div class="description"><p>Instance of <code>ResultScan</code>. This contains the results of the scan</p></div>
 </div>
-<div><span class="badge badge-light">LinkScanner\ResultScan</span></div>
-<div><p>Instance of <code>ResultScan</code>. This contains the results of the scan</p></div>
-                </li>
-                            <li>
-                    <div>
-    <code>$_defaultConfig</code> <span class="badge badge-light">protected</span>
+        </li>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$_defaultConfig</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>array</pre>
+    <div class="description"><p>Default configuration</p></div>
 </div>
-<div><span class="badge badge-light">array</span></div>
-<div><p>Default configuration</p></div>
-                </li>
-                            <li>
-                    <div>
-    <code>$alreadyScanned</code> <span class="badge badge-light">protected</span>
+        </li>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$alreadyScanned</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>array</pre>
+    <div class="description"><p>Urls already scanned</p></div>
 </div>
-<div><span class="badge badge-light">array</span></div>
-<div><p>Urls already scanned</p></div>
-                </li>
-                            <li>
-                    <div>
-    <code>$currentDepth</code> <span class="badge badge-light">protected</span>
+        </li>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$currentDepth</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>int</pre>
+    <div class="description"><p>Current scan depth level</p></div>
 </div>
-<div><span class="badge badge-light">int</span></div>
-<div><p>Current scan depth level</p></div>
-                </li>
-                            <li>
-                    <div>
-    <code>$endTime</code> <span class="badge badge-light">protected</span>
+        </li>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$endTime</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>int</pre>
+    <div class="description"><p>End time</p></div>
 </div>
-<div><span class="badge badge-light">int</span></div>
-<div><p>End time</p></div>
-                </li>
-                            <li>
-                    <div>
-    <code>$hostname</code> <span class="badge badge-light">protected</span>
+        </li>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$hostname</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>string|array|null</pre>
+    <div class="description"><p>Host name</p></div>
 </div>
-<div><span class="badge badge-light">string|array|null</span></div>
-<div><p>Host name</p></div>
-                </li>
-                            <li>
-                    <div>
-    <code>$lockFile</code> <span class="badge badge-light">protected</span>
+        </li>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$lockFile</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>string</pre>
+    <div class="description"><p>Lock file path</p></div>
 </div>
-<div><span class="badge badge-light">string</span></div>
-<div><p>Lock file path</p></div>
-                </li>
-                            <li>
-                    <div>
-    <code>$startTime</code> <span class="badge badge-light">protected</span>
+        </li>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$startTime</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>int</pre>
+    <div class="description"><p>Start time</p></div>
 </div>
-<div><span class="badge badge-light">int</span></div>
-<div><p>Start time</p></div>
-                </li>
-                    </ul>
-    
-            <h4>Methods summary</h4>
-        <ul>
-                            <li>
-                    <div>
+        </li>
+    </ul>
+
+    <h4>Methods summary</h4>
+    <ul>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#__construct">__construct()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Construct.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+    <div class="description"><p>Construct.</p>
+<p>Creates <code>Client</code> and <code>ResultScan</code> instances and loads a possible
+configuration file.</p></div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#__get">__get()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Magic method for reading data from inaccessible properties</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+    <div class="description"><p>Magic method for reading data from inaccessible properties</p></div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#_canBeScanned">_canBeScanned()</a>
     </code> <span class="badge badge-light">protected</span>
-    <div><p>Internal method to check if an url can be scanned.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#_createLockFile">_createLockFile()</a>
-    </code> <span class="badge badge-light">protected</span>
-    <div><p>Internal method to create a lock file</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#_getAbsolutePath">_getAbsolutePath()</a>
-    </code> <span class="badge badge-light">protected</span>
-    <div><p>Internal method to get the absolute path for a filename</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#_getResponse">_getResponse()</a>
-    </code> <span class="badge badge-light">protected</span>
-    <div><p>Internal method to perform a single GET request and return a
-<code>Response</code> instance.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#_recursiveScan">_recursiveScan()</a>
-    </code> <span class="badge badge-light">protected</span>
-    <div><p>Internal method to perform a recursive scan.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#_singleScan">_singleScan()</a>
-    </code> <span class="badge badge-light">protected</span>
-    <div><p>Internal method to perform a single scan.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#serialize">serialize()</a>
-    </code> <span class="badge badge-light">public</span>
-    <div><p>Returns the string representation of the object</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#unserialize">unserialize()</a>
-    </code> <span class="badge badge-light">public</span>
-    <div><p>Called during unserialization of the object</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#export">export()</a>
-    </code> <span class="badge badge-light">public</span>
-    <div><p>Exports scan results.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#import">import()</a>
-    </code> <span class="badge badge-light">public</span>
-    <div><p>Imports scan results.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
-    <code>
-        <a href="#scan">scan()</a>
-    </code> <span class="badge badge-light">public</span>
-    <div><p>Performs a complete scan.</p></div>
-</div>                </li>
-                    </ul>
-    
-            <h4>Methods detail</h4>
-                    <div class="mb-4">
-                <a name="__construct"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>__construct()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">__construct(Cake\Http\Client|null $Client = null, LinkScanner\ResultScan|null $ResultScan = null)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Construct.
-Creates <code>Client</code> and <code>ResultScan</code> instances and loads a possible
-configuration file.</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">Cake\Http\Client|null $Client = null</code> <p>A Client instance</p>
-    </div>
-    <div class="mb-3">
-        <code class="language-php">LinkScanner\ResultScan|null $ResultScan = null</code> <p>A ResultScan instance</p>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="__get"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>__get()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">__get(string $name)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Magic method for reading data from inaccessible properties</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $name</code> <p>Property name</p>
-    </div>
-
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>mixed</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="_canBeScanned"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>_canBeScanned()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">_canBeScanned(string $url)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Internal method to check if an url can be scanned.
-Returns <code>false</code> if:</p>
+    <div class="description"><p>Internal method to check if an url can be scanned.</p>
+<p>Returns <code>false</code> if:</p>
 <ul>
 <li>the url has already been scanned;</li>
 <li>it's an external url and the external url scan has been disabled;</li>
 <li>the url matches the url patterns to be excluded.</li>
-</ul></small>
-    </blockquote>
+</ul></div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $url</code> <p>Url to check</p>
-    </div>
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#_createLockFile">_createLockFile()</a>
+    </code> <span class="badge badge-light">protected</span>
+    <div class="description"><p>Internal method to create a lock file</p></div>
 
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>bool</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="_createLockFile"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>_createLockFile()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">_createLockFile()</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Internal method to create a lock file</p></small>
-    </blockquote>
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#_getAbsolutePath">_getAbsolutePath()</a>
+    </code> <span class="badge badge-light">protected</span>
+    <div class="description"><p>Internal method to get the absolute path for a filename</p></div>
 
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>bool</code></div>
-    </div>
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#_getResponse">_getResponse()</a>
+    </code> <span class="badge badge-light">protected</span>
+    <div class="description"><p>Internal method to perform a single GET request and return a
+<code>Response</code> instance.</p>
+<p>The response will be cached, if the cache is enabled and if the repsonse
+is &quot;ok&quot; or a redirect.</p></div>
 
-    <h6>Throws</h6>
-    <div class="mb-3">
-        <div><code>RuntimeException</code></div>
-    </div>
-</div>            </div>
-                    <div class="mb-4">
-                <a name="_getAbsolutePath"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>_getAbsolutePath()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">_getAbsolutePath(string $filename)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Internal method to get the absolute path for a filename</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $filename</code> <p>Filename</p>
-    </div>
-
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>string</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="_getResponse"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>_getResponse()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">_getResponse(string $url)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Internal method to perform a single GET request and return a
-<code>Response</code> instance.
-The response will be cached, if the cache is enabled and if the repsonse
-is &quot;ok&quot; or a redirect.</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $url</code> <p>The url or path you want to request</p>
-    </div>
-
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>Cake\Http\Client\Response</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="_recursiveScan"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>_recursiveScan()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">_recursiveScan(string $url, string|null $referer = null)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Internal method to perform a recursive scan.
-It recursively repeats the scan for all urls found that have not
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#_recursiveScan">_recursiveScan()</a>
+    </code> <span class="badge badge-light">protected</span>
+    <div class="description"><p>Internal method to perform a recursive scan.</p>
+<p>It recursively repeats the scan for all urls found that have not
 already been scanned and until the maximum depth is reached.</p>
 <h3>Events</h3>
 <p>This method will trigger some events:</p>
@@ -370,23 +246,16 @@ to be scanned are found;</li>
 <li>
 <code>LinkScanner.responseNotOk</code>: will be triggered when a single url is
 scanned and the response is not ok.</li>
-</ul></small>
-    </blockquote>
+</ul></div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $url</code> <p>Url to scan</p>
-    </div>
-    <div class="mb-3">
-        <code class="language-php">string|null $referer = null</code> <p>Referer of this url</p>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="_singleScan"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>_singleScan()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">_singleScan(string $url, string|null $referer = null)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Internal method to perform a single scan.</p>
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#_singleScan">_singleScan()</a>
+    </code> <span class="badge badge-light">protected</span>
+    <div class="description"><p>Internal method to perform a single scan.</p>
 <h3>Events</h3>
 <p>This method will trigger some events:</p>
 <ul>
@@ -398,55 +267,35 @@ scanned;</li>
 scanned;</li>
 <li>
 <code>LinkScanner.foundRedirect</code>: will be triggered if a redirect is found.</li>
-</ul></small>
-    </blockquote>
+</ul></div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $url</code> <p>Url to scan</p>
-    </div>
-    <div class="mb-3">
-        <code class="language-php">string|null $referer = null</code> <p>Referer of this url</p>
-    </div>
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#serialize">serialize()</a>
+    </code> <span class="badge badge-light">public</span>
+    <div class="description"><p>Returns the string representation of the object</p></div>
 
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>Cake\Http\Client\Response|null</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="serialize"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>serialize()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">serialize()</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Returns the string representation of the object</p></small>
-    </blockquote>
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#unserialize">unserialize()</a>
+    </code> <span class="badge badge-light">public</span>
+    <div class="description"><p>Called during unserialization of the object</p></div>
 
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>string</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="unserialize"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>unserialize()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">unserialize(string $serialized)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Called during unserialization of the object</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $serialized</code> <p>The string representation of the object</p>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="export"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>export()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">export(string|null $filename = null)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Exports scan results.
-The filename will be generated automatically, or you can indicate a
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#export">export()</a>
+    </code> <span class="badge badge-light">public</span>
+    <div class="description"><p>Exports scan results.</p>
+<p>The filename will be generated automatically, or you can indicate a
 relative or absolute path.</p>
 <h3>Events</h3>
 <p>This method will trigger some events:</p>
@@ -454,68 +303,33 @@ relative or absolute path.</p>
 <li>
 <code>LinkScanner.resultsExported</code>: will be triggered when the results have
 been exported.</li>
-</ul></small>
-    </blockquote>
+</ul></div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string|null $filename = null</code> <p>Filename where to export</p>
-    </div>
-
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>string</code></div>
-    </div>
-
-    <h6>See</h6>
-    <div class="mb-3">
-        <div>serialize()</div>
-    </div>
-
-    <h6>Throws</h6>
-    <div class="mb-3">
-        <div><code>RuntimeException</code></div>
-    </div>
-</div>            </div>
-                    <div class="mb-4">
-                <a name="import"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>import()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">import(string $filename)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Imports scan results.
-You can indicate a relative or absolute path.</p>
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#import">import()</a>
+    </code> <span class="badge badge-light">public</span>
+    <div class="description"><p>Imports scan results.</p>
+<p>You can indicate a relative or absolute path.</p>
 <h3>Events</h3>
 <p>This method will trigger some events:</p>
 <ul>
 <li>
 <code>LinkScanner.resultsImported</code>: will be triggered when the results have
 been exported.</li>
-</ul></small>
-    </blockquote>
+</ul></div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $filename</code> <p>Filename from which to import</p>
-    </div>
-
-    <h6>Return</h6>
-    <div class="mb-3">
-        <div><code>$this</code></div>
-    </div>
-
-    <h6>Throws</h6>
-    <div class="mb-3">
-        <div><code>RuntimeException</code></div>
-    </div>
-</div>            </div>
-                    <div class="mb-4">
-                <a name="scan"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>scan()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">scan()</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Performs a complete scan.</p>
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
+    <code>
+        <a href="#scan">scan()</a>
+    </code> <span class="badge badge-light">public</span>
+    <div class="description"><p>Performs a complete scan.</p>
 <h3>Events</h3>
 <p>This method will trigger some events:</p>
 <ul>
@@ -526,25 +340,539 @@ been exported.</li>
 finished.</li>
 </ul>
 <p>Other events will be triggered by <code>_recursiveScan()</code> and <code>_singleScan()</code>
-methods.</p></small>
-    </blockquote>
+methods.</p></div>
 
+</div>
+        </li>
+    </ul>
+
+    <h4>Methods detail</h4>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="__construct"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>__construct()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">__construct(Cake\Http\Client|null $Client = null, LinkScanner\ResultScan|null $ResultScan = null)</code></pre>
+        <div class="description"><p>Construct.</p>
+<p>Creates <code>Client</code> and <code>ResultScan</code> instances and loads a possible
+configuration file.</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">Cake\Http\Client|null $Client = null</code></pre>
+            <div class="description"><p>A Client instance</p></div>
+        </div>
+        <div class="parameter-element">
+            <pre><code class="language-php">LinkScanner\ResultScan|null $ResultScan = null</code></pre>
+            <div class="description"><p>A ResultScan instance</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="__get"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>__get()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">__get(string $name)</code></pre>
+        <div class="description"><p>Magic method for reading data from inaccessible properties</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $name</code></pre>
+            <div class="description"><p>Property name</p></div>
+        </div>
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>$this</code></div>
+        <pre><code class="language-php">mixed</code></pre>
     </div>
+</div>
 
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="_canBeScanned"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>_canBeScanned()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">_canBeScanned(string $url)</code></pre>
+        <div class="description"><p>Internal method to check if an url can be scanned.</p>
+<p>Returns <code>false</code> if:</p>
+<ul>
+<li>the url has already been scanned;</li>
+<li>it's an external url and the external url scan has been disabled;</li>
+<li>the url matches the url patterns to be excluded.</li>
+</ul></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $url</code></pre>
+            <div class="description"><p>Url to check</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">bool</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="_createLockFile"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>_createLockFile()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">_createLockFile()</code></pre>
+        <div class="description"><p>Internal method to create a lock file</p></div>
+
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">bool</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
     <h6>Throws</h6>
     <div class="mb-3">
-        <div><code>InvalidArgumentException</code></div>
+        <pre><code class="language-php">RuntimeException</code></pre>
     </div>
-</div>            </div>
-            
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="_getAbsolutePath"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>_getAbsolutePath()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">_getAbsolutePath(string $filename)</code></pre>
+        <div class="description"><p>Internal method to get the absolute path for a filename</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $filename</code></pre>
+            <div class="description"><p>Filename</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">string</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Since</h6>
+    <div class="mb-3">
+        <div class="description"><p>1.0.7</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="_getResponse"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>_getResponse()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">_getResponse(string $url)</code></pre>
+        <div class="description"><p>Internal method to perform a single GET request and return a
+<code>Response</code> instance.</p>
+<p>The response will be cached, if the cache is enabled and if the repsonse
+is &quot;ok&quot; or a redirect.</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $url</code></pre>
+            <div class="description"><p>The url or path you want to request</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">Cake\Http\Client\Response</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="_recursiveScan"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>_recursiveScan()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">_recursiveScan(string $url, string|null $referer = null)</code></pre>
+        <div class="description"><p>Internal method to perform a recursive scan.</p>
+<p>It recursively repeats the scan for all urls found that have not
+already been scanned and until the maximum depth is reached.</p>
+<h3>Events</h3>
+<p>This method will trigger some events:</p>
+<ul>
+<li>
+<code>LinkScanner.foundLinkToBeScanned</code>: will be triggered when other links
+to be scanned are found;</li>
+<li>
+<code>LinkScanner.responseNotOk</code>: will be triggered when a single url is
+scanned and the response is not ok.</li>
+</ul></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $url</code></pre>
+            <div class="description"><p>Url to scan</p></div>
+        </div>
+        <div class="parameter-element">
+            <pre><code class="language-php">string|null $referer = null</code></pre>
+            <div class="description"><p>Referer of this url</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">void</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>_canBeScanned()</p></div>
+        <div class="description"><p>_singleScan()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="_singleScan"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>_singleScan()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">_singleScan(string $url, string|null $referer = null)</code></pre>
+        <div class="description"><p>Internal method to perform a single scan.</p>
+<h3>Events</h3>
+<p>This method will trigger some events:</p>
+<ul>
+<li>
+<code>LinkScanner.beforeScanUrl</code>: will be triggered before a single url is
+scanned;</li>
+<li>
+<code>LinkScanner.afterScanUrl</code>: will be triggered after a single url is
+scanned;</li>
+<li>
+<code>LinkScanner.foundRedirect</code>: will be triggered if a redirect is found.</li>
+</ul></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $url</code></pre>
+            <div class="description"><p>Url to scan</p></div>
+        </div>
+        <div class="parameter-element">
+            <pre><code class="language-php">string|null $referer = null</code></pre>
+            <div class="description"><p>Referer of this url</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">Cake\Http\Client\Response|null</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>_canBeScanned()</p></div>
+        <div class="description"><p>_getResponse()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="serialize"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>serialize()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">serialize()</code></pre>
+        <div class="description"><p>Returns the string representation of the object</p></div>
+
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">string</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="unserialize"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>unserialize()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">unserialize(string $serialized)</code></pre>
+        <div class="description"><p>Called during unserialization of the object</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $serialized</code></pre>
+            <div class="description"><p>The string representation of the object</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">void</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="export"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>export()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">export(string|null $filename = null)</code></pre>
+        <div class="description"><p>Exports scan results.</p>
+<p>The filename will be generated automatically, or you can indicate a
+relative or absolute path.</p>
+<h3>Events</h3>
+<p>This method will trigger some events:</p>
+<ul>
+<li>
+<code>LinkScanner.resultsExported</code>: will be triggered when the results have
+been exported.</li>
+</ul></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string|null $filename = null</code></pre>
+            <div class="description"><p>Filename where to export</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">string</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>See</h6>
+    <div class="mb-3">
+        <div class="description"><p>serialize()</p></div>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Throws</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">RuntimeException</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>_getAbsolutePath()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="import"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>import()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">import(string $filename)</code></pre>
+        <div class="description"><p>Imports scan results.</p>
+<p>You can indicate a relative or absolute path.</p>
+<h3>Events</h3>
+<p>This method will trigger some events:</p>
+<ul>
+<li>
+<code>LinkScanner.resultsImported</code>: will be triggered when the results have
+been exported.</li>
+</ul></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $filename</code></pre>
+            <div class="description"><p>Filename from which to import</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">$this</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Throws</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">RuntimeException</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>_getAbsolutePath()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="scan"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>scan()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">scan()</code></pre>
+        <div class="description"><p>Performs a complete scan.</p>
+<h3>Events</h3>
+<p>This method will trigger some events:</p>
+<ul>
+<li>
+<code>LinkScanner.scanStarted</code>: will be triggered before the scan starts;</li>
+<li>
+<code>LinkScanner.scanCompleted</code>: will be triggered after the scan is
+finished.</li>
+</ul>
+<p>Other events will be triggered by <code>_recursiveScan()</code> and <code>_singleScan()</code>
+methods.</p></div>
+
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">$this</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Throws</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">InvalidArgumentException</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>_createLockFile()</p></div>
+        <div class="description"><p>_recursiveScan()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+</div>
                 </div>
             </div>
         </div>
 
-        <div id="footer">
+<div id="footer">
     <p class="bg-light m-0 p-3 small text-center">
         This documentation was built automatically thanks to <a href="https://github.com/mirko-pagliai/php-doc-maker" target="_blank">php-doc-maker</a>
     </p>

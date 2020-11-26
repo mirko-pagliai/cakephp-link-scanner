@@ -3,23 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>cakephp-link-scanner-                 Class
-     LinkScanner\ResultScan
-</title>
+        <title>cakephp-link-scanner - Class LinkScanner\ResultScan</title>
         <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/highlight/default.css">
+        <link rel="stylesheet" href="assets/highlight/styles/default.css">
+        <link rel="stylesheet" href="assets/default.css">
         <script src="assets/highlight/highlight.pack.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
-        <nav class="navbar sticky-top navbar-dark bg-dark">
-            <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
-        </nav>
+<nav class="navbar sticky-top navbar-dark bg-dark">
+    <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
+    <div class="d-inline">
+        <a class="btn btn-sm btn-warning" href="errors.html" title="Errors">
+            Errors <span class="badge badge-dark badge-pill">10</span>
+        </a>
+    </div>
+</nav>
 
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3 col-lg-4 p-3">
-                    <ul class="list-unstyled m-0">
+<ul class="list-unstyled m-0">
     <li class="text-truncate">
         <a href="Class-LinkScanner-Command-LinkScannerCommand.html" title="LinkScanner\Command\LinkScannerCommand">LinkScanner\Command\LinkScannerCommand</a>
     </li>
@@ -49,137 +53,203 @@
     </li>
 </ul>
                 </div>
-                <div class="col p-3">
-                        <h2>            Class
-     <em>ResultScan</em></h2>
+                <div class="col-md-9 col-lg-8 p-3">
+                    <div class="class-element">
+    <h2>Class <em>ResultScan</em></h2>
 
-    <p>A `ResultScan` instance is a collection that contains a scan results</p>
+    <div class="description"><p>A <code>ResultScan</code> instance is a collection that contains a scan results</p></div>
 
-            <p>
-            Extends <code>Cake\Collection\Collection</code>.
-        </p>
-    
-    
-    
-    <div class="p-3 mb-2 bg-light text-dark">
-        <div><strong>Namespace:</strong> LinkScanner</div>
-        <div><strong>Location:</strong> /home/mirko/Libs/Plugins/cakephp-link-scanner/src/ResultScan.php</div>
+    <div class="mb-2">Extends <code>Cake\Collection\Collection</code>.</div>
+
+
+
+    <div class="namespace">
+        <div><strong>Namespace:</strong> <pre class="d-inline">LinkScanner</pre></div>
+        <div><strong>Location:</strong> <pre class="d-inline">/home/mirko/Libs/Plugins/cakephp-link-scanner/src/ResultScan.php</pre></div>
     </div>
 
-    
-    
-            <h4>Methods summary</h4>
-        <ul>
-                            <li>
-                    <div>
+
+
+    <h4>Methods summary</h4>
+    <ul>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#parseItems">parseItems()</a>
     </code> <span class="badge badge-light">protected</span>
-    <div><p>Internal method to parse items.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+    <div class="description"><p>Internal method to parse items.</p>
+<p>Ensures that each item is a <code>ScanEntity</code> and has all the properties it needs</p></div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#__construct">__construct()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Constructor</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+    <div class="description"><p>Constructor</p></div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#append">append()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Appends items.</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+    <div class="description"><p>Appends items.</p>
+<p>Returns a new <code>ResultScan</code> instance as the result of concatenating the
+list of elements in this collection with the passed list of elements</p></div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#prepend">prepend()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Prepends items.</p></div>
-</div>                </li>
-                    </ul>
-    
-            <h4>Methods detail</h4>
-                    <div class="mb-4">
-                <a name="parseItems"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>parseItems()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">parseItems(iterable $items)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Internal method to parse items.
-Ensures that each item is a <code>ScanEntity</code> and has all the properties it needs</p></small>
-    </blockquote>
+    <div class="description"><p>Prepends items.</p>
+<p>Returns a new <code>ResultScan</code> instance as the result of concatenating the
+passed list of elements with the list of elements in this collection</p></div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">iterable $items</code> <p>Items</p>
+</div>
+        </li>
+    </ul>
+
+    <h4>Methods detail</h4>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="parseItems"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>parseItems()</h5>
     </div>
+    <div class="body">
+        <pre><code class="language-php">parseItems(iterable $items)</code></pre>
+        <div class="description"><p>Internal method to parse items.</p>
+<p>Ensures that each item is a <code>ScanEntity</code> and has all the properties it needs</p></div>
 
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">iterable $items</code></pre>
+            <div class="description"><p>Items</p></div>
+        </div>
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>array</code></div>
-        <div><p>Parsed items</p></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="__construct"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>__construct()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">__construct(iterable $items = [])</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Constructor</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">iterable $items = []</code> <p>Items</p>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="append"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>append()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">append(iterable $items)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Appends items.
-Returns a new <code>ResultScan</code> instance as the result of concatenating the
-list of elements in this collection with the passed list of elements</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">iterable $items</code> <p>Items</p>
+        <pre><code class="language-php">array</code></pre>
+        <div class="description"><p>Parsed items</p></div>
     </div>
+</div>
 
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="__construct"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>__construct()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">__construct(iterable $items = [])</code></pre>
+        <div class="description"><p>Constructor</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">iterable $items = []</code></pre>
+            <div class="description"><p>Items</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>parseItems()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="append"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>append()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">append(iterable $items)</code></pre>
+        <div class="description"><p>Appends items.</p>
+<p>Returns a new <code>ResultScan</code> instance as the result of concatenating the
+list of elements in this collection with the passed list of elements</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">iterable $items</code></pre>
+            <div class="description"><p>Items</p></div>
+        </div>
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>Cake\Collection\CollectionInterface</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="prepend"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>prepend()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">prepend(iterable $items)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Prepends items.
-Returns a new <code>ResultScan</code> instance as the result of concatenating the
-passed list of elements with the list of elements in this collection</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">iterable $items</code> <p>Items</p>
+        <pre><code class="language-php">Cake\Collection\CollectionInterface</code></pre>
     </div>
+</div>
 
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>parseItems()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="prepend"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>prepend()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">prepend(iterable $items)</code></pre>
+        <div class="description"><p>Prepends items.</p>
+<p>Returns a new <code>ResultScan</code> instance as the result of concatenating the
+passed list of elements with the list of elements in this collection</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">iterable $items</code></pre>
+            <div class="description"><p>Items</p></div>
+        </div>
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>Cake\Collection\CollectionInterface</code></div>
-    </div></div>            </div>
-            
+        <pre><code class="language-php">Cake\Collection\CollectionInterface</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>parseItems()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+</div>
                 </div>
             </div>
         </div>
 
-        <div id="footer">
+<div id="footer">
     <p class="bg-light m-0 p-3 small text-center">
         This documentation was built automatically thanks to <a href="https://github.com/mirko-pagliai/php-doc-maker" target="_blank">php-doc-maker</a>
     </p>

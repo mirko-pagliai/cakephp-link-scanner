@@ -3,23 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>cakephp-link-scanner-                 Abstract class
-     LinkScanner\TestSuite\TestCase
-</title>
+        <title>cakephp-link-scanner - Abstract LinkScanner\TestSuite\TestCase</title>
         <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/highlight/default.css">
+        <link rel="stylesheet" href="assets/highlight/styles/default.css">
+        <link rel="stylesheet" href="assets/default.css">
         <script src="assets/highlight/highlight.pack.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
-        <nav class="navbar sticky-top navbar-dark bg-dark">
-            <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
-        </nav>
+<nav class="navbar sticky-top navbar-dark bg-dark">
+    <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
+    <div class="d-inline">
+        <a class="btn btn-sm btn-warning" href="errors.html" title="Errors">
+            Errors <span class="badge badge-dark badge-pill">10</span>
+        </a>
+    </div>
+</nav>
 
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3 col-lg-4 p-3">
-                    <ul class="list-unstyled m-0">
+<ul class="list-unstyled m-0">
     <li class="text-truncate">
         <a href="Class-LinkScanner-Command-LinkScannerCommand.html" title="LinkScanner\Command\LinkScannerCommand">LinkScanner\Command\LinkScannerCommand</a>
     </li>
@@ -49,176 +53,267 @@
     </li>
 </ul>
                 </div>
-                <div class="col p-3">
-                        <h2>            Abstract class
-     <em>TestCase</em></h2>
+                <div class="col-md-9 col-lg-8 p-3">
+                    <div class="class-element">
+    <h2>Abstract <em>TestCase</em></h2>
 
-    <p>TestCase class</p>
+    <div class="description"><p>TestCase class</p></div>
 
-            <p>
-            Extends <code>MeTools\TestSuite\TestCase</code>.
-        </p>
-    
-    
-    
-    <div class="p-3 mb-2 bg-light text-dark">
-        <div><strong>Namespace:</strong> LinkScanner\TestSuite</div>
-        <div><strong>Location:</strong> /home/mirko/Libs/Plugins/cakephp-link-scanner/src/TestSuite/TestCase.php</div>
+    <div class="mb-2">Extends <code>MeTools\TestSuite\TestCase</code>.</div>
+
+
+
+    <div class="namespace">
+        <div><strong>Namespace:</strong> <pre class="d-inline">LinkScanner\TestSuite</pre></div>
+        <div><strong>Location:</strong> <pre class="d-inline">/home/mirko/Libs/Plugins/cakephp-link-scanner/src/TestSuite/TestCase.php</pre></div>
     </div>
 
-    
-    
-            <h4>Methods summary</h4>
-        <ul>
-                            <li>
-                    <div>
+
+
+    <h4>Methods summary</h4>
+    <ul>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#tearDown">tearDown()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Called after every test method</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+    <div class="description"><p>Called after every test method</p></div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#assertEventNotFired">assertEventNotFired()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Asserts that a global event was not fired. You must track events in your
+    <div class="description"><p>Asserts that a global event was not fired. You must track events in your
 event manager for this assertion to work</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#getClientReturnsErrorResponse">getClientReturnsErrorResponse()</a>
     </code> <span class="badge badge-light">protected</span>
-    <div><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method always returns a
+    <div class="description"><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method always returns a
 response with error (404 status code)</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#getClientReturnsSampleResponse">getClientReturnsSampleResponse()</a>
     </code> <span class="badge badge-light">protected</span>
-    <div><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method returns a sample
+    <div class="description"><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method returns a sample
 response which is read from <code>examples/responses</code> files</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#getEventManager">getEventManager()</a>
     </code> <span class="badge badge-light">protected</span>
-    <div><p>Sets the event list and returns the <code>EventManager</code> instance</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+    <div class="description"><p>Sets the event list and returns the <code>EventManager</code> instance</p></div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#getResponseWithBody">getResponseWithBody()</a>
     </code> <span class="badge badge-light">protected</span>
-    <div><p>Gets a <code>Response</code> instance, writes a new body string and returns.</p></div>
-</div>                </li>
-                    </ul>
-    
-            <h4>Methods detail</h4>
-                    <div class="mb-4">
-                <a name="tearDown"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>tearDown()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">tearDown()</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Called after every test method</p></small>
-    </blockquote></div>            </div>
-                    <div class="mb-4">
-                <a name="assertEventNotFired"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>assertEventNotFired()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">assertEventNotFired(string $name, Cake\Event\EventManager|null $eventManager = null)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Asserts that a global event was not fired. You must track events in your
-event manager for this assertion to work</p></small>
-    </blockquote>
+    <div class="description"><p>Gets a <code>Response</code> instance, writes a new body string and returns.</p>
+<p>If <code>$response</code> is null, a new <code>Response</code> instance will be created.</p></div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $name</code> <p>Event name</p>
+</div>
+        </li>
+    </ul>
+
+    <h4>Methods detail</h4>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="tearDown"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>tearDown()</h5>
     </div>
-    <div class="mb-3">
-        <code class="language-php">Cake\Event\EventManager|null $eventManager = null</code> <p>Event manager to check,
-defaults to global event manager</p>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="getClientReturnsErrorResponse"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>getClientReturnsErrorResponse()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">getClientReturnsErrorResponse()</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method always returns a
-response with error (404 status code)</p></small>
-    </blockquote>
+    <div class="body">
+        <pre><code class="language-php">tearDown()</code></pre>
+        <div class="description"><p>Called after every test method</p></div>
 
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="getClientReturnsSampleResponse"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>getClientReturnsSampleResponse()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">getClientReturnsSampleResponse()</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method returns a sample
-response which is read from <code>examples/responses</code> files</p></small>
-    </blockquote>
+        <pre><code class="language-php">void</code></pre>
+    </div>
+</div>
 
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="assertEventNotFired"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>assertEventNotFired()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">assertEventNotFired(string $name, Cake\Event\EventManager|null $eventManager = null)</code></pre>
+        <div class="description"><p>Asserts that a global event was not fired. You must track events in your
+event manager for this assertion to work</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $name</code></pre>
+            <div class="description"><p>Event name</p></div>
+        </div>
+        <div class="parameter-element">
+            <pre><code class="language-php">Cake\Event\EventManager|null $eventManager = null</code></pre>
+            <div class="description"><p>Event manager to check,
+defaults to global event manager</p></div>
+        </div>
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="getEventManager"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>getEventManager()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">getEventManager(LinkScanner\Utility\LinkScanner|null $LinkScanner = null)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Sets the event list and returns the <code>EventManager</code> instance</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">LinkScanner\Utility\LinkScanner|null $LinkScanner = null</code> <p><code>LinkScanner</code> instance or <code>null</code></p>
+        <pre><code class="language-php">void</code></pre>
     </div>
+</div>
 
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="getClientReturnsErrorResponse"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>getClientReturnsErrorResponse()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">getClientReturnsErrorResponse()</code></pre>
+        <div class="description"><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method always returns a
+response with error (404 status code)</p></div>
+
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>Cake\Event\EventManager</code></div>
-    </div></div>            </div>
-                    <div class="mb-4">
-                <a name="getResponseWithBody"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>getResponseWithBody()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">getResponseWithBody(string $body, Cake\Http\Client\Response|null $response = null)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Gets a <code>Response</code> instance, writes a new body string and returns.
-If <code>$response</code> is null, a new <code>Response</code> instance will be created.</p></small>
-    </blockquote>
-
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $body</code> <p>Body of the response</p>
+        <pre><code class="language-php">Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject</code></pre>
     </div>
-    <div class="mb-3">
-        <code class="language-php">Cake\Http\Client\Response|null $response = null</code> <p>A <code>Response</code> instance or
-<code>null</code> to create a new instance</p>
-    </div>
+</div>
 
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>getResponseWithBody()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="getClientReturnsSampleResponse"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>getClientReturnsSampleResponse()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">getClientReturnsSampleResponse()</code></pre>
+        <div class="description"><p>Returns a stub of <code>Client</code>, where the <code>get()</code> method returns a sample
+response which is read from <code>examples/responses</code> files</p></div>
+
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>Cake\Http\Client\Response</code></div>
-    </div></div>            </div>
-            
+        <pre><code class="language-php">Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject</code></pre>
+    </div>
+</div>
+
+<div class="tag-element">
+    <h6>Uses</h6>
+    <div class="mb-3">
+        <div class="description"><p>getResponseWithBody()</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="getEventManager"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>getEventManager()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">getEventManager(LinkScanner\Utility\LinkScanner|null $LinkScanner = null)</code></pre>
+        <div class="description"><p>Sets the event list and returns the <code>EventManager</code> instance</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">LinkScanner\Utility\LinkScanner|null $LinkScanner = null</code></pre>
+            <div class="description"><p><code>LinkScanner</code> instance or <code>null</code></p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">Cake\Event\EventManager</code></pre>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="getResponseWithBody"></a>
+    <div class="title">
+        <div>protected</div>
+        <h5>getResponseWithBody()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">getResponseWithBody(string $body, Cake\Http\Client\Response|null $response = null)</code></pre>
+        <div class="description"><p>Gets a <code>Response</code> instance, writes a new body string and returns.</p>
+<p>If <code>$response</code> is null, a new <code>Response</code> instance will be created.</p></div>
+
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $body</code></pre>
+            <div class="description"><p>Body of the response</p></div>
+        </div>
+        <div class="parameter-element">
+            <pre><code class="language-php">Cake\Http\Client\Response|null $response = null</code></pre>
+            <div class="description"><p>A <code>Response</code> instance or
+<code>null</code> to create a new instance</p></div>
+        </div>
+
+<div class="tag-element">
+    <h6>Return</h6>
+    <div class="mb-3">
+        <pre><code class="language-php">Cake\Http\Client\Response</code></pre>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+</div>
                 </div>
             </div>
         </div>
 
-        <div id="footer">
+<div id="footer">
     <p class="bg-light m-0 p-3 small text-center">
         This documentation was built automatically thanks to <a href="https://github.com/mirko-pagliai/php-doc-maker" target="_blank">php-doc-maker</a>
     </p>

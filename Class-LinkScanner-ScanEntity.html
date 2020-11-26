@@ -3,23 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>cakephp-link-scanner-                 Class
-     LinkScanner\ScanEntity
-</title>
+        <title>cakephp-link-scanner - Class LinkScanner\ScanEntity</title>
         <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/highlight/default.css">
+        <link rel="stylesheet" href="assets/highlight/styles/default.css">
+        <link rel="stylesheet" href="assets/default.css">
         <script src="assets/highlight/highlight.pack.js"></script>
         <script>hljs.initHighlightingOnLoad();</script>
     </head>
     <body>
-        <nav class="navbar sticky-top navbar-dark bg-dark">
-            <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
-        </nav>
+<nav class="navbar sticky-top navbar-dark bg-dark">
+    <a class="navbar-brand mb-0 h1" href="index.html">cakephp-link-scanner</a>
+    <div class="d-inline">
+        <a class="btn btn-sm btn-warning" href="errors.html" title="Errors">
+            Errors <span class="badge badge-dark badge-pill">10</span>
+        </a>
+    </div>
+</nav>
 
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3 col-lg-4 p-3">
-                    <ul class="list-unstyled m-0">
+<ul class="list-unstyled m-0">
     <li class="text-truncate">
         <a href="Class-LinkScanner-Command-LinkScannerCommand.html" title="LinkScanner\Command\LinkScannerCommand">LinkScanner\Command\LinkScannerCommand</a>
     </li>
@@ -49,106 +53,131 @@
     </li>
 </ul>
                 </div>
-                <div class="col p-3">
-                        <h2>            Class
-     <em>ScanEntity</em></h2>
+                <div class="col-md-9 col-lg-8 p-3">
+                    <div class="class-element">
+    <h2>Class <em>ScanEntity</em></h2>
 
-    <p>A `ScanEntity` represents a single result of a scan</p>
+    <div class="description"><p>A <code>ScanEntity</code> represents a single result of a scan</p></div>
 
-            <p>
-            Extends <code>Tools\Entity</code>.
-        </p>
-    
-    
-    
-    <div class="p-3 mb-2 bg-light text-dark">
-        <div><strong>Namespace:</strong> LinkScanner</div>
-        <div><strong>Location:</strong> /home/mirko/Libs/Plugins/cakephp-link-scanner/src/ScanEntity.php</div>
+    <div class="mb-2">Extends <code>Tools\Entity</code>.</div>
+
+
+
+    <div class="namespace">
+        <div><strong>Namespace:</strong> <pre class="d-inline">LinkScanner</pre></div>
+        <div><strong>Location:</strong> <pre class="d-inline">/home/mirko/Libs/Plugins/cakephp-link-scanner/src/ScanEntity.php</pre></div>
     </div>
 
-    
-            <h4>Properties summary</h4>
-        <ul>
-                            <li>
-                    <div>
-    <code>$Response</code> <span class="badge badge-light">protected</span>
+
+    <h4>Properties summary</h4>
+    <ul>
+        <li>
+<div class="property-element">
+    <div>
+        <code>$Response</code> <span class="badge badge-light">protected</span>
+    </div>
+    <pre>Cake\Http\Client\Response</pre>
+    <div class="description"><p>A <code>Response</code> object</p></div>
 </div>
-<div><span class="badge badge-light">Cake\Http\Client\Response</span></div>
-<div><p>A <code>Response</code> object</p></div>
-                </li>
-                    </ul>
-    
-            <h4>Methods summary</h4>
-        <ul>
-                            <li>
-                    <div>
+        </li>
+    </ul>
+
+    <h4>Methods summary</h4>
+    <ul>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#__construct">__construct()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Initializes the internal properties</p></div>
-</div>                </li>
-                            <li>
-                    <div>
+    <div class="description"><p>Initializes the internal properties</p></div>
+
+</div>
+        </li>
+        <li>
+<div class="method-summary-element">
     <code>
         <a href="#__call">__call()</a>
     </code> <span class="badge badge-light">public</span>
-    <div><p>Magic method, is triggered when invoking inaccessible methods.</p></div>
-</div>                </li>
-                    </ul>
-    
-            <h4>Methods detail</h4>
-                    <div class="mb-4">
-                <a name="__construct"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>__construct()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">__construct(array $properties = [])</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Initializes the internal properties</p></small>
-    </blockquote>
+    <div class="description"><p>Magic method, is triggered when invoking inaccessible methods.</p>
+<p>It calls the same method name from the original <code>Response</code> class</p></div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">array $properties = []</code> <p>Properties to set</p>
+</div>
+        </li>
+    </ul>
+
+    <h4>Methods detail</h4>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="__construct"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>__construct()</h5>
     </div>
+    <div class="body">
+        <pre><code class="language-php">__construct(array $properties = [])</code></pre>
+        <div class="description"><p>Initializes the internal properties</p></div>
 
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">array $properties = []</code></pre>
+            <div class="description"><p>Properties to set</p></div>
+        </div>
+
+<div class="tag-element">
     <h6>Throws</h6>
     <div class="mb-3">
-        <div><code>Tools\Exception\KeyNotExistsException</code></div>
+        <pre><code class="language-php">Tools\Exception\KeyNotExistsException</code></pre>
     </div>
-</div>            </div>
-                    <div class="mb-4">
-                <a name="__call"></a>
-<div class="pb-1 pt-2 px-2 mb-3 bg-info text-white"><h5>__call()</h5></div>
-<div class="ml-3">
-    <pre><code class="language-php">__call(string $name, mixed $arguments)</code></pre>
-    <blockquote class="blockquote">
-        <small class="font-weight-light"><p>Magic method, is triggered when invoking inaccessible methods.
-It calls the same method name from the original <code>Response</code> class</p></small>
-    </blockquote>
+</div>
 
-    <h6>Parameters</h6>
-    <div class="mb-3">
-        <code class="language-php">string $name</code> <p>Method name</p>
     </div>
-    <div class="mb-3">
-        <code class="language-php">mixed $arguments</code> <p>Method arguments</p>
+</div>
     </div>
+    <div class="mb-4">
+<div class="method-element">
+    <a name="__call"></a>
+    <div class="title">
+        <div>public</div>
+        <h5>__call()</h5>
+    </div>
+    <div class="body">
+        <pre><code class="language-php">__call(string $name, mixed $arguments)</code></pre>
+        <div class="description"><p>Magic method, is triggered when invoking inaccessible methods.</p>
+<p>It calls the same method name from the original <code>Response</code> class</p></div>
 
+        <h6>Parameters</h6>
+        <div class="parameter-element">
+            <pre><code class="language-php">string $name</code></pre>
+            <div class="description"><p>Method name</p></div>
+        </div>
+        <div class="parameter-element">
+            <pre><code class="language-php">mixed $arguments</code></pre>
+            <div class="description"><p>Method arguments</p></div>
+        </div>
+
+<div class="tag-element">
     <h6>Return</h6>
     <div class="mb-3">
-        <div><code>mixed</code></div>
+        <pre><code class="language-php">mixed</code></pre>
     </div>
+</div>
 
+<div class="tag-element">
     <h6>See</h6>
     <div class="mb-3">
-        <div>Cake\Http\Client\Response</div>
-    </div></div>            </div>
-            
+        <div class="description"><p>Cake\Http\Client\Response</p></div>
+    </div>
+</div>
+
+    </div>
+</div>
+    </div>
+</div>
                 </div>
             </div>
         </div>
 
-        <div id="footer">
+<div id="footer">
     <p class="bg-light m-0 p-3 small text-center">
         This documentation was built automatically thanks to <a href="https://github.com/mirko-pagliai/php-doc-maker" target="_blank">php-doc-maker</a>
     </p>
