@@ -28,9 +28,9 @@ use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
 use RuntimeException;
 use Serializable;
-use Symfony\Component\Filesystem\Filesystem;
 use Tools\BodyParser;
 use Tools\Exceptionist;
+use Tools\Filesystem;
 use Zend\Diactoros\Stream;
 
 /**
@@ -178,7 +178,7 @@ class LinkScanner implements Serializable
             $this->lockFile
         ), RuntimeException::class);
 
-        return $this->getConfig('lockFile') ? create_file($this->lockFile) !== false : true;
+        return $this->getConfig('lockFile') ? (new Filesystem())->createFile($this->lockFile) : true;
     }
 
     /**
@@ -189,9 +189,7 @@ class LinkScanner implements Serializable
      */
     protected function _getAbsolutePath(string $filename): string
     {
-        $isAbsolute = (new Filesystem())->isAbsolutePath($filename);
-
-        return $isAbsolute ? $filename : add_slash_term($this->getConfig('target')) . $filename;
+        return (new Filesystem())->makePathAbsolute($filename, $this->getConfig('target'));
     }
 
     /**
@@ -410,7 +408,7 @@ class LinkScanner implements Serializable
         }
 
         $filename = $this->_getAbsolutePath($filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime));
-        create_file($filename, serialize($this));
+        (new Filesystem())->createFile($filename, serialize($this));
         $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
 
         return $filename;
@@ -436,7 +434,7 @@ class LinkScanner implements Serializable
         try {
             $instance = unserialize(file_get_contents($filename));
         } catch (Exception $e) {
-            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', null, $e->getMessage());
+            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', '', $e->getMessage());
             throw new RuntimeException(__d(
                 'link-scanner',
                 'Failed to import results from file `{0}` with message `{1}`',
