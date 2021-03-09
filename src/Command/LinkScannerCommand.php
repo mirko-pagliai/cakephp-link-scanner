@@ -36,22 +36,20 @@ class LinkScannerCommand extends Command
     /**
      * Hook method invoked by CakePHP when a command is about to be executed
      * @return void
-     * @uses $LinkScanner
      */
     public function initialize(): void
     {
-        $this->LinkScanner = $this->LinkScanner ?: new LinkScanner();
+        $this->LinkScanner = $this->LinkScanner ?? new LinkScanner();
     }
 
     /**
      * Performs a complete scan
      * @param \Cake\Console\Arguments $args The command arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null The exit code or null for success
+     * @return void
      * @see LinkScannerCommandEventListener::implementedEvents()
-     * @uses $LinkScanner
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, ConsoleIo $io): void
     {
         try {
             //Will trigger events provided by `LinkScannerCommandEventListener`
@@ -91,15 +89,12 @@ class LinkScannerCommand extends Command
             $io->error($e->getMessage());
             $this->abort();
         }
-
-        return null;
     }
 
     /**
      * Hook method for defining this command's option parser
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
      * @return \Cake\Console\ConsoleOptionParser The built parser
-     * @uses $LinkScanner
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
