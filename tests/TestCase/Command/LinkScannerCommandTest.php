@@ -140,7 +140,7 @@ class LinkScannerCommandTest extends TestCase
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals(15, $this->LinkScanner->Client->getConfig('timeout'));
-        $this->assertFileNotExists($this->LinkScanner->lockFile);
+        $this->assertFileDoesNotExist($this->LinkScanner->lockFile);
         $this->assertFileExists($expectedFilename);
         $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->fullBaseUrl, '/')));
@@ -253,15 +253,15 @@ class LinkScannerCommandTest extends TestCase
             next($messages);
         }
 
-        $this->assertRegexp('/^\-+$/', current($messages));
-        $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
-        $this->assertRegexp('/^Elapsed time: \d+ seconds?$/', next($messages));
-        $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
-        $this->assertRegexp('/^\-+$/', next($messages));
+        $this->assertMatchesRegularExpression('/^\-+$/', current($messages));
+        $this->assertMatchesRegularExpression('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
+        $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages));
+        $this->assertMatchesRegularExpression('/^Total scanned links: \d+$/', next($messages));
+        $this->assertMatchesRegularExpression('/^\-+$/', next($messages));
 
         //Removes already checked lines and checks intermediate lines
         foreach (array_slice($messages, 9, -5) as $message) {
-            $this->assertRegExp('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
+            $this->assertMatchesRegularExpression('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
         }
     }
 

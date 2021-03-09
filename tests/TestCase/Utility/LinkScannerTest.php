@@ -293,7 +293,7 @@ class LinkScannerTest extends TestCase
         $hostname = get_hostname_from_url($this->fullBaseUrl);
 
         foreach ($LinkScanner->ResultScan as $item) {
-            $this->assertRegexp(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->get('url'));
+            $this->assertMatchesRegularExpression(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->get('url'));
             $this->assertContains($item->get('code'), [200, 500]);
             $this->assertStringStartsWith('text/html', $item->get('type'));
         }
