@@ -77,6 +77,43 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Returns a stub of `Client`, where the `get()` method returns a redirect
+     *  on the third request
+     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
+     * @since 1.1.5
+     */
+    protected function getClientReturnsRedirect(): object
+    {
+        $Client = $this->getMockBuilder(Client::class)
+            ->setMethods(['get'])
+            ->getMock();
+
+        $Client->method('get')->will($this->returnCallback(function (string $url): Response {
+            switch ($url) {
+                case 'http://localhost/aPageWithRedirect':
+                    $response = new Response(['Location:http://localhost/redirectTarget']);
+                    $response = $response->withStatus(307);
+
+                    break;
+                case 'http://localhost/redirectTarget':
+                    $response = new Response();
+                    $response = $response->withStatus(200);
+
+                    break;
+                default:
+                    $response = new Response([], '<a href=\'http://localhost/aPageWithRedirect\'>aPageWithRedirect</a>');
+                    $response = $response->withStatus(200);
+
+                    break;
+            }
+
+            return $response;
+        }));
+
+        return $Client;
+    }
+
+    /**
      * Returns a stub of `Client`, where the `get()` method returns a sample
      *  response which is read from `examples/responses` files
      * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject

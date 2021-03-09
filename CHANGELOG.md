@@ -1,6 +1,7 @@
 # 1.x branch
 ## 1.1 branch
 ### 1.1.5
+* added `TestCase::getClientReturnsRedirect()` method;
 * ready for `phpunit` 9.
 
 ### 1.1.4
