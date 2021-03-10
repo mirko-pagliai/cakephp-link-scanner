@@ -29,7 +29,7 @@ class ScanEntity extends Entity
 
     /**
      * Initializes the internal properties
-     * @param array $properties Properties to set
+     * @param array<string, int|string|bool|null> $properties Properties to set
      * @throws \Tools\Exception\KeyNotExistsException
      */
     public function __construct(array $properties = [])
@@ -41,7 +41,7 @@ class ScanEntity extends Entity
     /**
      * Magic method, is triggered when invoking inaccessible methods.
      *
-     * It calls the same method name from the original `Response` class
+     * It calls the same method name from the original `Response` class.
      * @param string $name Method name
      * @param mixed $arguments Method arguments
      * @return mixed

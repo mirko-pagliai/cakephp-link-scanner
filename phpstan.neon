@@ -1,0 +1,42 @@
+parameters:
+    level: 8
+
+    paths:
+        - config
+        - src
+        - tests
+
+    bootstrapFiles:
+        - tests/bootstrap.php
+
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    treatPhpDocTypesAsCertain: false
+
+    excludes_analyse:
+        -  tests/test_app/
+
+    ignoreErrors:
+        - '#^Call to an undefined (static )?method (Cake|Psr|Traversable|Tools\\Exceptionist)#'
+        - '#^Parameter \#1 \$function of function call_user_func_array expects callable\(\): mixed#'
+        - '#^Cannot call method \w+\(\) on Cake\\Event\\EventList\|null\.$#'
+
+        -
+            message: '#^Access to protected property LinkScanner\\Utility\\LinkScanner::\$Client\.$#'
+            path: src/Command/LinkScannerCommand.php
+
+        -
+            message: '#does not accept Cake\\Collection\\CollectionInterface\.$#'
+            path: src/Utility/LinkScanner.php
+
+        -
+            message: '#^(Access|Call) to (an undefined|protected) (property|method)#'
+            path: tests/TestCase
+
+        -
+            message: '# has no return typehint specified\.$#'
+            path: tests/TestCase
+
+        -
+            message: '#(Cake\\Event\\EventManagerInterface|PHPUnit\\Framework\\MockObject\\MockObject) given\.$#'
+            path: tests/TestCase

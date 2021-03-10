@@ -1,5 +1,16 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.5
+* added `TestCase::getClientReturnsRedirect()` method;
+* extensive improvement of function descriptions and tags. The level of `phpstan`
+    has been raised;
+* little fixes for PHP 7.4;
+* ready for `phpunit` 9.
+
+### 1.1.4
+* updated for `php-tools` 1.4.5;
+* added `phpstan`, so fixed some code.
+
 ### 1.1.3
 * updated for `me-tools` 2.19.7 and `php-tools` 1.4.1.
 

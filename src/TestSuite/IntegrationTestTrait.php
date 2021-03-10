@@ -31,7 +31,7 @@ trait IntegrationTestTrait
      * Returns a stub of `Client`, where the `get()` method uses the
      *  `IntegrationTestTrait::get()` method and allows you to get responses from
      *  the test app
-     * @return \Cake\Http\Client|\PHPUnit_Framework_MockObject_MockObject
+     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getClientReturnsFromTests()
     {
@@ -41,12 +41,11 @@ trait IntegrationTestTrait
 
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
-        $Client->method('get')->will($this->returnCallback(function ($url) {
+        $Client->method('get')->will($this->returnCallback(function ($url): Response {
             if (is_string($url) && preg_match('/^http:\/\/localhost\/?(pages\/(.+))?$/', $url, $matches)) {
                 $url = ['controller' => 'Pages', 'action' => 'display', empty($matches[2]) ? 'home' : $matches[2]];
             }
-
-            call_user_func([$this, 'get'], $url);
+            $this->get($url);
 
             if (!$this->_response instanceof Response) {
                 $response = new Response([], (string)$this->_response->getBody());
@@ -54,10 +53,7 @@ trait IntegrationTestTrait
                     $response = $response->withHeader($name, $value);
                 }
 
-                $this->_response = $response->withStatus(
-                    $this->_response->getStatusCode(),
-                    $this->_response->getReasonPhrase()
-                );
+                $this->_response = $response->withStatus($this->_response->getStatusCode(), $this->_response->getReasonPhrase());
             }
 
             return $this->_response;
@@ -71,7 +67,7 @@ trait IntegrationTestTrait
      *  method uses the `IntegrationTestTrait::get()` method and allows you to
      *  get responses from the test app
      * @param string|array|null $fullBaseUrl Full base url
-     * @return \LinkScanner\Utility\LinkScanner|\PHPUnit_Framework_MockObject_MockObject
+     * @return \LinkScanner\Utility\LinkScanner|\PHPUnit\Framework\MockObject\MockObject
      * @uses getClientReturnsFromTests()
      */
     protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null)

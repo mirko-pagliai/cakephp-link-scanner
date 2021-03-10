@@ -45,8 +45,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * Construct
      * @param \Cake\Console\Arguments $args The command arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @uses $args
-     * @uses $io
      */
     public function __construct(Arguments $args, ConsoleIo $io)
     {
@@ -58,7 +56,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * Returns a list of events this object is implementing. When the class is
      *  registered in an event manager, each individual method will be
      *  associated with the respective event
-     * @return array
+     * @return array<string, string>
      */
     public function implementedEvents()
     {
@@ -72,9 +70,9 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             'scanStarted',
         ];
 
-        return array_combine(array_map(function ($event) {
-            return 'LinkScanner.' . $event;
-        }, $events), $events);
+        return array_combine(array_map(function ($eventName) {
+            return 'LinkScanner.' . $eventName;
+        }, $events), $events) ?: [];
     }
 
     /**
@@ -82,8 +80,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param \Cake\Http\Client\Response $response A `Response` instance
      * @return bool
-     * @uses $args
-     * @uses $io
      */
     public function afterScanUrl(Event $event, Response $response)
     {
@@ -103,7 +99,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $url Url
      * @return bool
-     * @uses $io
      */
     public function beforeScanUrl(Event $event, $url)
     {
@@ -117,7 +112,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $link Link
      * @return bool
-     * @uses $io
      */
     public function foundLinkToBeScanned(Event $event, $link)
     {
@@ -129,13 +123,12 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
     /**
      * `LinkScanner.foundRedirect` event
      * @param \Cake\Event\Event $event An `Event` instance
-     * @param string $url Redirect
+     * @param string $redirect Redirect
      * @return bool
-     * @uses $io
      */
-    public function foundRedirect(Event $event, $url)
+    public function foundRedirect(Event $event, $redirect)
     {
-        $this->io->verbose(__d('link-scanner', 'Redirect found: {0}', $url));
+        $this->io->verbose(__d('link-scanner', 'Redirect found: {0}', $redirect));
 
         return true;
     }
@@ -145,7 +138,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
      * @return bool
-     * @uses $io
      */
     public function resultsExported(Event $event, $filename)
     {
@@ -171,8 +163,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param int $endTime End time
      * @param \LinkScanner\ResultScan $ResultScan A `ResultScan` instance
      * @return bool
-     * @uses $args
-     * @uses $io
      */
     public function scanCompleted(Event $event, $startTime, $endTime, ResultScan $ResultScan)
     {
@@ -200,8 +190,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param int $startTime Start time
      * @param string $fullBaseUrl Full base url
      * @return bool
-     * @uses $args
-     * @uses $io
      */
     public function scanStarted(Event $event, $startTime, $fullBaseUrl)
     {
@@ -220,9 +208,9 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
         $cache = Cache::getConfig('LinkScanner');
         list($method, $message) = ['info', __d('link-scanner', 'The cache is disabled')];
-        if (!$this->args->getOption('no-cache') && Cache::enabled() && !empty($cache['duration'])) {
+        if (!$this->args->getOption('no-cache') && Cache::enabled()) {
             $method = 'success';
-            $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']);
+            $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', isset($cache['duration']) ? $cache['duration'] : '+1 day');
         }
         $this->io->{$method}($message);
 

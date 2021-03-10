@@ -35,7 +35,6 @@ class LinkScannerCommand extends Command
     /**
      * Hook method invoked by CakePHP when a command is about to be executed
      * @return void
-     * @uses $LinkScanner
      */
     public function initialize()
     {
@@ -46,9 +45,8 @@ class LinkScannerCommand extends Command
      * Performs a complete scan
      * @param \Cake\Console\Arguments $args The command arguments
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null The exit code or null for success
+     * @return void
      * @see LinkScannerCommandEventListener::implementedEvents()
-     * @uses $LinkScanner
      */
     public function execute(Arguments $args, ConsoleIo $io)
     {
@@ -84,21 +82,18 @@ class LinkScannerCommand extends Command
             $this->LinkScanner->scan();
 
             if ($args->getOption('export-with-filename') || $args->getOption('export')) {
-                $this->LinkScanner->export($args->getOption('export-with-filename'));
+                $this->LinkScanner->export((string)$args->getOption('export-with-filename'));
             }
         } catch (Exception $e) {
             $io->error($e->getMessage());
             $this->abort();
         }
-
-        return null;
     }
 
     /**
      * Hook method for defining this command's option parser
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
      * @return \Cake\Console\ConsoleOptionParser The built parser
-     * @uses $LinkScanner
      */
     protected function buildOptionParser(ConsoleOptionParser $parser)
     {

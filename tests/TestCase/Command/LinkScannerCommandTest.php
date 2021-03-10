@@ -19,7 +19,6 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
-use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\ConsoleIntegrationTestTrait;
@@ -30,7 +29,6 @@ use MeTools\TestSuite\ConsoleIntegrationTestTrait;
 class LinkScannerCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
-    use IntegrationTestTrait;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner
@@ -116,7 +114,7 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testScanParams()
     {
-        touch($this->Command->LinkScanner->lockFile);
+        create_file($this->Command->LinkScanner->lockFile);
         $params = [
             '--export',
             '--force',
@@ -142,7 +140,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputContains('Redirects will not be followed');
         $this->assertOutputContains('Maximum depth of the scan: 2');
         $this->assertOutputContains('Timeout in seconds for GET requests: 15');
-        $this->assertOutputContains(sprintf('Results have been exported to', $expectedFilename));
+        $this->assertOutputContains('Results have been exported to ' . $expectedFilename);
         $this->assertErrorEmpty();
 
         //With disabled cache
@@ -204,20 +202,25 @@ class LinkScannerCommandTest extends TestCase
             $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
             $this->assertFileExists($expectedExportFile);
             $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
-            $this->assertOutputContains(sprintf('Results have been exported to', $expectedExportFile));
+            $this->assertOutputContains('Results have been exported to ' . $expectedExportFile);
             $this->assertErrorEmpty();
         }
 
         //Enables follow redirects
-        $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
+        $this->LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([$this->getClientReturnsRedirect()])
+            ->setMethods(['_createLockFile'])
+            ->getMock();
+
         $this->Command->LinkScanner = $this->LinkScanner;
         $this->getEventManager();
         array_pop($params);
-        $this->Command->run(array_merge($params, ['--follow-redirects']), $this->io);
+        $this->Command->run(array_merge($params, ['--follow-redirects', '--no-cache']), $this->io);
         $this->assertEventFired('LinkScanner.foundRedirect', $this->LinkScanner->getEventManager());
-        $this->assertContains(['followRedirects' => true], $this->LinkScanner->getConfig());
+        $this->assertTrue($this->LinkScanner->getConfig()['followRedirects']);
         $this->assertOutputContains('Redirects will be followed');
-        $this->assertOutputContains('Redirect found: http://localhost/pages/third_page');
+        $this->assertOutputContains('Redirect found: http://localhost/redirectTarget');
+        $this->assertOutputContains('Checking http://localhost/redirectTarget ...');
 
         //With an invalid full base url
         $this->expectException(StopException::class);
@@ -253,7 +256,7 @@ class LinkScannerCommandTest extends TestCase
 
         //Removes already checked lines and checks intermediate lines
         foreach (array_slice($messages, 9, -5) as $message) {
-            $this->assertRegExp('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
+            $this->assertRegexp('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
         }
     }
 

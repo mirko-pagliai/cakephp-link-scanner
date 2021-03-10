@@ -15,6 +15,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure\Engine\PhpConfig;
+use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
 use LinkScanner\ResultScan;
@@ -37,7 +38,7 @@ class LinkScannerTest extends TestCase
     protected $EventManager;
 
     /**
-     * @var \LinkScanner\Utility\LinkScanner
+     * @var \LinkScanner\Utility\LinkScanner|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $LinkScanner;
 
@@ -95,7 +96,7 @@ class LinkScannerTest extends TestCase
      */
     public function testGetResponse()
     {
-        $getResponseMethod = function ($url) {
+        $getResponseMethod = function ($url): Response {
             return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         };
         $getResponseFromCache = function ($url) {

@@ -30,5 +30,30 @@
             "App\\": "tests/test_app/TestApp",
             "LinkScanner\\Test\\": "tests"
         }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test-lowest",
+            "@composer update",
+            "@test",
+            "@stan"
+        ],
+        "cs-check": "phpcs --standard=phpcs.xml.dist",
+        "cs-fix": "phpcbf --standard=phpcs.xml.dist",
+        "test": "rm -f -r /tmp/cake* && phpunit",
+        "coverage": "XDEBUG_MODE=coverage phpunit --coverage-html=coverage",
+        "phpstan": "phpstan.phar analyse",
+        "psalm": "psalm.phar",
+        "stan": [
+            "@stan-setup",
+            "@phpstan",
+            "@psalm"
+        ],
+        "stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan:^0.12 psalm/phar:^3.18 && mv composer.backup composer.json",
+        "test-lowest": [
+            "@composer update --prefer-lowest",
+            "@test"
+        ]
     }
 }
