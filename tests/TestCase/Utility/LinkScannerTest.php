@@ -97,10 +97,10 @@ class LinkScannerTest extends TestCase
      */
     public function testGetResponse()
     {
-        $getResponseMethod = function ($url) {
+        $getResponseMethod = function (string $url): Response {
             return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         };
-        $getResponseFromCache = function ($url) {
+        $getResponseFromCache = function (string $url): ?Response {
             $response = Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
 
             if ($response && is_array($response)) {

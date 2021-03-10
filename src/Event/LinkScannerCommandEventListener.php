@@ -71,7 +71,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             'scanStarted',
         ];
 
-        return array_combine(array_map(function (string $event) {
+        return array_combine(array_map(function (string $event): string {
             return 'LinkScanner.' . $event;
         }, $events), $events);
     }

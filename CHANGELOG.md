@@ -2,6 +2,8 @@
 ## 1.1 branch
 ### 1.1.5
 * added `TestCase::getClientReturnsRedirect()` method;
+* extensive improvement of function descriptions and tags. The level of `phpstan`
+    has been raised;
 * ready for `phpunit` 9.
 
 ### 1.1.4

@@ -17,7 +17,6 @@ parameters:
         -  tests/test_app/
 
     ignoreErrors:
-        - '#^Ternary operator condition is always true\.$#'
         - '#^Call to an undefined static method Tools\\Exceptionist#'
         - '#^Call to an undefined method (Cake|Psr|Traversable)#'
 
@@ -30,15 +29,7 @@ parameters:
             path: src/Utility/LinkScanner.php
 
         -
-            message: '#^Access to an undefined property LinkScanner\\TestSuite\\TestCase::\$LinkScanner\.$#'
-            path: src/TestSuite/TestCase.php
-
-        -
-            message: '#^Access to protected property LinkScanner\\Utility\\LinkScanner#'
-            path: tests/TestCase
-
-        -
-            message: '#^(Access|Call) to an undefined (property|method)#'
+            message: '#^(Access|Call) to (an undefined|protected) (property|method)#'
             path: tests/TestCase
 
         -
@@ -46,9 +37,5 @@ parameters:
             path: tests/TestCase
 
         -
-            message: '#on an unknown class PHPUnit_Framework_MockObject_MockObject\.$#'
-            path: tests/TestCase
-
-        -
-            message: '#Cake\\Event\\EventManagerInterface given\.$#'
+            message: '#expects Cake\\Event\\EventManager|\null, Cake\\Event\\EventManagerInterface given\.$#'
             path: tests/TestCase

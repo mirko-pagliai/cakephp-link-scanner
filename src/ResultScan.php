@@ -29,13 +29,13 @@ class ResultScan extends Collection
      *
      * Ensures that each item is a `ScanEntity` and has all the properties it needs
      * @param iterable $items Items
-     * @return array Parsed items
+     * @return array<\LinkScanner\ScanEntity> Parsed items
      */
     protected function parseItems(iterable $items): array
     {
         $items = $items instanceof Traversable ? $items->toArray() : $items;
 
-        return array_map(function ($item) {
+        return array_map(function ($item): ScanEntity {
             return $item instanceof ScanEntity ? $item : new ScanEntity($item);
         }, $items);
     }

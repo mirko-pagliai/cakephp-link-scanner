@@ -17,10 +17,12 @@ namespace LinkScanner\TestSuite;
 use Cake\Cache\Cache;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
+use Cake\Event\EventManagerInterface;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\TestCase as BaseTestCase;
+use Tools\TestSuite\BackwardCompatibilityTrait;
 use Zend\Diactoros\Stream;
 
 /**
@@ -28,6 +30,13 @@ use Zend\Diactoros\Stream;
  */
 abstract class TestCase extends BaseTestCase
 {
+    use BackwardCompatibilityTrait;
+
+    /**
+     * @var \LinkScanner\Utility\LinkScanner
+     */
+    protected $LinkScanner;
+
     /**
      * Called after every test method
      * @return void
@@ -125,10 +134,10 @@ abstract class TestCase extends BaseTestCase
             ->setMethods(['get'])
             ->getMock();
 
-        $Client->method('get')->will($this->returnCallback(function ($url) {
+        $Client->method('get')->will($this->returnCallback(function (string $url): Response {
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
-            $getResponse = function () use ($url) {
+            $getResponse = function () use ($url): Response {
                 return (new Client(['redirect' => true]))->get($url);
             };
 
@@ -157,11 +166,7 @@ abstract class TestCase extends BaseTestCase
     {
         $eventManager = ($LinkScanner ?? $this->LinkScanner)->getEventManager();
 
-        if (!$eventManager->getEventList()) {
-            $eventManager->setEventList(new EventList());
-        }
-
-        return $eventManager;
+        return $eventManager->setEventList($eventManager->getEventList() ?? new EventList());
     }
 
     /**

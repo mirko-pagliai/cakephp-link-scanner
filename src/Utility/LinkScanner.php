@@ -71,7 +71,7 @@ class LinkScanner implements Serializable
 
     /**
      * Urls already scanned
-     * @var array
+     * @var array<string>
      */
     protected $alreadyScanned = [];
 
