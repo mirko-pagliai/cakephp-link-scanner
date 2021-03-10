@@ -1,5 +1,5 @@
 parameters:
-    level: 6
+    level: 8
 
     paths:
         - config
@@ -17,8 +17,9 @@ parameters:
         -  tests/test_app/
 
     ignoreErrors:
-        - '#^Call to an undefined static method Tools\\Exceptionist#'
-        - '#^Call to an undefined method (Cake|Psr|Traversable)#'
+        - '#^Call to an undefined (static )?method (Cake|Psr|Traversable|Tools\\Exceptionist)#'
+        - '#^Parameter \#1 \$function of function call_user_func_array expects callable\(\): mixed#'
+        - '#^Cannot call method \w+\(\) on Cake\\Event\\EventList\|null\.$#'
 
         -
             message: '#^Access to protected property LinkScanner\\Utility\\LinkScanner::\$Client\.$#'
@@ -37,5 +38,5 @@ parameters:
             path: tests/TestCase
 
         -
-            message: '#expects Cake\\Event\\EventManager|\null, Cake\\Event\\EventManagerInterface given\.$#'
+            message: '#(Cake\\Event\\EventManagerInterface|PHPUnit\\Framework\\MockObject\\MockObject) given\.$#'
             path: tests/TestCase

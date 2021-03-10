@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="4"
+    errorLevel="3"
     resolveFromConfigFile="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
@@ -15,6 +15,18 @@
     </projectFiles>
 
     <issueHandlers>
+        <PossiblyNullReference>
+            <errorLevel type="suppress">
+                <file name="src/TestSuite/TestCase.php" />
+            </errorLevel>
+        </PossiblyNullReference>
+
+        <PropertyTypeCoercion>
+            <errorLevel type="suppress">
+                <file name="src/Utility/LinkScanner.php" />
+            </errorLevel>
+        </PropertyTypeCoercion>
+
         <UndefinedInterfaceMethod>
             <errorLevel type="suppress">
                 <file name="src/ResultScan.php" />
@@ -22,23 +34,5 @@
                 <file name="src/Utility/LinkScanner.php" />
             </errorLevel>
         </UndefinedInterfaceMethod>
-
-        <MoreSpecificImplementedParamType>
-            <errorLevel type="suppress">
-                <file name="src/ResultScan.php" />
-            </errorLevel>
-        </MoreSpecificImplementedParamType>
-
-        <UndefinedThisPropertyFetch>
-            <errorLevel type="suppress">
-                <file name="src/TestSuite/TestCase.php" />
-            </errorLevel>
-        </UndefinedThisPropertyFetch>
-
-        <InternalMethod>
-            <errorLevel type="suppress">
-                <file name="src/TestSuite/TestCase.php" />
-            </errorLevel>
-        </InternalMethod>
     </issueHandlers>
 </psalm>

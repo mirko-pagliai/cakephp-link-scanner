@@ -142,12 +142,12 @@ abstract class TestCase extends BaseTestCase
 
             if (is_readable($responseFile)) {
                 $getResponse = function () use ($responseFile) {
-                    return @unserialize(file_get_contents($responseFile));
+                    return @unserialize(file_get_contents($responseFile) ?: '');
                 };
             }
             is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($getResponse()));
 
-            $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile)) : (string)$getResponse()->getBody();
+            $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile) ?: '') : (string)$getResponse()->getBody();
             is_readable($bodyFile) ? null : file_put_contents($bodyFile, serialize($body));
 
             return $this->getResponseWithBody($body, $getResponse());

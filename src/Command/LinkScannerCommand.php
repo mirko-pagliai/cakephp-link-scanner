@@ -83,7 +83,7 @@ class LinkScannerCommand extends Command
             $this->LinkScanner->scan();
 
             if ($args->getOption('export-with-filename') || $args->getOption('export')) {
-                $this->LinkScanner->export($args->getOption('export-with-filename'));
+                $this->LinkScanner->export((string)$args->getOption('export-with-filename'));
             }
         } catch (Exception $e) {
             $io->error($e->getMessage());

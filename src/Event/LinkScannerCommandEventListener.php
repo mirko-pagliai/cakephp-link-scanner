@@ -57,7 +57,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * Returns a list of events this object is implementing. When the class is
      *  registered in an event manager, each individual method will be
      *  associated with the respective event
-     * @return array
+     * @return array<string, string>
      */
     public function implementedEvents(): array
     {
@@ -71,9 +71,9 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             'scanStarted',
         ];
 
-        return array_combine(array_map(function (string $event): string {
-            return 'LinkScanner.' . $event;
-        }, $events), $events);
+        return array_combine(array_map(function (string $eventName): string {
+            return 'LinkScanner.' . $eventName;
+        }, $events), $events) ?: [];
     }
 
     /**
@@ -210,9 +210,9 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
         $cache = Cache::getConfig('LinkScanner');
         [$method, $message] = ['info', __d('link-scanner', 'The cache is disabled')];
-        if (!$this->args->getOption('no-cache') && Cache::enabled() && !empty($cache['duration'])) {
+        if (!$this->args->getOption('no-cache') && Cache::enabled()) {
             $method = 'success';
-            $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']);
+            $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration'] ?? '+1 day');
         }
         $this->io->{$method}($message);
 
