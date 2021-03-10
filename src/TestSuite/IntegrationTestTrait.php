@@ -41,7 +41,7 @@ trait IntegrationTestTrait
 
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
-        $Client->method('get')->will($this->returnCallback(function ($url): Response {
+        $Client->method('get')->will($this->returnCallback(function ($url) {
             if (is_string($url) && preg_match('/^http:\/\/localhost\/?(pages\/(.+))?$/', $url, $matches)) {
                 $url = ['controller' => 'Pages', 'action' => 'display', empty($matches[2]) ? 'home' : $matches[2]];
             }

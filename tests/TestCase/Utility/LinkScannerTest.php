@@ -96,7 +96,7 @@ class LinkScannerTest extends TestCase
      */
     public function testGetResponse()
     {
-        $getResponseMethod = function ($url): Response {
+        $getResponseMethod = function ($url) {
             return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         };
         $getResponseFromCache = function ($url) {

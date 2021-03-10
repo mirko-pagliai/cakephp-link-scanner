@@ -33,7 +33,7 @@ class ResultScan extends Collection
     {
         $items = $items instanceof Traversable ? $items->toArray() : $items;
 
-        return array_map(function ($item): ScanEntity {
+        return array_map(function ($item) {
             return $item instanceof ScanEntity ? $item : new ScanEntity($item);
         }, $items);
     }

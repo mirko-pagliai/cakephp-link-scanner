@@ -91,7 +91,7 @@ abstract class TestCase extends BaseTestCase
             ->setMethods(['get'])
             ->getMock();
 
-        $Client->method('get')->will($this->returnCallback(function ($url): Response {
+        $Client->method('get')->will($this->returnCallback(function ($url) {
             switch ($url) {
                 case 'http://localhost/aPageWithRedirect':
                     $response = new Response(['Location:http://localhost/redirectTarget']);
@@ -128,10 +128,10 @@ abstract class TestCase extends BaseTestCase
             ->setMethods(['get'])
             ->getMock();
 
-        $Client->method('get')->will($this->returnCallback(function (string $url): Response {
+        $Client->method('get')->will($this->returnCallback(function ($url) {
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
-            $getResponse = function () use ($url): Response {
+            $getResponse = function () use ($url) {
                 return (new Client(['redirect' => true]))->get($url);
             };
 
