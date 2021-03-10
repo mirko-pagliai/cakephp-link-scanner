@@ -22,6 +22,7 @@ install:
   - echo extension=php_mbstring.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
   - echo extension=php_gd2.dll >> php.ini
+  - echo extension=php_openssl.dll >> php.ini
   - echo extension=php_pdo_mysql.dll >> php.ini
   - echo extension=php_pdo_pgsql.dll >> php.ini
   - echo extension=php_pdo_sqlite.dll >> php.ini
