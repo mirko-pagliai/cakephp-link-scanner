@@ -17,7 +17,6 @@ namespace LinkScanner\TestSuite;
 use Cake\Cache\Cache;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
-use Cake\Event\EventManagerInterface;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use LinkScanner\Utility\LinkScanner;

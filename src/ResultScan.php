@@ -50,9 +50,14 @@ class ResultScan extends Collection
         parent::__construct($this->parseItems($items));
     }
 
+    /**
+     * Unserializes the passed string and rebuilds the Collection instance
+     * @param string $collection The serialized collection
+     * @return void
+     */
     public function unserialize($collection): void
     {
-        parent::__construct((unserialize($collection)));
+        parent::__construct(unserialize($collection));
     }
 
     /**
