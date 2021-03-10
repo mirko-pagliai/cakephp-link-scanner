@@ -50,6 +50,11 @@ class ResultScan extends Collection
         parent::__construct($this->parseItems($items));
     }
 
+    public function unserialize($collection): void
+    {
+        parent::__construct((unserialize($collection)));
+    }
+
     /**
      * Appends items.
      *

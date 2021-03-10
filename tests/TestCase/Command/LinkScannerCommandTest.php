@@ -224,7 +224,7 @@ class LinkScannerCommandTest extends TestCase
         array_pop($params);
         $this->Command->run(array_merge($params, ['--follow-redirects']), $this->io);
         $this->assertEventFired('LinkScanner.foundRedirect', $this->LinkScanner->getEventManager());
-        $this->assertContains(['followRedirects' => true], $this->LinkScanner->getConfig());
+        $this->assertTrue($this->LinkScanner->getConfig()['followRedirects']);
         $this->assertOutputContains('Redirects will be followed');
         $this->assertOutputContains('Redirect found: http://localhost/redirectTarget');
         $this->assertOutputContains('Checking http://localhost/redirectTarget ...');

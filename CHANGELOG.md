@@ -4,6 +4,7 @@
 * added `TestCase::getClientReturnsRedirect()` method;
 * extensive improvement of function descriptions and tags. The level of `phpstan`
     has been raised;
+* little fixes for PHP 7.4;
 * ready for `phpunit` 9.
 
 ### 1.1.4
