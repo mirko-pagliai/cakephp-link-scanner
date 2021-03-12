@@ -221,23 +221,27 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
         $this->io->info($message);
 
         $message = __d('link-scanner', 'Scanning of external links is not enabled');
-        if ($event->getSubject()->getConfig('externalLinks')) {
+
+        /** @var \LinkScanner\Utility\LinkScanner $LinkScanner **/
+        $LinkScanner = $event->getSubject();
+
+        if ($LinkScanner->getConfig('externalLinks')) {
             $message = __d('link-scanner', 'Scanning of external links is enabled');
         }
         $this->io->info($message);
 
         $message = __d('link-scanner', 'Redirects will not be followed');
-        if ($event->getSubject()->getConfig('followRedirects')) {
+        if ($LinkScanner->getConfig('followRedirects')) {
             $message = __d('link-scanner', 'Redirects will be followed');
         }
         $this->io->info($message);
 
-        $maxDepth = $event->getSubject()->getConfig('maxDepth');
+        $maxDepth = $LinkScanner->getConfig('maxDepth');
         if (is_positive($maxDepth)) {
             $this->io->info(__d('link-scanner', 'Maximum depth of the scan: {0}', $maxDepth));
         }
 
-        $timeout = $event->getSubject()->Client->getConfig('timeout');
+        $timeout = $LinkScanner->Client->getConfig('timeout');
         if (is_positive($timeout)) {
             $this->io->info(__d('link-scanner', 'Timeout in seconds for GET requests: {0}', $timeout));
         }
