@@ -506,12 +506,12 @@ class LinkScanner implements Serializable
             __d('link-scanner', 'Invalid full base url `{0}`', $fullBaseUrl),
             InvalidArgumentException::class
         );
-        $this->hostname = get_hostname_from_url($fullBaseUrl);
+        $this->hostname = get_hostname_from_url($fullBaseUrl) ?: '';
 
         $this->_createLockFile();
         $this->startTime = time();
 
-        $maxNestingLevel = ini_set('xdebug.max_nesting_level', -1);
+        $maxNestingLevel = ini_set('xdebug.max_nesting_level', '-1');
 
         try {
             $this->dispatchEvent('LinkScanner.scanStarted', [$this->startTime, $fullBaseUrl]);
@@ -519,7 +519,7 @@ class LinkScanner implements Serializable
             $this->endTime = time();
             $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
         } finally {
-            ini_set('xdebug.max_nesting_level', $maxNestingLevel);
+            ini_set('xdebug.max_nesting_level', (string)$maxNestingLevel);
             @unlink($this->lockFile);
         }
 

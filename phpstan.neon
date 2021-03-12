@@ -17,13 +17,19 @@ parameters:
         -  tests/test_app/
 
     ignoreErrors:
+        - '#^(Negated boolean expression|Ternary operator condition) is always (true|false)\.$#'
+        - '#^Cannot call method \w+\(\) on Cake\\Http\\Response\|null\.$#'
         - '#^Call to an undefined (static )?method (Cake|Psr|Traversable|Tools\\Exceptionist)#'
         - '#^Parameter \#1 \$function of function call_user_func_array expects callable\(\): mixed#'
         - '#^Access to protected property LinkScanner\\Utility\\LinkScanner::\$Client\.$#'
 
         -
-            message: '#does not accept Cake\\Collection\\CollectionInterface\.$#'
-            path: src/Utility/LinkScanner.php
+            message: '#should be compatible with return type \(int\|null\) of method Cake\\Console\\Command::execute\(\)$#'
+            path: src/Command/LinkScannerCommand.php
+
+        -
+            message: '#^Instanceof between Cake\\Http\\Response\|null and Cake\\Http\\Client\\Response will always evaluate to false\.$#'
+            path: src/TestSuite/IntegrationTestTrait.php
 
         -
             message: '#^(Access|Call) to (an undefined|protected) (property|method)#'
@@ -35,4 +41,8 @@ parameters:
 
         -
             message: '#(Cake\\Event\\EventManagerInterface|PHPUnit\\Framework\\MockObject\\MockObject) given\.$#'
+            path: tests/TestCase
+
+        -
+            message: '#PHPUnit_Framework_MockObject_MockObject\|null\.$#'
             path: tests/TestCase

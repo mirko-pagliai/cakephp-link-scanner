@@ -74,8 +74,8 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
     /**
      * `LinkScanner.scanCompleted` event
      * @param \Cake\Event\Event $event An `Event` instance
-     * @param int $startTime Start time
-     * @param int $endTime End time
+     * @param string $startTime Start time
+     * @param string $endTime End time
      * @param \LinkScanner\ResultScan $ResultScan A `ResultScan` instance
      * @return bool
      */
@@ -84,7 +84,7 @@ interface LinkScannerEventListenerInterface extends EventListenerInterface
     /**
      * `LinkScanner.scanStarted` event
      * @param \Cake\Event\Event $event An `Event` instance
-     * @param int $startTime Start time
+     * @param string $startTime Start time
      * @param string $fullBaseUrl Full base url
      * @return bool
      */

@@ -291,7 +291,7 @@ class LinkScannerTest extends TestCase
         $this->assertEquals($newInternalLinks, $internalLinks);
         $this->assertEmpty($newExternalLinks->toList());
 
-        $hostname = get_hostname_from_url($this->fullBaseUrl);
+        $hostname = get_hostname_from_url($this->fullBaseUrl) ?: '';
 
         foreach ($LinkScanner->ResultScan as $item) {
             $this->assertRegexp(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->get('url'));

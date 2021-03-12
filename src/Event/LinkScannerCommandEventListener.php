@@ -150,17 +150,18 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * `LinkScanner.resultsImported` event
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
-     * @return void
+     * @return bool
      */
     public function resultsImported(Event $event, $filename)
     {
+        return true;
     }
 
     /**
      * `LinkScanner.scanCompleted` event
      * @param \Cake\Event\Event $event An `Event` instance
-     * @param int $startTime Start time
-     * @param int $endTime End time
+     * @param string $startTime Start time
+     * @param string $endTime End time
      * @param \LinkScanner\ResultScan $ResultScan A `ResultScan` instance
      * @return bool
      */
@@ -187,7 +188,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
     /**
      * `LinkScanner.scanStarted` event
      * @param \Cake\Event\Event $event An `Event` instance
-     * @param int $startTime Start time
+     * @param string $startTime Start time
      * @param string $fullBaseUrl Full base url
      * @return bool
      */

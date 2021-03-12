@@ -31,7 +31,7 @@ class LinkScannerCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
-     * @var \LinkScanner\Utility\LinkScanner
+     * @var \LinkScanner\Utility\LinkScanner|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $LinkScanner;
 
@@ -175,7 +175,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
 
         $differentLines = function ($line) {
-            $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl)));
+            $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl) ?: ''));
 
             return substr($line, 0, strlen('Checking')) === 'Checking' && !preg_match($pattern, $line);
         };
