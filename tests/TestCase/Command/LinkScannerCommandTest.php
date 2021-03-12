@@ -20,7 +20,6 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
-use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\ConsoleIntegrationTestTrait;
@@ -30,9 +29,7 @@ use MeTools\TestSuite\ConsoleIntegrationTestTrait;
  */
 class LinkScannerCommandTest extends TestCase
 {
-    use ConsoleIntegrationTestTrait, IntegrationTestTrait {
-        ConsoleIntegrationTestTrait::configApplication insteadof IntegrationTestTrait;
-    }
+    use ConsoleIntegrationTestTrait;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner
@@ -140,7 +137,7 @@ class LinkScannerCommandTest extends TestCase
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals(15, $this->LinkScanner->Client->getConfig('timeout'));
-        $this->assertFileNotExists($this->LinkScanner->lockFile);
+        $this->assertFileDoesNotExist($this->LinkScanner->lockFile);
         $this->assertFileExists($expectedFilename);
         $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->fullBaseUrl, '/')));
@@ -184,7 +181,7 @@ class LinkScannerCommandTest extends TestCase
         $expectedConfig['fullBaseUrl'] = $this->fullBaseUrl;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
 
-        $differentLines = function ($line) {
+        $differentLines = function (string $line): bool {
             $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl)));
 
             return substr($line, 0, strlen('Checking')) === 'Checking' && !preg_match($pattern, $line);
@@ -217,15 +214,20 @@ class LinkScannerCommandTest extends TestCase
         }
 
         //Enables follow redirects
-        $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
+        $this->LinkScanner = $this->getMockBuilder(LinkScanner::class)
+            ->setConstructorArgs([$this->getClientReturnsRedirect()])
+            ->setMethods(['_createLockFile'])
+            ->getMock();
+
         $this->Command->LinkScanner = $this->LinkScanner;
         $this->getEventManager();
         array_pop($params);
-        $this->Command->run(array_merge($params, ['--follow-redirects']), $this->io);
+        $this->Command->run(array_merge($params, ['--follow-redirects', '--no-cache']), $this->io);
         $this->assertEventFired('LinkScanner.foundRedirect', $this->LinkScanner->getEventManager());
-        $this->assertContains(['followRedirects' => true], $this->LinkScanner->getConfig());
+        $this->assertTrue($this->LinkScanner->getConfig()['followRedirects']);
         $this->assertOutputContains('Redirects will be followed');
-        $this->assertOutputContains('Redirect found: http://localhost/pages/third_page');
+        $this->assertOutputContains('Redirect found: http://localhost/redirectTarget');
+        $this->assertOutputContains('Checking http://localhost/redirectTarget ...');
 
         //With an invalid full base url
         $this->expectException(StopException::class);
@@ -253,15 +255,15 @@ class LinkScannerCommandTest extends TestCase
             next($messages);
         }
 
-        $this->assertRegexp('/^\-+$/', current($messages));
-        $this->assertRegexp('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
-        $this->assertRegexp('/^Elapsed time: \d+ seconds?$/', next($messages));
-        $this->assertRegexp('/^Total scanned links: \d+$/', next($messages));
-        $this->assertRegexp('/^\-+$/', next($messages));
+        $this->assertMatchesRegularExpression('/^\-+$/', current($messages));
+        $this->assertMatchesRegularExpression('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
+        $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages));
+        $this->assertMatchesRegularExpression('/^Total scanned links: \d+$/', next($messages));
+        $this->assertMatchesRegularExpression('/^\-+$/', next($messages));
 
         //Removes already checked lines and checks intermediate lines
         foreach (array_slice($messages, 9, -5) as $message) {
-            $this->assertRegExp('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
+            $this->assertMatchesRegularExpression('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
         }
     }
 

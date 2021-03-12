@@ -21,6 +21,7 @@ use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\TestCase as BaseTestCase;
+use Tools\TestSuite\BackwardCompatibilityTrait;
 use Zend\Diactoros\Stream;
 
 /**
@@ -28,6 +29,13 @@ use Zend\Diactoros\Stream;
  */
 abstract class TestCase extends BaseTestCase
 {
+    use BackwardCompatibilityTrait;
+
+    /**
+     * @var \LinkScanner\Utility\LinkScanner
+     */
+    protected $LinkScanner;
+
     /**
      * Called after every test method
      * @return void
@@ -77,6 +85,43 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Returns a stub of `Client`, where the `get()` method returns a redirect
+     *  on the third request
+     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
+     * @since 1.1.5
+     */
+    protected function getClientReturnsRedirect(): object
+    {
+        $Client = $this->getMockBuilder(Client::class)
+            ->setMethods(['get'])
+            ->getMock();
+
+        $Client->method('get')->will($this->returnCallback(function (string $url): Response {
+            switch ($url) {
+                case 'http://localhost/aPageWithRedirect':
+                    $response = new Response(['Location:http://localhost/redirectTarget']);
+                    $response = $response->withStatus(307);
+
+                    break;
+                case 'http://localhost/redirectTarget':
+                    $response = new Response();
+                    $response = $response->withStatus(200);
+
+                    break;
+                default:
+                    $response = new Response([], '<a href=\'http://localhost/aPageWithRedirect\'>aPageWithRedirect</a>');
+                    $response = $response->withStatus(200);
+
+                    break;
+            }
+
+            return $response;
+        }));
+
+        return $Client;
+    }
+
+    /**
      * Returns a stub of `Client`, where the `get()` method returns a sample
      *  response which is read from `examples/responses` files
      * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
@@ -88,21 +133,21 @@ abstract class TestCase extends BaseTestCase
             ->setMethods(['get'])
             ->getMock();
 
-        $Client->method('get')->will($this->returnCallback(function ($url) {
+        $Client->method('get')->will($this->returnCallback(function (string $url): Response {
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
-            $getResponse = function () use ($url) {
+            $getResponse = function () use ($url): Response {
                 return (new Client(['redirect' => true]))->get($url);
             };
 
             if (is_readable($responseFile)) {
                 $getResponse = function () use ($responseFile) {
-                    return @unserialize(file_get_contents($responseFile));
+                    return @unserialize(file_get_contents($responseFile) ?: '');
                 };
             }
             is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($getResponse()));
 
-            $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile)) : (string)$getResponse()->getBody();
+            $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile) ?: '') : (string)$getResponse()->getBody();
             is_readable($bodyFile) ? null : file_put_contents($bodyFile, serialize($body));
 
             return $this->getResponseWithBody($body, $getResponse());
@@ -120,11 +165,7 @@ abstract class TestCase extends BaseTestCase
     {
         $eventManager = ($LinkScanner ?? $this->LinkScanner)->getEventManager();
 
-        if (!$eventManager->getEventList()) {
-            $eventManager->setEventList(new EventList());
-        }
-
-        return $eventManager;
+        return $eventManager->setEventList($eventManager->getEventList() ?? new EventList());
     }
 
     /**

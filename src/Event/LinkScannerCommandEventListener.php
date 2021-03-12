@@ -57,7 +57,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * Returns a list of events this object is implementing. When the class is
      *  registered in an event manager, each individual method will be
      *  associated with the respective event
-     * @return array
+     * @return array<string, string>
      */
     public function implementedEvents(): array
     {
@@ -71,9 +71,9 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             'scanStarted',
         ];
 
-        return array_combine(array_map(function (string $event) {
-            return 'LinkScanner.' . $event;
-        }, $events), $events);
+        return array_combine(array_map(function (string $eventName): string {
+            return 'LinkScanner.' . $eventName;
+        }, $events), $events) ?: [];
     }
 
     /**
@@ -210,9 +210,9 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
         $cache = Cache::getConfig('LinkScanner');
         [$method, $message] = ['info', __d('link-scanner', 'The cache is disabled')];
-        if (!$this->args->getOption('no-cache') && Cache::enabled() && !empty($cache['duration'])) {
+        if (!$this->args->getOption('no-cache') && Cache::enabled()) {
             $method = 'success';
-            $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration']);
+            $message = __d('link-scanner', 'The cache is enabled and its duration is `{0}`', $cache['duration'] ?? '+1 day');
         }
         $this->io->{$method}($message);
 
@@ -223,23 +223,27 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
         $this->io->info($message);
 
         $message = __d('link-scanner', 'Scanning of external links is not enabled');
-        if ($event->getSubject()->getConfig('externalLinks')) {
+
+        /** @var \LinkScanner\Utility\LinkScanner $LinkScanner **/
+        $LinkScanner = $event->getSubject();
+
+        if ($LinkScanner->getConfig('externalLinks')) {
             $message = __d('link-scanner', 'Scanning of external links is enabled');
         }
         $this->io->info($message);
 
         $message = __d('link-scanner', 'Redirects will not be followed');
-        if ($event->getSubject()->getConfig('followRedirects')) {
+        if ($LinkScanner->getConfig('followRedirects')) {
             $message = __d('link-scanner', 'Redirects will be followed');
         }
         $this->io->info($message);
 
-        $maxDepth = $event->getSubject()->getConfig('maxDepth');
+        $maxDepth = $LinkScanner->getConfig('maxDepth');
         if (is_positive($maxDepth)) {
             $this->io->info(__d('link-scanner', 'Maximum depth of the scan: {0}', $maxDepth));
         }
 
-        $timeout = $event->getSubject()->Client->getConfig('timeout');
+        $timeout = $LinkScanner->Client->getConfig('timeout');
         if (is_positive($timeout)) {
             $this->io->info(__d('link-scanner', 'Timeout in seconds for GET requests: {0}', $timeout));
         }

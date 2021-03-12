@@ -71,7 +71,7 @@ class LinkScanner implements Serializable
 
     /**
      * Urls already scanned
-     * @var array
+     * @var array<int, string>
      */
     protected $alreadyScanned = [];
 
@@ -89,9 +89,9 @@ class LinkScanner implements Serializable
 
     /**
      * Host name
-     * @var string|array|null
+     * @var string
      */
-    protected $hostname = null;
+    protected $hostname;
 
     /**
      * Lock file path
@@ -432,7 +432,7 @@ class LinkScanner implements Serializable
         $filename = $this->_getAbsolutePath($filename);
 
         try {
-            $instance = unserialize(file_get_contents($filename));
+            $instance = unserialize(file_get_contents($filename) ?: '');
         } catch (Exception $e) {
             $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', '', $e->getMessage());
             throw new RuntimeException(__d(
