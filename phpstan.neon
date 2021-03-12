@@ -20,10 +20,7 @@ parameters:
         - '#^Call to an undefined (static )?method (Cake|Psr|Traversable|Tools\\Exceptionist)#'
         - '#^Parameter \#1 \$function of function call_user_func_array expects callable\(\): mixed#'
         - '#^Cannot call method \w+\(\) on Cake\\Event\\EventList\|null\.$#'
-
-        -
-            message: '#^Access to protected property LinkScanner\\Utility\\LinkScanner::\$Client\.$#'
-            path: src/Command/LinkScannerCommand.php
+        - '#^Access to protected property LinkScanner\\Utility\\LinkScanner::\$Client\.$#'
 
         -
             message: '#does not accept Cake\\Collection\\CollectionInterface\.$#'
