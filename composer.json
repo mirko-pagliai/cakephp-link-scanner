@@ -11,10 +11,9 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=5.5.9 <7.4",
         "cakephp/cakephp": "^3.7.1",
-        "mirko-pagliai/me-tools": "~2.18.9",
-        "mirko-pagliai/php-tools": "~1.2.6"
+        "mirko-pagliai/php-tools": "dev-php5.6 as 1.4.8"
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^3.0|^4.0",
@@ -50,10 +49,7 @@
             "@phpstan",
             "@psalm"
         ],
-        "stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan:^0.12 psalm/phar:^3.18 && mv composer.backup composer.json",
-        "test-lowest": [
-            "@composer update --prefer-lowest",
-            "@test"
-        ]
+        "stan-setup": "cp composer.json composer.backup && composer require --dev phpstan/phpstan:^0.12 psalm/phar:\"^3.18|^4\" && mv composer.backup composer.json",
+        "update-lowest": "@composer update --prefer-lowest"
     }
 }

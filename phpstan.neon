@@ -32,6 +32,10 @@ parameters:
             path: src/TestSuite/IntegrationTestTrait.php
 
         -
+            message: '#^Property LinkScanner\\Test\\TestCase\\Utility\\LinkScannerTest::\$_response \(Cake\\Http\\Response\|null\) does not accept Cake\\Http\\Client\\Response\.$#'
+            path: src/TestSuite/IntegrationTestTrait.php
+
+        -
             message: '#^(Access|Call) to (an undefined|protected) (property|method)#'
             path: tests/TestCase
 

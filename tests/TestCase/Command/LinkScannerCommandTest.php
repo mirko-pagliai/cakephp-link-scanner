@@ -17,11 +17,12 @@ use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
+use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\TestSuite\ConsoleIntegrationTestTrait;
+use Tools\Filesystem;
 
 /**
  * LinkScannerCommandTest class
@@ -114,7 +115,7 @@ class LinkScannerCommandTest extends TestCase
      */
     public function testScanParams()
     {
-        create_file($this->Command->LinkScanner->lockFile);
+        Filesystem::instance()->createFile($this->Command->LinkScanner->lockFile);
         $params = [
             '--export',
             '--force',

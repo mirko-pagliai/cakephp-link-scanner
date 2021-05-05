@@ -14,12 +14,12 @@
 namespace LinkScanner\Command;
 
 use Cake\Console\Arguments;
+use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Exception;
 use LinkScanner\Event\LinkScannerCommandEventListener;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\Console\Command;
 
 /**
  * A link scanner command

@@ -27,8 +27,9 @@ use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
 use RuntimeException;
 use Serializable;
-use Symfony\Component\Filesystem\Filesystem;
 use Tools\BodyParser;
+use Tools\Exceptionist;
+use Tools\Filesystem;
 use Zend\Diactoros\Stream;
 
 /**
@@ -170,13 +171,13 @@ class LinkScanner implements Serializable
      */
     protected function _createLockFile()
     {
-        is_true_or_fail(!$this->getConfig('lockFile') || !file_exists($this->lockFile), __d(
+        Exceptionist::isTrue(!$this->getConfig('lockFile') || !file_exists($this->lockFile), __d(
             'link-scanner',
             'Lock file `{0}` already exists, maybe a scan is already in progress. If not, remove it manually',
             $this->lockFile
         ), RuntimeException::class);
 
-        return $this->getConfig('lockFile') ? create_file($this->lockFile) !== false : true;
+        return $this->getConfig('lockFile') ? Filesystem::instance()->createFile($this->lockFile) !== false : true;
     }
 
     /**
@@ -187,9 +188,7 @@ class LinkScanner implements Serializable
      */
     protected function _getAbsolutePath($filename)
     {
-        $isAbsolute = (new Filesystem())->isAbsolutePath($filename);
-
-        return $isAbsolute ? $filename : add_slash_term($this->getConfig('target')) . $filename;
+        return Filesystem::instance()->makePathAbsolute($filename, (string)$this->getConfig('target'));
     }
 
     /**
@@ -423,7 +422,7 @@ class LinkScanner implements Serializable
      */
     public function export($filename = null)
     {
-        is_true_or_fail(
+        Exceptionist::isTrue(
             !$this->ResultScan->isEmpty(),
             __d('link-scanner', 'There is no result to export. Perhaps the scan was not performed?'),
             RuntimeException::class
@@ -436,7 +435,7 @@ class LinkScanner implements Serializable
         }
 
         $filename = $this->_getAbsolutePath($filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime));
-        create_file($filename, serialize($this));
+        Filesystem::instance()->createFile($filename, serialize($this));
         $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
 
         return $filename;
@@ -462,12 +461,12 @@ class LinkScanner implements Serializable
         try {
             $instance = unserialize(file_get_contents($filename) ?: '');
         } catch (Exception $e) {
-            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', '', $e->getMessage());
+            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', '', $e->getMessage()) ?: '';
             throw new RuntimeException(__d(
                 'link-scanner',
                 'Failed to import results from file `{0}` with message `{1}`',
                 $filename,
-                $message
+                lcfirst($message)
             ));
         }
 
@@ -500,9 +499,9 @@ class LinkScanner implements Serializable
     public function scan()
     {
         //Sets the full base url
-        $fullBaseUrl = $this->getConfig('fullBaseUrl', Configure::read('App.fullBaseUrl') ?: 'http://localhost');
-        is_true_or_fail(
-            is_url($fullBaseUrl),
+        $fullBaseUrl = (string)$this->getConfig('fullBaseUrl', Configure::read('App.fullBaseUrl') ?: 'http://localhost');
+        Exceptionist::isUrl(
+            $fullBaseUrl,
             __d('link-scanner', 'Invalid full base url `{0}`', $fullBaseUrl),
             InvalidArgumentException::class
         );

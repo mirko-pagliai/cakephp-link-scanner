@@ -18,8 +18,10 @@ use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
+use Cake\TestSuite\TestCase as BaseTestCase;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\TestSuite\TestCase as BaseTestCase;
+use Tools\TestSuite\ReflectionTrait;
+use Tools\TestSuite\TestTrait;
 use Zend\Diactoros\Stream;
 
 /**
@@ -27,10 +29,24 @@ use Zend\Diactoros\Stream;
  */
 abstract class TestCase extends BaseTestCase
 {
+    use ReflectionTrait;
+    use TestTrait;
+
     /**
      * @var \LinkScanner\Utility\LinkScanner
      */
     protected $LinkScanner;
+
+    /**
+     * Called before every test method
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->loadPlugins(['LinkScanner']);
+    }
 
     /**
      * Called after every test method
@@ -65,7 +81,6 @@ abstract class TestCase extends BaseTestCase
      * Returns a stub of `Client`, where the `get()` method always returns a
      *  response with error (404 status code)
      * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
-     * @uses getResponseWithBody()
      */
     protected function getClientReturnsErrorResponse()
     {
@@ -121,7 +136,6 @@ abstract class TestCase extends BaseTestCase
      * Returns a stub of `Client`, where the `get()` method returns a sample
      *  response which is read from `examples/responses` files
      * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
-     * @uses getResponseWithBody()
      */
     protected function getClientReturnsSampleResponse()
     {

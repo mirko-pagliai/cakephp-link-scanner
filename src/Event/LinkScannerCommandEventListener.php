@@ -207,7 +207,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
         $this->io->hr();
 
-        $cache = Cache::getConfig('LinkScanner');
+        $cache = (array)Cache::getConfig('LinkScanner') + ['duration' => null];
         list($method, $message) = ['info', __d('link-scanner', 'The cache is disabled')];
         if (!$this->args->getOption('no-cache') && Cache::enabled()) {
             $method = 'success';
@@ -238,7 +238,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
         $this->io->info($message);
 
         $maxDepth = $LinkScanner->getConfig('maxDepth');
-        if (is_positive($maxDepth)) {
+        if (is_positive((string)$maxDepth)) {
             $this->io->info(__d('link-scanner', 'Maximum depth of the scan: {0}', $maxDepth));
         }
 

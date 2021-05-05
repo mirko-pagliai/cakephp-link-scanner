@@ -76,7 +76,6 @@ Cache::setConfig([
     ],
 ]);
 
-Configure::write('pluginsToLoad', ['LinkScanner']);
 Security::setSalt('a-long-but-not-random-value');
 
 loadPHPUnitAliases();
