@@ -79,7 +79,7 @@ class ResultScan extends Collection
      *
      * Returns a new `ResultScan` instance as the result of concatenating the
      *  passed list of elements with the list of elements in this collection
-     * @param mixed $items The items to prepend
+     * @param mixed $items Items
      * @return \Cake\Collection\CollectionInterface
      * @uses parseItems()
      */

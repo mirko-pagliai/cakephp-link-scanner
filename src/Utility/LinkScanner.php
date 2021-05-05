@@ -115,7 +115,7 @@ class LinkScanner implements Serializable
      * @uses $Client
      * @uses $ResultScan
      */
-    public function __construct($Client = null, ?ResultScan $ResultScan = null)
+    public function __construct(?Client $Client = null, ?ResultScan $ResultScan = null)
     {
         $this->Client = $Client ?: new Client(['redirect' => true]);
         $this->ResultScan = $ResultScan ?: new ResultScan();

@@ -17,6 +17,7 @@ parameters:
         -  tests/test_app/
 
     ignoreErrors:
+        - '#^Ternary operator condition is always true\.$#'
         - '#^Call to an undefined (static )?method (Cake|Psr|Traversable|Tools\\Exceptionist)#'
         - '#^Parameter \#1 \$\w+ of function call_user_func_array expects callable\(\): mixed#'
         - '#^Cannot call method \w+\(\) on Cake\\Event\\EventList\|null\.$#'
