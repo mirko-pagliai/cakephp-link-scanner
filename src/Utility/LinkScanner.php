@@ -434,12 +434,12 @@ class LinkScanner implements Serializable
         try {
             $instance = unserialize(file_get_contents($filename) ?: '');
         } catch (Exception $e) {
-            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', '', $e->getMessage());
+            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', '', $e->getMessage()) ?: '';
             throw new RuntimeException(__d(
                 'link-scanner',
                 'Failed to import results from file `{0}` with message `{1}`',
                 $filename,
-                $message
+                lcfirst($message)
             ));
         }
 

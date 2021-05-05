@@ -1,5 +1,8 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.6
+* ready for `php` 8.
+
 ### 1.1.5
 * added `TestCase::getClientReturnsRedirect()` method;
 * extensive improvement of function descriptions and tags. The level of `phpstan`
