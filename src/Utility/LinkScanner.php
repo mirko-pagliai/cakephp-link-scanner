@@ -115,7 +115,7 @@ class LinkScanner implements Serializable
      * @uses $Client
      * @uses $ResultScan
      */
-    public function __construct($Client = null, ?ResultScan $ResultScan = null)
+    public function __construct(?Client $Client = null, ?ResultScan $ResultScan = null)
     {
         $this->Client = $Client ?: new Client(['redirect' => true]);
         $this->ResultScan = $ResultScan ?: new ResultScan();
@@ -434,12 +434,12 @@ class LinkScanner implements Serializable
         try {
             $instance = unserialize(file_get_contents($filename) ?: '');
         } catch (Exception $e) {
-            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', '', $e->getMessage());
+            $message = preg_replace('/^file_get_contents\([\/\w\d:\-\\\\]+\): /', '', $e->getMessage()) ?: '';
             throw new RuntimeException(__d(
                 'link-scanner',
                 'Failed to import results from file `{0}` with message `{1}`',
                 $filename,
-                $message
+                lcfirst($message)
             ));
         }
 
