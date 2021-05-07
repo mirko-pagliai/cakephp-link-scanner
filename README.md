@@ -24,17 +24,6 @@ You can install the plugin via composer:
 $ composer require --prefer-dist mirko-pagliai/cakephp-link-scanner
 ```
 
-**NOTE: the latest version available requires at least CakePHP 4**.
-
-Instead, the [cakephp3](//github.com/mirko-pagliai/cakephp-link-scanner/tree/cakephp3)
-branch is compatible with all previous versions of CakePHP from version 3.7.1.
-This branch coincides with the current version of *cakephp-link-scanner*.
-
-In this case, you can install the package as well:
-
-```bash
-$ composer require --prefer-dist mirko-pagliai/cakephp-link-scanner:dev-cakephp3
-
 Then you have to load the plugin. For more information on how to load the plugin,
 please refer to the [Cookbook](//book.cakephp.org/4.0/en/plugins.html#loading-a-plugin).
 
