@@ -44,6 +44,20 @@ bin/cake plugin load LinkScanner
 ```
 This would update your application's bootstrap method.
 
+### Installation on older CakePHP and PHP versions
+Recent packages and the master branch require at least CakePHP 4.0 and PHP 7.2.
+Instead, the [cakephp3](//github.com/mirko-pagliai/cakephp-link-scanner/tree/cakephp3) branch
+requires at least PHP 5.6.
+
+In this case, you can install the package as well:
+```bash
+$ composer require --prefer-dist mirko-pagliai/cakephp-link-scanner:dev-cakephp3
+```
+
+Note that the `cakephp3` branch will no longer be updated as of May 7, 2021,
+except for security patches, and it matches the
+[1.1.6](//github.com/mirko-pagliai/cakephp-link-scanner/releases/tag/1.1.6) version.
+
 ## Configuration
 It's not essential, but it may be useful to set the `App.fullBaseUrl` value
 correctly [refer to the Cookbook](//book.cakephp.org/4.0/en/development/configuration.html#general-configuration),
