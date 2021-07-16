@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace LinkScanner\Test;
 
+use BadMethodCallException;
 use LinkScanner\ScanEntity;
 use LinkScanner\TestSuite\TestCase;
 use Tools\Exception\KeyNotExistsException;
@@ -73,6 +74,10 @@ class ScanEntityTest extends TestCase
             $this->ScanEntity->set('code', $code);
             $this->assertEquals($expectedValue, $this->ScanEntity->isRedirect());
         }
+
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Method `noExistingMethod()` does not exist');
+        $this->ScanEntity->noExistingMethod(1);
     }
 
     /**

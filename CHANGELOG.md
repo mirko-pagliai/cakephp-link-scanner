@@ -1,5 +1,8 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.7
+* fixed bug for `ScanEntity` when calling non-existent magic methods.
+
 ### 1.1.6
 * ready for `php` 8.
 

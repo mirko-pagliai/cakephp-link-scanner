@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace LinkScanner;
 
+use BadMethodCallException;
 use Cake\Http\Client\Response;
 use Tools\Entity;
 use Tools\Exceptionist;
@@ -48,6 +49,7 @@ class ScanEntity extends Entity
      * @param mixed $arguments Method arguments
      * @return mixed
      * @see \Cake\Http\Client\Response
+     * @thrown \BadMethodCallException
      */
     public function __call(string $name, $arguments)
     {
@@ -56,6 +58,10 @@ class ScanEntity extends Entity
                 ->withHeader('location', $this->get('location'))
                 ->withStatus($this->get('code'));
             $name = [$response, $name];
+        }
+
+        if (!is_callable($name)) {
+            throw new BadMethodCallException('Method `' . implode(':', (array)$name) . '()` does not exist');
         }
 
         return call_user_func_array($name, $arguments);
