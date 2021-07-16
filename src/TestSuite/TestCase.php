@@ -59,7 +59,7 @@ abstract class TestCase extends BaseTestCase
      */
     public function assertEventNotFired(string $name, ?EventManager $eventManager = null): void
     {
-        $eventList = ($eventManager ?: EventManager::instance())->getEventList() ?: new EventList;
+        $eventList = ($eventManager ?: EventManager::instance())->getEventList() ?: new EventList();
         $eventHasFired = $eventList->hasEvent($name);
 
         $this->assertFalse($eventHasFired, sprintf('Failed asserting that \'%s\' was not fired.', $name));
