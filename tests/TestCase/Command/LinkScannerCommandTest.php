@@ -32,7 +32,7 @@ class LinkScannerCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     /**
-     * @var \LinkScanner\Utility\LinkScanner
+     * @var \LinkScanner\Utility\LinkScanner|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $LinkScanner;
 
@@ -66,7 +66,7 @@ class LinkScannerCommandTest extends TestCase
      * Test for `scan()` method
      * @test
      */
-    public function testScan()
+    public function testScan(): void
     {
         $expectedConfig = ['maxDepth' => 1] + $this->LinkScanner->getConfig();
         $this->Command->run(['--max-depth=1'], $this->io);
@@ -108,7 +108,7 @@ class LinkScannerCommandTest extends TestCase
      * Test for `scan()` method, with cache enabled
      * @test
      */
-    public function testScanCacheEnabled()
+    public function testScanCacheEnabled(): void
     {
         $this->Command->run(['--verbose'], $this->io);
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
@@ -119,7 +119,7 @@ class LinkScannerCommandTest extends TestCase
      * Test for `scan()` method, with some parameters
      * @test
      */
-    public function testScanParams()
+    public function testScanParams(): void
     {
         touch($this->Command->LinkScanner->lockFile);
         $params = [
@@ -238,7 +238,7 @@ class LinkScannerCommandTest extends TestCase
      * Test for `scan()` method, with verbose
      * @test
      */
-    public function testScanVerbose()
+    public function testScanVerbose(): void
     {
         $this->Command->run(['--no-cache', '--verbose'], $this->io);
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
@@ -271,7 +271,7 @@ class LinkScannerCommandTest extends TestCase
      * Test for `buildOptionParser()` method
      * @test
      */
-    public function testBuildOptionParser()
+    public function testBuildOptionParser(): void
     {
         $parser = $this->invokeMethod($this->Command, 'buildOptionParser', [new ConsoleOptionParser()]);
         $this->assertInstanceOf(ConsoleOptionParser::class, $parser);

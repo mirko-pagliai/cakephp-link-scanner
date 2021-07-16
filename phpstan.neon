@@ -1,3 +1,6 @@
+includes:
+    - phpstan-baseline.neon
+
 parameters:
     level: 8
 
@@ -17,10 +20,7 @@ parameters:
         -  tests/test_app/
 
     ignoreErrors:
-        - '#^Ternary operator condition is always true\.$#'
         - '#^Call to an undefined (static )?method (Cake|Psr|Traversable|Tools\\Exceptionist)#'
-        - '#^Parameter \#1 \$\w+ of function call_user_func_array expects callable\(\): mixed#'
-        - '#^Cannot call method \w+\(\) on Cake\\Event\\EventList\|null\.$#'
         - '#^Access to protected property LinkScanner\\Utility\\LinkScanner::\$Client\.$#'
 
         -
@@ -29,10 +29,6 @@ parameters:
 
         -
             message: '#^(Access|Call) to (an undefined|protected) (property|method)#'
-            path: tests/TestCase
-
-        -
-            message: '# has no return typehint specified\.$#'
             path: tests/TestCase
 
         -

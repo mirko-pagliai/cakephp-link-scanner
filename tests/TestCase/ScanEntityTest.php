@@ -51,7 +51,7 @@ class ScanEntityTest extends TestCase
      * Test for `__call()`
      * @test
      */
-    public function testCall()
+    public function testCall(): void
     {
         $statusCodes = [
             200 => true,
@@ -79,7 +79,7 @@ class ScanEntityTest extends TestCase
      * Test for `__construct()` method
      * @test
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->expectException(KeyNotExistsException::class);
         $this->expectExceptionMessage('Key `code` does not exist');

@@ -23,6 +23,7 @@ use MeTools\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
 
 /**
  * A trait intended to make integration tests of your controllers easier
+ * @property \Cake\Http\Response|\Cake\Http\Client\Response $_response
  */
 trait IntegrationTestTrait
 {
