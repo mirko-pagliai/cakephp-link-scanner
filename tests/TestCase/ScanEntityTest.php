@@ -77,6 +77,7 @@ class ScanEntityTest extends TestCase
 
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Method `noExistingMethod()` does not exist');
+        /** @phpstan-ignore-next-line */
         $this->ScanEntity->noExistingMethod(1);
     }
 

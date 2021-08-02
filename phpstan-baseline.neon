@@ -5,3 +5,53 @@ parameters:
 			count: 1
 			path: src/Command/LinkScannerCommand.php
 
+		-
+			message: "#^Call to an undefined static method Tools\\\\Exceptionist\\:\\:isUrl\\(\\)\\.$#"
+			count: 1
+			path: src/Utility/LinkScanner.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$hostname\\.$#"
+			count: 1
+			path: tests/TestCase/Command/LinkScannerCommandTest.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$lockFile\\.$#"
+			count: 2
+			path: tests/TestCase/Command/LinkScannerCommandTest.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$startTime\\.$#"
+			count: 1
+			path: tests/TestCase/Command/LinkScannerCommandTest.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner&PHPUnit\\\\Framework\\\\MockObject\\\\MockObject\\:\\:\\$ResultScan\\.$#"
+			count: 12
+			path: tests/TestCase/Utility/LinkScannerTest.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner&PHPUnit\\\\Framework\\\\MockObject\\\\MockObject\\:\\:\\$lockFile\\.$#"
+			count: 2
+			path: tests/TestCase/Utility/LinkScannerTest.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$ResultScan\\.$#"
+			count: 12
+			path: tests/TestCase/Utility/LinkScannerTest.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$endTime\\.$#"
+			count: 1
+			path: tests/TestCase/Utility/LinkScannerTest.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$hostname\\.$#"
+			count: 1
+			path: tests/TestCase/Utility/LinkScannerTest.php
+
+		-
+			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$startTime\\.$#"
+			count: 2
+			path: tests/TestCase/Utility/LinkScannerTest.php
+

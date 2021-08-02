@@ -21,6 +21,8 @@ use Tools\Exceptionist;
 
 /**
  * A `ScanEntity` represents a single result of a scan
+ * @method bool isRedirect()
+ * @method bool isSuccess()
  */
 class ScanEntity extends Entity
 {

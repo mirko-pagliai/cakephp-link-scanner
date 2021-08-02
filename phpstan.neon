@@ -18,19 +18,3 @@ parameters:
 
     excludes_analyse:
         -  tests/test_app/
-
-    ignoreErrors:
-        - '#^Call to an undefined (static )?method (Cake|Psr|Traversable|Tools\\Exceptionist)#'
-        - '#^Access to protected property LinkScanner\\Utility\\LinkScanner::\$Client\.$#'
-
-        -
-            message: '#does not accept Cake\\Collection\\CollectionInterface\.$#'
-            path: src/Utility/LinkScanner.php
-
-        -
-            message: '#^(Access|Call) to (an undefined|protected) (property|method)#'
-            path: tests/TestCase
-
-        -
-            message: '#(Cake\\Event\\EventManagerInterface|PHPUnit\\Framework\\MockObject\\MockObject) given\.$#'
-            path: tests/TestCase

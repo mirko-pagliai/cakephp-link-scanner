@@ -68,10 +68,11 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns a stub of `Client`, where the `get()` method always returns a
      *  response with error (404 status code)
-     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
+     * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
-    protected function getClientReturnsErrorResponse(): object
+    protected function getClientReturnsErrorResponse(): Client
     {
+        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
@@ -123,10 +124,11 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns a stub of `Client`, where the `get()` method returns a sample
      *  response which is read from `examples/responses` files
-     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
+     * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
-    protected function getClientReturnsSampleResponse(): object
+    protected function getClientReturnsSampleResponse(): Client
     {
+        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();

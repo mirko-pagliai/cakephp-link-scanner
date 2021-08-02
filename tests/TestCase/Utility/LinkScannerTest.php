@@ -40,7 +40,7 @@ class LinkScannerTest extends TestCase
     protected $EventManager;
 
     /**
-     * @var \LinkScanner\Utility\LinkScanner|\PHPUnit\Framework\MockObject\MockObject
+     * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
      */
     protected $LinkScanner;
 
@@ -149,6 +149,7 @@ class LinkScannerTest extends TestCase
         }
 
         //`Client::get()` method throws an exception
+        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
@@ -299,6 +300,7 @@ class LinkScannerTest extends TestCase
             $this->assertStringStartsWith('text/html', $item->get('type'));
         }
 
+        /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setMethods(['_recursiveScan'])
             ->getMock();
