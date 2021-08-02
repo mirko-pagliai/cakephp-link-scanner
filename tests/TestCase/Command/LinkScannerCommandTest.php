@@ -26,13 +26,14 @@ use MeTools\TestSuite\ConsoleIntegrationTestTrait;
 
 /**
  * LinkScannerCommandTest class
+ * @property \LinkScanner\Command\LinkScannerCommand $Command
  */
 class LinkScannerCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
     /**
-     * @var \LinkScanner\Utility\LinkScanner
+     * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
      */
     protected $LinkScanner;
 
@@ -40,6 +41,11 @@ class LinkScannerCommandTest extends TestCase
      * @var string
      */
     protected $fullBaseUrl = 'http://google.com';
+
+    /**
+     * @var \Cake\Console\ConsoleIo
+     */
+    protected $_io;
 
     /**
      * Called before every test method
@@ -55,8 +61,8 @@ class LinkScannerCommandTest extends TestCase
 
         $this->_out = new ConsoleOutput();
         $this->_err = new ConsoleOutput();
-        $this->io = new ConsoleIo($this->_out, $this->_err);
-        $this->io->level(2);
+        $this->_io = new ConsoleIo($this->_out, $this->_err);
+        $this->_io->level(2);
 
         $this->Command = new LinkScannerCommand();
         $this->Command->LinkScanner = $this->LinkScanner;
@@ -66,10 +72,10 @@ class LinkScannerCommandTest extends TestCase
      * Test for `scan()` method
      * @test
      */
-    public function testScan()
+    public function testScan(): void
     {
         $expectedConfig = ['maxDepth' => 1] + $this->LinkScanner->getConfig();
-        $this->Command->run(['--max-depth=1'], $this->io);
+        $this->Command->run(['--max-depth=1'], $this->_io);
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
 
@@ -100,7 +106,7 @@ class LinkScannerCommandTest extends TestCase
         //With an error response (404 status code)
         $this->Command->LinkScanner = new LinkScanner($this->getClientReturnsErrorResponse());
         $this->Command->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
-        $this->Command->run(['--verbose'], $this->io);
+        $this->Command->run(['--verbose'], $this->_io);
         $this->assertErrorContains('404');
     }
 
@@ -108,9 +114,9 @@ class LinkScannerCommandTest extends TestCase
      * Test for `scan()` method, with cache enabled
      * @test
      */
-    public function testScanCacheEnabled()
+    public function testScanCacheEnabled(): void
     {
-        $this->Command->run(['--verbose'], $this->io);
+        $this->Command->run(['--verbose'], $this->_io);
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
         $this->assertOutputContains(sprintf('The cache is enabled and its duration is `%s`', $expectedDuration));
     }
@@ -119,7 +125,7 @@ class LinkScannerCommandTest extends TestCase
      * Test for `scan()` method, with some parameters
      * @test
      */
-    public function testScanParams()
+    public function testScanParams(): void
     {
         touch($this->Command->LinkScanner->lockFile);
         $params = [
@@ -130,7 +136,7 @@ class LinkScannerCommandTest extends TestCase
             '--verbose',
         ];
         $expectedConfig = ['maxDepth' => 2, 'lockFile' => false] + $this->LinkScanner->getConfig();
-        $this->Command->run($params, $this->io);
+        $this->Command->run($params, $this->_io);
 
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
         $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
@@ -152,7 +158,7 @@ class LinkScannerCommandTest extends TestCase
 
         //With disabled cache
         $params[] = '--no-cache';
-        $this->Command->run($params, $this->io);
+        $this->Command->run($params, $this->_io);
         $this->assertOutputContains('The cache is disabled');
         $this->assertEquals(['cache' => false] + $expectedConfig, $this->LinkScanner->getConfig());
 
@@ -160,7 +166,7 @@ class LinkScannerCommandTest extends TestCase
         array_pop($params);
         $params[] = '--full-base-url=http://anotherFullBaseUrl';
         self::setUp();
-        $this->Command->run($params, $this->io);
+        $this->Command->run($params, $this->_io);
         $expectedConfig['fullBaseUrl'] = 'http://anotherFullBaseUrl';
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
@@ -168,7 +174,7 @@ class LinkScannerCommandTest extends TestCase
 
         //Exports only bad results
         self::setUp();
-        $this->Command->run(array_merge($params, ['--export-only-bad-results']), $this->io);
+        $this->Command->run(array_merge($params, ['--export-only-bad-results']), $this->_io);
         $this->assertEquals(['exportOnlyBadResults' => true] + $expectedConfig, $this->LinkScanner->getConfig());
 
         //Disables external links
@@ -176,7 +182,7 @@ class LinkScannerCommandTest extends TestCase
         $params = array_merge($params, ['--full-base-url=' . $this->fullBaseUrl, '--no-external-links']);
 
         self::setUp();
-        $this->Command->run($params, $this->io);
+        $this->Command->run($params, $this->_io);
         $expectedConfig['externalLinks'] = false;
         $expectedConfig['fullBaseUrl'] = $this->fullBaseUrl;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
@@ -192,7 +198,7 @@ class LinkScannerCommandTest extends TestCase
         //Re-enables external links
         array_pop($params);
         self::setUp();
-        $this->Command->run($params, $this->io);
+        $this->Command->run($params, $this->_io);
         $expectedConfig['externalLinks'] = true;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertNotEmpty(array_filter($this->_out->messages(), $differentLines));
@@ -205,7 +211,7 @@ class LinkScannerCommandTest extends TestCase
             array_shift($params);
             array_unshift($params, '--export-with-filename=' . $filename);
 
-            $this->Command->run($params, $this->io);
+            $this->Command->run($params, $this->_io);
             $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
             $this->assertFileExists($expectedExportFile);
             $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
@@ -214,15 +220,17 @@ class LinkScannerCommandTest extends TestCase
         }
 
         //Enables follow redirects
-        $this->LinkScanner = $this->getMockBuilder(LinkScanner::class)
+        /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs([$this->getClientReturnsRedirect()])
             ->setMethods(['_createLockFile'])
             ->getMock();
+        $this->LinkScanner = $LinkScanner;
 
         $this->Command->LinkScanner = $this->LinkScanner;
         $this->getEventManager();
         array_pop($params);
-        $this->Command->run(array_merge($params, ['--follow-redirects', '--no-cache']), $this->io);
+        $this->Command->run(array_merge($params, ['--follow-redirects', '--no-cache']), $this->_io);
         $this->assertEventFired('LinkScanner.foundRedirect', $this->LinkScanner->getEventManager());
         $this->assertTrue($this->LinkScanner->getConfig()['followRedirects']);
         $this->assertOutputContains('Redirects will be followed');
@@ -231,16 +239,16 @@ class LinkScannerCommandTest extends TestCase
 
         //With an invalid full base url
         $this->expectException(StopException::class);
-        $this->Command->run(['--full-base-url=invalid'], $this->io);
+        $this->Command->run(['--full-base-url=invalid'], $this->_io);
     }
 
     /**
      * Test for `scan()` method, with verbose
      * @test
      */
-    public function testScanVerbose()
+    public function testScanVerbose(): void
     {
-        $this->Command->run(['--no-cache', '--verbose'], $this->io);
+        $this->Command->run(['--no-cache', '--verbose'], $this->_io);
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
         $this->assertOutputContains('The cache is disabled');
         $this->assertOutputContains('Force mode is not enabled');
@@ -271,7 +279,7 @@ class LinkScannerCommandTest extends TestCase
      * Test for `buildOptionParser()` method
      * @test
      */
-    public function testBuildOptionParser()
+    public function testBuildOptionParser(): void
     {
         $parser = $this->invokeMethod($this->Command, 'buildOptionParser', [new ConsoleOptionParser()]);
         $this->assertInstanceOf(ConsoleOptionParser::class, $parser);

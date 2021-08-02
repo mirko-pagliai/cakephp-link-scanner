@@ -23,6 +23,7 @@ use MeTools\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
 
 /**
  * A trait intended to make integration tests of your controllers easier
+ * @property \Cake\Http\Response|\Cake\Http\Client\Response $_response
  */
 trait IntegrationTestTrait
 {
@@ -68,14 +69,15 @@ trait IntegrationTestTrait
      *  method uses the `IntegrationTestTrait::get()` method and allows you to
      *  get responses from the test app
      * @param string|array|null $fullBaseUrl Full base url
-     * @return \LinkScanner\Utility\LinkScanner|\PHPUnit\Framework\MockObject\MockObject
+     * @return \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject
      * @uses getClientReturnsFromTests()
      */
-    protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null): object
+    protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null): LinkScanner
     {
         $fullBaseUrl = $fullBaseUrl ?: Configure::read('App.fullBaseUrl', 'http://localhost');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);
 
+        /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs([$this->getClientReturnsFromTests()])
             ->setMethods(['_createLockFile'])

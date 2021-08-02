@@ -48,7 +48,7 @@ class ResultScanTest extends TestCase
      * Test for `__construct()` method
      * @test
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $expected = [
             new ScanEntity([
@@ -71,7 +71,7 @@ class ResultScanTest extends TestCase
      * Test for `append()` method
      * @test
      */
-    public function testAppend()
+    public function testAppend(): void
     {
         $appended = [
             new ScanEntity([
@@ -103,7 +103,7 @@ class ResultScanTest extends TestCase
      * Test for `prepend()` method
      * @test
      */
-    public function testPrepend()
+    public function testPrepend(): void
     {
         $prepended = [
             new ScanEntity([
@@ -129,7 +129,7 @@ class ResultScanTest extends TestCase
      * Test for `serialize()` and `unserialize()` methods
      * @test
      */
-    public function testSerializeAndUnserialize()
+    public function testSerializeAndUnserialize(): void
     {
         $result = unserialize(serialize($this->ResultScan));
         $this->assertInstanceof(ResultScan::class, $result);

@@ -35,6 +35,7 @@ use Zend\Diactoros\Stream;
 
 /**
  * A link scanner
+ * @method \Cake\Event\EventManager getEventManager()
  */
 class LinkScanner implements Serializable
 {
@@ -42,14 +43,13 @@ class LinkScanner implements Serializable
     use InstanceConfigTrait;
 
     /**
-     * Instance of `Client`
      * @var \Cake\Http\Client
      */
-    protected $Client;
+    public $Client;
 
     /**
      * Instance of `ResultScan`. This contains the results of the scan
-     * @var \LinkScanner\ResultScan
+     * @var \LinkScanner\ResultScan|\Cake\Collection\CollectionInterface
      */
     protected $ResultScan;
 

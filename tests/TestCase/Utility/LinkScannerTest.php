@@ -16,6 +16,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure\Engine\PhpConfig;
+use Cake\Event\EventList;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
@@ -39,7 +40,7 @@ class LinkScannerTest extends TestCase
     protected $EventManager;
 
     /**
-     * @var \LinkScanner\Utility\LinkScanner|\PHPUnit\Framework\MockObject\MockObject
+     * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
      */
     protected $LinkScanner;
 
@@ -74,7 +75,7 @@ class LinkScannerTest extends TestCase
      * Test for `__construct()` method
      * @test
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $config = [
             'cache' => false,
@@ -95,7 +96,7 @@ class LinkScannerTest extends TestCase
      * Test for `_getResponse()` method
      * @test
      */
-    public function testGetResponse()
+    public function testGetResponse(): void
     {
         $getResponseMethod = function (string $url): Response {
             return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
@@ -148,6 +149,7 @@ class LinkScannerTest extends TestCase
         }
 
         //`Client::get()` method throws an exception
+        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
         $Client = $this->getMockBuilder(Client::class)
             ->setMethods(['get'])
             ->getMock();
@@ -163,7 +165,7 @@ class LinkScannerTest extends TestCase
      * Test for `export()` method
      * @test
      */
-    public function testExport()
+    public function testExport(): void
     {
         $this->LinkScanner->setConfig('maxDepth', 1)->scan();
         $target = $this->LinkScanner->getConfig('target');
@@ -179,7 +181,7 @@ class LinkScannerTest extends TestCase
             $this->assertEquals($expectedFilename, $result);
             $this->assertEventFired('LinkScanner.resultsExported', $this->EventManager);
 
-            $this->EventManager->getEventList()->flush();
+            ($this->EventManager->getEventList() ?: new EventList())->flush();
         }
 
         //Without the scan being performed
@@ -192,7 +194,7 @@ class LinkScannerTest extends TestCase
      * Test for `import()` method
      * @test
      */
-    public function testImport()
+    public function testImport(): void
     {
         $this->LinkScanner->Client->setConfig('timeout', 100);
         $this->LinkScanner->setConfig('externalLinks', false)->setConfig('maxDepth', 1)->scan();
@@ -207,8 +209,8 @@ class LinkScannerTest extends TestCase
         //  both event lists, so that the objects comparison will run
         $this->assertEventNotFired('LinkScanner.resultsImported', $this->EventManager);
         $this->assertEventFired('LinkScanner.resultsImported', $this->getEventManager($result));
-        $this->EventManager->getEventList()->flush();
-        $this->getEventManager($result)->getEventList()->flush();
+        ($this->EventManager->getEventList() ?: new EventList())->flush();
+        ($this->getEventManager($result)->getEventList() ?: new EventList())->flush();
 
         //Gets properties from both client, fixes properties of the `Client`
         //  instances and performs the comparison
@@ -231,7 +233,7 @@ class LinkScannerTest extends TestCase
      * Test for `scan()` method
      * @test
      */
-    public function testScan()
+    public function testScan(): void
     {
         $result = $this->LinkScanner->setConfig('maxDepth', 2)->scan();
 
@@ -298,6 +300,7 @@ class LinkScannerTest extends TestCase
             $this->assertStringStartsWith('text/html', $item->get('type'));
         }
 
+        /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setMethods(['_recursiveScan'])
             ->getMock();
@@ -318,7 +321,7 @@ class LinkScannerTest extends TestCase
      * Test for `scan()` method, from tests
      * @test
      */
-    public function testScanFromTests()
+    public function testScanFromTests(): void
     {
         //Sets events. They will add some output to the `$this->debug` property
         $this->getEventManager()->instance()
@@ -439,7 +442,7 @@ class LinkScannerTest extends TestCase
      * Test for `scan()` method, with no other links to scan
      * @test
      */
-    public function testScanNoOtherLinks()
+    public function testScanNoOtherLinks(): void
     {
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests('http://localhost/pages/nolinks');
 
@@ -450,7 +453,7 @@ class LinkScannerTest extends TestCase
      * Test for `scan()` method, with a response that is not ok
      * @test
      */
-    public function testScanResponseNotOk()
+    public function testScanResponseNotOk(): void
     {
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests('http://localhost/noExisting');
         $EventManager = $this->getEventManager($LinkScanner);
