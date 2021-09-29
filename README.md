@@ -1,9 +1,9 @@
 # LinkScanner plugin
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
-[![Build Status](https://api.travis-ci.org/mirko-pagliai/cakephp-link-scanner.svg?branch=master)](https://travis-ci.org/mirko-pagliai/cakephp-link-scanner)
-[![Build status](https://ci.appveyor.com/api/projects/status/hqk7fxtad6r75wk3?svg=true)](https://ci.appveyor.com/project/mirko-pagliai/cakephp-link-scanner)
+[![CI](https://github.com/mirko-pagliai/cakephp-link-scanner/actions/workflows/ci.yml/badge.svg)](https://github.com/mirko-pagliai/cakephp-link-scanner/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner/branch/master/graph/badge.svg)](https://codecov.io/gh/mirko-pagliai/cakephp-link-scanner)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/519cd9567f2848b68ed3df0f58f6cfc5)](https://www.codacy.com/gh/mirko-pagliai/cakephp-link-scanner/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mirko-pagliai/cakephp-link-scanner&amp;utm_campaign=Badge_Grade)
 [![CodeFactor](https://www.codefactor.io/repository/github/mirko-pagliai/cakephp-link-scanner/badge)](https://www.codefactor.io/repository/github/mirko-pagliai/cakephp-link-scanner)
 
 *LinkScanner* is a CakePHP plugin for recursively scanning links: starting from
