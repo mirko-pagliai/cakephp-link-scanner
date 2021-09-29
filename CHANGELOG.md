@@ -1,5 +1,9 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.8
+* fixed little bug for `LinkScanner::import()`, in catching exception messages;
+* migration to github actions.
+
 ### 1.1.7
 * fixed bug for `ScanEntity` when calling non-existent magic methods;
 * extensive improvement of function descriptions and tags.
