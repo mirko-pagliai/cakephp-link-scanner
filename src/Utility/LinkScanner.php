@@ -26,6 +26,7 @@ use Exception;
 use InvalidArgumentException;
 use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
+use PHPUnit\Framework\Exception as PHPUnitException;
 use RuntimeException;
 use Serializable;
 use Tools\BodyParser;
@@ -227,6 +228,8 @@ class LinkScanner implements Serializable
             if ($this->getConfig('cache') && ($response->isOk() || $response->isRedirect())) {
                 Cache::write($cacheKey, [$response, (string)$response->getBody()], 'LinkScanner');
             }
+        } catch (PHPUnitException $e) {
+            throw $e;
         } catch (Exception $e) {
             $response = (new Response())->withStatus(404);
         }

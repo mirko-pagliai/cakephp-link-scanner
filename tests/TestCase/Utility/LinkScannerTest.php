@@ -24,6 +24,7 @@ use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
+use PHPUnit\Framework\Error\Deprecated;
 use RuntimeException;
 use Zend\Diactoros\Stream;
 
@@ -158,6 +159,12 @@ class LinkScannerTest extends TestCase
         $this->LinkScanner = new LinkScanner($Client);
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->assertEquals(404, $getResponseMethod('/noExisting')->getStatusCode());
+
+        //Does not suppress PHPUnit exceptions, which are throwned anyway
+        $this->expectDeprecation();
+        $Client->method('get')->will($this->throwException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__)));
+        $this->LinkScanner = new LinkScanner($Client);
+        $getResponseMethod('/noExisting');
     }
 
     /**

@@ -18,11 +18,13 @@ use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
+use Cake\Http\Client;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\ConsoleIntegrationTestTrait;
+use PHPUnit\Framework\Error\Deprecated;
 
 /**
  * LinkScannerCommandTest class
@@ -108,6 +110,16 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->Command->run(['--verbose'], $this->_io);
         $this->assertErrorContains('404');
+
+        //Does not suppress PHPUnit exceptions, which are throwned anyway
+        $this->expectDeprecation();
+        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
+        $Client = $this->getMockBuilder(Client::class)
+            ->setMethods(['get'])
+            ->getMock();
+        $Client->method('get')->will($this->throwException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__)));
+        $this->Command->LinkScanner = new LinkScanner($Client);
+        $this->Command->run(['--verbose'], $this->_io);
     }
 
     /**
