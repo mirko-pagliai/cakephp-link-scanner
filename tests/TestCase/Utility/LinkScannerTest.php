@@ -25,7 +25,6 @@ use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 use PHPUnit\Framework\Error\Deprecated;
 use RuntimeException;
-use Zend\Diactoros\Stream;
 
 /**
  * LinkScannerTest class
@@ -107,10 +106,7 @@ class LinkScannerTest extends TestCase
             if ($response && is_array($response)) {
                 [$response, $body] = $response;
 
-                $stream = new Stream('php://memory', 'wb+');
-                $stream->write($body);
-                $stream->rewind();
-                $response = $response->withBody($stream);
+                $response = $this->getResponseWithBody($body, $response);
             }
 
             return $response;
