@@ -178,7 +178,7 @@ class LinkScanner implements Serializable
             $this->lockFile
         ), RuntimeException::class);
 
-        return $this->getConfig('lockFile') ? (new Filesystem())->createFile($this->lockFile) : true;
+        return $this->getConfig('lockFile') ? Filesystem::instance()->createFile($this->lockFile) : true;
     }
 
     /**
@@ -189,7 +189,7 @@ class LinkScanner implements Serializable
      */
     protected function _getAbsolutePath(string $filename): string
     {
-        return (new Filesystem())->makePathAbsolute($filename, $this->getConfig('target'));
+        return Filesystem::instance()->makePathAbsolute($filename, $this->getConfig('target'));
     }
 
     /**
@@ -408,7 +408,7 @@ class LinkScanner implements Serializable
         }
 
         $filename = $this->_getAbsolutePath($filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime));
-        (new Filesystem())->createFile($filename, serialize($this));
+        Filesystem::instance()->createFile($filename, serialize($this));
         $this->dispatchEvent('LinkScanner.resultsExported', [$filename]);
 
         return $filename;
