@@ -131,7 +131,6 @@ class LinkScannerTest extends TestCase
 
         $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $this->LinkScanner->setConfig('cache', true);
-
         foreach ([
             'http://localhost/pages/nolinks' => 200,
             'http://localhost/pages/home' => 200,

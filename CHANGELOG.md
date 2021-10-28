@@ -1,5 +1,8 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.9
+* ready for `cakephp` 4.3.
+
 ### 1.1.8
 * fixed little bug for `LinkScanner::import()`, in catching exception messages;
 * migration to github actions.
