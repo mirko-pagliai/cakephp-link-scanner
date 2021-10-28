@@ -66,19 +66,30 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
+     * Returns a stub of `Client`
+     * @param array $methods Methods to mock
+     * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected function getClientStub(array $methods = ['get']): Client
+    {
+        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
+        $Client = $this->getMockBuilder(Client::class)
+            ->setMethods($methods)
+            ->getMock();
+
+        return $Client;
+    }
+
+    /**
      * Returns a stub of `Client`, where the `get()` method always returns a
      *  response with error (404 status code)
      * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getClientReturnsErrorResponse(): Client
     {
-        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
-        $Client = $this->getMockBuilder(Client::class)
-            ->setMethods(['get'])
-            ->getMock();
-
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
+        $Client = $this->getClientStub();
         $Client->method('get')->will($this->returnValue($this->getResponseWithBody('')->withStatus(404)));
 
         return $Client;
@@ -92,10 +103,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getClientReturnsRedirect(): object
     {
-        $Client = $this->getMockBuilder(Client::class)
-            ->setMethods(['get'])
-            ->getMock();
-
+        $Client = $this->getClientStub();
         $Client->method('get')->will($this->returnCallback(function (string $url): Response {
             switch ($url) {
                 case 'http://localhost/aPageWithRedirect':
@@ -128,11 +136,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getClientReturnsSampleResponse(): Client
     {
-        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
-        $Client = $this->getMockBuilder(Client::class)
-            ->setMethods(['get'])
-            ->getMock();
-
+        $Client = $this->getClientStub();
         $Client->method('get')->will($this->returnCallback(function (string $url): Response {
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';

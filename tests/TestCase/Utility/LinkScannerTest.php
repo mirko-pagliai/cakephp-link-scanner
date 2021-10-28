@@ -17,7 +17,6 @@ namespace LinkScanner\Test\TestCase\Utility;
 use Cake\Cache\Cache;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Event\EventList;
-use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
 use LinkScanner\ResultScan;
@@ -149,11 +148,7 @@ class LinkScannerTest extends TestCase
         }
 
         //`Client::get()` method throws an exception
-        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
-        $Client = $this->getMockBuilder(Client::class)
-            ->setMethods(['get'])
-            ->getMock();
-
+        $Client = $this->getClientStub();
         $Client->method('get')->will($this->throwException(new Exception()));
 
         $this->LinkScanner = new LinkScanner($Client);

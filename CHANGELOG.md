@@ -4,6 +4,7 @@
 * `LinkScanner::_getResponse()` and `LinkScannerCommand::execute()` does not
     suppress PHPUnit exceptions (e.g., the `Deprecated` exception), which are
     throwned anyway;
+* added `TestCase::getClientStub()`. This simplifies testing;
 * ready for `cakephp` 4.3.
 
 ### 1.1.8

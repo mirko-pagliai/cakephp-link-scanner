@@ -18,7 +18,6 @@ use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
-use Cake\Http\Client;
 use Cake\TestSuite\Stub\ConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
@@ -113,10 +112,7 @@ class LinkScannerCommandTest extends TestCase
 
         //Does not suppress PHPUnit exceptions, which are throwned anyway
         $this->expectDeprecation();
-        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
-        $Client = $this->getMockBuilder(Client::class)
-            ->setMethods(['get'])
-            ->getMock();
+        $Client = $this->getClientStub();
         $Client->method('get')->will($this->throwException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__)));
         $this->Command->LinkScanner = new LinkScanner($Client);
         $this->Command->run(['--verbose'], $this->_io);
@@ -275,11 +271,11 @@ class LinkScannerCommandTest extends TestCase
             next($messages);
         }
 
-        $this->assertMatchesRegularExpression('/^\-+$/', current($messages));
-        $this->assertMatchesRegularExpression('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
-        $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages));
-        $this->assertMatchesRegularExpression('/^Total scanned links: \d+$/', next($messages));
-        $this->assertMatchesRegularExpression('/^\-+$/', next($messages));
+        $this->assertMatchesRegularExpression('/^\-+$/', current($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^Total scanned links: \d+$/', next($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^\-+$/', next($messages) ?: '');
 
         //Removes already checked lines and checks intermediate lines
         foreach (array_slice($messages, 9, -5) as $message) {
