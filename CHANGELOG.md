@@ -1,5 +1,12 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.9
+* `LinkScanner::_getResponse()` and `LinkScannerCommand::execute()` does not
+    suppress PHPUnit exceptions (e.g., the `Deprecated` exception), which are
+    throwned anyway;
+* added `TestCase::getClientStub()`. This simplifies testing;
+* ready for `cakephp` 4.3.
+
 ### 1.1.8
 * fixed little bug for `LinkScanner::import()`, in catching exception messages;
 * migration to github actions.

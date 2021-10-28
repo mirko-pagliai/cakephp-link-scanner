@@ -17,15 +17,14 @@ namespace LinkScanner\Test\TestCase\Utility;
 use Cake\Cache\Cache;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Event\EventList;
-use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
 use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
+use PHPUnit\Framework\Error\Deprecated;
 use RuntimeException;
-use Zend\Diactoros\Stream;
 
 /**
  * LinkScannerTest class
@@ -107,10 +106,7 @@ class LinkScannerTest extends TestCase
             if ($response && is_array($response)) {
                 [$response, $body] = $response;
 
-                $stream = new Stream('php://memory', 'wb+');
-                $stream->write($body);
-                $stream->rewind();
-                $response = $response->withBody($stream);
+                $response = $this->getResponseWithBody($body, $response);
             }
 
             return $response;
@@ -131,7 +127,6 @@ class LinkScannerTest extends TestCase
 
         $this->LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $this->LinkScanner->setConfig('cache', true);
-
         foreach ([
             'http://localhost/pages/nolinks' => 200,
             'http://localhost/pages/home' => 200,
@@ -149,16 +144,18 @@ class LinkScannerTest extends TestCase
         }
 
         //`Client::get()` method throws an exception
-        /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
-        $Client = $this->getMockBuilder(Client::class)
-            ->setMethods(['get'])
-            ->getMock();
-
+        $Client = $this->getClientStub();
         $Client->method('get')->will($this->throwException(new Exception()));
 
         $this->LinkScanner = new LinkScanner($Client);
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->assertEquals(404, $getResponseMethod('/noExisting')->getStatusCode());
+
+        //Does not suppress PHPUnit exceptions, which are throwned anyway
+        $this->expectDeprecation();
+        $Client->method('get')->will($this->throwException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__)));
+        $this->LinkScanner = new LinkScanner($Client);
+        $getResponseMethod('/noExisting');
     }
 
     /**

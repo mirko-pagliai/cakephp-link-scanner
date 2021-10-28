@@ -23,6 +23,7 @@ use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\ConsoleIntegrationTestTrait;
+use PHPUnit\Framework\Error\Deprecated;
 
 /**
  * LinkScannerCommandTest class
@@ -108,6 +109,13 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->Command->run(['--verbose'], $this->_io);
         $this->assertErrorContains('404');
+
+        //Does not suppress PHPUnit exceptions, which are throwned anyway
+        $this->expectDeprecation();
+        $Client = $this->getClientStub();
+        $Client->method('get')->will($this->throwException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__)));
+        $this->Command->LinkScanner = new LinkScanner($Client);
+        $this->Command->run(['--verbose'], $this->_io);
     }
 
     /**
@@ -263,11 +271,11 @@ class LinkScannerCommandTest extends TestCase
             next($messages);
         }
 
-        $this->assertMatchesRegularExpression('/^\-+$/', current($messages));
-        $this->assertMatchesRegularExpression('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages));
-        $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages));
-        $this->assertMatchesRegularExpression('/^Total scanned links: \d+$/', next($messages));
-        $this->assertMatchesRegularExpression('/^\-+$/', next($messages));
+        $this->assertMatchesRegularExpression('/^\-+$/', current($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^Total scanned links: \d+$/', next($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^\-+$/', next($messages) ?: '');
 
         //Removes already checked lines and checks intermediate lines
         foreach (array_slice($messages, 9, -5) as $message) {

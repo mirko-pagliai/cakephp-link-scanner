@@ -21,6 +21,7 @@ use Exception;
 use LinkScanner\Event\LinkScannerCommandEventListener;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\Console\Command;
+use PHPUnit\Framework\Exception as PHPUnitException;
 
 /**
  * A link scanner command
@@ -85,6 +86,8 @@ class LinkScannerCommand extends Command
             if ($args->getOption('export-with-filename') || $args->getOption('export')) {
                 $this->LinkScanner->export((string)$args->getOption('export-with-filename'));
             }
+        } catch (PHPUnitException $e) {
+            throw $e;
         } catch (Exception $e) {
             $io->error($e->getMessage());
             $this->abort();
