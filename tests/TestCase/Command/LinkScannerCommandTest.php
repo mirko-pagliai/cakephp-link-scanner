@@ -180,10 +180,15 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
         $this->assertErrorEmpty();
 
-        //Exports only bad results
+        //Exports only bad results.
+        //It also works without the `--export` parameter
         self::setUp();
-        $this->Command->run(array_merge($params, ['--export-only-bad-results']), $this->_io);
+        $this->Command->run(array_merge(['--export-only-bad-results'] + $params), $this->_io);
+        $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
         $this->assertEquals(['exportOnlyBadResults' => true] + $expectedConfig, $this->LinkScanner->getConfig());
+        $this->assertFileExists($expectedFilename);
+        $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
+        $this->assertOutputContains('Results have been exported to ' . $expectedFilename);
 
         //Disables external links
         array_pop($params);
