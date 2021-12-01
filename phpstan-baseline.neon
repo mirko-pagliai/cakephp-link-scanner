@@ -7,7 +7,7 @@ parameters:
 
 		-
 			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$hostname\\.$#"
-			count: 1
+			count: 2
 			path: tests/TestCase/Command/LinkScannerCommandTest.php
 
 		-
@@ -17,7 +17,7 @@ parameters:
 
 		-
 			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$startTime\\.$#"
-			count: 1
+			count: 2
 			path: tests/TestCase/Command/LinkScannerCommandTest.php
 
 		-

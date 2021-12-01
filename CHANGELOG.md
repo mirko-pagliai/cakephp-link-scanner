@@ -1,5 +1,10 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.10
+* fixed bug: with the command, using the `--export-only-bad-results` option, the
+    `--export` option is set automatically and the file exported correctly (see
+    [issue 35](https://github.com/mirko-pagliai/cakephp-link-scanner/issues/35)).
+
 ### 1.1.9
 * `LinkScanner::_getResponse()` and `LinkScannerCommand::execute()` does not
     suppress PHPUnit exceptions (e.g., the `Deprecated` exception), which are
