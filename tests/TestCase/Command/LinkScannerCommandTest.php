@@ -84,7 +84,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputContains(sprintf('Checking %s ...', $this->fullBaseUrl));
         $this->assertOutputRegExp('/Scan completed at [\d\-]+\s[\d\:]+/');
         $this->assertOutputRegExp('/Elapsed time: \d+ seconds?/');
-        $this->assertOutputRegExp('/Total scanned links: \d+/');
+        $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
         $this->assertErrorEmpty();
 
         foreach ([
@@ -155,6 +155,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertFileExists($expectedFilename);
         $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->fullBaseUrl, '/')));
+        $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
         $this->assertOutputContains(sprintf('The cache is enabled and its duration is `%s`', $expectedDuration));
         $this->assertOutputContains('Force mode is enabled');
         $this->assertOutputContains('Scanning of external links is enabled');
@@ -178,6 +179,7 @@ class LinkScannerCommandTest extends TestCase
         $expectedConfig['fullBaseUrl'] = 'http://anotherFullBaseUrl';
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
+        $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
         $this->assertErrorEmpty();
 
         //Exports only bad results.
@@ -186,6 +188,8 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->run(array_merge(['--export-only-bad-results'] + $params), $this->_io);
         $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
         $this->assertEquals(['exportOnlyBadResults' => true] + $expectedConfig, $this->LinkScanner->getConfig());
+        $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
+        $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
         $this->assertFileExists($expectedFilename);
         $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
         $this->assertOutputContains('Results have been exported to ' . $expectedFilename);
@@ -279,7 +283,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertMatchesRegularExpression('/^\-+$/', current($messages) ?: '');
         $this->assertMatchesRegularExpression('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages) ?: '');
         $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages) ?: '');
-        $this->assertMatchesRegularExpression('/^Total scanned links: \d+$/', next($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^Total scanned links: [1-9]\d*$/', next($messages) ?: '');
         $this->assertMatchesRegularExpression('/^\-+$/', next($messages) ?: '');
 
         //Removes already checked lines and checks intermediate lines
