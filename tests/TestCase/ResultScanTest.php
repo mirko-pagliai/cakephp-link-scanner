@@ -65,6 +65,7 @@ class ResultScanTest extends TestCase
             ]),
         ];
         $this->assertEquals($expected, (new ResultScan($expected))->toArray());
+        //Tries with a `Traversable` object
         $this->assertEquals($expected, (new ResultScan(new \ArrayObject($expected)))->toArray());
     }
 
