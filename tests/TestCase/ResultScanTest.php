@@ -65,6 +65,7 @@ class ResultScanTest extends TestCase
             ]),
         ];
         $this->assertEquals($expected, (new ResultScan($expected))->toArray());
+        $this->assertEquals($expected, (new ResultScan(new \ArrayObject($expected)))->toArray());
     }
 
     /**
