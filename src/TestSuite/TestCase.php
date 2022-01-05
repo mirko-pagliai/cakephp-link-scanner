@@ -141,7 +141,7 @@ abstract class TestCase extends BaseTestCase
             //Ties to get the response from the `$responseFile` cache file.
             //  If it doesn't exist, it will retrieve it via a GET request.
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
-            $getResponse = function() use ($responseFile, $url) {
+            $getResponse = function () use ($responseFile, $url) {
                 return is_readable($responseFile) ? @unserialize(file_get_contents($responseFile) ?: '') : (new Client(['redirect' => true]))->get($url);
             };
             is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($getResponse()));
