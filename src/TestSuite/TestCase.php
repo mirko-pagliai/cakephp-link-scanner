@@ -138,19 +138,15 @@ abstract class TestCase extends BaseTestCase
     {
         $Client = $this->getClientStub();
         $Client->method('get')->will($this->returnCallback(function (string $url): Response {
+            //Ties to get the response from the `$responseFile` cache file.
+            //  If it doesn't exist, it will retrieve it via a GET request.
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
-            $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
-            $getResponse = function () use ($url): Response {
-                return (new Client(['redirect' => true]))->get($url);
+            $getResponse = function () use ($responseFile, $url) {
+                return is_readable($responseFile) ? @unserialize(file_get_contents($responseFile) ?: '') : (new Client(['redirect' => true]))->get($url);
             };
-
-            if (is_readable($responseFile)) {
-                $getResponse = function () use ($responseFile) {
-                    return @unserialize(file_get_contents($responseFile) ?: '');
-                };
-            }
             is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($getResponse()));
 
+            $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
             $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile) ?: '') : (string)$getResponse()->getBody();
             is_readable($bodyFile) ? null : file_put_contents($bodyFile, serialize($body));
 

@@ -152,6 +152,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      * @param \Cake\Event\Event $event An `Event` instance
      * @param string $filename Filename
      * @return bool
+     * @codeCoverageIgnore
      */
     public function resultsImported(Event $event, string $filename): bool
     {

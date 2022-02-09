@@ -1,5 +1,8 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.11
+* little fixes.
+
 ### 1.1.10
 * fixed bug: with the command, using the `--export-only-bad-results` option, the
     `--export` option is set automatically and the file exported correctly (see
