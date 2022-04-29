@@ -61,19 +61,15 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      */
     public function implementedEvents(): array
     {
-        $events = [
-            'afterScanUrl',
-            'beforeScanUrl',
-            'foundLinkToBeScanned',
-            'foundRedirect',
-            'resultsExported',
-            'scanCompleted',
-            'scanStarted',
+        return [
+            'LinkScanner.afterScanUrl' => 'afterScanUrl',
+            'LinkScanner.beforeScanUrl' => 'beforeScanUrl',
+            'LinkScanner.foundLinkToBeScanned' => 'foundLinkToBeScanned',
+            'LinkScanner.foundRedirect' => 'foundRedirect',
+            'LinkScanner.resultsExported' => 'resultsExported',
+            'LinkScanner.scanCompleted' => 'scanCompleted',
+            'LinkScanner.scanStarted' => 'scanStarted',
         ];
-
-        return array_combine(array_map(function (string $eventName): string {
-            return 'LinkScanner.' . $eventName;
-        }, $events), $events);
     }
 
     /**
