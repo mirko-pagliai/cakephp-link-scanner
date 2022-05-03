@@ -153,6 +153,7 @@ class LinkScannerTest extends TestCase
 
         //Does not suppress PHPUnit exceptions, which are throwned anyway
         $this->expectDeprecation();
+        $Client = $this->getClientStub();
         $Client->method('get')->will($this->throwException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__)));
         $this->LinkScanner = new LinkScanner($Client);
         $getResponseMethod('/noExisting');
