@@ -52,16 +52,6 @@ class ResultScan extends Collection
     }
 
     /**
-     * Unserializes the passed string and rebuilds the Collection instance
-     * @param string $collection The serialized collection
-     * @return void
-     */
-    public function unserialize($collection): void
-    {
-        parent::__construct(unserialize($collection));
-    }
-
-    /**
      * Appends items.
      *
      * Returns a new `ResultScan` instance as the result of concatenating the
