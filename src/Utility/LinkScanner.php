@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace LinkScanner\Utility;
 
 use Cake\Cache\Cache;
+use Cake\Collection\CollectionInterface;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
@@ -46,19 +47,19 @@ class LinkScanner implements Serializable
     /**
      * @var \Cake\Http\Client
      */
-    public $Client;
+    public Client $Client;
 
     /**
      * Instance of `ResultScan`. This contains the results of the scan
-     * @var \LinkScanner\ResultScan|\Cake\Collection\CollectionInterface
+     * @var \Cake\Collection\CollectionInterface
      */
-    protected $ResultScan;
+    protected CollectionInterface $ResultScan;
 
     /**
      * Default configuration
-     * @var array
+     * @var array<string, mixed>
      */
-    protected $_defaultConfig = [
+    protected array $_defaultConfig = [
         'cache' => true,
         'excludeLinks' => '/[\{\}+]/',
         'exportOnlyBadResults' => false,
@@ -74,37 +75,37 @@ class LinkScanner implements Serializable
      * Urls already scanned
      * @var array<int, string>
      */
-    protected $alreadyScanned = [];
+    protected array $alreadyScanned = [];
 
     /**
      * Current scan depth level
      * @var int
      */
-    protected $currentDepth = 0;
+    protected int $currentDepth = 0;
 
     /**
      * End time
      * @var int
      */
-    protected $endTime;
+    protected int $endTime;
 
     /**
      * Host name
      * @var string
      */
-    protected $hostname;
+    protected string $hostname;
 
     /**
      * Lock file path
      * @var string
      */
-    protected $lockFile = TMP . 'cakephp-link-scanner' . DS . 'link_scanner_lock_file';
+    protected string $lockFile = TMP . 'cakephp-link-scanner' . DS . 'link_scanner_lock_file';
 
     /**
      * Start time
      * @var int
      */
-    protected $startTime = 0;
+    protected int $startTime = 0;
 
     /**
      * Construct.
@@ -113,8 +114,6 @@ class LinkScanner implements Serializable
      *  configuration file.
      * @param \Cake\Http\Client|null $Client A Client instance
      * @param \LinkScanner\ResultScan|null $ResultScan A ResultScan instance
-     * @uses $Client
-     * @uses $ResultScan
      */
     public function __construct(?Client $Client = null, ?ResultScan $ResultScan = null)
     {
@@ -146,13 +145,10 @@ class LinkScanner implements Serializable
      *  - the url matches the url patterns to be excluded.
      * @param string $url Url to check
      * @return bool
-     * @uses $alreadyScanned
-     * @uses $hostname
      */
     protected function _canBeScanned(string $url): bool
     {
-        if (!is_url($url) || in_array($url, $this->alreadyScanned) ||
-            (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
+        if (!is_url($url) || in_array($url, $this->alreadyScanned) || (!$this->getConfig('externalLinks') && is_external_url($url, $this->hostname))) {
             return false;
         }
 
@@ -169,7 +165,6 @@ class LinkScanner implements Serializable
      * Internal method to create a lock file
      * @return bool
      * @throws \RuntimeException
-     * @uses $lockFile
      */
     protected function _createLockFile(): bool
     {
@@ -201,9 +196,6 @@ class LinkScanner implements Serializable
      *  is "ok" or a redirect.
      * @param string $url The url or path you want to request
      * @return \Cake\Http\Client\Response
-     * @uses $Client
-     * @uses $alreadyScanned
-     * @uses $fullBaseUrl
      */
     protected function _getResponse(string $url): Response
     {
@@ -252,11 +244,6 @@ class LinkScanner implements Serializable
      * @param string $url Url to scan
      * @param string|null $referer Referer of this url
      * @return void
-     * @uses _canBeScanned()
-     * @uses _singleScan()
-     * @uses $alreadyScanned
-     * @uses $currentDepth
-     * @uses $hostname
      */
     protected function _recursiveScan(string $url, ?string $referer = null): void
     {
@@ -304,10 +291,6 @@ class LinkScanner implements Serializable
      * @param string $url Url to scan
      * @param string|null $referer Referer of this url
      * @return \Cake\Http\Client\Response|null
-     * @uses _canBeScanned()
-     * @uses _getResponse()
-     * @uses $ResultScan
-     * @uses $hostname
      */
     protected function _singleScan(string $url, ?string $referer = null): ?Response
     {
@@ -346,7 +329,6 @@ class LinkScanner implements Serializable
     /**
      * Returns the string representation of the object
      * @return string
-     * @uses $Client
      */
     public function serialize(): string
     {
@@ -363,7 +345,6 @@ class LinkScanner implements Serializable
      * Called during unserialization of the object
      * @param string $serialized The string representation of the object
      * @return void
-     * @uses $Client
      */
     public function unserialize($serialized): void
     {
@@ -391,10 +372,6 @@ class LinkScanner implements Serializable
      * @return string
      * @see serialize()
      * @throws \RuntimeException
-     * @uses _getAbsolutePath()
-     * @uses $ResultScan
-     * @uses $hostname
-     * @uses $startTime
      */
     public function export(?string $filename = null): string
     {
@@ -427,7 +404,6 @@ class LinkScanner implements Serializable
      *  been exported.
      * @param string $filename Filename from which to import
      * @return $this
-     * @uses _getAbsolutePath()
      * @throws \RuntimeException
      */
     public function import(string $filename)
@@ -464,13 +440,6 @@ class LinkScanner implements Serializable
      *  methods.
      * @return $this
      * @throws \InvalidArgumentException
-     * @uses _createLockFile()
-     * @uses _recursiveScan()
-     * @uses $ResultScan
-     * @uses $endTime
-     * @uses $hostname
-     * @uses $lockFile
-     * @uses $startTime
      */
     public function scan()
     {

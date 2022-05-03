@@ -26,7 +26,7 @@ class ResultScanTest extends TestCase
     /**
      * @var \LinkScanner\ResultScan
      */
-    protected $ResultScan;
+    protected ResultScan $ResultScan;
 
     /**
      * Called before every test method

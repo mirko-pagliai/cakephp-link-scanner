@@ -36,17 +36,17 @@ class LinkScannerCommandTest extends TestCase
     /**
      * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
      */
-    protected $LinkScanner;
+    protected LinkScanner $LinkScanner;
 
     /**
      * @var string
      */
-    protected $fullBaseUrl = 'http://google.com';
+    protected string $fullBaseUrl = 'http://google.com';
 
     /**
      * @var \Cake\Console\ConsoleIo
      */
-    protected $_io;
+    protected ConsoleIo $_io;
 
     /**
      * Called before every test method
@@ -113,7 +113,7 @@ class LinkScannerCommandTest extends TestCase
         //Does not suppress PHPUnit exceptions, which are throwned anyway
         $this->expectDeprecation();
         $Client = $this->getClientStub();
-        $Client->method('get')->will($this->throwException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__)));
+        $Client->method('get')->willThrowException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__));
         $this->Command->LinkScanner = new LinkScanner($Client);
         $this->Command->run(['--verbose'], $this->_io);
     }

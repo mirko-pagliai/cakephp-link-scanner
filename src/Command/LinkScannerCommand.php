@@ -32,7 +32,7 @@ class LinkScannerCommand extends Command
      * A `LinkScanner` instance
      * @var \LinkScanner\Utility\LinkScanner
      */
-    public $LinkScanner;
+    public LinkScanner $LinkScanner;
 
     /**
      * Hook method invoked by CakePHP when a command is about to be executed

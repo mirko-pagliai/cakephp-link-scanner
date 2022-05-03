@@ -31,16 +31,14 @@ use LinkScanner\ResultScan;
 final class LinkScannerCommandEventListener implements LinkScannerEventListenerInterface
 {
     /**
-     * `Arguments` instance
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
-     * `ConsoleIo` instance
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Construct
@@ -223,7 +221,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
         /** @var \LinkScanner\Utility\LinkScanner $LinkScanner **/
         $LinkScanner = $event->getSubject();
-
         if ($LinkScanner->getConfig('externalLinks')) {
             $message = __d('link-scanner', 'Scanning of external links is enabled');
         }
