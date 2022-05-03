@@ -27,10 +27,9 @@ use Tools\Exceptionist;
 class ScanEntity extends Entity
 {
     /**
-     * A `Response` object
      * @var \Cake\Http\Client\Response
      */
-    protected $Response;
+    protected Response $Response;
 
     /**
      * Initializes the internal properties

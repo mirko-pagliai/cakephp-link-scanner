@@ -39,29 +39,16 @@ class ResultScan extends Collection
             $items = iterator_to_array($items);
         }
 
-        return array_map(function ($item): ScanEntity {
-            return $item instanceof ScanEntity ? $item : new ScanEntity($item);
-        }, $items);
+        return array_map(fn($item) => $item instanceof ScanEntity ? $item : new ScanEntity($item), $items);
     }
 
     /**
      * Constructor
      * @param \Cake\Collection\CollectionInterface|\Traversable|iterable $items Items
-     * @uses parseItems()
      */
     public function __construct($items = [])
     {
         parent::__construct($this->parseItems($items));
-    }
-
-    /**
-     * Unserializes the passed string and rebuilds the Collection instance
-     * @param string $collection The serialized collection
-     * @return void
-     */
-    public function unserialize($collection): void
-    {
-        parent::__construct(unserialize($collection));
     }
 
     /**
@@ -71,7 +58,6 @@ class ResultScan extends Collection
      *  list of elements in this collection with the passed list of elements
      * @param iterable $items Items
      * @return \Cake\Collection\CollectionInterface
-     * @uses parseItems()
      */
     public function append($items): CollectionInterface
     {
@@ -85,7 +71,6 @@ class ResultScan extends Collection
      *  passed list of elements with the list of elements in this collection
      * @param mixed $items Items
      * @return \Cake\Collection\CollectionInterface
-     * @uses parseItems()
      */
     public function prepend($items): CollectionInterface
     {

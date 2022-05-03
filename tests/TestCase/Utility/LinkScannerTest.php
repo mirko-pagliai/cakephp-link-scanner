@@ -17,6 +17,7 @@ namespace LinkScanner\Test\TestCase\Utility;
 use Cake\Cache\Cache;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Event\EventList;
+use Cake\Event\EventManager;
 use Cake\Http\Client\Response;
 use Exception;
 use LinkScanner\ResultScan;
@@ -36,23 +37,23 @@ class LinkScannerTest extends TestCase
     /**
      * @var \Cake\Event\EventManager
      */
-    protected $EventManager;
+    protected EventManager $EventManager;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
      */
-    protected $LinkScanner;
+    protected LinkScanner $LinkScanner;
 
     /**
      * Can cointain some debug notices
      * @var array
      */
-    protected $debug;
+    protected array $debug;
 
     /**
      * @var string
      */
-    protected $fullBaseUrl;
+    protected string $fullBaseUrl;
 
     /**
      * Called before every test method
@@ -97,9 +98,7 @@ class LinkScannerTest extends TestCase
      */
     public function testGetResponse(): void
     {
-        $getResponseMethod = function (string $url): Response {
-            return $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
-        };
+        $getResponseMethod = fn(string $url): Response => $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         $getResponseFromCache = function (string $url): ?Response {
             $response = Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
 
@@ -145,7 +144,7 @@ class LinkScannerTest extends TestCase
 
         //`Client::get()` method throws an exception
         $Client = $this->getClientStub();
-        $Client->method('get')->will($this->throwException(new Exception()));
+        $Client->method('get')->willThrowException(new Exception());
 
         $this->LinkScanner = new LinkScanner($Client);
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
@@ -154,7 +153,7 @@ class LinkScannerTest extends TestCase
         //Does not suppress PHPUnit exceptions, which are throwned anyway
         $this->expectDeprecation();
         $Client = $this->getClientStub();
-        $Client->method('get')->will($this->throwException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__)));
+        $Client->method('get')->willThrowException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__));
         $this->LinkScanner = new LinkScanner($Client);
         $getResponseMethod('/noExisting');
     }

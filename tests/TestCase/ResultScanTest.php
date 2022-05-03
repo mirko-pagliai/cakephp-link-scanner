@@ -26,7 +26,7 @@ class ResultScanTest extends TestCase
     /**
      * @var \LinkScanner\ResultScan
      */
-    protected $ResultScan;
+    protected ResultScan $ResultScan;
 
     /**
      * Called before every test method
@@ -125,16 +125,5 @@ class ResultScanTest extends TestCase
         $result = (new ResultScan())->prepend($prepended);
         $this->assertEquals($prepended, $result->toArray());
         $this->assertCount(1, $result);
-    }
-
-    /**
-     * Test for `serialize()` and `unserialize()` methods
-     * @test
-     */
-    public function testSerializeAndUnserialize(): void
-    {
-        $result = unserialize(serialize($this->ResultScan));
-        $this->assertInstanceof(ResultScan::class, $result);
-        $this->assertEquals($result->toArray(), $this->ResultScan->toArray());
     }
 }
