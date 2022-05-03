@@ -27,7 +27,7 @@ class ScanEntityTest extends TestCase
     /**
      * @var \LinkScanner\ScanEntity
      */
-    protected $ScanEntity;
+    protected ScanEntity $ScanEntity;
 
     /**
      * Setup the test case, backup the static object values so they can be

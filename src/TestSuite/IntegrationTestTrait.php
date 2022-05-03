@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace LinkScanner\TestSuite;
 
 use Cake\Core\Configure;
+use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Cake\Routing\Router;
 use LinkScanner\Utility\LinkScanner;
@@ -32,9 +33,9 @@ trait IntegrationTestTrait
      * Returns a stub of `Client`, where the `get()` method uses the
      *  `IntegrationTestTrait::get()` method and allows you to get responses from
      *  the test app
-     * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
+     * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
-    protected function getClientReturnsFromTests(): object
+    protected function getClientReturnsFromTests(): Client
     {
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
@@ -66,7 +67,6 @@ trait IntegrationTestTrait
      *  get responses from the test app
      * @param string|array|null $fullBaseUrl Full base url
      * @return \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject
-     * @uses getClientReturnsFromTests()
      */
     protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null): LinkScanner
     {

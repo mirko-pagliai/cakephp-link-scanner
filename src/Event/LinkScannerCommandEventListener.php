@@ -31,16 +31,14 @@ use LinkScanner\ResultScan;
 final class LinkScannerCommandEventListener implements LinkScannerEventListenerInterface
 {
     /**
-     * `Arguments` instance
      * @var \Cake\Console\Arguments
      */
-    protected $args;
+    protected Arguments $args;
 
     /**
-     * `ConsoleIo` instance
      * @var \Cake\Console\ConsoleIo
      */
-    protected $io;
+    protected ConsoleIo $io;
 
     /**
      * Construct
@@ -61,19 +59,15 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
      */
     public function implementedEvents(): array
     {
-        $events = [
-            'afterScanUrl',
-            'beforeScanUrl',
-            'foundLinkToBeScanned',
-            'foundRedirect',
-            'resultsExported',
-            'scanCompleted',
-            'scanStarted',
+        return [
+            'LinkScanner.afterScanUrl' => 'afterScanUrl',
+            'LinkScanner.beforeScanUrl' => 'beforeScanUrl',
+            'LinkScanner.foundLinkToBeScanned' => 'foundLinkToBeScanned',
+            'LinkScanner.foundRedirect' => 'foundRedirect',
+            'LinkScanner.resultsExported' => 'resultsExported',
+            'LinkScanner.scanCompleted' => 'scanCompleted',
+            'LinkScanner.scanStarted' => 'scanStarted',
         ];
-
-        return array_combine(array_map(function (string $eventName): string {
-            return 'LinkScanner.' . $eventName;
-        }, $events), $events);
     }
 
     /**
@@ -227,7 +221,6 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
 
         /** @var \LinkScanner\Utility\LinkScanner $LinkScanner **/
         $LinkScanner = $event->getSubject();
-
         if ($LinkScanner->getConfig('externalLinks')) {
             $message = __d('link-scanner', 'Scanning of external links is enabled');
         }

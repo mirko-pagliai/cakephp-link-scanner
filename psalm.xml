@@ -33,6 +33,18 @@
             </errorLevel>
         </PropertyTypeCoercion>
 
+        <RedundantCondition>
+            <errorLevel type="suppress">
+                <file name="src/Command/LinkScannerCommand.php" />
+            </errorLevel>
+        </RedundantCondition>
+
+        <TypeDoesNotContainType>
+            <errorLevel type="suppress">
+                <file name="src/Command/LinkScannerCommand.php" />
+            </errorLevel>
+        </TypeDoesNotContainType>
+
         <UndefinedInterfaceMethod>
             <errorLevel type="suppress">
                 <file name="src/ResultScan.php" />
