@@ -21,6 +21,7 @@ use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\TestCase as BaseTestCase;
+use Tools\TestSuite\BackwardCompatibilityTrait;
 use Zend\Diactoros\Stream;
 
 /**
@@ -28,6 +29,8 @@ use Zend\Diactoros\Stream;
  */
 abstract class TestCase extends BaseTestCase
 {
+    use BackwardCompatibilityTrait;
+
     /**
      * @var \LinkScanner\Utility\LinkScanner
      */
