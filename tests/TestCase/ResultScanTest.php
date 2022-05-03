@@ -126,15 +126,4 @@ class ResultScanTest extends TestCase
         $this->assertEquals($prepended, $result->toArray());
         $this->assertCount(1, $result);
     }
-
-    /**
-     * Test for `serialize()` and `unserialize()` methods
-     * @test
-     */
-    public function testSerializeAndUnserialize(): void
-    {
-        $result = unserialize(serialize($this->ResultScan));
-        $this->assertInstanceof(ResultScan::class, $result);
-        $this->assertEquals($result->toArray(), $this->ResultScan->toArray());
-    }
 }
