@@ -1,10 +1,9 @@
 # 1.x branch
 ## 1.1 branch
-### 1.1.13
-* requires at least PHP 7.4 and CakePHP 4.3.
-
 ### 1.1.12
+* requires at least PHP 7.4 and CakePHP 4.3;
 * added tests for PHP 8.1.
+* little fixes.
 
 ### 1.1.11
 * little fixes.
