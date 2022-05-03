@@ -18,6 +18,17 @@ even a coffee is enough! Thank you.
 
 [![Make a donation](https://www.paypalobjects.com/webstatic/mktg/logo-center/logo_paypal_carte.jpg)](//paypal.me/mirkopagliai)
 
+***
+
+  * [Installation](#installation)
+    + [Installation on older CakePHP and PHP versions](#installation-on-older-cakephp-and-php-versions)
+      - [For PHP 7.2 or later](#for-php-72-or-later)
+      - [For PHP 5.6 and CakePHP 3 or later](#for-php-56-and-cakephp-3-or-later)
+  * [Configuration](#configuration)
+  * [How to use](#how-to-use)
+  * [To do list](#to-do-list)
+  * [Versioning](#versioning)
+
 ## Installation
 You can install the plugin via composer:
 ```bash
@@ -34,9 +45,28 @@ bin/cake plugin load LinkScanner
 This would update your application's bootstrap method.
 
 ### Installation on older CakePHP and PHP versions
-Recent packages and the master branch require at least CakePHP 4.0 and PHP 7.2.
-Instead, the [cakephp3](//github.com/mirko-pagliai/cakephp-link-scanner/tree/cakephp3) branch
-requires at least PHP 5.6.
+Recent packages and the master branch require at least CakePHP 4.3 and PHP 7.4
+and the current development of the code is based on these and later versions of
+CakePHP and PHP.
+However, there are still some branches compatible with previous versions of
+CakePHP and PHP.
+
+#### For PHP 7.2 or later
+The [php7.2](//github.com/mirko-pagliai/cakephp-link-scanner/tree/php7.2) branch
+requires at least PHP 7.2.
+
+In this case, you can install the package as well:
+```bash
+$ composer require --prefer-dist mirko-pagliai/cakephp-link-scanner:dev-php7.2
+```
+
+Note that the `php7.2` branch will no longer be updated as of May 3, 2022,
+except for security patches, and it matches the
+[1.1.11](https://github.com/mirko-pagliai/cakephp-link-scanner/releases/tag/1.1.11) version.
+
+#### For PHP 5.6 and CakePHP 3 or later
+The [cakephp3](//github.com/mirko-pagliai/cakephp-link-scanner/tree/cakephp3) branch
+requires at least PHP 5.6 and CakePHP 3.
 
 In this case, you can install the package as well:
 ```bash
