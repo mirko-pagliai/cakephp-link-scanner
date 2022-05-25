@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Ternary operator condition is always true\\.$#"
-			count: 1
-			path: src/Command/LinkScannerCommand.php
-
-		-
 			message: "#^Access to protected property LinkScanner\\\\Utility\\\\LinkScanner\\:\\:\\$hostname\\.$#"
 			count: 2
 			path: tests/TestCase/Command/LinkScannerCommandTest.php
