@@ -16,43 +16,5 @@
 
     <issueHandlers>
         <RedundantPropertyInitializationCheck errorLevel="suppress" />
-
-        <InternalMethod>
-            <errorLevel type="suppress">
-                <file name="src/TestSuite/TestCase.php" />
-            </errorLevel>
-        </InternalMethod>
-
-        <PossiblyNullReference>
-            <errorLevel type="suppress">
-                <file name="src/TestSuite/TestCase.php" />
-            </errorLevel>
-        </PossiblyNullReference>
-
-        <PropertyTypeCoercion>
-            <errorLevel type="suppress">
-                <file name="src/Utility/LinkScanner.php" />
-            </errorLevel>
-        </PropertyTypeCoercion>
-
-        <RedundantCondition>
-            <errorLevel type="suppress">
-                <file name="src/Command/LinkScannerCommand.php" />
-            </errorLevel>
-        </RedundantCondition>
-
-        <TypeDoesNotContainType>
-            <errorLevel type="suppress">
-                <file name="src/Command/LinkScannerCommand.php" />
-            </errorLevel>
-        </TypeDoesNotContainType>
-
-        <UndefinedInterfaceMethod>
-            <errorLevel type="suppress">
-                <file name="src/ResultScan.php" />
-                <file name="src/TestSuite/TestCase.php" />
-                <file name="src/Utility/LinkScanner.php" />
-            </errorLevel>
-        </UndefinedInterfaceMethod>
     </issueHandlers>
 </psalm>
