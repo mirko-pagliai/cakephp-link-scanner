@@ -174,7 +174,7 @@ class LinkScanner implements Serializable
             $this->lockFile
         ), RuntimeException::class);
 
-        return $this->getConfig('lockFile') ? Filesystem::instance()->createFile($this->lockFile) : true;
+        return $this->getConfig('lockFile') && Filesystem::instance()->createFile($this->lockFile);
     }
 
     /**
