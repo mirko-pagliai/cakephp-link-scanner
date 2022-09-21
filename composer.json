@@ -36,7 +36,8 @@
     "scripts": {
         "check": [
             "@cs-check",
-            "@test-lowest",
+            "@update-lowest",
+            "@test",
             "@composer update",
             "@test",
             "@stan"
