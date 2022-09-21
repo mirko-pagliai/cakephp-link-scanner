@@ -1,5 +1,8 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.14
+* updated for CakePHP 4.4.
+
 ### 1.1.13
 * little fixes for PHP 7.4;
 * updated for `php-tools` 1.6.1.
