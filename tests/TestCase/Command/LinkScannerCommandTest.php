@@ -18,7 +18,7 @@ use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
-use Cake\TestSuite\Stub\ConsoleOutput;
+use Cake\Console\TestSuite\StubConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
@@ -60,8 +60,8 @@ class LinkScannerCommandTest extends TestCase
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->getEventManager();
 
-        $this->_out = new ConsoleOutput();
-        $this->_err = new ConsoleOutput();
+        $this->_out = new StubConsoleOutput();
+        $this->_err = new StubConsoleOutput();
         $this->_io = new ConsoleIo($this->_out, $this->_err);
         $this->_io->level(2);
 
@@ -240,7 +240,7 @@ class LinkScannerCommandTest extends TestCase
         /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs([$this->getClientReturnsRedirect()])
-            ->setMethods(['_createLockFile'])
+            ->onlyMethods(['_createLockFile'])
             ->getMock();
         $this->LinkScanner = $LinkScanner;
 

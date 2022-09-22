@@ -23,3 +23,10 @@ if (!Cache::getConfig('LinkScanner')) {
         'prefix' => 'link_scanner_',
     ]);
 }
+
+/**
+ * @todo To be removed in a later version
+ */
+if (!class_exists('Laminas\Diactoros\Stream')) {
+    class_alias('Zend\Diactoros\Stream', 'Laminas\Diactoros\Stream');
+}

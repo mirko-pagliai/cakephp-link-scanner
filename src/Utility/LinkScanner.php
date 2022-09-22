@@ -25,6 +25,7 @@ use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Exception;
 use InvalidArgumentException;
+use Laminas\Diactoros\Stream;
 use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
 use PHPUnit\Framework\Exception as PHPUnitException;
@@ -33,7 +34,6 @@ use Serializable;
 use Tools\BodyParser;
 use Tools\Exceptionist;
 use Tools\Filesystem;
-use Zend\Diactoros\Stream;
 
 /**
  * A link scanner

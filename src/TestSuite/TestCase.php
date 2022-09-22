@@ -19,9 +19,9 @@ use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
+use Laminas\Diactoros\Stream;
 use LinkScanner\Utility\LinkScanner;
 use MeTools\TestSuite\TestCase as BaseTestCase;
-use Zend\Diactoros\Stream;
 
 /**
  * TestCase class
