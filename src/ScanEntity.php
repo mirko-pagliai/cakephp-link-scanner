@@ -58,6 +58,7 @@ class ScanEntity extends Entity
             $response = (new Response())
                 ->withHeader('location', $this->get('location'))
                 ->withStatus($this->get('code'));
+            /** @var callable $name */
             $name = [$response, $name];
         }
 

@@ -24,6 +24,9 @@ if (!Cache::getConfig('LinkScanner')) {
     ]);
 }
 
+/**
+ * @todo To be removed in a later version
+ */
 if (!class_exists('Laminas\Diactoros\Stream')) {
-    class_alias('Laminas\Diactoros\Stream', 'Zend\Diactoros\Stream');
+    class_alias('Zend\Diactoros\Stream', 'Laminas\Diactoros\Stream');
 }

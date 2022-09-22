@@ -72,3 +72,10 @@ Cache::setConfig([
 ]);
 
 $_SERVER['PHP_SELF'] = '/';
+
+/**
+ * @todo To be removed in a later version
+ */
+if (!class_exists('Cake\Console\TestSuite\StubConsoleOutput')) {
+    class_alias('Cake\TestSuite\Stub\ConsoleOutput', 'Cake\Console\TestSuite\StubConsoleOutput');
+}
