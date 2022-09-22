@@ -240,7 +240,7 @@ class LinkScannerCommandTest extends TestCase
         /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs([$this->getClientReturnsRedirect()])
-            ->setMethods(['_createLockFile'])
+            ->onlyMethods(['_createLockFile'])
             ->getMock();
         $this->LinkScanner = $LinkScanner;
 
