@@ -20,7 +20,7 @@ use Cake\Console\ConsoleOptionParser;
 use Exception;
 use LinkScanner\Event\LinkScannerCommandEventListener;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\Console\Command;
+use MeTools\Command\Command;
 use PHPUnit\Framework\Exception as PHPUnitException;
 
 /**

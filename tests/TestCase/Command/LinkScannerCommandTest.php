@@ -18,12 +18,13 @@ use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Console\TestSuite\StubConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\TestSuite\ConsoleIntegrationTestTrait;
 use PHPUnit\Framework\Error\Deprecated;
+use Tools\TestSuite\ReflectionTrait;
 
 /**
  * LinkScannerCommandTest class
@@ -32,6 +33,7 @@ use PHPUnit\Framework\Error\Deprecated;
 class LinkScannerCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
+    use ReflectionTrait;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
@@ -70,10 +72,10 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testScan(): void
+    public function testExecute(): void
     {
         $expectedConfig = ['maxDepth' => 1] + $this->LinkScanner->getConfig();
         $this->Command->run(['--max-depth=1'], $this->_io);
@@ -110,7 +112,7 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->run(['--verbose'], $this->_io);
         $this->assertErrorContains('404');
 
-        //Does not suppress PHPUnit exceptions, which are throwned anyway
+        //Does not suppress PHPUnit exceptions, which are thrown anyway
         $this->expectDeprecation();
         $Client = $this->getClientStub();
         $Client->method('get')->willThrowException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__));
@@ -119,10 +121,11 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method, with cache enabled
+     * Test for `execute()` method, with cache enabled
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testScanCacheEnabled(): void
+    public function testExecuteCacheEnabled(): void
     {
         $this->Command->run(['--verbose'], $this->_io);
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
@@ -130,10 +133,11 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method, with some parameters
+     * Test for `execute()` method, with some parameters
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testScanParams(): void
+    public function testExecuteParams(): void
     {
         touch($this->Command->LinkScanner->lockFile);
         $params = [
@@ -260,10 +264,11 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method, with verbose
+     * Test for `execute()` method, with verbose
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testScanVerbose(): void
+    public function testExecuteVerbose(): void
     {
         $this->Command->run(['--no-cache', '--verbose'], $this->_io);
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
@@ -293,8 +298,8 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `buildOptionParser()` method
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {

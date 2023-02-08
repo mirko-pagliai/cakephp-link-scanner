@@ -26,6 +26,7 @@ use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
 use PHPUnit\Framework\Error\Deprecated;
 use RuntimeException;
+use Tools\TestSuite\ReflectionTrait;
 
 /**
  * LinkScannerTest class
@@ -33,6 +34,7 @@ use RuntimeException;
 class LinkScannerTest extends TestCase
 {
     use IntegrationTestTrait;
+    use ReflectionTrait;
 
     /**
      * @var \Cake\Event\EventManager
@@ -72,8 +74,8 @@ class LinkScannerTest extends TestCase
     }
 
     /**
-     * Test for `__construct()` method
      * @test
+     * @uses \LinkScanner\Utility\LinkScanner::__construct()
      */
     public function testConstruct(): void
     {
@@ -93,8 +95,8 @@ class LinkScannerTest extends TestCase
     }
 
     /**
-     * Test for `_getResponse()` method
      * @test
+     * @uses \LinkScanner\Utility\LinkScanner::_getResponse()
      */
     public function testGetResponse(): void
     {
@@ -159,8 +161,8 @@ class LinkScannerTest extends TestCase
     }
 
     /**
-     * Test for `export()` method
      * @test
+     * @uses \LinkScanner\Utility\LinkScanner::export()
      */
     public function testExport(): void
     {
@@ -182,14 +184,13 @@ class LinkScannerTest extends TestCase
         }
 
         //Without the scan being performed
-        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('There is no result to export. Perhaps the scan was not performed?');
         (new LinkScanner())->export();
     }
 
     /**
-     * Test for `import()` method
      * @test
+     * @uses \LinkScanner\Utility\LinkScanner::import()
      */
     public function testImport(): void
     {
@@ -202,15 +203,13 @@ class LinkScannerTest extends TestCase
         $this->assertEquals($config, $result->getConfig());
         $this->assertEquals(100, $result->Client->getConfig('timeout'));
 
-        //Checks the event is fired only on the new object. Then, it flushes
-        //  both event lists, so that the objects comparison will run
+        //Checks the event is fired only on the new object. Then, it flushes both event lists, so that the objects comparison will run
         $this->assertEventNotFired('LinkScanner.resultsImported', $this->EventManager);
         $this->assertEventFired('LinkScanner.resultsImported', $this->getEventManager($result));
         ($this->EventManager->getEventList() ?: new EventList())->flush();
         ($this->getEventManager($result)->getEventList() ?: new EventList())->flush();
 
-        //Gets properties from both client, fixes properties of the `Client`
-        //  instances and performs the comparison
+        //Gets properties from both client, fixes properties of the `Client` instances and performs the comparison
         $expectedProperties = $this->getProperties($this->LinkScanner->Client);
         $resultProperties = $this->getProperties($result->Client);
         foreach (['_adapter', '__phpunit_invocationMocker', '__phpunit_originalObject', '__phpunit_configurable'] as $key) {
@@ -227,8 +226,8 @@ class LinkScannerTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method
      * @test
+     * @uses \LinkScanner\Utility\LinkScanner::scan()
      */
     public function testScan(): void
     {
@@ -260,8 +259,7 @@ class LinkScannerTest extends TestCase
         $this->assertFalse($externalLinks->isEmpty());
         $this->assertEquals($this->LinkScanner->ResultScan->count(), $internalLinks->count() + $externalLinks->count());
 
-        //Takes the last url from the last scan and adds it to the url to
-        //  exclude on the next scan
+        //Takes the last url from the last scan and adds it to the url to exclude on the next scan
         $randomUrl = $this->LinkScanner->ResultScan->extract('url')->last();
         $LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
         $LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl)
@@ -307,8 +305,7 @@ class LinkScannerTest extends TestCase
 
         $LinkScanner->scan();
 
-        //The lock file alread exists
-        $this->expectException(RuntimeException::class);
+        //The lock file already exists
         $this->expectExceptionMessage('Lock file `' . $LinkScanner->lockFile . '` already exists, maybe a scan is already in progress. If not, remove it manually');
         file_put_contents($LinkScanner->lockFile, null);
         (new LinkScanner())->scan();
@@ -317,6 +314,7 @@ class LinkScannerTest extends TestCase
     /**
      * Test for `scan()` method, from tests
      * @test
+     * @uses \LinkScanner\Utility\LinkScanner::scan()
      */
     public function testScanFromTests(): void
     {
@@ -438,6 +436,7 @@ class LinkScannerTest extends TestCase
     /**
      * Test for `scan()` method, with no other links to scan
      * @test
+     * @uses \LinkScanner\Utility\LinkScanner::scan()
      */
     public function testScanNoOtherLinks(): void
     {
@@ -449,6 +448,7 @@ class LinkScannerTest extends TestCase
     /**
      * Test for `scan()` method, with a response that is not ok
      * @test
+     * @uses \LinkScanner\Utility\LinkScanner::scan()
      */
     public function testScanResponseNotOk(): void
     {
