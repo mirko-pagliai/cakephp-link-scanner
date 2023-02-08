@@ -297,7 +297,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages) ?: '');
         $this->assertMatchesRegularExpression('/^Total scanned links: [1-9]\d*$/', next($messages) ?: '');
         $this->assertSame('Invalid links: 0', next($messages));
-        $this->assertMatchesRegularExpression('/^\-+$/', next($messages) ?: '');
+        $this->assertMatchesRegularExpression('/^\-+$/', next($messages));
 
         //Removes already checked lines and checks intermediate lines
         foreach (array_slice($messages, 9, -6) as $message) {
