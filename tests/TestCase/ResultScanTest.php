@@ -48,8 +48,8 @@ class ResultScanTest extends TestCase
     }
 
     /**
-     * Test for `__construct()` method
      * @test
+     * @uses \LinkScanner\ResultScan::__construct()
      */
     public function testConstruct(): void
     {
@@ -73,8 +73,8 @@ class ResultScanTest extends TestCase
     }
 
     /**
-     * Test for `append()` method
      * @test
+     * @uses \LinkScanner\ResultScan::append()
      */
     public function testAppend(): void
     {
@@ -105,8 +105,8 @@ class ResultScanTest extends TestCase
     }
 
     /**
-     * Test for `prepend()` method
      * @test
+     * @uses \LinkScanner\ResultScan::prepend()
      */
     public function testPrepend(): void
     {
