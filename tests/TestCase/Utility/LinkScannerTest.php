@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ALL */
 /** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
@@ -409,7 +410,7 @@ class LinkScannerTest extends TestCase
         $item = $LinkScanner->ResultScan->first();
         $this->assertSame($item->get('code'), 200);
         $this->assertFalse($item->get('external'));
-        $this->assertNull($item->get('referer'));
+        $this->assertEmpty($item->get('referer'));
         $this->assertStringStartsWith('text/html', $item->get('type'));
         $this->assertSame($item->get('url'), 'http://localhost');
 

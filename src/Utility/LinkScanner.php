@@ -234,12 +234,11 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.foundLinkToBeScanned`: will be triggered when other links to be scanned are found;
      *  - `LinkScanner.responseNotOk`: will be triggered when a single url is scanned and the response is not ok.
      * @param string $url Url to scan
-     * @param string|null $referer Referer of this url
+     * @param string $referer Referer of this url
      * @return void
      * @throws \Tools\Exception\KeyNotExistsException
-     * @todo `$referer` can be a empty string?
      */
-    protected function _recursiveScan(string $url, ?string $referer = null): void
+    protected function _recursiveScan(string $url, string $referer = ''): void
     {
         $response = $this->_singleScan($url, $referer);
         if (!$response) {
@@ -280,11 +279,11 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.afterScanUrl`: will be triggered after a single url is scanned;
      *  - `LinkScanner.foundRedirect`: will be triggered if a redirect is found.
      * @param string $url Url to scan
-     * @param string|null $referer Referer of this url
+     * @param string $referer Referer of this url
      * @return \Cake\Http\Client\Response|null
      * @throws \Tools\Exception\KeyNotExistsException
      */
-    protected function _singleScan(string $url, ?string $referer = null): ?Response
+    protected function _singleScan(string $url, string $referer = ''): ?Response
     {
         $url = clean_url($url, true, true);
         if (!$this->_canBeScanned($url)) {
@@ -334,17 +333,14 @@ class LinkScanner implements Serializable
 
     /**
      * Called during un-serialization of the object
-     * @param string $serialized The string representation of the object
+     * @param string $data The string representation of the object
      * @return void
-     * @todo `$serialized` string? Should be `$data`
      */
-    public function unserialize($serialized): void
+    public function unserialize($data): void
     {
         //Resets the event list and the Client instance
-        $properties = unserialize($serialized);
-        /** @var \Cake\Event\EventManager $EventManager */
-        $EventManager = $this->getEventManager();
-        $EventManager->setEventList(new EventList());
+        $properties = unserialize($data);
+        $this->getEventManager()->setEventList(new EventList());
         $this->Client = new Client($properties['Client']);
         unset($properties['Client']);
 

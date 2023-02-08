@@ -129,15 +129,15 @@ abstract class TestCase extends BaseTestCase
     {
         $Client = $this->getClientStub();
         $Client->method('get')->willReturnCallback(function (string $url): Response {
-            //Ties to get the response from the `$responseFile` cache file. If it doesn't exist, it will retrieve it via
-            //  a GET request.
+            //Ties to get the response from a cached file. If it doesn't exist, it will retrieve it via a GET request.
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $getResponse = fn(): Response => is_readable($responseFile) ? @unserialize(file_get_contents($responseFile) ?: '') : (new Client(['redirect' => true]))->get($url);
-            is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($getResponse()));
-
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
             $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile) ?: '') : (string)$getResponse()->getBody();
-            is_readable($bodyFile) ? null : file_put_contents($bodyFile, serialize($body));
+            if (!is_readable($responseFile) || !is_readable($bodyFile)) {
+                file_put_contents($responseFile, serialize($getResponse()));
+                file_put_contents($bodyFile, serialize($body));
+            }
 
             return $this->getResponseWithBody($body, $getResponse());
         });
@@ -152,16 +152,13 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getEventManager(?LinkScanner $LinkScanner = null): EventManager
     {
-        /** @var \Cake\Event\EventManager $eventManager */
         $eventManager = ($LinkScanner ?? $this->LinkScanner)->getEventManager();
 
         return $eventManager->setEventList($eventManager->getEventList() ?? new EventList());
     }
 
     /**
-     * Gets a `Response` instance, writes a new body string and returns.
-     *
-     * If `$response` is null, a new `Response` instance will be created.
+     * Gets a `Response` instance, writes a new body string and returns
      * @param string $body Body of the response
      * @param \Cake\Http\Client\Response|null $response A `Response` instance or `null` to create a new instance
      * @return \Cake\Http\Client\Response
