@@ -47,7 +47,7 @@ class LinkScannerTest extends TestCase
     protected LinkScanner $LinkScanner;
 
     /**
-     * Can cointain some debug notices
+     * Can contain some debug notices
      * @var array
      */
     protected array $debug;
@@ -152,7 +152,7 @@ class LinkScannerTest extends TestCase
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->assertEquals(404, $getResponseMethod('/noExisting')->getStatusCode());
 
-        //Does not suppress PHPUnit exceptions, which are throwned anyway
+        //Does not suppress PHPUnit exceptions, which are thrown anyway
         $this->expectDeprecation();
         $Client = $this->getClientStub();
         $Client->method('get')->willThrowException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__));
