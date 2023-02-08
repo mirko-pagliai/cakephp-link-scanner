@@ -20,7 +20,7 @@ use Cake\Console\ConsoleOptionParser;
 use Exception;
 use LinkScanner\Event\LinkScannerCommandEventListener;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\Console\Command;
+use MeTools\Command\Command;
 use PHPUnit\Framework\Exception as PHPUnitException;
 
 /**
@@ -48,12 +48,14 @@ class LinkScannerCommand extends Command
      * @param \Cake\Console\Arguments $args The command arguments
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return void
-     * @see LinkScannerCommandEventListener::implementedEvents()
      */
     public function execute(Arguments $args, ConsoleIo $io): void
     {
         try {
-            //Will trigger events provided by `LinkScannerCommandEventListener`
+            /**
+             * Will trigger events provided by `LinkScannerCommandEventListener`
+             * @see \LinkScanner\Event\LinkScannerCommandEventListener::implementedEvents()
+             */
             $this->LinkScanner->getEventManager()->on(new LinkScannerCommandEventListener($args, $io));
 
             if ($args->getOption('export-only-bad-results')) {
@@ -131,18 +133,10 @@ class LinkScannerCommand extends Command
                 'short' => 'f',
             ],
             'full-base-url' => [
-                'help' => __d(
-                    'link-scanner',
-                    'Full base url. By default, the `{0}` value will be used',
-                    'App.fullBaseUrl'
-                ),
+                'help' => __d('link-scanner', 'Full base url. By default, the `{0}` value will be used', 'App.fullBaseUrl'),
             ],
             'max-depth' => [
-                'help' => __d(
-                    'link-scanner',
-                    'Maximum depth of the scan. Default: {0}',
-                    $this->LinkScanner->getConfig('maxDepth')
-                ),
+                'help' => __d('link-scanner', 'Maximum depth of the scan. Default: {0}', $this->LinkScanner->getConfig('maxDepth')),
                 'short' => 'd',
             ],
             'no-cache' => [

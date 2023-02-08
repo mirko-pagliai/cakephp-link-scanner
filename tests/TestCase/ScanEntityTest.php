@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpDocMissingThrowsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
 /**
@@ -12,7 +14,7 @@ declare(strict_types=1);
  * @link        https://github.com/mirko-pagliai/cakephp-link-scanner
  * @license     https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace LinkScanner\Test;
+namespace LinkScanner\Test\TestCase;
 
 use BadMethodCallException;
 use LinkScanner\ScanEntity;
@@ -30,9 +32,7 @@ class ScanEntityTest extends TestCase
     protected ScanEntity $ScanEntity;
 
     /**
-     * Setup the test case, backup the static object values so they can be
-     * restored. Specifically backs up the contents of Configure and paths in
-     *  App if they have not already been backed up
+     * Called before every test method
      * @return void
      */
     public function setUp(): void
@@ -42,15 +42,15 @@ class ScanEntityTest extends TestCase
         $this->ScanEntity = new ScanEntity([
             'code' => 200,
             'external' => false,
-            'location' => 'http://example.com/location',
+            'location' => 'https://example.com/location',
             'type' => 'text/html; charset=UTF-8',
-            'url' => 'http://example.com',
+            'url' => 'https://example.com',
         ]);
     }
 
     /**
-     * Test for `__call()`
      * @test
+     * @uses \LinkScanner\ScanEntity::__call()
      */
     public function testCall(): void
     {
@@ -77,13 +77,13 @@ class ScanEntityTest extends TestCase
 
         $this->expectException(BadMethodCallException::class);
         $this->expectExceptionMessage('Method `noExistingMethod()` does not exist');
-        /** @phpstan-ignore-next-line */
+        /** @noinspection PhpUndefinedMethodInspection */
         $this->ScanEntity->noExistingMethod(1);
     }
 
     /**
-     * Test for `__construct()` method
      * @test
+     * @uses \LinkScanner\ScanEntity::__construct()
      */
     public function testConstruct(): void
     {

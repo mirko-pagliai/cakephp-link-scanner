@@ -20,7 +20,6 @@ use Cake\Console\ConsoleIo;
 use Cake\Event\Event;
 use Cake\Http\Client\Response;
 use Cake\I18n\FrozenTime;
-use LinkScanner\Event\LinkScannerEventListenerInterface;
 use LinkScanner\ResultScan;
 
 /**
@@ -173,6 +172,9 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
         $this->io->out(__d('link-scanner', 'Scan completed at {0}', $endTime->i18nFormat('yyyy-MM-dd HH:mm:ss')));
         $this->io->out(__d('link-scanner', 'Elapsed time: {0}', $elapsedTime));
         $this->io->out(__d('link-scanner', 'Total scanned links: {0}', $ResultScan->count()));
+
+        $isNotOkResults = $ResultScan->filter(fn($row) => !$row->isOk() && !$row->isRedirect());
+        $this->io->out(__d('link-scanner', 'Invalid links: {0}', $isNotOkResults->count()));
 
         if ($this->args->getOption('verbose')) {
             $this->io->hr();

@@ -1,5 +1,10 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.15
+* the `LinkScannerCommand` also prints the total number of invalid links to the console;
+* many, small code tweaks proposed by phpstorm;
+* updated for php-tools 1.7.1 and me-tools 2.23.0.
+
 ### 1.1.14
 * updated for CakePHP 4.4;
 * little fixes for `phpstan`, `psalm` and for the `composer.json` file.

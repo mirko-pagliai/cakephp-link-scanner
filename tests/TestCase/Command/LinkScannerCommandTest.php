@@ -1,4 +1,6 @@
 <?php
+/** @noinspection ALL */
+/** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
 /**
@@ -18,12 +20,13 @@ use Cake\Cache\Cache;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Exception\StopException;
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Console\TestSuite\StubConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\TestSuite\ConsoleIntegrationTestTrait;
-use PHPUnit\Framework\Error\Deprecated;
+use PHPUnit\Framework\Exception;
+use Tools\TestSuite\ReflectionTrait;
 
 /**
  * LinkScannerCommandTest class
@@ -32,6 +35,7 @@ use PHPUnit\Framework\Error\Deprecated;
 class LinkScannerCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
+    use ReflectionTrait;
 
     /**
      * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
@@ -41,7 +45,7 @@ class LinkScannerCommandTest extends TestCase
     /**
      * @var string
      */
-    protected string $fullBaseUrl = 'http://google.com';
+    protected string $fullBaseUrl = 'https://google.com';
 
     /**
      * @var \Cake\Console\ConsoleIo
@@ -70,10 +74,10 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testScan(): void
+    public function testExecute(): void
     {
         $expectedConfig = ['maxDepth' => 1] + $this->LinkScanner->getConfig();
         $this->Command->run(['--max-depth=1'], $this->_io);
@@ -85,6 +89,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertOutputRegExp('/Scan completed at [\d\-]+\s[\d\:]+/');
         $this->assertOutputRegExp('/Elapsed time: \d+ seconds?/');
         $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
+        $this->assertOutputContains('Invalid links: 0');
         $this->assertErrorEmpty();
 
         foreach ([
@@ -110,19 +115,20 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->run(['--verbose'], $this->_io);
         $this->assertErrorContains('404');
 
-        //Does not suppress PHPUnit exceptions, which are throwned anyway
-        $this->expectDeprecation();
+        //Does not suppress PHPUnit exceptions, which are thrown anyway
+        $this->expectException(Exception::class);
         $Client = $this->getClientStub();
-        $Client->method('get')->willThrowException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__));
+        $Client->method('get')->willThrowException(new Exception());
         $this->Command->LinkScanner = new LinkScanner($Client);
         $this->Command->run(['--verbose'], $this->_io);
     }
 
     /**
-     * Test for `scan()` method, with cache enabled
+     * Test for `execute()` method, with cache enabled
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testScanCacheEnabled(): void
+    public function testExecuteCacheEnabled(): void
     {
         $this->Command->run(['--verbose'], $this->_io);
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
@@ -130,10 +136,11 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method, with some parameters
+     * Test for `execute()` method, with some parameters
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testScanParams(): void
+    public function testExecuteParams(): void
     {
         touch($this->Command->LinkScanner->lockFile);
         $params = [
@@ -156,6 +163,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->fullBaseUrl, '/')));
         $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
+        $this->assertOutputContains('Invalid links: 0');
         $this->assertOutputContains(sprintf('The cache is enabled and its duration is `%s`', $expectedDuration));
         $this->assertOutputContains('Force mode is enabled');
         $this->assertOutputContains('Scanning of external links is enabled');
@@ -180,6 +188,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
         $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
+        $this->assertOutputContains('Invalid links: 0');
         $this->assertErrorEmpty();
 
         //Exports only bad results.
@@ -190,6 +199,8 @@ class LinkScannerCommandTest extends TestCase
         $this->assertEquals(['exportOnlyBadResults' => true] + $expectedConfig, $this->LinkScanner->getConfig());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
         $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
+        $this->assertOutputContains('Invalid links: 0');
+
         $this->assertFileExists($expectedFilename);
         $this->assertEventFired('LinkScanner.resultsExported', $this->LinkScanner->getEventManager());
         $this->assertOutputContains('Results have been exported to ' . $expectedFilename);
@@ -260,10 +271,11 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `scan()` method, with verbose
+     * Test for `execute()` method, with verbose
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testScanVerbose(): void
+    public function testExecuteVerbose(): void
     {
         $this->Command->run(['--no-cache', '--verbose'], $this->_io);
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
@@ -276,7 +288,7 @@ class LinkScannerCommandTest extends TestCase
         //Moves to final lines
         $messages = array_values(array_filter($this->_out->messages()));
         $count = count($messages);
-        while (key($messages) !== $count - 5) {
+        while (key($messages) !== $count - 6) {
             next($messages);
         }
 
@@ -284,17 +296,18 @@ class LinkScannerCommandTest extends TestCase
         $this->assertMatchesRegularExpression('/^Scan completed at [\d\-]+\s[\d\:]+$/', next($messages) ?: '');
         $this->assertMatchesRegularExpression('/^Elapsed time: \d+ seconds?$/', next($messages) ?: '');
         $this->assertMatchesRegularExpression('/^Total scanned links: [1-9]\d*$/', next($messages) ?: '');
+        $this->assertSame('Invalid links: 0', next($messages));
         $this->assertMatchesRegularExpression('/^\-+$/', next($messages) ?: '');
 
         //Removes already checked lines and checks intermediate lines
-        foreach (array_slice($messages, 9, -5) as $message) {
+        foreach (array_slice($messages, 9, -6) as $message) {
             $this->assertMatchesRegularExpression('/^(<success>OK<\/success>|Checking .+ \.{3}|Link found: .+)$/', $message);
         }
     }
 
     /**
-     * Test for `buildOptionParser()` method
      * @test
+     * @uses \LinkScanner\Command\LinkScannerCommand::buildOptionParser()
      */
     public function testBuildOptionParser(): void
     {

@@ -30,9 +30,8 @@ trait IntegrationTestTrait
     use BaseIntegrationTestTrait;
 
     /**
-     * Returns a stub of `Client`, where the `get()` method uses the
-     *  `IntegrationTestTrait::get()` method and allows you to get responses from
-     *  the test app
+     * Returns a stub of `Client`, where the `get()` method uses the `IntegrationTestTrait::get()` method and allows you
+     *  to get responses from the test app
      * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getClientReturnsFromTests(): Client
@@ -40,7 +39,7 @@ trait IntegrationTestTrait
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
         $Client = $this->getClientStub();
-        $Client->method('get')->will($this->returnCallback(function ($url): Response {
+        $Client->method('get')->willReturnCallback(function ($url): Response {
             if (is_string($url) && preg_match('/^http:\/\/localhost\/?(pages\/(.+))?$/', $url, $matches)) {
                 $url = ['controller' => 'Pages', 'action' => 'display', $matches[2] ?? 'home'];
             }
@@ -56,15 +55,14 @@ trait IntegrationTestTrait
             }
 
             return $this->_response;
-        }));
+        });
 
         return $Client;
     }
 
     /**
-     * Returns a stub of `LinkScanner` instance, with the `Client::get()`
-     *  method uses the `IntegrationTestTrait::get()` method and allows you to
-     *  get responses from the test app
+     * Returns a stub of `LinkScanner` instance, with the `Client::get()` method uses the `IntegrationTestTrait::get()`
+     *  method and allows you to get responses from the test app
      * @param string|array|null $fullBaseUrl Full base url
      * @return \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject
      */
@@ -76,7 +74,7 @@ trait IntegrationTestTrait
         /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
         $LinkScanner = $this->getMockBuilder(LinkScanner::class)
             ->setConstructorArgs([$this->getClientReturnsFromTests()])
-            ->setMethods(['_createLockFile'])
+            ->onlyMethods(['_createLockFile'])
             ->getMock();
 
         return $LinkScanner->setConfig('fullBaseUrl', $fullBaseUrl);

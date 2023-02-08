@@ -1,6 +1,6 @@
 <h1>Home</h1>
 
-<a title="Google" href="http://google.it">Google</a>
+<a title="Google" href="https://google.it">Google</a>
 
 <br />
 
@@ -12,6 +12,6 @@
 
 <?= $this->Html->link('First page', ['controller' => 'Pages', 'action' => 'display', 'first_page']) ?>
 <?= $this->Html->link('Second page', ['controller' => 'Pages', 'action' => 'display', 'second_page']) ?>
-<?= $this->Html->link('No html', ['controller' => 'Pages', 'action' => 'display', 'nohtml']) ?>
+<?= $this->Html->link('No html', ['controller' => 'Pages', 'action' => 'display', 'no-html']) ?>
 <?= $this->Html->link('Redirect to home page', '/pages/redirect') ?>
-<?= $this->Html->link('Again, redirect to home page', '/pages/sameredirect') ?>
+<?= $this->Html->link('Again, redirect to home page', '/pages/same-redirect') ?>
