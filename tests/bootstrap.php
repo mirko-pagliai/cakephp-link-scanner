@@ -37,12 +37,10 @@ define('CACHE', TMP . 'cache' . DS);
 define('CONFIG', APP . 'config' . DS);
 define('LOGS', TMP . 'logs' . DS);
 define('SESSIONS', TMP . 'sessions' . DS);
-@mkdir(TMP);
-@mkdir(LOGS);
-@mkdir(SESSIONS);
-@mkdir(CACHE);
-@mkdir(CACHE . 'views');
-@mkdir(CACHE . 'models');
+
+foreach ([TMP, LOGS, SESSIONS, CACHE,CACHE . 'views', CACHE . 'models'] as $dir) {
+    mkdir($dir);
+}
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
@@ -73,10 +71,3 @@ Cache::setConfig([
 ]);
 
 $_SERVER['PHP_SELF'] = '/';
-
-/**
- * @todo To be removed in a later version
- */
-if (!class_exists('Cake\Console\TestSuite\StubConsoleOutput')) {
-    class_alias('Cake\TestSuite\Stub\ConsoleOutput', 'Cake\Console\TestSuite\StubConsoleOutput');
-}
