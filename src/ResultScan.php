@@ -16,7 +16,6 @@ namespace LinkScanner;
 
 use Cake\Collection\Collection;
 use Cake\Collection\CollectionInterface;
-use LinkScanner\ScanEntity;
 use Traversable;
 
 /**
@@ -30,6 +29,7 @@ class ResultScan extends Collection
      * Ensures that each item is a `ScanEntity` and has all the properties it needs
      * @param \Cake\Collection\CollectionInterface|\Traversable|iterable $items Items
      * @return array<\LinkScanner\ScanEntity> Parsed items
+     * @throws \Tools\Exception\KeyNotExistsException
      */
     protected function parseItems(iterable $items): array
     {
@@ -45,6 +45,7 @@ class ResultScan extends Collection
     /**
      * Constructor
      * @param \Cake\Collection\CollectionInterface|\Traversable|iterable $items Items
+     * @throws \Tools\Exception\KeyNotExistsException
      */
     public function __construct($items = [])
     {
@@ -54,10 +55,10 @@ class ResultScan extends Collection
     /**
      * Appends items.
      *
-     * Returns a new `ResultScan` instance as the result of concatenating the
-     *  list of elements in this collection with the passed list of elements
+     * Returns a new `ResultScan` instance as the result of concatenating the list of elements.
      * @param iterable $items Items
      * @return \Cake\Collection\CollectionInterface
+     * @throws \Tools\Exception\KeyNotExistsException
      */
     public function append($items): CollectionInterface
     {
@@ -67,10 +68,10 @@ class ResultScan extends Collection
     /**
      * Prepends items.
      *
-     * Returns a new `ResultScan` instance as the result of concatenating the
-     *  passed list of elements with the list of elements in this collection
+     * Returns a new `ResultScan` instance as the result of concatenating the passed list of elements.
      * @param mixed $items Items
      * @return \Cake\Collection\CollectionInterface
+     * @throws \Tools\Exception\KeyNotExistsException
      */
     public function prepend($items): CollectionInterface
     {

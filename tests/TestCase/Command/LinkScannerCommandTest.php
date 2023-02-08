@@ -1,4 +1,6 @@
 <?php
+/** @noinspection ALL */
+/** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
 /**
@@ -23,7 +25,7 @@ use Cake\Console\TestSuite\StubConsoleOutput;
 use LinkScanner\Command\LinkScannerCommand;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
-use PHPUnit\Framework\Error\Deprecated;
+use PHPUnit\Framework\Exception;
 use Tools\TestSuite\ReflectionTrait;
 
 /**
@@ -43,7 +45,7 @@ class LinkScannerCommandTest extends TestCase
     /**
      * @var string
      */
-    protected string $fullBaseUrl = 'http://google.com';
+    protected string $fullBaseUrl = 'https://google.com';
 
     /**
      * @var \Cake\Console\ConsoleIo
@@ -113,9 +115,9 @@ class LinkScannerCommandTest extends TestCase
         $this->assertErrorContains('404');
 
         //Does not suppress PHPUnit exceptions, which are thrown anyway
-        $this->expectDeprecation();
+        $this->expectException(Exception::class);
         $Client = $this->getClientStub();
-        $Client->method('get')->willThrowException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__));
+        $Client->method('get')->willThrowException(new Exception());
         $this->Command->LinkScanner = new LinkScanner($Client);
         $this->Command->run(['--verbose'], $this->_io);
     }

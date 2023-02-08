@@ -23,12 +23,12 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
+use ErrorException;
 use Exception;
 use Laminas\Diactoros\Stream;
 use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
 use PHPUnit\Framework\Exception as PHPUnitException;
-use RuntimeException;
 use Serializable;
 use Tools\BodyParser;
 use Tools\Exceptionist;
@@ -168,7 +168,7 @@ class LinkScanner implements Serializable
     {
         Exceptionist::isTrue(
             !$this->getConfig('lockFile') || !file_exists($this->lockFile),
-            __d('link-scanner','Lock file `{0}` already exists, maybe a scan is already in progress. If not, remove it manually', $this->lockFile)
+            __d('link-scanner', 'Lock file `{0}` already exists, maybe a scan is already in progress. If not, remove it manually', $this->lockFile)
         );
 
         return $this->getConfig('lockFile') && Filesystem::instance()->createFile($this->lockFile);
@@ -236,6 +236,7 @@ class LinkScanner implements Serializable
      * @param string $url Url to scan
      * @param string|null $referer Referer of this url
      * @return void
+     * @throws \Tools\Exception\KeyNotExistsException
      * @todo `$referer` can be a empty string?
      */
     protected function _recursiveScan(string $url, ?string $referer = null): void
@@ -335,13 +336,15 @@ class LinkScanner implements Serializable
      * Called during un-serialization of the object
      * @param string $serialized The string representation of the object
      * @return void
-     * @todo `$serialized` string?
+     * @todo `$serialized` string? Should be `$data`
      */
     public function unserialize($serialized): void
     {
         //Resets the event list and the Client instance
         $properties = unserialize($serialized);
-        $this->getEventManager()->setEventList(new EventList());
+        /** @var \Cake\Event\EventManager $EventManager */
+        $EventManager = $this->getEventManager();
+        $EventManager->setEventList(new EventList());
         $this->Client = new Client($properties['Client']);
         unset($properties['Client']);
 
@@ -388,7 +391,8 @@ class LinkScanner implements Serializable
      *  - `LinkScanner.resultsImported`: will be triggered when the results have been exported.
      * @param string $filename Filename from which to import
      * @return $this
-     * @throws \RuntimeException
+     * @throws \ErrorException
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function import(string $filename)
     {
@@ -398,7 +402,7 @@ class LinkScanner implements Serializable
             $instance = unserialize(file_get_contents($filename) ?: '');
         } catch (Exception $e) {
             $message = preg_replace('/file_get_contents\([^)]+\):\s+/', '', $e->getMessage()) ?: '';
-            throw new RuntimeException(
+            throw new ErrorException(
                 __d('link-scanner', 'Failed to import results from file `{0}` with message `{1}`', $filename, lcfirst($message))
             );
         }
@@ -419,6 +423,7 @@ class LinkScanner implements Serializable
      * Other events will be triggered by `_recursiveScan()` and `_singleScan()` methods.
      * @return $this
      * @throws \ErrorException
+     * @noinspection PhpMissingReturnTypeInspection
      */
     public function scan()
     {

@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Core\Configure;
-use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\NotFoundException;
+use Cake\Http\Response;
 use Cake\View\Exception\MissingTemplateException;
 
 class PagesController extends AppController
@@ -13,16 +14,15 @@ class PagesController extends AppController
     /**
      * Displays a view
      *
-     * @param array ...$path Path segments.
+     * @param array ...$path Path segments
      * @return \Cake\Http\Response|null
-     * @throws \Cake\Network\Exception\ForbiddenException When a directory traversal attempt.
-     * @throws \Cake\Network\Exception\NotFoundException When the view file could not
-     *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
+     * @throws \Cake\Http\Exception\ForbiddenException When a directory traversal attempt
+     * @throws \Cake\Http\Exception\NotFoundException When the view file could not e found or MissingTemplateException in debug mode
      */
-    public function display(...$path)
+    public function display(...$path): ?Response
     {
-        //Disables the layout for `nohtml` and `nolinks` pages
-        if (in_array(array_value_first($path), ['nohtml', 'nolinks'])) {
+        //Disables the layout for `no-html` and `no-links` pages
+        if (in_array(array_value_first($path), ['no-html', 'no-links'])) {
             $this->viewBuilder()->disableAutoLayout();
         }
 
@@ -44,7 +44,7 @@ class PagesController extends AppController
         $this->set(compact('page', 'subpage'));
 
         try {
-            $this->render(implode('/', $path));
+            return $this->render(implode('/', $path));
         } catch (MissingTemplateException $exception) {
             if (Configure::read('debug')) {
                 throw $exception;

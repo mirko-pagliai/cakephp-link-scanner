@@ -47,11 +47,9 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * Asserts that a global event was not fired. You must track events in your
-     *  event manager for this assertion to work
+     * Asserts that a global event was not fired. You must track events in your event manager for this assertion to work
      * @param string $name Event name
-     * @param \Cake\Event\EventManager|null $eventManager Event manager to check,
-     *  defaults to global event manager
+     * @param \Cake\Event\EventManager|null $eventManager Event manager to check, defaults to global event manager
      * @return void
      */
     public function assertEventNotFired(string $name, ?EventManager $eventManager = null): void
@@ -70,16 +68,13 @@ abstract class TestCase extends BaseTestCase
     protected function getClientStub(array $methods = ['get']): Client
     {
         /** @var \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject $Client */
-        $Client = $this->getMockBuilder(Client::class)
-            ->setMethods($methods)
-            ->getMock();
+        $Client = $this->getMockBuilder(Client::class)->onlyMethods($methods)->getMock();
 
         return $Client;
     }
 
     /**
-     * Returns a stub of `Client`, where the `get()` method always returns a
-     *  response with error (404 status code)
+     * Returns a stub of `Client`, where the `get()` method always returns a response with error (404 status code)
      * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getClientReturnsErrorResponse(): Client
@@ -87,21 +82,20 @@ abstract class TestCase extends BaseTestCase
         //This allows the `Client` instance to use the `IntegrationTestCase::get()` method
         //It also analyzes the url of the test application and transforms them into parameter arrays
         $Client = $this->getClientStub();
-        $Client->method('get')->will($this->returnValue($this->getResponseWithBody('')->withStatus(404)));
+        $Client->method('get')->willReturn($this->getResponseWithBody('')->withStatus(404));
 
         return $Client;
     }
 
     /**
-     * Returns a stub of `Client`, where the `get()` method returns a redirect
-     *  on the third request
+     * Returns a stub of `Client`, where the `get()` method returns a redirect on the third request
      * @return \Cake\Http\Client|\PHPUnit\Framework\MockObject\MockObject
      * @since 1.1.5
      */
     protected function getClientReturnsRedirect(): object
     {
         $Client = $this->getClientStub();
-        $Client->method('get')->will($this->returnCallback(function (string $url): Response {
+        $Client->method('get')->willReturnCallback(function (string $url): Response {
             switch ($url) {
                 case 'http://localhost/aPageWithRedirect':
                     $response = new Response(['Location:http://localhost/redirectTarget']);
@@ -121,22 +115,22 @@ abstract class TestCase extends BaseTestCase
             }
 
             return $response;
-        }));
+        });
 
         return $Client;
     }
 
     /**
-     * Returns a stub of `Client`, where the `get()` method returns a sample
-     *  response which is read from `examples/responses` files
+     * Returns a stub of `Client`, where the `get()` method returns a sample response which is read from
+     *  `examples/responses` files
      * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getClientReturnsSampleResponse(): Client
     {
         $Client = $this->getClientStub();
-        $Client->method('get')->will($this->returnCallback(function (string $url): Response {
-            //Ties to get the response from the `$responseFile` cache file.
-            //  If it doesn't exist, it will retrieve it via a GET request.
+        $Client->method('get')->willReturnCallback(function (string $url): Response {
+            //Ties to get the response from the `$responseFile` cache file. If it doesn't exist, it will retrieve it via
+            //  a GET request.
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
             $getResponse = fn(): Response => is_readable($responseFile) ? @unserialize(file_get_contents($responseFile) ?: '') : (new Client(['redirect' => true]))->get($url);
             is_readable($responseFile) ? null : file_put_contents($responseFile, serialize($getResponse()));
@@ -146,7 +140,7 @@ abstract class TestCase extends BaseTestCase
             is_readable($bodyFile) ? null : file_put_contents($bodyFile, serialize($body));
 
             return $this->getResponseWithBody($body, $getResponse());
-        }));
+        });
 
         return $Client;
     }
@@ -158,6 +152,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getEventManager(?LinkScanner $LinkScanner = null): EventManager
     {
+        /** @var \Cake\Event\EventManager $eventManager */
         $eventManager = ($LinkScanner ?? $this->LinkScanner)->getEventManager();
 
         return $eventManager->setEventList($eventManager->getEventList() ?? new EventList());
@@ -168,8 +163,7 @@ abstract class TestCase extends BaseTestCase
      *
      * If `$response` is null, a new `Response` instance will be created.
      * @param string $body Body of the response
-     * @param \Cake\Http\Client\Response|null $response A `Response` instance or
-     *  `null` to create a new instance
+     * @param \Cake\Http\Client\Response|null $response A `Response` instance or `null` to create a new instance
      * @return \Cake\Http\Client\Response
      */
     protected function getResponseWithBody(string $body, ?Response $response = null): Response

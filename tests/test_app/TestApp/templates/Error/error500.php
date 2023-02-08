@@ -9,6 +9,7 @@ $this->layout = 'error';
 if (Configure::read('debug')) :
     $this->layout = 'dev_error';
 
+    /** @var string $message */
     $this->assign('title', $message);
     $this->assign('templateName', 'error500.php');
 

@@ -20,7 +20,6 @@ use Cake\Console\ConsoleIo;
 use Cake\Event\Event;
 use Cake\Http\Client\Response;
 use Cake\I18n\FrozenTime;
-use LinkScanner\Event\LinkScannerEventListenerInterface;
 use LinkScanner\ResultScan;
 
 /**

@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
 /**
@@ -24,8 +25,7 @@ use LinkScanner\ResultScan;
 use LinkScanner\TestSuite\IntegrationTestTrait;
 use LinkScanner\TestSuite\TestCase;
 use LinkScanner\Utility\LinkScanner;
-use PHPUnit\Framework\Error\Deprecated;
-use RuntimeException;
+use PHPUnit\Framework\Exception as PHPUnitException;
 use Tools\TestSuite\ReflectionTrait;
 
 /**
@@ -66,7 +66,7 @@ class LinkScannerTest extends TestCase
         parent::setUp();
 
         $this->debug = [];
-        $this->fullBaseUrl = 'http://google.com';
+        $this->fullBaseUrl = 'https://google.com';
         $this->LinkScanner = new LinkScanner($this->getClientReturnsSampleResponse());
         $this->LinkScanner->setConfig('fullBaseUrl', $this->fullBaseUrl);
         $this->LinkScanner->Client->setConfig('timeout', 5);
@@ -91,7 +91,7 @@ class LinkScannerTest extends TestCase
         (new PhpConfig())->dump('link_scanner', ['LinkScanner' => $config]);
         $this->assertSame($expected, (new LinkScanner())->getConfig());
 
-        @unlink(CONFIG . 'link_scanner.php');
+        unlink(CONFIG . 'link_scanner.php');
     }
 
     /**
@@ -153,9 +153,9 @@ class LinkScannerTest extends TestCase
         $this->assertEquals(404, $getResponseMethod('/noExisting')->getStatusCode());
 
         //Does not suppress PHPUnit exceptions, which are thrown anyway
-        $this->expectDeprecation();
+        $this->expectException(PHPUnitException::class);
         $Client = $this->getClientStub();
-        $Client->method('get')->willThrowException(new Deprecated('This is deprecated', 0, __FILE__, __LINE__));
+        $Client->method('get')->willThrowException(new PHPUnitException());
         $this->LinkScanner = new LinkScanner($Client);
         $getResponseMethod('/noExisting');
     }
@@ -220,7 +220,6 @@ class LinkScannerTest extends TestCase
         $this->assertEquals($expectedProperties, $resultProperties);
 
         //With a no existing file
-        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Failed to import results from file `' . TMP . 'noExistingDir' . DS . 'result` with message `failed to open stream: No such file or directory`');
         $this->LinkScanner->import(TMP . 'noExistingDir' . DS . 'result');
     }
@@ -296,13 +295,8 @@ class LinkScannerTest extends TestCase
         }
 
         /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
-        $LinkScanner = $this->getMockBuilder(LinkScanner::class)
-            ->setMethods(['_recursiveScan'])
-            ->getMock();
-
-        $LinkScanner->expects($this->once())
-             ->method('_recursiveScan');
-
+        $LinkScanner = $this->getMockBuilder(LinkScanner::class)->onlyMethods(['_recursiveScan'])->getMock();
+        $LinkScanner->expects($this->once())->method('_recursiveScan');
         $LinkScanner->scan();
 
         //The lock file already exists
@@ -320,20 +314,14 @@ class LinkScannerTest extends TestCase
     {
         //Sets events. They will add some output to the `$this->debug` property
         $this->getEventManager()->instance()
-            ->on('LinkScanner.beforeScanUrl', function () {
-                $this->debug[] = sprintf('Scanning %s', func_get_arg(1));
-            })
-            ->on('LinkScanner.foundLinkToBeScanned', function () {
-                $this->debug[] = sprintf('Found link: %s', func_get_arg(1));
-            })
-            ->on('LinkScanner.foundRedirect', function () {
-                $this->debug[] = sprintf('Found redirect: %s', func_get_arg(1));
-            });
+            ->on('LinkScanner.beforeScanUrl', fn() => $this->debug[] = sprintf('Scanning %s', func_get_arg(1)))
+            ->on('LinkScanner.foundLinkToBeScanned', fn() => $this->debug[] = sprintf('Found link: %s', func_get_arg(1)))
+            ->on('LinkScanner.foundRedirect', fn() => $this->debug[] = sprintf('Found redirect: %s', func_get_arg(1)));
 
         $expectedDebug = [
             'Scanning http://localhost',
-            'Found link: http://google.it',
-            'Scanning http://google.it',
+            'Found link: https://google.it',
+            'Scanning https://google.it',
             'Found link: http://localhost/pages/first_page',
             'Scanning http://localhost/pages/first_page',
             'Found link: http://localhost/favicon.ico',
@@ -344,12 +332,12 @@ class LinkScannerTest extends TestCase
             'Scanning http://localhost/js/default.js',
             'Found link: http://localhost/pages/second_page',
             'Scanning http://localhost/pages/second_page',
-            'Found link: http://localhost/pages/nohtml',
-            'Scanning http://localhost/pages/nohtml',
+            'Found link: http://localhost/pages/no-html',
+            'Scanning http://localhost/pages/no-html',
             'Found link: http://localhost/pages/redirect',
             'Scanning http://localhost/pages/redirect',
-            'Found link: http://localhost/pages/sameredirect',
-            'Scanning http://localhost/pages/sameredirect',
+            'Found link: http://localhost/pages/same-redirect',
+            'Scanning http://localhost/pages/same-redirect',
         ];
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $LinkScanner->scan();
@@ -368,11 +356,11 @@ class LinkScannerTest extends TestCase
             'http://localhost/css/default.css',
             'http://localhost/js/default.js',
             'http://localhost/pages/second_page',
-            'http://localhost/pages/nohtml',
+            'http://localhost/pages/no-html',
             'http://localhost/pages/redirect',
-            'http://localhost/pages/sameredirect',
+            'http://localhost/pages/same-redirect',
         ];
-        $expectedExternal = ['http://google.it'];
+        $expectedExternal = ['https://google.it'];
         $internalLinks = $LinkScanner->ResultScan->match(['external' => false])->extract('url');
         $externalLinks = $LinkScanner->ResultScan->match(['external' => true])->extract('url');
         $this->assertEquals($expectedInternal, $internalLinks->toList());
@@ -382,8 +370,8 @@ class LinkScannerTest extends TestCase
 
         $expectedDebug = [
             'Scanning http://localhost',
-            'Found link: http://google.it',
-            'Scanning http://google.it',
+            'Found link: https://google.it',
+            'Scanning https://google.it',
             'Found link: http://localhost/pages/first_page',
             'Scanning http://localhost/pages/first_page',
             'Found link: http://localhost/favicon.ico',
@@ -394,14 +382,14 @@ class LinkScannerTest extends TestCase
             'Scanning http://localhost/js/default.js',
             'Found link: http://localhost/pages/second_page',
             'Scanning http://localhost/pages/second_page',
-            'Found link: http://localhost/pages/nohtml',
-            'Scanning http://localhost/pages/nohtml',
+            'Found link: http://localhost/pages/no-html',
+            'Scanning http://localhost/pages/no-html',
             'Found link: http://localhost/pages/redirect',
             'Scanning http://localhost/pages/redirect',
             'Found redirect: http://localhost/pages/third_page',
             'Scanning http://localhost/pages/third_page',
-            'Found link: http://localhost/pages/sameredirect',
-            'Scanning http://localhost/pages/sameredirect',
+            'Found link: http://localhost/pages/same-redirect',
+            'Scanning http://localhost/pages/same-redirect',
         ];
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $LinkScanner->setConfig('followRedirects', true)->scan();
@@ -419,11 +407,11 @@ class LinkScannerTest extends TestCase
         $LinkScanner->setConfig('maxDepth', 1)->scan();
         $this->assertCount(1, $LinkScanner->ResultScan);
         $item = $LinkScanner->ResultScan->first();
-        $this->assertEquals($item->get('code'), 200);
+        $this->assertSame($item->get('code'), 200);
         $this->assertFalse($item->get('external'));
         $this->assertNull($item->get('referer'));
         $this->assertStringStartsWith('text/html', $item->get('type'));
-        $this->assertEquals($item->get('url'), 'http://localhost');
+        $this->assertSame($item->get('url'), 'http://localhost');
 
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $LinkScanner->setConfig('exportOnlyBadResults', true)->scan();

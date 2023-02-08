@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpDocMissingThrowsInspection */
+/** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
 /**
@@ -14,6 +16,7 @@ declare(strict_types=1);
  */
 namespace LinkScanner\Test\TestCase;
 
+use ArrayObject;
 use Cake\TestSuite\TestCase;
 use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
@@ -40,7 +43,7 @@ class ResultScanTest extends TestCase
             'code' => 200,
             'external' => true,
             'type' => 'text/html; charset=UTF-8',
-            'url' => 'http://google.com',
+            'url' => 'https://google.com',
         ])]);
     }
 
@@ -55,18 +58,18 @@ class ResultScanTest extends TestCase
                 'code' => 200,
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://google.com',
+                'url' => 'https://google.com',
             ]),
             new ScanEntity([
                 'code' => 200,
                 'external' => false,
                 'type' => 'text/html;charset=UTF-8',
-                'url' => 'http://example.com/',
+                'url' => 'https://example.com/',
             ]),
         ];
         $this->assertEquals($expected, (new ResultScan($expected))->toArray());
         //Tries with a `Traversable` object
-        $this->assertEquals($expected, (new ResultScan(new \ArrayObject($expected)))->toArray());
+        $this->assertEquals($expected, (new ResultScan(new ArrayObject($expected)))->toArray());
     }
 
     /**
@@ -80,13 +83,13 @@ class ResultScanTest extends TestCase
                 'code' => 200,
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://example.com/',
+                'url' => 'https://example.com/',
             ]),
             new ScanEntity([
                 'code' => 200,
                 'external' => false,
                 'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://example.com/page.html',
+                'url' => 'https://example.com/page.html',
             ]),
         ];
         $existing = $this->ResultScan->toArray();
@@ -112,7 +115,7 @@ class ResultScanTest extends TestCase
                 'code' => 200,
                 'external' => true,
                 'type' => 'text/html; charset=UTF-8',
-                'url' => 'http://example.com/',
+                'url' => 'https://example.com/',
             ]),
         ];
         $existing = $this->ResultScan->toArray();
