@@ -154,7 +154,7 @@ class LinkScannerCommandTest extends TestCase
         $this->Command->run($params, $this->_io);
 
         $expectedDuration = Cache::getConfig('LinkScanner')['duration'];
-        $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
+        $expectedFilename = $this->LinkScanner->getConfig('target') . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
 
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
         $this->assertEquals(15, $this->LinkScanner->Client->getConfig('timeout'));
@@ -195,7 +195,7 @@ class LinkScannerCommandTest extends TestCase
         //It also works without the `--export` parameter
         self::setUp();
         $this->Command->run(array_merge(['--export-only-bad-results'] + $params), $this->_io);
-        $expectedFilename = $this->LinkScanner->getConfig('target') . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
+        $expectedFilename = $this->LinkScanner->getConfig('target') . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime;
         $this->assertEquals(['exportOnlyBadResults' => true] + $expectedConfig, $this->LinkScanner->getConfig());
         $this->assertOutputRegExp(sprintf('/Scan started for %s/', preg_quote($this->LinkScanner->getConfig('fullBaseUrl'), '/')));
         $this->assertOutputRegExp('/Total scanned links\: [1-9]\d*/');
@@ -232,7 +232,7 @@ class LinkScannerCommandTest extends TestCase
         $this->assertNotEmpty(array_filter($this->_out->messages(), $differentLines));
 
         foreach ([
-            'example' => $this->LinkScanner->getConfig('target') . DS . 'example',
+            'example' => $this->LinkScanner->getConfig('target') . 'example',
             TMP . 'example' => TMP . 'example',
         ] as $filename => $expectedExportFile) {
             self::setUp();

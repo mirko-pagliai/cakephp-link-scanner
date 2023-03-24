@@ -1,5 +1,9 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.16
+* added the `LINK_SCANNER_TMP` constant. This constant, which can be defined before the plugin, affects all used files;
+* many, small improvements proposed by phpstorm.
+
 ### 1.1.15
 * the `LinkScannerCommand` also prints the total number of invalid links to the console;
 * many, small code tweaks proposed by phpstorm;

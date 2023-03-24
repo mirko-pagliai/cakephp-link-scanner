@@ -6,6 +6,7 @@
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     autoloader="tests/bootstrap.php"
+    errorBaseline="psalm-baseline.neon"
 >
     <projectFiles>
         <directory name="src" />
@@ -13,8 +14,4 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
-
-    <issueHandlers>
-        <RedundantPropertyInitializationCheck errorLevel="suppress" />
-    </issueHandlers>
 </psalm>
