@@ -40,7 +40,9 @@ class LinkScannerCommand extends Command
      */
     public function initialize(): void
     {
-        $this->LinkScanner ??= new LinkScanner();
+        if (empty($this->LinkScanner)) {
+            $this->LinkScanner = new LinkScanner();
+        }
     }
 
     /**

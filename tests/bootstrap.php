@@ -23,7 +23,6 @@ mb_internal_encoding('UTF-8');
 
 define('ROOT', dirname(__DIR__) . DS);
 define('VENDOR', ROOT . 'vendor' . DS);
-define('CAKE_CORE_INCLUDE_PATH', ROOT . 'vendor' . DS . 'cakephp' . DS . 'cakephp');
 define('CORE_PATH', ROOT . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS);
 define('CAKE', CORE_PATH . 'src' . DS);
 define('TESTS', ROOT . 'tests' . DS);
@@ -38,12 +37,13 @@ define('CONFIG', APP . 'config' . DS);
 define('LOGS', TMP . 'logs' . DS);
 define('SESSIONS', TMP . 'sessions' . DS);
 
-foreach (array_filter([TMP, LOGS, SESSIONS, CACHE, CACHE . 'views', CACHE . 'models'], fn(string $dir): bool => !file_exists($dir)) as $dir) {
-    mkdir($dir);
-}
-
 require dirname(__DIR__) . '/vendor/autoload.php';
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
+require ROOT . 'config' . DS . 'bootstrap.php';
+
+foreach (array_filter([LINK_SCANNER_TMP, LOGS, SESSIONS, CACHE . 'views', CACHE . 'models'], fn(string $dir): bool => !file_exists($dir)) as $dir) {
+    mkdir($dir, 0777, true);
+}
 
 Configure::write('debug', true);
 Configure::write('App', [
