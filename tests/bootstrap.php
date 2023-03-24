@@ -32,13 +32,13 @@ define('APP', TEST_APP . 'TestApp' . DS);
 define('APP_DIR', 'TestApp');
 define('WEBROOT_DIR', 'webroot');
 define('WWW_ROOT', APP . 'webroot' . DS);
-define('TMP', sys_get_temp_dir() . DS . 'cakephp-link-scanner-tmp' . DS);
+define('TMP', sys_get_temp_dir() . DS);
 define('CACHE', TMP . 'cache' . DS);
 define('CONFIG', APP . 'config' . DS);
 define('LOGS', TMP . 'logs' . DS);
 define('SESSIONS', TMP . 'sessions' . DS);
 
-foreach ([TMP, LOGS, SESSIONS, CACHE,CACHE . 'views', CACHE . 'models'] as $dir) {
+foreach (array_filter([TMP, LOGS, SESSIONS, CACHE, CACHE . 'views', CACHE . 'models'], fn(string $dir): bool => !file_exists($dir)) as $dir) {
     mkdir($dir);
 }
 

@@ -15,11 +15,16 @@ declare(strict_types=1);
 
 use Cake\Cache\Cache;
 
+//Default LinkScanner tmp
+if (!defined('LINK_SCANNER_TMP')) {
+    define('LINK_SCANNER_TMP', TMP . 'cakephp-link-scanner' . DS);
+}
+
 if (!Cache::getConfig('LinkScanner')) {
     Cache::setConfig('LinkScanner', [
         'className' => 'File',
         'duration' => '+1 day',
-        'path' => CACHE,
+        'path' => LINK_SCANNER_TMP . 'cache' . DS,
         'prefix' => 'link_scanner_',
     ]);
 }

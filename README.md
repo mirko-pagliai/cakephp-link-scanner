@@ -16,7 +16,7 @@ Did you like this plugin? Its development requires a lot of time for me.
 Please consider the possibility of making [a donation](//paypal.me/mirkopagliai):
 even a coffee is enough! Thank you.
 
-[![Make a donation](https://www.paypalobjects.com/webstatic/mktg/logo-center/logo_paypal_carte.jpg)](//paypal.me/mirkopagliai)
+[![Make a donation](https://www.paypalobjects.com/webstatic/mktg/logo-center/logo_paypal_carte.jpg)](https://paypal.me/mirkopagliai)
 
 ***
 
@@ -36,7 +36,7 @@ $ composer require --prefer-dist mirko-pagliai/cakephp-link-scanner
 ```
 
 Then you have to load the plugin. For more information on how to load the plugin,
-please refer to the [Cookbook](//book.cakephp.org/4.0/en/plugins.html#loading-a-plugin).
+please refer to the [Cookbook](https://book.cakephp.org/4.0/en/plugins.html#loading-a-plugin).
 
 Simply, you can execute the shell command to enable the plugin:
 ```bash
@@ -52,7 +52,7 @@ However, there are still some branches compatible with previous versions of
 CakePHP and PHP.
 
 #### For PHP 7.2 or later
-The [php7.2](//github.com/mirko-pagliai/cakephp-link-scanner/tree/php7.2) branch
+The [php7.2](https://github.com/mirko-pagliai/cakephp-link-scanner/tree/php7.2) branch
 requires at least PHP 7.2.
 
 In this case, you can install the package as well:
@@ -79,17 +79,17 @@ except for security patches, and it matches the
 
 ## Configuration
 It's not essential, but it may be useful to set the `App.fullBaseUrl` value
-correctly [refer to the Cookbook](//book.cakephp.org/4.0/en/development/configuration.html#general-configuration),
+correctly [refer to the Cookbook](https://book.cakephp.org/4.0/en/development/configuration.html#general-configuration),
 especially if you plan to use the plugin mainly on your app, so as not to have
 to indicate the full base url which to start the scan every time.
 
 ## How to use
 Please, refer to the wiki:
-*   [How to use the LinkScanner utility](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScanner-utility)
-*   [How to use the LinkScannerCommand](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScannerCommand)
-*   [Examples for ResultScan](//github.com/mirko-pagliai/cakephp-link-scanner/wiki/Examples-for-ResultScan)
+*   [How to use the LinkScanner utility](https://github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScanner-utility)
+*   [How to use the LinkScannerCommand](https://github.com/mirko-pagliai/cakephp-link-scanner/wiki/How-to-use-the-LinkScannerCommand)
+*   [Examples for ResultScan](https://github.com/mirko-pagliai/cakephp-link-scanner/wiki/Examples-for-ResultScan)
 
-In addition, you can refer to our [API](//mirko-pagliai.github.io/cakephp-link-scanner).
+In addition, you can refer to our [API](https://mirko-pagliai.github.io/cakephp-link-scanner).
 
 ## To do list
 *   allow the use of a configuration file for the shell;
@@ -98,4 +98,4 @@ In addition, you can refer to our [API](//mirko-pagliai.github.io/cakephp-link-s
 ## Versioning
 For transparency and insight into our release cycle and to maintain backward
 compatibility, *Assets* will be maintained under the
-[Semantic Versioning guidelines](//semver.org).
+[Semantic Versioning guidelines](https://semver.org).

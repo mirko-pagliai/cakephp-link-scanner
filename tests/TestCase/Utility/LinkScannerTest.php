@@ -172,8 +172,8 @@ class LinkScannerTest extends TestCase
 
         //Filename can be `null`, relative or absolute
         foreach ([
-            null => $target . DS . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
-            'example' => $target . DS . 'example',
+            null => $target . 'results_' . $this->LinkScanner->hostname . '_' . $this->LinkScanner->startTime,
+            'example' => $target . 'example',
             TMP . 'example' => TMP . 'example',
         ] as $filename => $expectedFilename) {
             $result = $this->LinkScanner->export($filename);
