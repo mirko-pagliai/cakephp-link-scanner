@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
   <file src="src/Command/LinkScannerCommand.php">
-    <TypeDoesNotContainType occurrences="1">
-      <code>empty($this-&gt;LinkScanner)</code>
-    </TypeDoesNotContainType>
+    <RedundantPropertyInitializationCheck occurrences="2">
+      <code>$this-&gt;LinkScanner</code>
+      <code>new LinkScanner()</code>
+    </RedundantPropertyInitializationCheck>
   </file>
 </files>
