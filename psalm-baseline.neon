@@ -6,4 +6,9 @@
       <code>new LinkScanner()</code>
     </RedundantPropertyInitializationCheck>
   </file>
+  <file src="src/Entity.php">
+    <PossiblyInvalidPropertyAssignmentValue occurrences="1">
+      <code>$this-&gt;properties</code>
+    </PossiblyInvalidPropertyAssignmentValue>
+  </file>
 </files>
