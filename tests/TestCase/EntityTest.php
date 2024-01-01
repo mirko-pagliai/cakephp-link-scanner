@@ -23,7 +23,7 @@ use LinkScanner\TestSuite\TestCase;
 class EntityTest extends TestCase
 {
     /**
-     * @var \LinkScanner\Entity&\PHPUnit\Framework\MockObject\MockObject
+     * @var \LinkScanner\Entity|(\LinkScanner\Entity&\PHPUnit\Framework\MockObject\MockObject)
      */
     protected Entity $Entity;
 

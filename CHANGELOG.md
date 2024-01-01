@@ -1,6 +1,7 @@
 # 1.x branch
 ## 1.1 branch
 ### 1.1.17
+* no longer uses the `Exceptionist` class;
 * provides its own `Entity` abstract class and no longer uses the one provided by `php-tools`.
 
 ### 1.1.16

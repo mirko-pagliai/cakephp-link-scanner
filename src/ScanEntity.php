@@ -16,7 +16,7 @@ namespace LinkScanner;
 
 use BadMethodCallException;
 use Cake\Http\Client\Response;
-use Tools\Exceptionist;
+use LogicException;
 
 /**
  * A `ScanEntity` represents a single result of a scan
@@ -32,12 +32,17 @@ class ScanEntity extends Entity
 
     /**
      * Initializes the internal properties
-     * @param array<string, int|string|bool|null> $properties Properties to set
-     * @throws \Tools\Exception\KeyNotExistsException
+     * @param array $properties Properties to set
+     * @throws \LogicException
      */
     public function __construct(array $properties = [])
     {
-        Exceptionist::arrayKeyExists(['code', 'external', 'type', 'url'], $properties);
+        foreach (['code', 'external', 'type', 'url'] as $name) {
+            if (!array_key_exists($name, $properties)) {
+                throw new LogicException('Key `' . $name . '` does not exist');
+            }
+        }
+
         parent::__construct($properties);
     }
 

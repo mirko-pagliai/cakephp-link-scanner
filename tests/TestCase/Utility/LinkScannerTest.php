@@ -43,7 +43,7 @@ class LinkScannerTest extends TestCase
     protected EventManager $EventManager;
 
     /**
-     * @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject
+     * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
      */
     protected LinkScanner $LinkScanner;
 
