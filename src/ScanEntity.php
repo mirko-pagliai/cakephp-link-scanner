@@ -22,6 +22,7 @@ use LogicException;
  * A `ScanEntity` represents a single result of a scan
  * @method bool isRedirect()
  * @method bool isSuccess()
+ * @todo It should not extend `Entity`, but provide the necessary properties naturally
  */
 class ScanEntity extends Entity
 {
