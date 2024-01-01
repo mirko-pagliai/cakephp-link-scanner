@@ -38,6 +38,11 @@ class LinkScannerCommandTest extends TestCase
     use ReflectionTrait;
 
     /**
+     * @var \LinkScanner\Command\LinkScannerCommand
+     */
+    protected LinkScannerCommand $Command;
+
+    /**
      * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
      */
     protected LinkScanner $LinkScanner;
@@ -53,8 +58,7 @@ class LinkScannerCommandTest extends TestCase
     protected ConsoleIo $_io;
 
     /**
-     * Called before every test method
-     * @return void
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -124,7 +128,6 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `execute()` method, with cache enabled
      * @test
      * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
@@ -136,11 +139,10 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `execute()` method, with some parameters
      * @test
      * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testExecuteParams(): void
+    public function testExecuteWithSomeParameters(): void
     {
         touch($this->Command->LinkScanner->lockFile);
         $params = [
@@ -271,11 +273,10 @@ class LinkScannerCommandTest extends TestCase
     }
 
     /**
-     * Test for `execute()` method, with verbose
      * @test
      * @uses \LinkScanner\Command\LinkScannerCommand::execute()
      */
-    public function testExecuteVerbose(): void
+    public function testExecuteWithVerbose(): void
     {
         $this->Command->run(['--no-cache', '--verbose'], $this->_io);
         $this->assertOutputRegExp(sprintf('/Scan started for %s at [\d\-]+\s[\d\:]+/', preg_quote($this->fullBaseUrl, '/')));
