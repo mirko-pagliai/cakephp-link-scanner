@@ -56,7 +56,7 @@ class LinkScanner implements Serializable
 
     /**
      * Default configuration
-     * @var array<string, mixed>
+     * @var array
      */
     protected array $_defaultConfig = [
         'cache' => true,
@@ -131,7 +131,7 @@ class LinkScanner implements Serializable
      */
     public function __get(string $name)
     {
-        return $this->$name;
+        return $this->{$name};
     }
 
     /**
@@ -198,30 +198,30 @@ class LinkScanner implements Serializable
         $cacheKey = 'response_' . md5(serialize($url));
 
         //Tries to get the response from the cache
-        $response = $this->getConfig('cache') ? Cache::read($cacheKey, 'LinkScanner') : null;
-        if ($response && is_array($response)) {
-            [$response, $body] = $response;
+        $Response = $this->getConfig('cache') ? Cache::read($cacheKey, 'LinkScanner') : null;
+        if ($Response && is_array($Response)) {
+            [$Response, $body] = $Response;
 
-            $stream = new Stream('php://memory', 'wb+');
-            $stream->write($body);
-            $stream->rewind();
+            $Stream = new Stream('php://memory', 'wb+');
+            $Stream->write($body);
+            $Stream->rewind();
 
-            return $response->withBody($stream);
+            return $Response->withBody($Stream);
         }
 
         try {
-            $response = $this->Client->get($url);
+            $Response = $this->Client->get($url);
 
-            if ($this->getConfig('cache') && ($response->isOk() || $response->isRedirect())) {
-                Cache::write($cacheKey, [$response, (string)$response->getBody()], 'LinkScanner');
+            if ($this->getConfig('cache') && ($Response->isOk() || $Response->isRedirect())) {
+                Cache::write($cacheKey, [$Response, (string)$Response->getBody()], 'LinkScanner');
             }
         } catch (PHPUnitException $e) {
             throw $e;
         } catch (Exception $e) {
-            $response = (new Response())->withStatus(404);
+            $Response = (new Response())->withStatus(404);
         }
 
-        return $response;
+        return $Response;
     }
 
     /**
@@ -240,8 +240,8 @@ class LinkScanner implements Serializable
      */
     protected function _recursiveScan(string $url, string $referer = ''): void
     {
-        $response = $this->_singleScan($url, $referer);
-        if (!$response) {
+        $Response = $this->_singleScan($url, $referer);
+        if (!$Response) {
             return;
         }
 
@@ -251,14 +251,14 @@ class LinkScanner implements Serializable
         }
 
         //Returns, if the response is not ok
-        if (!$response->isOk()) {
+        if (!$Response->isOk()) {
             $this->dispatchEvent('LinkScanner.responseNotOk', [$url]);
 
             return;
         }
 
         //Continues scanning for the links found
-        foreach ((new BodyParser($response->getBody(), $url))->extractLinks() as $link) {
+        foreach ((new BodyParser($Response->getBody(), $url))->extractLinks() as $link) {
             if (!$this->_canBeScanned($link)) {
                 continue;
             }
@@ -291,12 +291,12 @@ class LinkScanner implements Serializable
         }
 
         $this->dispatchEvent('LinkScanner.beforeScanUrl', [$url]);
-        $response = $this->_getResponse($url);
-        $location = $response->getHeaderLine('location');
-        $this->dispatchEvent('LinkScanner.afterScanUrl', [$response]);
+        $Response = $this->_getResponse($url);
+        $location = $Response->getHeaderLine('location');
+        $this->dispatchEvent('LinkScanner.afterScanUrl', [$Response]);
 
         //Follows redirects
-        if ($response->isRedirect() && $this->getConfig('followRedirects')) {
+        if ($Response->isRedirect() && $this->getConfig('followRedirects')) {
             if (!$this->_canBeScanned($location)) {
                 return null;
             }
@@ -309,12 +309,12 @@ class LinkScanner implements Serializable
         //Creates a `ScanEntity` instance with the result and appends it to the
         //  `ResultScan` instance
         $this->ResultScan = $this->ResultScan->appendItem(new ScanEntity([
-            'code' => $response->getStatusCode(),
+            'code' => $Response->getStatusCode(),
             'external' => is_external_url($url, $this->hostname),
-            'type' => $response->getHeaderLine('content-type'),
+            'type' => $Response->getHeaderLine('content-type'),
         ] + compact('location', 'url', 'referer')));
 
-        return $response;
+        return $Response;
     }
 
     /**
