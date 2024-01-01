@@ -43,7 +43,7 @@ class LinkScannerTest extends TestCase
     protected EventManager $EventManager;
 
     /**
-     * @var \LinkScanner\Utility\LinkScanner|(\LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject)
+     * @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject
      */
     protected LinkScanner $LinkScanner;
 
@@ -59,8 +59,7 @@ class LinkScannerTest extends TestCase
     protected string $fullBaseUrl;
 
     /**
-     * Called before every test method
-     * @return void
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -103,23 +102,23 @@ class LinkScannerTest extends TestCase
     {
         $getResponseMethod = fn(string $url): Response => $this->invokeMethod($this->LinkScanner, '_getResponse', [$url]);
         $getResponseFromCache = function (string $url): ?Response {
-            $response = Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
+            $Response = Cache::read(sprintf('response_%s', md5(serialize($url))), 'LinkScanner');
 
-            if ($response && is_array($response)) {
-                [$response, $body] = $response;
+            if ($Response && is_array($Response)) {
+                [$Response, $body] = $Response;
 
-                $response = $this->getResponseWithBody($body, $response);
+                $Response = $this->getResponseWithBody($body, $Response);
             }
 
-            return $response;
+            return $Response;
         };
 
-        $response = $getResponseMethod($this->fullBaseUrl);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertStringStartsWith('text/html', $response->getHeaderLine('content-type'));
-        $responseFromCache = $getResponseFromCache($this->fullBaseUrl);
-        $this->assertNotEmpty($responseFromCache);
-        $this->assertInstanceof(Response::class, $responseFromCache);
+        $Response = $getResponseMethod($this->fullBaseUrl);
+        $this->assertEquals(200, $Response->getStatusCode());
+        $this->assertStringStartsWith('text/html', $Response->getHeaderLine('content-type'));
+        $ResponseFromCache = $getResponseFromCache($this->fullBaseUrl);
+        $this->assertNotEmpty($ResponseFromCache);
+        $this->assertInstanceof(Response::class, $ResponseFromCache);
 
         //With disabled cache
         Cache::clear('LinkScanner');
@@ -134,14 +133,14 @@ class LinkScannerTest extends TestCase
             'http://localhost/pages/home' => 200,
             'http://localhost/pages/noexisting' => 500,
         ] as $url => $expectedStatusCode) {
-            $response = $getResponseMethod($url);
-            $this->assertEquals($expectedStatusCode, $response->getStatusCode());
-            $this->assertStringStartsWith('text/html', $response->getHeaderLine('content-type'));
+            $Response = $getResponseMethod($url);
+            $this->assertEquals($expectedStatusCode, $Response->getStatusCode());
+            $this->assertStringStartsWith('text/html', $Response->getHeaderLine('content-type'));
 
-            $responseFromCache = $getResponseFromCache($url);
-            if ($response->isOk()) {
-                $this->assertNotEmpty($responseFromCache);
-                $this->assertInstanceof(Response::class, $responseFromCache);
+            $ResponseFromCache = $getResponseFromCache($url);
+            if ($Response->isOk()) {
+                $this->assertNotEmpty($ResponseFromCache);
+                $this->assertInstanceof(Response::class, $ResponseFromCache);
             }
         }
 
