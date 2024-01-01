@@ -16,7 +16,6 @@ namespace LinkScanner;
 
 use BadMethodCallException;
 use Cake\Http\Client\Response;
-use Tools\Entity;
 use Tools\Exceptionist;
 
 /**
@@ -55,11 +54,11 @@ class ScanEntity extends Entity
     public function __call(string $name, $arguments)
     {
         if (method_exists(Response::class, $name)) {
-            $response = (new Response())
+            $Response = (new Response())
                 ->withHeader('location', $this->get('location'))
                 ->withStatus($this->get('code'));
             /** @var callable $name */
-            $name = [$response, $name];
+            $name = [$Response, $name];
         }
 
         if (!is_callable($name)) {
