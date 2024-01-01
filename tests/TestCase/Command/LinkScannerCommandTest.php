@@ -315,10 +315,9 @@ class LinkScannerCommandTest extends TestCase
         $this->assertInstanceOf(ConsoleOptionParser::class, $parser);
         $this->assertEquals('Performs a complete scan', $parser->getDescription());
         $this->assertEmpty($parser->arguments());
-        $this->assertArrayKeysEqual([
-            'export-only-bad-results',
-            'no-external-links',
+        $this->assertEquals([
             'export',
+            'export-only-bad-results',
             'export-with-filename',
             'follow-redirects',
             'force',
@@ -326,9 +325,10 @@ class LinkScannerCommandTest extends TestCase
             'help',
             'max-depth',
             'no-cache',
+            'no-external-links',
             'quiet',
             'timeout',
             'verbose',
-        ], $parser->options());
+        ], array_keys($parser->options()));
     }
 }

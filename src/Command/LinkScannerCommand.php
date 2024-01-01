@@ -14,13 +14,13 @@ declare(strict_types=1);
  */
 namespace LinkScanner\Command;
 
+use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Exception;
 use LinkScanner\Event\LinkScannerCommandEventListener;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\Command\Command;
 use PHPUnit\Framework\Exception as PHPUnitException;
 
 /**

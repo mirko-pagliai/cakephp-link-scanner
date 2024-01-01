@@ -18,8 +18,8 @@ use Cake\Core\Configure;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Cake\Routing\Router;
+use Cake\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
 
 /**
  * A trait intended to make integration tests of your controllers easier
