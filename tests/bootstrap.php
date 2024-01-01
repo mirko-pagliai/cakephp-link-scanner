@@ -71,3 +71,13 @@ Cache::setConfig([
 ]);
 
 $_SERVER['PHP_SELF'] = '/';
+
+/**
+ * @todo These are to be removed with CakePHP >= 4.4
+ */
+if (!trait_exists('Cake\Console\TestSuite\ConsoleIntegrationTestTrait')) {
+    class_alias('Cake\TestSuite\ConsoleIntegrationTestTrait', 'Cake\Console\TestSuite\ConsoleIntegrationTestTrait');
+}
+if (!class_exists('Cake\Console\TestSuite\StubConsoleOutput')) {
+    class_alias('Cake\TestSuite\Stub\ConsoleOutput', 'Cake\Console\TestSuite\StubConsoleOutput');
+}
