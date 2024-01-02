@@ -30,7 +30,6 @@ use LinkScanner\ScanEntity;
 use LogicException;
 use PHPUnit\Framework\Exception as PHPUnitException;
 use Serializable;
-use Tools\BodyParser;
 use Tools\Filesystem;
 
 /**
