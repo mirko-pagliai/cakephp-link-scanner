@@ -18,8 +18,8 @@ use Cake\Core\Configure;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
 use Cake\Routing\Router;
+use Cake\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
 use LinkScanner\Utility\LinkScanner;
-use MeTools\TestSuite\IntegrationTestTrait as BaseIntegrationTestTrait;
 
 /**
  * A trait intended to make integration tests of your controllers easier
@@ -40,18 +40,20 @@ trait IntegrationTestTrait
         //It also analyzes the url of the test application and transforms them into parameter arrays
         $Client = $this->getClientStub();
         $Client->method('get')->willReturnCallback(function ($url): Response {
+            //Turns a url into an array of parameters, if possible
             if (is_string($url) && preg_match('/^http:\/\/localhost\/?(pages\/(.+))?$/', $url, $matches)) {
                 $url = ['controller' => 'Pages', 'action' => 'display', $matches[2] ?? 'home'];
             }
             $this->get($url);
 
+            //Makes sure to return a `Response` instance
             if (!$this->_response instanceof Response) {
-                $response = new Response([], (string)$this->_response->getBody());
+                $Response = new Response([], (string)$this->_response->getBody());
                 foreach ($this->_response->getHeaders() as $name => $value) {
-                    $response = $response->withHeader($name, $value);
+                    $Response = $Response->withHeader($name, $value);
                 }
 
-                $this->_response = $response->withStatus($this->_response->getStatusCode(), $this->_response->getReasonPhrase());
+                $this->_response = $Response->withStatus($this->_response->getStatusCode(), $this->_response->getReasonPhrase());
             }
 
             return $this->_response;

@@ -1,5 +1,12 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.17
+* no longer needs the me-tools package;
+* no longer uses the `Exceptionist` class;
+* provides its own `BodyParser` and `Entity` classes and no longer uses the ones provided by `php-tools`;
+* ready for `php-tools` 1.8;
+* added tests for PHP 8.2.
+
 ### 1.1.16
 * added the `LINK_SCANNER_TMP` constant. This constant, which can be defined before the plugin, affects all used files;
 * many, small improvements proposed by phpstorm.

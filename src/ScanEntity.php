@@ -16,13 +16,13 @@ namespace LinkScanner;
 
 use BadMethodCallException;
 use Cake\Http\Client\Response;
-use Tools\Entity;
-use Tools\Exceptionist;
+use LogicException;
 
 /**
  * A `ScanEntity` represents a single result of a scan
  * @method bool isRedirect()
  * @method bool isSuccess()
+ * @todo It should not extend `Entity`, but provide the necessary properties naturally
  */
 class ScanEntity extends Entity
 {
@@ -33,12 +33,17 @@ class ScanEntity extends Entity
 
     /**
      * Initializes the internal properties
-     * @param array<string, int|string|bool|null> $properties Properties to set
-     * @throws \Tools\Exception\KeyNotExistsException
+     * @param array $properties Properties to set
+     * @throws \LogicException
      */
     public function __construct(array $properties = [])
     {
-        Exceptionist::arrayKeyExists(['code', 'external', 'type', 'url'], $properties);
+        foreach (['code', 'external', 'type', 'url'] as $name) {
+            if (!array_key_exists($name, $properties)) {
+                throw new LogicException('Key `' . $name . '` does not exist');
+            }
+        }
+
         parent::__construct($properties);
     }
 
@@ -55,11 +60,11 @@ class ScanEntity extends Entity
     public function __call(string $name, $arguments)
     {
         if (method_exists(Response::class, $name)) {
-            $response = (new Response())
+            $Response = (new Response())
                 ->withHeader('location', $this->get('location'))
                 ->withStatus($this->get('code'));
             /** @var callable $name */
-            $name = [$response, $name];
+            $name = [$Response, $name];
         }
 
         if (!is_callable($name)) {

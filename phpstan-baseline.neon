@@ -16,6 +16,16 @@ parameters:
 			path: tests/TestCase/Command/LinkScannerCommandTest.php
 
 		-
+			message: "#^Access to an undefined property LinkScanner\\\\Entity\\:\\:\\$code\\.$#"
+			count: 1
+			path: tests/TestCase/EntityTest.php
+
+		-
+			message: "#^Access to an undefined property LinkScanner\\\\Entity\\:\\:\\$noExisting\\.$#"
+			count: 1
+			path: tests/TestCase/EntityTest.php
+
+		-
 			message: "#^Call to an undefined method LinkScanner\\\\ScanEntity\\:\\:noExistingMethod\\(\\)\\.$#"
 			count: 1
 			path: tests/TestCase/ScanEntityTest.php

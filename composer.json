@@ -13,11 +13,12 @@
     "require": {
         "php": ">=7.4",
         "cakephp/cakephp": "^4.3",
-        "mirko-pagliai/me-tools": "~2.23",
-        "mirko-pagliai/php-tools": "~1.7.1"
+        "mirko-pagliai/php-tools": "^1.7.1",
+        "symfony/dom-crawler": "^5.1.4|^6.0|^7.0"
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^4.0",
+        "nikic/php-parser": "^v4.18.0",
         "phpunit/phpunit": "^9.1|^9.5",
         "phpstan/phpstan": "^1.7",
         "psalm/phar": "^4.24"

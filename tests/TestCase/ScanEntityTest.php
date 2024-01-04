@@ -19,7 +19,6 @@ namespace LinkScanner\Test\TestCase;
 use BadMethodCallException;
 use LinkScanner\ScanEntity;
 use LinkScanner\TestSuite\TestCase;
-use Tools\Exception\KeyNotExistsException;
 
 /**
  * ScanEntityTest class
@@ -87,7 +86,6 @@ class ScanEntityTest extends TestCase
      */
     public function testConstruct(): void
     {
-        $this->expectException(KeyNotExistsException::class);
         $this->expectExceptionMessage('Key `code` does not exist');
         new ScanEntity();
     }
