@@ -90,6 +90,7 @@ class BodyParser
 
         $crawler = new Crawler($this->body);
 
+        $links = [];
         foreach (self::TAGS as $tag => $attribute) {
             foreach ($crawler->filterXPath('//' . $tag)->extract([$attribute]) as $link) {
                 if ($link) {
@@ -98,6 +99,6 @@ class BodyParser
             }
         }
 
-        return $this->extractedLinks = array_unique($links ?? []);
+        return $this->extractedLinks = array_unique($links);
     }
 }
