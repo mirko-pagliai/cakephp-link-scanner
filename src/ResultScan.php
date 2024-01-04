@@ -27,7 +27,7 @@ class ResultScan extends Collection
      * Internal method to parse items.
      *
      * Ensures that each item is a `ScanEntity` and has all the properties it needs
-     * @param \Cake\Collection\CollectionInterface|\Traversable|iterable $items Items
+     * @param \Cake\Collection\CollectionInterface|iterable $items Items
      * @return array<\LinkScanner\ScanEntity> Parsed items
      */
     protected function parseItems(iterable $items): array
@@ -43,9 +43,9 @@ class ResultScan extends Collection
 
     /**
      * Constructor
-     * @param \Cake\Collection\CollectionInterface|\Traversable|iterable $items Items
+     * @param \Cake\Collection\CollectionInterface|iterable $items Items
      */
-    public function __construct($items = [])
+    public function __construct(CollectionInterface|iterable $items = [])
     {
         parent::__construct($this->parseItems($items));
     }
@@ -69,7 +69,7 @@ class ResultScan extends Collection
      * @param mixed $items Items
      * @return \Cake\Collection\CollectionInterface
      */
-    public function prepend($items): CollectionInterface
+    public function prepend(mixed $items): CollectionInterface
     {
         return new ResultScan(array_merge($this->parseItems($items), $this->buffered()->toArray()));
     }
