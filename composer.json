@@ -26,7 +26,10 @@
     "autoload": {
         "psr-4": {
             "LinkScanner\\": "src"
-        }
+        },
+        "files": [
+            "libs/phpuri.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
