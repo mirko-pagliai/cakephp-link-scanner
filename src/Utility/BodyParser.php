@@ -80,6 +80,7 @@ class BodyParser
      * @param string $relative Relative url to join
      * @param string $base Base path, on which to construct the absolute url
      * @return string
+     * @since 1.1.18
      */
     protected function urlToAbsolute(string $relative, string $base): string
     {
