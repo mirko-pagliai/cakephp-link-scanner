@@ -221,7 +221,7 @@ class LinkScannerTest extends TestCase
 
         //With a no existing file
         $filename = TMP . 'noExistingDir' . DS . 'result';
-        $this->expectExceptionMessage('Failed to import results from file `' . $filename . '` with message `file or directory `'. $filename . '` is not readable`');
+        $this->expectExceptionMessage('Failed to import results from file `' . $filename . '` with message `file or directory `' . $filename . '` is not readable`');
         $this->LinkScanner->import($filename);
     }
 

@@ -19,7 +19,7 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Event\Event;
 use Cake\Http\Client\Response;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use LinkScanner\ResultScan;
 use function Cake\I18n\__d;
 
@@ -167,8 +167,8 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             $this->io->hr();
         }
 
-        $endTime = new FrozenTime($endTime);
-        $elapsedTime = $endTime->diffForHumans(new FrozenTime($startTime), true);
+        $endTime = new DateTime($endTime);
+        $elapsedTime = $endTime->diffForHumans(new DateTime($startTime), true);
 
         $this->io->out(__d('link-scanner', 'Scan completed at {0}', $endTime->i18nFormat('yyyy-MM-dd HH:mm:ss')));
         $this->io->out(__d('link-scanner', 'Elapsed time: {0}', $elapsedTime));
@@ -197,7 +197,7 @@ final class LinkScannerCommandEventListener implements LinkScannerEventListenerI
             $this->io->hr();
         }
 
-        $startTime = (new FrozenTime($startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
+        $startTime = (new DateTime($startTime))->i18nFormat('yyyy-MM-dd HH:mm:ss');
         $this->io->info(__d('link-scanner', 'Scan started for {0} at {1}', $fullBaseUrl, $startTime));
 
         if (!$this->args->getOption('verbose')) {

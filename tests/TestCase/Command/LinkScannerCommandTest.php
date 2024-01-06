@@ -1,6 +1,4 @@
 <?php
-/** @noinspection ALL */
-/** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
 /**
@@ -220,7 +218,7 @@ class LinkScannerCommandTest extends TestCase
         $differentLines = function (string $line): bool {
             $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl)));
 
-            return substr($line, 0, strlen('Checking')) === 'Checking' && !preg_match($pattern, $line);
+            return str_starts_with($line, 'Checking') && !preg_match($pattern, $line);
         };
         $this->assertEmpty(array_filter($this->_out->messages(), $differentLines));
         $this->assertOutputContains('Scanning of external links is not enabled');

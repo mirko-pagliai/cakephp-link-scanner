@@ -90,7 +90,7 @@ abstract class Entity implements ArrayAccess
      * @param mixed $default Default value if the property does not exist
      * @return mixed Property value
      */
-    public function get(string $property, $default = null)
+    public function get(string $property, mixed $default = null): mixed
     {
         return $this->has($property) ? $this->properties[$property] : $default;
     }
@@ -121,8 +121,7 @@ abstract class Entity implements ArrayAccess
      * @param EntityPropertyName $offset The offset to get
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->properties[$offset];
     }

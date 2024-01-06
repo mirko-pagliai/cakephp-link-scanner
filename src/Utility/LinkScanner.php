@@ -128,7 +128,7 @@ class LinkScanner implements Serializable
      * @param string $name Property name
      * @return mixed
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         return $this->{$name};
     }
@@ -334,7 +334,7 @@ class LinkScanner implements Serializable
      * @param string $data The string representation of the object
      * @return void
      */
-    public function unserialize($data): void
+    public function unserialize(string $data): void
     {
         //Resets the event list and the Client instance
         $properties = unserialize($data);
@@ -396,9 +396,9 @@ class LinkScanner implements Serializable
 
         try {
             if (!is_readable($filename)) {
-                throw new LogicException(__d('link-scanner', 'File or directory `'. $filename . '` is not readable'));
+                throw new LogicException(__d('link-scanner', 'File or directory `' . $filename . '` is not readable'));
             }
-            $instance = unserialize(file_get_contents($filename));
+            $instance = unserialize(file_get_contents($filename) ?: '');
         } catch (Throwable $e) {
             $message = preg_replace('/file_get_contents\([^)]+\):\s+/', '', $e->getMessage()) ?: '';
             throw new LogicException(

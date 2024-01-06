@@ -57,7 +57,7 @@ class ScanEntity extends Entity
      * @see \Cake\Http\Client\Response
      * @thrown \BadMethodCallException
      */
-    public function __call(string $name, $arguments)
+    public function __call(string $name, mixed $arguments): mixed
     {
         if (method_exists(Response::class, $name)) {
             $Response = (new Response())

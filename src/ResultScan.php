@@ -57,7 +57,7 @@ class ResultScan extends Collection
      * @param iterable $items Items
      * @return \Cake\Collection\CollectionInterface
      */
-    public function append($items): CollectionInterface
+    public function append(iterable $items): CollectionInterface
     {
         return new ResultScan(array_merge($this->buffered()->toArray(), $this->parseItems($items)));
     }
