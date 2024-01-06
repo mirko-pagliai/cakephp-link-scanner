@@ -1,6 +1,4 @@
 <?php
-/** @noinspection PhpDocMissingThrowsInspection */
-/** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
 /**
@@ -31,8 +29,7 @@ class ScanEntityTest extends TestCase
     protected ScanEntity $ScanEntity;
 
     /**
-     * Called before every test method
-     * @return void
+     * @inheritDoc
      */
     public function setUp(): void
     {
@@ -88,5 +85,31 @@ class ScanEntityTest extends TestCase
     {
         $this->expectExceptionMessage('Key `code` does not exist');
         new ScanEntity();
+    }
+
+    /**
+     * @test
+     * @uses \LinkScanner\ScanEntity::offsetExists()
+     * @uses \LinkScanner\ScanEntity::offsetGet()
+     * @uses \LinkScanner\ScanEntity::offsetSet()
+     * @uses \LinkScanner\ScanEntity::offsetUnset()
+     */
+    public function testOffsetMethods(): void
+    {
+        $this->ScanEntity['name'] = 'value';
+        $this->assertSame('value', $this->ScanEntity['name']);
+        $this->assertTrue(isset($this->ScanEntity['name']));
+        unset($this->ScanEntity['name']);
+        $this->assertFalse(isset($this->ScanEntity['name']));
+    }
+
+    /**
+     * @test
+     * @uses \LinkScanner\ScanEntity::get()
+     * @uses \LinkScanner\ScanEntity::set()
+     */
+    public function testGetAndSetMethods(): void
+    {
+        $this->markTestIncomplete();
     }
 }
