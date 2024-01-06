@@ -3,7 +3,8 @@
 ### 1.1.17
 * no longer needs the me-tools package;
 * no longer uses the `Exceptionist` class;
-* provides its own `BodyParser` and `Entity` classes and no longer uses the ones provided by `php-tools`;
+* provides its own `BodyParser` and `Entity` classes and no longer uses the ones provided by `php-tools`. The `BodyParser`
+  provides its own `urlToAbsolute()` protected method;
 * ready for `php-tools` 1.8;
 * added tests for PHP 8.2.
 

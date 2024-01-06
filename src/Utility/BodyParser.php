@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace LinkScanner\Utility;
 
+use phpUri;
 use Symfony\Component\DomCrawler\Crawler;
 
 /**
@@ -75,6 +76,20 @@ class BodyParser
     }
 
     /**
+     * Internal method to build an absolute url
+     * @param string $relative Relative url to join
+     * @param string $base Base path, on which to construct the absolute url
+     * @return string
+     */
+    protected function urlToAbsolute(string $relative, string $base): string
+    {
+        $base = clean_url($base, false, true);
+        $base = preg_match('/^(\w+:\/\/.+)\/[^.\/]+\.[^.\/]+$/', $base, $matches) ? $matches[1] : $base;
+
+        return phpUri::parse($base . '/')->join($relative);
+    }
+
+    /**
      * Extracts links from body
      * @return array<string> Array of links
      */
@@ -90,15 +105,15 @@ class BodyParser
 
         $crawler = new Crawler($this->body);
 
-        $links = [];
+        $extractedLinks = [];
         foreach (self::TAGS as $tag => $attribute) {
             foreach ($crawler->filterXPath('//' . $tag)->extract([$attribute]) as $link) {
                 if ($link) {
-                    $links[] = clean_url(url_to_absolute($this->url, $link), true, true);
+                    $extractedLinks[] = clean_url($this->urlToAbsolute($link, $this->url), true, true);
                 }
             }
         }
 
-        return $this->extractedLinks = array_unique($links);
+        return $this->extractedLinks = array_unique($extractedLinks);
     }
 }
