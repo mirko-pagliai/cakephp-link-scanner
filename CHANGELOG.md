@@ -1,7 +1,7 @@
 # 1.x branch
 ## 1.2 branch
 ### 1.2.0
-* requires at least PHP 8.1;
+* requires at least PHP 8.1, CakePHP 5.0 and PHPUnit 10;
 * provides its own `phpUri` library;
 * added tests for PHP 8.3.
 

@@ -220,8 +220,9 @@ class LinkScannerTest extends TestCase
         $this->assertEquals($expectedProperties, $resultProperties);
 
         //With a no existing file
-        $this->expectExceptionMessage('Failed to import results from file `' . TMP . 'noExistingDir' . DS . 'result` with message `failed to open stream: No such file or directory`');
-        $this->LinkScanner->import(TMP . 'noExistingDir' . DS . 'result');
+        $filename = TMP . 'noExistingDir' . DS . 'result';
+        $this->expectExceptionMessage('Failed to import results from file `' . $filename . '` with message `file or directory `'. $filename . '` is not readable`');
+        $this->LinkScanner->import($filename);
     }
 
     /**

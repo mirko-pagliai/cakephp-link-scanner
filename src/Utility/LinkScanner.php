@@ -23,14 +23,15 @@ use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventList;
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
-use Exception;
 use Laminas\Diactoros\Stream;
 use LinkScanner\ResultScan;
 use LinkScanner\ScanEntity;
 use LogicException;
 use PHPUnit\Framework\Exception as PHPUnitException;
 use Serializable;
+use Throwable;
 use Tools\Filesystem;
+use function Cake\I18n\__d;
 
 /**
  * A link scanner
@@ -216,7 +217,7 @@ class LinkScanner implements Serializable
             }
         } catch (PHPUnitException $e) {
             throw $e;
-        } catch (Exception $e) {
+        } catch (Throwable) {
             $Response = (new Response())->withStatus(404);
         }
 
@@ -394,8 +395,11 @@ class LinkScanner implements Serializable
         $filename = $this->_getAbsolutePath($filename);
 
         try {
-            $instance = unserialize(file_get_contents($filename) ?: '');
-        } catch (Exception $e) {
+            if (!is_readable($filename)) {
+                throw new LogicException(__d('link-scanner', 'File or directory `'. $filename . '` is not readable'));
+            }
+            $instance = unserialize(file_get_contents($filename));
+        } catch (Throwable $e) {
             $message = preg_replace('/file_get_contents\([^)]+\):\s+/', '', $e->getMessage()) ?: '';
             throw new LogicException(
                 __d('link-scanner', 'Failed to import results from file `{0}` with message `{1}`', $filename, lcfirst($message))
