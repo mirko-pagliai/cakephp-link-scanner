@@ -60,7 +60,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $this->ScanEntity->set('code', $code);
+            $this->ScanEntity['code'] = $code;
             $this->assertEquals($expectedValue, $this->ScanEntity->isSuccess());
         }
         $statusCodes = [
@@ -70,7 +70,7 @@ class ScanEntityTest extends TestCase
         ];
 
         foreach ($statusCodes as $code => $expectedValue) {
-            $this->ScanEntity->set('code', $code);
+            $this->ScanEntity['code'] = $code;
             $this->assertEquals($expectedValue, $this->ScanEntity->isRedirect());
         }
 

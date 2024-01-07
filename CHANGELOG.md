@@ -1,8 +1,9 @@
 # 1.x branch
 ## 1.1 branch
 ### 1.1.18
-* `__debugInfo()`, `has()`, `isEmpty()` and `toArray()` methods provided by the `Entity` class are deprecated and will
-  be removed in a future release;
+* `__debugInfo()`, `__get()`, `has()`, `hasValue()`, `isEmpty()`, `set()` and `toArray()` methods provided by the `Entity`
+    class are deprecated and will be removed in a future release. The `has()`, `get()` and `set()` methods can be replaced
+  by the methods implemented by `ArrayAccess`, already present (using the `ScanResult` class as if it were an array);
 * the `BodyParser` provides its own `urlToAbsolute()` protected method.
 
 ### 1.1.17

@@ -57,9 +57,12 @@ abstract class Entity implements ArrayAccess
      * Magic method for reading data from inaccessible properties
      * @param EntityPropertyName $property Property name
      * @return EntityPropertyValue
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function __get(string $property)
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         return $this->get($property);
     }
 
@@ -70,9 +73,12 @@ abstract class Entity implements ArrayAccess
      *  check the value as well.
      * @param EntityPropertyName $property Property name
      * @return bool
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function has(string $property): bool
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         return array_key_exists($property, $this->properties);
     }
 
@@ -80,8 +86,8 @@ abstract class Entity implements ArrayAccess
      * Checks if a property exists and has a value
      * @param EntityPropertyName $property Property name
      * @return bool
-     * @since 1.5.8
      * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
+     * @since 1.5.8
      */
     public function hasValue(string $property): bool
     {
@@ -98,7 +104,7 @@ abstract class Entity implements ArrayAccess
      */
     public function get(string $property, $default = null)
     {
-        return $this->has($property) ? $this->properties[$property] : $default;
+        return $this->properties[$property] ?? $default;
     }
 
     /**
@@ -165,10 +171,12 @@ abstract class Entity implements ArrayAccess
      *  list of properties with their respective values
      * @param EntityPropertyValue $value The value to set to the property
      * @return $this
-     * @noinspection PhpMissingReturnTypeInspection
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function set($property, $value = null)
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         $this->properties = array_merge($this->properties, is_array($property) ? $property : [$property => $value]);
 
         return $this;
