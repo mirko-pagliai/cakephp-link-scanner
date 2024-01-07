@@ -68,7 +68,7 @@ trait IntegrationTestTrait
      * @param string|array|null $fullBaseUrl Full base url
      * @return \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject
      */
-    protected function getLinkScannerClientReturnsFromTests($fullBaseUrl = null): LinkScanner
+    protected function getLinkScannerClientReturnsFromTests(string|array|null $fullBaseUrl = null): LinkScanner
     {
         $fullBaseUrl = $fullBaseUrl ?: Configure::read('App.fullBaseUrl', 'http://localhost');
         $fullBaseUrl = is_string($fullBaseUrl) ? $fullBaseUrl : Router::url($fullBaseUrl, true);

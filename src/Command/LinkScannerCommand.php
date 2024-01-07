@@ -22,6 +22,7 @@ use Exception;
 use LinkScanner\Event\LinkScannerCommandEventListener;
 use LinkScanner\Utility\LinkScanner;
 use PHPUnit\Framework\Exception as PHPUnitException;
+use function Cake\I18n\__d;
 
 /**
  * A link scanner command

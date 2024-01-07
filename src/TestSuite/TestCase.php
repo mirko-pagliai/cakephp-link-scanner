@@ -41,7 +41,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::tearDown();
 
-        @unlink(LINK_SCANNER_TMP . 'link_scanner_lock_file');
+        if (file_exists(LINK_SCANNER_TMP . 'link_scanner_lock_file')) {
+            unlink(LINK_SCANNER_TMP . 'link_scanner_lock_file');
+        }
 
         Cache::clear('LinkScanner');
     }
@@ -63,6 +65,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns a stub of `Client`
      * @param array $methods Methods to mock
+     * @psalm-param list<non-empty-string> $methods
      * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getClientStub(array $methods = ['get']): Client
@@ -131,9 +134,9 @@ abstract class TestCase extends BaseTestCase
         $Client->method('get')->willReturnCallback(function (string $url): Response {
             //Ties to get the response from a cached file. If it doesn't exist, it will retrieve it via a GET request.
             $responseFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_response';
-            $getResponse = fn(): Response => is_readable($responseFile) ? @unserialize(file_get_contents($responseFile) ?: '') : (new Client(['redirect' => true]))->get($url);
+            $getResponse = fn(): Response => is_readable($responseFile) ? unserialize(file_get_contents($responseFile) ?: '') : (new Client(['redirect' => true]))->get($url);
             $bodyFile = TESTS . 'examples' . DS . 'responses' . DS . 'google_body';
-            $body = is_readable($bodyFile) ? @unserialize(file_get_contents($bodyFile) ?: '') : (string)$getResponse()->getBody();
+            $body = is_readable($bodyFile) ? unserialize(file_get_contents($bodyFile) ?: '') : (string)$getResponse()->getBody();
             if (!is_readable($responseFile) || !is_readable($bodyFile)) {
                 file_put_contents($responseFile, serialize($getResponse()));
                 file_put_contents($bodyFile, serialize($body));
