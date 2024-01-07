@@ -445,7 +445,7 @@ class LinkScanner implements Serializable
             $this->dispatchEvent('LinkScanner.scanCompleted', [$this->startTime, $this->endTime, $this->ResultScan]);
         } finally {
             ini_set('xdebug.max_nesting_level', (string)$maxNestingLevel);
-            if (file($this->lockFile)) {
+            if (file_exists($this->lockFile)) {
                 unlink($this->lockFile);
             }
         }
