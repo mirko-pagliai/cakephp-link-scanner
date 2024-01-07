@@ -66,8 +66,8 @@ class ScanEntity implements ArrayAccess
     {
         if (method_exists(Response::class, $name)) {
             $Response = (new Response())
-                ->withHeader('location', $this->get('location'))
-                ->withStatus($this->get('code'));
+                ->withHeader('location', $this['location'])
+                ->withStatus($this['code']);
             /** @var callable $name */
             $name = [$Response, $name];
         }
@@ -77,29 +77,6 @@ class ScanEntity implements ArrayAccess
         }
 
         return call_user_func_array($name, $arguments);
-    }
-
-    /**
-     * Get method.
-     *
-     * Alias for `offsetGet()`
-     * @param string $name Property name
-     * @return mixed
-     */
-    public function get(string $name): mixed {
-        return $this->offsetGet($name);
-    }
-
-    /**
-     * Set method.
-     *
-     * Alias for `offsetSet()`
-     * @param string $name Property name
-     * @param mixed $value Property value
-     * @return void
-     */
-    public function set(string $name, mixed $value): void {
-        $this->offsetSet($name, $value);
     }
 
     /**

@@ -3,7 +3,7 @@
 ### 1.2.0
 * requires at least PHP 8.1, CakePHP 5.0 and PHPUnit 10;
 * provides its own `phpUri` library;
-* `ScanEntity` no longer extends any `Entity` class (which has been removed). For now it implements `ArrayAccess`;
+* `ScanEntity` no longer extends any `Entity` class (which has been removed) and directly implements `ArrayAccess`;
 * added and fixed typehints, removed deprecations;
 * added tests for PHP 8.3.
 

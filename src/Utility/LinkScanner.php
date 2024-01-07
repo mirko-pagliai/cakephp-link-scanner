@@ -367,7 +367,7 @@ class LinkScanner implements Serializable
         }
 
         if ($this->getConfig('exportOnlyBadResults')) {
-            $this->ResultScan = new ResultScan($this->ResultScan->filter(fn(ScanEntity $item): bool => $item->get('code') >= 400));
+            $this->ResultScan = new ResultScan($this->ResultScan->filter(fn(ScanEntity $item): bool => $item['code'] >= 400));
         }
 
         $filename = $this->_getAbsolutePath($filename ?: sprintf('results_%s_%s', $this->hostname, $this->startTime));
