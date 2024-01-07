@@ -22,12 +22,12 @@ even a coffee is enough! Thank you.
 
 * [Installation](#installation)
     + [Installation on older CakePHP and PHP versions](#installation-on-older-cakephp-and-php-versions)
-        - [For PHP 7.4 and CakePHP 4.3 or later](#for-php-74-and-cakephp-43-or-later)
-        - [For PHP 7.2 or later](#for-php-72-or-later)
+        - [For PHP 7.2 and CakePHP 4 or later](#for-php-72-and-cakephp-4-or-later)
         - [For PHP 5.6 and CakePHP 3 or later](#for-php-56-and-cakephp-3-or-later)
-* [Configuration](#configuration)
 * [How to use](#how-to-use)
-* [To do list](#to-do-list)
+    + [The Request detector](#the-request-detector)
+    + [How to create a validation rule](#how-to-create-a-validation-rule)
+    + [How to configure the cache](#how-to-configure-the-cache)
 * [Versioning](#versioning)
 
 ## Installation
