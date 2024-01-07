@@ -61,8 +61,8 @@ class ScanEntity extends Entity
     {
         if (method_exists(Response::class, $name)) {
             $Response = (new Response())
-                ->withHeader('location', $this->get('location'))
-                ->withStatus($this->get('code'));
+                ->withHeader('location', $this['location'])
+                ->withStatus($this['code']);
             /** @var callable $name */
             $name = [$Response, $name];
         }

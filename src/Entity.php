@@ -44,9 +44,12 @@ abstract class Entity implements ArrayAccess
     /**
      * Called by `var_dump()` when dumping the object to get the properties that should be shown
      * @return array
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function __debugInfo(): array
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         return $this->toArray();
     }
 
@@ -54,9 +57,12 @@ abstract class Entity implements ArrayAccess
      * Magic method for reading data from inaccessible properties
      * @param EntityPropertyName $property Property name
      * @return EntityPropertyValue
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function __get(string $property)
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         return $this->get($property);
     }
 
@@ -67,9 +73,12 @@ abstract class Entity implements ArrayAccess
      *  check the value as well.
      * @param EntityPropertyName $property Property name
      * @return bool
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function has(string $property): bool
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         return array_key_exists($property, $this->properties);
     }
 
@@ -77,10 +86,13 @@ abstract class Entity implements ArrayAccess
      * Checks if a property exists and has a value
      * @param EntityPropertyName $property Property name
      * @return bool
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      * @since 1.5.8
      */
     public function hasValue(string $property): bool
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         return (bool)$this->get($property);
     }
 
@@ -89,20 +101,26 @@ abstract class Entity implements ArrayAccess
      * @param EntityPropertyName $property Property name
      * @param mixed $default Default value if the property does not exist
      * @return mixed Property value
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function get(string $property, $default = null)
     {
-        return $this->has($property) ? $this->properties[$property] : $default;
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
+        return $this->properties[$property] ?? $default;
     }
 
     /**
      * Checks if a property does not exist or is empty
      * @param EntityPropertyName $property Property name
      * @return bool
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      * @since 1.5.8
      */
     public function isEmpty(string $property): bool
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         return empty($this->get($property));
     }
 
@@ -156,10 +174,12 @@ abstract class Entity implements ArrayAccess
      *  list of properties with their respective values
      * @param EntityPropertyValue $value The value to set to the property
      * @return $this
-     * @noinspection PhpMissingReturnTypeInspection
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function set($property, $value = null)
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         $this->properties = array_merge($this->properties, is_array($property) ? $property : [$property => $value]);
 
         return $this;
@@ -167,10 +187,13 @@ abstract class Entity implements ArrayAccess
 
     /**
      * Returns an array with all the properties that have been set to this entity
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      * @return array
      */
     public function toArray(): array
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         $properties = $this->properties;
 
         foreach ($properties as $name => $value) {

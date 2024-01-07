@@ -289,9 +289,9 @@ class LinkScannerTest extends TestCase
         $hostname = get_hostname_from_url($this->fullBaseUrl);
 
         foreach ($LinkScanner->ResultScan as $item) {
-            $this->assertMatchesRegularExpression(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item->get('url'));
-            $this->assertContains($item->get('code'), [200, 500]);
-            $this->assertStringStartsWith('text/html', $item->get('type'));
+            $this->assertMatchesRegularExpression(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item['url']);
+            $this->assertContains($item['code'], [200, 500]);
+            $this->assertStringStartsWith('text/html', $item['type']);
         }
 
         /** @var \LinkScanner\Utility\LinkScanner&\PHPUnit\Framework\MockObject\MockObject $LinkScanner */
@@ -407,11 +407,11 @@ class LinkScannerTest extends TestCase
         $LinkScanner->setConfig('maxDepth', 1)->scan();
         $this->assertCount(1, $LinkScanner->ResultScan);
         $item = $LinkScanner->ResultScan->first();
-        $this->assertSame($item->get('code'), 200);
-        $this->assertFalse($item->get('external'));
-        $this->assertEmpty($item->get('referer'));
-        $this->assertStringStartsWith('text/html', $item->get('type'));
-        $this->assertSame($item->get('url'), 'http://localhost');
+        $this->assertSame($item['code'], 200);
+        $this->assertFalse($item['external']);
+        $this->assertEmpty($item['referer']);
+        $this->assertStringStartsWith('text/html', $item['type']);
+        $this->assertSame($item['url'], 'http://localhost');
 
         $LinkScanner = $this->getLinkScannerClientReturnsFromTests();
         $LinkScanner->setConfig('exportOnlyBadResults', true)->scan();

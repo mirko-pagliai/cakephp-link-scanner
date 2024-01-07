@@ -1,5 +1,12 @@
 # 1.x branch
 ## 1.1 branch
+### 1.1.18
+* `__debugInfo()`, `__get()`, `has()`, `hasValue()`, `get()`, `isEmpty()`, `set()` and `toArray()` methods provided by the 
+  `Entity` class are deprecated and will be removed in a future release. The `has()`, `get()` and `set()` methods can be
+  replaced by the methods implemented by `ArrayAccess`, already present (using the `ScanResult` class as if it were an array).
+  The `Entity` class was only extended and used by `ScanResult`, so this is especially true for the latter class;
+* the `BodyParser` provides its own `urlToAbsolute()` protected method.
+
 ### 1.1.17
 * no longer needs the me-tools package;
 * no longer uses the `Exceptionist` class;

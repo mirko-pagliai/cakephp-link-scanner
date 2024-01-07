@@ -28,6 +28,31 @@ class EntityTest extends TestCase
     protected Entity $Entity;
 
     /**
+     * @var int
+     */
+    protected static int $currentErrorLevel;
+
+    /**
+     * @inheritDoc
+     */
+    public static function setUpBeforeClass(): void
+    {
+        parent::setUpBeforeClass();
+
+        self::$currentErrorLevel = error_reporting(E_ALL & ~E_USER_DEPRECATED);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function tearDownAfterClass(): void
+    {
+        parent::tearDownAfterClass();
+
+        error_reporting(self::$currentErrorLevel);
+    }
+
+    /**
      * @inheritDoc
      */
     public function setUp(): void
