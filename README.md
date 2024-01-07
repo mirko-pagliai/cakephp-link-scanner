@@ -20,14 +20,15 @@ even a coffee is enough! Thank you.
 
 ***
 
-  * [Installation](#installation)
+* [Installation](#installation)
     + [Installation on older CakePHP and PHP versions](#installation-on-older-cakephp-and-php-versions)
-      - [For PHP 7.2 or later](#for-php-72-or-later)
-      - [For PHP 5.6 and CakePHP 3 or later](#for-php-56-and-cakephp-3-or-later)
-  * [Configuration](#configuration)
-  * [How to use](#how-to-use)
-  * [To do list](#to-do-list)
-  * [Versioning](#versioning)
+        - [For PHP 7.4 and CakePHP 4.3 or later](#for-php-74-and-cakephp-43-or-later)
+        - [For PHP 7.2 or later](#for-php-72-or-later)
+        - [For PHP 5.6 and CakePHP 3 or later](#for-php-56-and-cakephp-3-or-later)
+* [Configuration](#configuration)
+* [How to use](#how-to-use)
+* [To do list](#to-do-list)
+* [Versioning](#versioning)
 
 ## Installation
 You can install the plugin via composer:
@@ -45,11 +46,24 @@ bin/cake plugin load LinkScanner
 This would update your application's bootstrap method.
 
 ### Installation on older CakePHP and PHP versions
-Recent packages and the master branch require at least CakePHP 4.3 and PHP 7.4
+Recent packages and the master branch require at least CakePHP 5.0 and PHP 8.1
 and the current development of the code is based on these and later versions of
 CakePHP and PHP.
 However, there are still some branches compatible with previous versions of
 CakePHP and PHP.
+
+#### For PHP 7.4 and CakePHP 4.3 or later
+The [php7.4](https://github.com/mirko-pagliai/cakephp-link-scanner/tree/php7.4) branch
+requires at least PHP `>=7.4` and CakePHP `^4.3`.
+
+In this case, you can install the package as well:
+```bash
+$ composer require --prefer-dist mirko-pagliai/cakephp-link-scanner:dev-php7.4
+```
+
+Note that the `php7.4` branch will no longer be updated as of January 7, 2024,
+except for security patches, and it matches the
+[1.1.18](https://github.com/mirko-pagliai/cakephp-link-scanner/releases/tag/1.1.18) version.
 
 #### For PHP 7.2 or later
 The [php7.2](https://github.com/mirko-pagliai/cakephp-link-scanner/tree/php7.2) branch
