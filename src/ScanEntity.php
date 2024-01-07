@@ -14,6 +14,7 @@ declare(strict_types=1);
  */
 namespace LinkScanner;
 
+use ArrayAccess;
 use BadMethodCallException;
 use Cake\Http\Client\Response;
 use LogicException;
@@ -22,9 +23,8 @@ use LogicException;
  * A `ScanEntity` represents a single result of a scan
  * @method bool isRedirect()
  * @method bool isSuccess()
- * @todo It should not extend `Entity`, but provide the necessary properties naturally
  */
-class ScanEntity extends Entity
+class ScanEntity implements ArrayAccess
 {
     /**
      * @var \Cake\Http\Client\Response
@@ -32,7 +32,12 @@ class ScanEntity extends Entity
     protected Response $Response;
 
     /**
-     * Initializes the internal properties
+     * @var array
+     */
+    protected array $properties;
+
+    /**
+     * Initializes properties
      * @param array $properties Properties to set
      * @throws \LogicException
      */
@@ -44,7 +49,7 @@ class ScanEntity extends Entity
             }
         }
 
-        parent::__construct($properties);
+        $this->properties = $properties;
     }
 
     /**
@@ -57,7 +62,7 @@ class ScanEntity extends Entity
      * @see \Cake\Http\Client\Response
      * @thrown \BadMethodCallException
      */
-    public function __call(string $name, $arguments)
+    public function __call(string $name, mixed $arguments): mixed
     {
         if (method_exists(Response::class, $name)) {
             $Response = (new Response())
@@ -72,5 +77,39 @@ class ScanEntity extends Entity
         }
 
         return call_user_func_array($name, $arguments);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->properties[$offset];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        if (is_string($offset) && $value) {
+            $this->properties[$offset] = $value;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        unset($this->properties[$offset]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->properties[$offset]);
     }
 }

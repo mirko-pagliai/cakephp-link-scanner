@@ -1,6 +1,4 @@
 <?php
-/** @noinspection PhpDocMissingThrowsInspection */
-/** @noinspection PhpUnhandledExceptionInspection */
 declare(strict_types=1);
 
 /**
@@ -31,14 +29,13 @@ class ScanEntityTest extends TestCase
     protected ScanEntity $ScanEntity;
 
     /**
-     * Called before every test method
-     * @return void
+     * @inheritDoc
      */
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->ScanEntity = new ScanEntity([
+        $this->ScanEntity ??= new ScanEntity([
             'code' => 200,
             'external' => false,
             'location' => 'https://example.com/location',
@@ -53,23 +50,20 @@ class ScanEntityTest extends TestCase
      */
     public function testCall(): void
     {
-        $statusCodes = [
-            200 => true,
-            301 => false,
-            404 => false,
-        ];
-
-        foreach ($statusCodes as $code => $expectedValue) {
+        foreach ([
+             200 => true,
+             301 => false,
+             404 => false,
+         ] as $code => $expectedValue) {
             $this->ScanEntity['code'] = $code;
             $this->assertEquals($expectedValue, $this->ScanEntity->isSuccess());
         }
-        $statusCodes = [
-            200 => false,
-            301 => true,
-            404 => false,
-        ];
 
-        foreach ($statusCodes as $code => $expectedValue) {
+        foreach ([
+             200 => false,
+             301 => true,
+             404 => false,
+         ] as $code => $expectedValue) {
             $this->ScanEntity['code'] = $code;
             $this->assertEquals($expectedValue, $this->ScanEntity->isRedirect());
         }
@@ -88,5 +82,21 @@ class ScanEntityTest extends TestCase
     {
         $this->expectExceptionMessage('Key `code` does not exist');
         new ScanEntity();
+    }
+
+    /**
+     * @test
+     * @uses \LinkScanner\ScanEntity::offsetExists()
+     * @uses \LinkScanner\ScanEntity::offsetGet()
+     * @uses \LinkScanner\ScanEntity::offsetSet()
+     * @uses \LinkScanner\ScanEntity::offsetUnset()
+     */
+    public function testOffsetMethods(): void
+    {
+        $this->ScanEntity['key'] = 'value';
+        $this->assertSame('value', $this->ScanEntity['key']);
+        $this->assertTrue(isset($this->ScanEntity['key']));
+        unset($this->ScanEntity['key']);
+        $this->assertFalse(isset($this->ScanEntity['key']));
     }
 }

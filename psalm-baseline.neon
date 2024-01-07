@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.x-dev@">
+<files psalm-version="5.18.0@b113f3ed0259fd6e212d87c3df80eec95a6abf19">
   <file src="src/Command/LinkScannerCommand.php">
-    <RedundantPropertyInitializationCheck occurrences="2">
-      <code>$this-&gt;LinkScanner</code>
+    <RedundantPropertyInitializationCheck>
+      <code><![CDATA[$this->LinkScanner]]></code>
       <code>new LinkScanner()</code>
     </RedundantPropertyInitializationCheck>
   </file>
-  <file src="src/Entity.php">
-    <PossiblyInvalidPropertyAssignmentValue occurrences="1">
-      <code>$this-&gt;properties</code>
-    </PossiblyInvalidPropertyAssignmentValue>
+  <file src="src/ScanEntity.php">
+    <MissingTemplateParam>
+      <code>ArrayAccess</code>
+    </MissingTemplateParam>
+  </file>
+  <file src="src/Utility/LinkScanner.php">
+    <MissingTemplateParam>
+      <code>EventDispatcherTrait</code>
+    </MissingTemplateParam>
   </file>
 </files>
