@@ -92,7 +92,9 @@ class ScanEntity implements ArrayAccess
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->properties[$offset] = $value;
+        if (is_string($offset) && $value) {
+            $this->properties[$offset] = $value;
+        }
     }
 
     /**

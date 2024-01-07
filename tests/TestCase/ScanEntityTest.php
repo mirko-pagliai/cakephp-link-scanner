@@ -93,10 +93,10 @@ class ScanEntityTest extends TestCase
      */
     public function testOffsetMethods(): void
     {
-        $this->ScanEntity->key = 'value';
-        $this->assertSame('value', $this->ScanEntity->key);
-        $this->assertTrue(isset($this->ScanEntity->key));
-        unset($this->ScanEntity->key);
-        $this->assertFalse(isset($this->ScanEntity->key));
+        $this->ScanEntity['key'] = 'value';
+        $this->assertSame('value', $this->ScanEntity['key']);
+        $this->assertTrue(isset($this->ScanEntity['key']));
+        unset($this->ScanEntity['key']);
+        $this->assertFalse(isset($this->ScanEntity['key']));
     }
 }

@@ -65,6 +65,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Returns a stub of `Client`
      * @param array $methods Methods to mock
+     * @psalm-param list<non-empty-string> $methods
      * @return \Cake\Http\Client&\PHPUnit\Framework\MockObject\MockObject
      */
     protected function getClientStub(array $methods = ['get']): Client
