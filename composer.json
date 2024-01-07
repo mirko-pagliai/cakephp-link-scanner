@@ -50,8 +50,8 @@
         "cs-fix": "phpcbf --standard=phpcs.xml.dist",
         "test": "rm -f -r /tmp/cake* && phpunit",
         "coverage": "XDEBUG_MODE=coverage phpunit --coverage-html=coverage",
-        "phpstan": "phpstan.phar analyse",
-        "psalm": "psalm.phar --php-version=8.0",
+        "phpstan": "phpstan analyse",
+        "psalm": "psalm --php-version=8.0",
         "stan": [
             "@phpstan",
             "@psalm"
