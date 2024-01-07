@@ -101,9 +101,12 @@ abstract class Entity implements ArrayAccess
      * @param EntityPropertyName $property Property name
      * @param mixed $default Default value if the property does not exist
      * @return mixed Property value
+     * @deprecated 1.1.18 This method is deprecated and will be removed in a future release
      */
     public function get(string $property, $default = null)
     {
+        deprecationWarning('This method is deprecated and will be removed in a future release');
+
         return $this->properties[$property] ?? $default;
     }
 
