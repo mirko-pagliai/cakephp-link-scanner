@@ -1,6 +1,8 @@
 # 1.x branch
 ## 1.1 branch
 ### 1.1.18
+* `__debugInfo()`, `has()`, `isEmpty()` and `toArray()` methods provided by the `Entity` class are deprecated and will
+  be removed in a future release;
 * the `BodyParser` provides its own `urlToAbsolute()` protected method.
 
 ### 1.1.17
