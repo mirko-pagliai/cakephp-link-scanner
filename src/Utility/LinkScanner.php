@@ -433,8 +433,7 @@ class LinkScanner implements Serializable
         }
 
         //Sets the hostname
-        $hostname = parse_url($fullBaseUrl, PHP_URL_HOST) ?: '';
-        $this->hostname = str_starts_with($hostname, 'www.') ? substr($hostname, 4) : $hostname;
+        $this->hostname = get_hostname_from_url($fullBaseUrl);
 
         $this->_createLockFile();
         $this->startTime = time();
