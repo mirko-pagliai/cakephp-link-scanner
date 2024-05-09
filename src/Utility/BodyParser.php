@@ -101,7 +101,8 @@ class BodyParser
             return $this->extractedLinks;
         }
 
-        if (!is_html($this->body)) {
+        //Checks the body contains html code
+        if (strcasecmp($this->body, strip_tags($this->body)) == 0) {
             return [];
         }
 
