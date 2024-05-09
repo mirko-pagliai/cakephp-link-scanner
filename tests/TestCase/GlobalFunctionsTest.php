@@ -19,7 +19,6 @@ use LinkScanner\TestSuite\TestCase;
 
 /**
  * GlobalFunctionsTest
- * @uses src/global_functions.php
  */
 class GlobalFunctionsTest extends TestCase
 {
