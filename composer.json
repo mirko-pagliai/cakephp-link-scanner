@@ -28,7 +28,8 @@
             "LinkScanner\\": "src"
         },
         "files": [
-            "libs/phpuri.php"
+            "libs/phpuri.php",
+            "src/global_functions.php"
         ]
     },
     "autoload-dev": {
