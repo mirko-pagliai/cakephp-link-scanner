@@ -2,7 +2,8 @@
 ## 1.2 branch
 ### 1.2.1
 * provides `clean_url()`, `get_hostname_from_url()` and `is_external_url()` global network functions, which used to
-  belong to `php-tools` but have been deprecated and will be removed by it.
+  belong to `php-tools` but have been deprecated and will be removed by it;
+* updated for `php-tools` 1.10.
 
 ### 1.2.0
 * requires at least PHP 8.1, CakePHP 5.0 and PHPUnit 10;
