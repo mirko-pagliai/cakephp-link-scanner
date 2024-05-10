@@ -13,7 +13,7 @@
     "require": {
         "php": ">=8.1",
         "cakephp/cakephp": "^5.0",
-        "mirko-pagliai/php-tools": "~1.9.2",
+        "mirko-pagliai/php-tools": "~1.9.2|~1.10",
         "symfony/dom-crawler": "^6.0|^7.0"
     },
     "require-dev": {
@@ -28,7 +28,8 @@
             "LinkScanner\\": "src"
         },
         "files": [
-            "libs/phpuri.php"
+            "libs/phpuri.php",
+            "src/global_functions.php"
         ]
     },
     "autoload-dev": {

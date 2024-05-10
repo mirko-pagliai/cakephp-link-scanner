@@ -215,11 +215,8 @@ class LinkScannerCommandTest extends TestCase
         $expectedConfig['fullBaseUrl'] = $this->fullBaseUrl;
         $this->assertEquals($expectedConfig, $this->LinkScanner->getConfig());
 
-        $differentLines = function (string $line): bool {
-            $pattern = sprintf('/^Checking https?:\/\/%s/', preg_quote(get_hostname_from_url($this->fullBaseUrl)));
-
-            return str_starts_with($line, 'Checking') && !preg_match($pattern, $line);
-        };
+        $differentLines = fn(string $line): bool =>
+            str_starts_with($line, 'Checking') && !preg_match('/^Checking https?:\/\/google\.com/', $line);
         $this->assertEmpty(array_filter($this->_out->messages(), $differentLines));
         $this->assertOutputContains('Scanning of external links is not enabled');
 

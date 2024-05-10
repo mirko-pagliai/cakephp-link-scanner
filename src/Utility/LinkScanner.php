@@ -431,6 +431,8 @@ class LinkScanner implements Serializable
         if (!is_url($fullBaseUrl)) {
             throw new LogicException(__d('link-scanner', 'Invalid full base url `{0}`', $fullBaseUrl));
         }
+
+        //Sets the hostname
         $this->hostname = get_hostname_from_url($fullBaseUrl);
 
         $this->_createLockFile();

@@ -287,10 +287,8 @@ class LinkScannerTest extends TestCase
         $this->assertEquals($newInternalLinks, $internalLinks);
         $this->assertEmpty($newExternalLinks->toList());
 
-        $hostname = get_hostname_from_url($this->fullBaseUrl);
-
         foreach ($LinkScanner->ResultScan as $item) {
-            $this->assertMatchesRegularExpression(sprintf('/^https?:\/\/%s/', preg_quote($hostname)), $item['url']);
+            $this->assertMatchesRegularExpression('/^https?:\/\/google\.com/', $item['url']);
             $this->assertContains($item['code'], [200, 500]);
             $this->assertStringStartsWith('text/html', $item['type']);
         }
